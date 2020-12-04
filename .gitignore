@@ -1,0 +1,6 @@
+# Visual Studio cache directory
+.vs/
+.vscode/
+
+# Binary Files
+Binaries/*

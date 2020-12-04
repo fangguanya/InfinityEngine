@@ -1,0 +1,15 @@
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Binaries\Win64\Graphics\bin\Release\net5.0\Infinity.Graphics.deps.json
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Binaries\Win64\Graphics\bin\Release\net5.0\Infinity.Graphics.dll
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Binaries\Win64\Graphics\bin\Release\net5.0\ref\Infinity.Graphics.dll
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Binaries\Win64\Graphics\bin\Release\net5.0\Infinity.Graphics.pdb
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Source\Infinity.Graphics\obj\x64\Release\net5.0\Infinity.Graphics.GeneratedMSBuildEditorConfig.editorconfig
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Source\Infinity.Graphics\obj\x64\Release\net5.0\Infinity.Graphics.AssemblyInfoInputs.cache
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Source\Infinity.Graphics\obj\x64\Release\net5.0\Infinity.Graphics.AssemblyInfo.cs
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Source\Infinity.Graphics\obj\x64\Release\net5.0\Infinity.Graphics.csproj.CoreCompileInputs.cache
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Source\Infinity.Graphics\obj\x64\Release\net5.0\Infinity.Graphics.dll
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Source\Infinity.Graphics\obj\x64\Release\net5.0\ref\Infinity.Graphics.dll
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Source\Infinity.Graphics\obj\x64\Release\net5.0\Infinity.Graphics.pdb
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Binaries\Graphics\bin\Win64\Release\net5.0\Infinity.Graphics.deps.json
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Binaries\Graphics\bin\Win64\Release\net5.0\Infinity.Graphics.dll
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Binaries\Graphics\bin\Win64\Release\net5.0\ref\Infinity.Graphics.dll
+D:\OneDrive\Project\NativeProject\InfinityEngine\Engine\Binaries\Graphics\bin\Win64\Release\net5.0\Infinity.Graphics.pdb

@@ -1,0 +1,115 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\CGfile\\Project\\Native\\InfinityEngine\\Engine\\Source\\Infinity.Graphics\\Infinity.Graphics.csproj": {}
+  },
+  "projects": {
+    "D:\\CGfile\\Project\\Native\\InfinityEngine\\Engine\\Source\\Infinity.Graphics\\Infinity.Graphics.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\CGfile\\Project\\Native\\InfinityEngine\\Engine\\Source\\Infinity.Graphics\\Infinity.Graphics.csproj",
+        "projectName": "Infinity.Graphics",
+        "projectPath": "D:\\CGfile\\Project\\Native\\InfinityEngine\\Engine\\Source\\Infinity.Graphics\\Infinity.Graphics.csproj",
+        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
+        "outputPath": "D:\\CGfile\\Project\\Native\\InfinityEngine\\Engine\\Source\\Infinity.Graphics\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Veldrid.ImGui": {
+              "target": "Package",
+              "version": "[5.72.0, )"
+            },
+            "Veldrid.MetalBindings": {
+              "target": "Package",
+              "version": "[4.8.0, )"
+            },
+            "Veldrid.RenderDoc": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "Veldrid.SPIRV": {
+              "target": "Package",
+              "version": "[1.0.13, )"
+            },
+            "Vortice.D3DCompiler": {
+              "target": "Package",
+              "version": "[1.8.31, )"
+            },
+            "Vortice.DXGI": {
+              "target": "Package",
+              "version": "[1.8.31, )"
+            },
+            "Vortice.Direct3D12": {
+              "target": "Package",
+              "version": "[1.8.31, )"
+            },
+            "Vortice.DirectX": {
+              "target": "Package",
+              "version": "[1.8.31, )"
+            },
+            "Vortice.Dxc": {
+              "target": "Package",
+              "version": "[1.8.31, )"
+            },
+            "Vortice.Mathematics": {
+              "target": "Package",
+              "version": "[1.2.6, )"
+            },
+            "Vortice.Mathematics.PackedVector": {
+              "target": "Package",
+              "version": "[1.2.6, )"
+            },
+            "Vortice.Runtime.COM": {
+              "target": "Package",
+              "version": "[1.8.31, )"
+            },
+            "Vortice.Vulkan": {
+              "target": "Package",
+              "version": "[1.2.158, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
