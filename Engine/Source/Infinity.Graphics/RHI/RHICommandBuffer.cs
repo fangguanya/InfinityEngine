@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Infinity.Runtime.Graphics.Core;
+using Vortice.Direct3D;
 
 namespace Infinity.Runtime.Graphics.RHI
 {
@@ -428,7 +429,10 @@ namespace Infinity.Runtime.Graphics.RHI
     internal struct RenderCommandDispatchCompute : IRenderCommand
     {
         internal ERenderCommandType RenderCmdType;
-
+        internal RHIComputeShader shader;
+        internal uint x;
+        internal uint y;
+        internal uint z;
         public ERenderCommandType GetRenderCmdType => RenderCmdType;
     };
 
@@ -442,7 +446,11 @@ namespace Infinity.Runtime.Graphics.RHI
     internal struct RenderCommandDrawPrimitiveInstance : IRenderCommand
     {
         internal ERenderCommandType RenderCmdType;
-
+        internal uint IndexCount;
+        internal uint InstanceCount;
+        internal RHIBuffer IndexBuffer;
+        internal RHIBuffer VertexBuffer;
+        internal PrimitiveTopology TopologyType; 
         public ERenderCommandType GetRenderCmdType => RenderCmdType;
     };
 

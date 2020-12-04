@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infinity.Runtime.Graphics.Core
 {
-    public class DynamicArray<T> /*where T : new()*/
+    public class TArray<T> /*where T : new()*/
     {
         T[] m_Array = null;
 
         public int size { get; private set; }
 
-        public DynamicArray()
+        public TArray()
         {
             m_Array = new T[64];
             size = 64;
         }
 
-        public DynamicArray(int InSize)
+        public TArray(int InSize)
         {
             m_Array = new T[InSize];
             size = InSize;
@@ -46,7 +42,17 @@ namespace Infinity.Runtime.Graphics.Core
             return index;
         }
 
-        public void Resize(int newSize, bool keepContent = false)
+        public int AddUnique(in T value)
+        {
+            return 0;
+        }
+
+        public void Remove(in T value)
+        {
+
+        }
+
+        public void Resize(int newSize, bool keepContent = true)
         {
             if (newSize > m_Array.Length)
             {

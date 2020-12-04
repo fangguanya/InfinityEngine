@@ -6,24 +6,24 @@ namespace Infinity.Runtime.Graphics.RHI
 {
     public class RHIRenderContext : TObject
     {
-        internal RHIDevice GPUDevice;
-        internal RHIComputeCmdContext CopyContext;
+        internal RHIDevice Device;
+        internal RHICopyCmdContext CopyContext;
         internal RHIComputeCmdContext ComputeContext;
         internal RHIGraphicsCmdContext GraphicsContext;
-        internal DynamicArray<RHICommandBuffer> CmdBufferArray;
+        internal TArray<RHICommandBuffer> CmdBufferArray;
         internal RHIDescriptorHeapFactory CbvSrvUavDescriptorFactory;
 
         public RHIRenderContext() : base()
         {
-            GPUDevice = new RHIDevice();
+            Device = new RHIDevice();
 
-            CopyContext = new RHIComputeCmdContext(GPUDevice.NativeDevice, CommandListType.Copy);
-            ComputeContext = new RHIComputeCmdContext(GPUDevice.NativeDevice, CommandListType.Compute);
-            GraphicsContext = new RHIGraphicsCmdContext(GPUDevice.NativeDevice, CommandListType.Direct);
+            CmdBufferArray = new TArray<RHICommandBuffer>();
 
-            CbvSrvUavDescriptorFactory = new RHIDescriptorHeapFactory(GPUDevice.NativeDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
+            CopyContext = new RHICopyCmdContext(Device.NativeDevice, CommandListType.Copy);
+            ComputeContext = new RHIComputeCmdContext(Device.NativeDevice, CommandListType.Compute);
+            GraphicsContext = new RHIGraphicsCmdContext(Device.NativeDevice, CommandListType.Direct);
 
-            CmdBufferArray = new DynamicArray<RHICommandBuffer>();
+            CbvSrvUavDescriptorFactory = new RHIDescriptorHeapFactory(Device.NativeDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
         public void ExecuteCmdBuffer(RHICommandBuffer CmdBuffer)
@@ -41,22 +41,36 @@ namespace Infinity.Runtime.Graphics.RHI
             CmdBufferArray.Add(CopyCmdBuffer);
         }
 
-        private void ExecuteNativeCommand(RHICommandBuffer InCmdBuffer)
+        internal void TranslateToNativeCommand(RHICommandBuffer CmdBuffer, RHICommandContext CmdContext)
         {
-            for (int CoordIndex = 0; CoordIndex < InCmdBuffer.Size(); CoordIndex++)
+            RHICopyCmdContext CopyCmdContex = (RHICopyCmdContext)CmdContext;
+            RHIComputeCmdContext ComputeCmdContex = (RHIComputeCmdContext)CmdContext;
+            RHIGraphicsCmdContext GraphicsCmdContex = (RHIGraphicsCmdContext)CmdContext;
+
+            for (int CoordIndex = 0; CoordIndex < CmdBuffer.Size(); CoordIndex++)
             {
-                IRenderCommand RenderCmd = InCmdBuffer.CmdList[CoordIndex];
+                IRenderCommand RenderCmd = CmdBuffer.CmdList[CoordIndex];
 
                 switch (RenderCmd.GetRenderCmdType)
                 {
                     case ERenderCommandType.GenerateMipmap:
-                        RenderCommandGenerateMipmap RenderCmdGenerateMipmap = (RenderCommandGenerateMipmap)RenderCmd;
-                        //CmdContext.XXXX;
+                        //RenderCommandGenerateMipmap RenderCmdGenerateMipmap = (RenderCommandGenerateMipmap)RenderCmd;
+                        //CmdContext.GenerateMipmaps(null);
                         break;
 
                     case ERenderCommandType.ResourceBarrier:
-                        RenderCommandResourceBarrier RenderCmdResourceBarrier = (RenderCommandResourceBarrier)RenderCmd;
-                        //CmdContext.XXXX;
+                        //RenderCommandResourceBarrier RenderCmdResourceBarrier = (RenderCommandResourceBarrier)RenderCmd;
+                        CopyCmdContex.ResourceBarrier();
+                        break;
+
+                    case ERenderCommandType.DispatchCompute:
+                        RenderCommandDispatchCompute RenderCmdDispatchCompute = (RenderCommandDispatchCompute)RenderCmd;
+                        ComputeCmdContex.DispatchCompute(RenderCmdDispatchCompute.shader, RenderCmdDispatchCompute.x, RenderCmdDispatchCompute.y, RenderCmdDispatchCompute.z);
+                        break;
+
+                    case ERenderCommandType.DrawPrimitiveInstance:
+                        RenderCommandDrawPrimitiveInstance RenderCmdDrawInstance = (RenderCommandDrawPrimitiveInstance)RenderCmd;
+                        GraphicsCmdContex.DrawPrimitiveInstance(RenderCmdDrawInstance.IndexBuffer, RenderCmdDrawInstance.VertexBuffer, RenderCmdDrawInstance.TopologyType, RenderCmdDrawInstance.IndexCount, RenderCmdDrawInstance.InstanceCount);
                         break;
 
                     default:
@@ -68,22 +82,21 @@ namespace Infinity.Runtime.Graphics.RHI
 
         public void Submit()
         {
+            // Reset CmdList
+            //CmdContext.Reset();
+
             for (int i = 0; i != CmdBufferArray.size; i++)
             {
                 RHICommandBuffer CmdBuffer = CmdBufferArray[i];
-                //RHICommandContext CmdContext = CmdBuffer.bASyncCompute ? ComputeCmdContext : GraphicsCmdContext
-                //CmdContext.Reset();
+                RHICommandContext CmdContext = CmdBuffer.bASyncCompute ? ComputeContext : GraphicsContext;
 
-                //Translating CmdBuffer to CmdList and recording it
-                ExecuteNativeCommand(CmdBuffer);
-                //CmdContext.Execute();
+                TranslateToNativeCommand(CmdBuffer, CmdContext);
             }
 
-            // Wait GPU to execute CmdList
-            //CmdContext.Flush();
-
-            // Clear CommandBuffers
+            // Execute CmdList
             CmdBufferArray.Clear();
+            //CmdContext.Execute();
+            //CmdContext.Flush();
         }
 
         public RHIComputeCmdContext GetComputeContext()
@@ -98,12 +111,12 @@ namespace Infinity.Runtime.Graphics.RHI
 
         public RHIFence CreateGraphicsFence()
         {
-            return new RHIFence(GPUDevice.NativeDevice, GraphicsContext, ComputeContext);
+            return new RHIFence(Device.NativeDevice, GraphicsContext, ComputeContext);
         }
 
         public RHIFence CreateComputeFence()
         {
-            return new RHIFence(GPUDevice.NativeDevice, ComputeContext, GraphicsContext);
+            return new RHIFence(Device.NativeDevice, ComputeContext, GraphicsContext);
         }
 
         public void CreateViewport()
@@ -114,19 +127,19 @@ namespace Infinity.Runtime.Graphics.RHI
         public RHITimeQuery CreateTimeQuery(bool bComputeQueue)
         {
             ID3D12GraphicsCommandList6 NativeCmdList = (!bComputeQueue) ? GraphicsContext.NativeCmdList : ComputeContext.NativeCmdList;
-            return new RHITimeQuery(GPUDevice.NativeDevice, NativeCmdList);
+            return new RHITimeQuery(Device.NativeDevice, NativeCmdList);
         }
 
         public RHIOcclusionQuery CreateOcclusionQuery(bool bComputeQueue)
         {
             ID3D12GraphicsCommandList6 NativeCmdList = (!bComputeQueue) ? GraphicsContext.NativeCmdList : ComputeContext.NativeCmdList;
-            return new RHIOcclusionQuery(GPUDevice.NativeDevice, NativeCmdList);
+            return new RHIOcclusionQuery(Device.NativeDevice, NativeCmdList);
         }
 
         public RHIStatisticsQuery CreateStatisticsQuery(bool bComputeQueue)
         {
             ID3D12GraphicsCommandList6 NativeCmdList = (!bComputeQueue) ? GraphicsContext.NativeCmdList : ComputeContext.NativeCmdList;
-            return new RHIStatisticsQuery(GPUDevice.NativeDevice, NativeCmdList);
+            return new RHIStatisticsQuery(Device.NativeDevice, NativeCmdList);
         }
 
         public void CreateInputVertexLayout()
@@ -161,13 +174,13 @@ namespace Infinity.Runtime.Graphics.RHI
 
         public RHIBuffer CreateBuffer(ulong InCount, ulong InStride, EUseFlag InUseFlag, EBufferType InBufferType)
         {
-            RHIBuffer GPUBuffer = new RHIBuffer(GPUDevice.NativeDevice, CopyContext.NativeCmdList, InUseFlag, InBufferType, InCount, InStride);
+            RHIBuffer GPUBuffer = new RHIBuffer(Device.NativeDevice, CopyContext.NativeCmdList, InUseFlag, InBufferType, InCount, InStride);
             return GPUBuffer;
         }
 
         public RHITexture CreateTexture(EUseFlag InUseFlag, ETextureType InTextureType)
         {
-            RHITexture Texture = new RHITexture(GPUDevice.NativeDevice, CopyContext.NativeCmdList, InUseFlag, InTextureType);
+            RHITexture Texture = new RHITexture(Device.NativeDevice, CopyContext.NativeCmdList, InUseFlag, InTextureType);
             return Texture;
         }
 
@@ -212,7 +225,7 @@ namespace Infinity.Runtime.Graphics.RHI
             };
             int DescriptorIndex = CbvSrvUavDescriptorFactory.Allocator(1);
             CpuDescriptorHandle DescriptorHandle = CbvSrvUavDescriptorFactory.GetCPUHandleStart() + CbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
-            GPUDevice.NativeDevice.CreateShaderResourceView(Buffer.DefaultResource, SRVDescriptor, DescriptorHandle);
+            Device.NativeDevice.CreateShaderResourceView(Buffer.DefaultResource, SRVDescriptor, DescriptorHandle);
 
             return new RHIShaderResourceView(CbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
         }
@@ -233,7 +246,7 @@ namespace Infinity.Runtime.Graphics.RHI
             };
             int DescriptorIndex = CbvSrvUavDescriptorFactory.Allocator(1);
             CpuDescriptorHandle DescriptorHandle = CbvSrvUavDescriptorFactory.GetCPUHandleStart() + CbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
-            GPUDevice.NativeDevice.CreateUnorderedAccessView(Buffer.DefaultResource, null, UAVDescriptor, DescriptorHandle);
+            Device.NativeDevice.CreateUnorderedAccessView(Buffer.DefaultResource, null, UAVDescriptor, DescriptorHandle);
 
             return new RHIUnorderedAccessView(CbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
         }
@@ -246,7 +259,7 @@ namespace Infinity.Runtime.Graphics.RHI
 
         public RHIResourceViewRange CreateRHIResourceViewRange(int Count)
         {
-            return new RHIResourceViewRange(GPUDevice.NativeDevice, CbvSrvUavDescriptorFactory, Count);
+            return new RHIResourceViewRange(Device.NativeDevice, CbvSrvUavDescriptorFactory, Count);
         }
 
         protected override void DisposeManaged()
@@ -256,7 +269,7 @@ namespace Infinity.Runtime.Graphics.RHI
 
         protected override void DisposeUnManaged()
         {
-            GPUDevice.Dispose();
+            Device.Dispose();
             CopyContext.Dispose();
             ComputeContext.Dispose();
             GraphicsContext.Dispose();

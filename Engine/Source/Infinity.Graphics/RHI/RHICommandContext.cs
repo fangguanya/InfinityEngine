@@ -64,9 +64,9 @@ namespace Infinity.Runtime.Graphics.RHI
         }
     }
 
-    public class RHITransferCmdContext : RHICommandContext
+    public class RHICopyCmdContext : RHICommandContext
     {
-        public RHITransferCmdContext(ID3D12Device6 NativeDevice, CommandListType CommandBufferType) : base(NativeDevice, CommandBufferType)
+        public RHICopyCmdContext(ID3D12Device6 NativeDevice, CommandListType CommandBufferType) : base(NativeDevice, CommandBufferType)
         {
 
         }
@@ -122,7 +122,7 @@ namespace Infinity.Runtime.Graphics.RHI
         }
     }
 
-    public class RHIComputeCmdContext : RHITransferCmdContext
+    public class RHIComputeCmdContext : RHICopyCmdContext
     {
         public RHIComputeCmdContext(ID3D12Device6 NativeDevice, CommandListType CommandBufferType) : base(NativeDevice, CommandBufferType)
         {
@@ -352,12 +352,12 @@ namespace Infinity.Runtime.Graphics.RHI
 
         }
 
-        public void DrawPrimitiveInstance(RHIBuffer IndexBuffer, RHIBuffer VertexBuffer, PrimitiveTopology TopologyType, int IndexCount, int InstanceCount)
+        public void DrawPrimitiveInstance(RHIBuffer IndexBuffer, RHIBuffer VertexBuffer, PrimitiveTopology TopologyType, uint IndexCount, uint InstanceCount)
         {
 
         }
 
-        public void DrawPrimitiveInstanceIndirect(RHIBuffer IndexBuffer, RHIBuffer VertexBuffer, PrimitiveTopology TopologyType, RHIBuffer ArgsBuffer, int ArgsOffset)
+        public void DrawPrimitiveInstanceIndirect(RHIBuffer IndexBuffer, RHIBuffer VertexBuffer, PrimitiveTopology TopologyType, RHIBuffer ArgsBuffer, uint ArgsOffset)
         {
 
         }

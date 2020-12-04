@@ -363,12 +363,62 @@ namespace Infinity.Runtime.Graphics.RHI
         }
     }
 
-    internal sealed class RHIHeapFactory : TObject
+    public class RHIResourceViewRange : TObject
+    {
+        public string name;
+
+        protected int RangeSize;
+        protected int DescriptorIndex;
+
+        protected ID3D12Device6 NativeDevice;
+        protected CpuDescriptorHandle DescriptorHandle;
+
+
+        internal RHIResourceViewRange(ID3D12Device6 InNativeDevice, RHIDescriptorHeapFactory DescriptorHeapFactory, int DescriptorLength) : base()
+        {
+            RangeSize = DescriptorLength;
+            NativeDevice = InNativeDevice;
+            DescriptorIndex = DescriptorHeapFactory.Allocator(DescriptorLength);
+            DescriptorHandle = DescriptorHeapFactory.GetCPUHandleStart();
+        }
+
+        protected CpuDescriptorHandle GetDescriptorHandle(int Offset)
+        {
+            return DescriptorHandle + NativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (DescriptorIndex + Offset);
+        }
+
+        public void SetConstantBufferView(int Index, RHIConstantBufferView ConstantBufferView)
+        {
+            NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), ConstantBufferView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+        }
+
+        public void SetShaderResourceView(int Index, RHIShaderResourceView ShaderResourceView)
+        {
+            NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), ShaderResourceView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+        }
+
+        public void SetUnorderedAccessView(int Index, RHIUnorderedAccessView UnorderedAccessView)
+        {
+            NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), UnorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+        }
+
+        protected override void DisposeManaged()
+        {
+
+        }
+
+        protected override void DisposeUnManaged()
+        {
+            NativeDevice = null;
+        }
+    }
+
+    internal sealed class RHIMemoryHeapFactory : TObject
     {
         internal string name;
 
 
-        internal RHIHeapFactory(ID3D12Device6 InNativeDevice, int HeapCount) : base()
+        internal RHIMemoryHeapFactory(ID3D12Device6 InNativeDevice, int HeapCount) : base()
         {
 
         }
@@ -462,56 +512,6 @@ namespace Infinity.Runtime.Graphics.RHI
 
             GPUDescriptorHeap.Release();
             GPUDescriptorHeap.Dispose();
-        }
-    }
-
-    public class RHIResourceViewRange : TObject
-    {
-        public string name;
-
-        protected int RangeSize;
-        protected int DescriptorIndex;
-
-        protected ID3D12Device6 NativeDevice;
-        protected CpuDescriptorHandle DescriptorHandle;
-
-
-        internal RHIResourceViewRange(ID3D12Device6 InNativeDevice, RHIDescriptorHeapFactory DescriptorHeapFactory, int DescriptorLength) : base()
-        {
-            RangeSize = DescriptorLength;
-            NativeDevice = InNativeDevice;
-            DescriptorIndex = DescriptorHeapFactory.Allocator(DescriptorLength);
-            DescriptorHandle = DescriptorHeapFactory.GetCPUHandleStart();
-        }
-
-        protected CpuDescriptorHandle GetDescriptorHandle(int Offset)
-        {
-            return DescriptorHandle + NativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (DescriptorIndex + Offset);
-        }
-
-        public void SetConstantBufferView(int Index, RHIConstantBufferView ConstantBufferView)
-        {
-            NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), ConstantBufferView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
-        }
-
-        public void SetShaderResourceView(int Index, RHIShaderResourceView ShaderResourceView)
-        {
-            NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), ShaderResourceView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
-        }
-
-        public void SetUnorderedAccessView(int Index, RHIUnorderedAccessView UnorderedAccessView)
-        {
-            NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), UnorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
-        }
-
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            NativeDevice = null;
         }
     }
 }
