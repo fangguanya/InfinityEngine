@@ -1,10 +1,11 @@
 ﻿using System;
 using Vortice.DXGI;
 using Vortice.Direct3D12;
-using Infinity.Runtime.Graphics.Core;
+using InfinityEngine.Core.UObject;
 using System.Runtime.CompilerServices;
+using InfinityEngine.Core.Native.Utility;
 
-namespace Infinity.Runtime.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI
 {
     // Resource
     public enum EUseFlag
@@ -148,7 +149,7 @@ namespace Infinity.Runtime.Graphics.RHI
     }
 
 
-    public class RHIResource : TObject
+    public class RHIResource : UObject
     {
         public string Name;
 
@@ -363,7 +364,7 @@ namespace Infinity.Runtime.Graphics.RHI
         }
     }
 
-    public class RHIResourceViewRange : TObject
+    public class RHIResourceViewRange : UObject
     {
         public string name;
 
@@ -413,7 +414,7 @@ namespace Infinity.Runtime.Graphics.RHI
         }
     }
 
-    internal sealed class RHIMemoryHeapFactory : TObject
+    internal sealed class RHIMemoryHeapFactory : UObject
     {
         internal string name;
 
@@ -434,7 +435,7 @@ namespace Infinity.Runtime.Graphics.RHI
         }
     }
 
-    internal class RHIDescriptorHeapFactory : TObject
+    internal class RHIDescriptorHeapFactory : UObject
     {
         internal string name;
 

@@ -1,8 +1,8 @@
-﻿using Infinity.Runtime.Graphics.Core;
+﻿using InfinityEngine.Core.UObject;
 
-namespace Infinity.Runtime.Graphics.RDG
+namespace InfinityEngine.Graphics.RDG
 {
-    public class RDGGraphBuilder : TObject
+    public class RDGGraphBuilder : UObject
     {
         public string name;
 

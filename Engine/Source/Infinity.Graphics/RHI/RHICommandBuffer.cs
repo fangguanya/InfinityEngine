@@ -1,9 +1,8 @@
-﻿using System.Collections;
+﻿using Vortice.Direct3D;
 using System.Collections.Generic;
-using Infinity.Runtime.Graphics.Core;
-using Vortice.Direct3D;
+using InfinityEngine.Core.UObject;
 
-namespace Infinity.Runtime.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI
 {
     internal enum ERenderCommandType
     {
@@ -475,7 +474,7 @@ namespace Infinity.Runtime.Graphics.RHI
         public ERenderCommandType GetRenderCmdType => RenderCmdType;
     };
 
-    public class RHICommandBuffer : TObject
+    public class RHICommandBuffer : UObject
     {
         public string name;
         internal bool bASyncCompute;

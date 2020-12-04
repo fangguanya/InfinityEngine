@@ -1,10 +1,10 @@
-﻿using Infinity.Runtime.Graphics.RDG;
-using Infinity.Runtime.Graphics.RHI;
-using Infinity.Runtime.Graphics.Core;
+﻿using InfinityEngine.Core.UObject;
+using InfinityEngine.Graphics.RDG;
+using InfinityEngine.Graphics.RHI;
 
 namespace Infinity.Runtime.Render.RenderPipeline
 {
-    public abstract class RenderPipeline : TObject
+    public abstract class RenderPipeline : UObject
     {
         public string name;
         protected RDGGraphBuilder GraphBuilder;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infinity.Runtime.Graphics.RDG
+namespace InfinityEngine.Graphics.RDG
 {
     public class RDGRenderPass
     {

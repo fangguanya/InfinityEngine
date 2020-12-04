@@ -1,12 +1,8 @@
-﻿using System;
-using Vortice.DXGI;
-using SharpGen.Runtime;
-using Vortice.Direct3D12;
-using Infinity.Runtime.Graphics.Core;
+﻿using InfinityEngine.Core.UObject;
 
-namespace Infinity.Runtime.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIComputePipelineState : TObject
+    public class RHIComputePipelineState : UObject
     {
         protected override void DisposeManaged()
         {
@@ -19,7 +15,7 @@ namespace Infinity.Runtime.Graphics.RHI
         }
     }
 
-    public class RHIRayTracePipelineState : TObject
+    public class RHIRayTracePipelineState : UObject
     {
         protected override void DisposeManaged()
         {
@@ -32,7 +28,7 @@ namespace Infinity.Runtime.Graphics.RHI
         }
     }
 
-    public class RHIGraphicsPipelineState : TObject
+    public class RHIGraphicsPipelineState : UObject
     {
         protected override void DisposeManaged()
         {

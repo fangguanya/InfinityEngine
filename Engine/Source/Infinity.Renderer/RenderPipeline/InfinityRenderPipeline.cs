@@ -1,12 +1,10 @@
-﻿using Infinity.Runtime.Graphics.RDG;
-using Infinity.Runtime.Graphics.RHI;
-using Vortice.Direct3D12;
+﻿using InfinityEngine.Graphics.RHI;
 
 namespace Infinity.Runtime.Render.RenderPipeline
 {
-    public class HDRenderPipeline : RenderPipeline
+    public class InfinityRenderPipeline : RenderPipeline
     {
-        public HDRenderPipeline(string PipelineName) : base(PipelineName)
+        public InfinityRenderPipeline(string PipelineName) : base(PipelineName)
         {
 
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infinity.Runtime.Graphics.Core
+namespace InfinityEngine.Core.Container
 {
     public class TArray<T> /*where T : new()*/
     {

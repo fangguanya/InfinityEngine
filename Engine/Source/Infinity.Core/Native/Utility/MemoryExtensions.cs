@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Infinity.Runtime.Graphics.Core
+namespace InfinityEngine.Core.Native.Utility
 {
     public static class MemoryExtensions
     {

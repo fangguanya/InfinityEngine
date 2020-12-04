@@ -1,17 +1,17 @@
 ﻿using System;
 
-namespace Infinity.Runtime.Graphics.Core
+namespace InfinityEngine.Core.UObject
 {
-    public abstract class TObject : IDisposable
+    public abstract class UObject : IDisposable
     {
         private bool IsDisposed = false;
 
-        public TObject()
+        public UObject()
         {
             
         }
 
-        ~TObject()
+        ~UObject()
         {
             Dispose(false);
         }

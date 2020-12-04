@@ -1,10 +1,11 @@
 ﻿using Vortice.DXGI;
 using Vortice.Direct3D12;
-using Infinity.Runtime.Graphics.Core;
+using InfinityEngine.Core.UObject;
+using InfinityEngine.Core.Container;
 
-namespace Infinity.Runtime.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIRenderContext : TObject
+    public class RHIRenderContext : UObject
     {
         internal RHIDevice Device;
         internal RHICopyCmdContext CopyContext;

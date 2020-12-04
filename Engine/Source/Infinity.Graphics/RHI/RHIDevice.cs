@@ -1,11 +1,11 @@
 ﻿using Vortice.DXGI;
 using Vortice.Direct3D;
 using Vortice.Direct3D12;
-using Infinity.Runtime.Graphics.Core;
+using InfinityEngine.Core.UObject;
 
-namespace Infinity.Runtime.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI
 {
-    internal class RHIDevice : TObject
+    internal class RHIDevice : UObject
     {
         internal ID3D12Device6 NativeDevice;
         internal IDXGIFactory7 NativeFactory;
