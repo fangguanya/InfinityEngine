@@ -7,12 +7,12 @@ namespace Infinity.Runtime.Render.RenderPipeline
     public abstract class RenderPipeline : TObject
     {
         public string name;
-        protected RenderGraph GraphBuilder;
+        protected RDGGraphBuilder GraphBuilder;
 
         public RenderPipeline(string Name)
         {
             name = Name;
-            GraphBuilder = new RenderGraph(name + "Graph");
+            GraphBuilder = new RDGGraphBuilder(name + "Graph");
         }
 
         protected abstract void Init(RHIRenderContext RenderContext, RHICommandBuffer CmdBuffer);
