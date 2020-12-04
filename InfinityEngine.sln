@@ -7,11 +7,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{074295
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infinity.Graphics", "Engine\Source\Infinity.Graphics\Infinity.Graphics.csproj", "{F41D8123-2D24-477E-B60F-AB48239B5172}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infinity.Render", "Engine\Source\Infinity.Render\Infinity.Render.csproj", "{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleProject", "Project\ExampleProject\ExampleProject.csproj", "{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleProject", "Project\ExampleProject\ExampleProject.csproj", "{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F41D8123-2D24-477E-B60F-AB48239B5172} = {F41D8123-2D24-477E-B60F-AB48239B5172}
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569} = {2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{6FA7ECE4-32EA-45BB-B807-F7809487633B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infinity.Renderer", "Engine\Source\Infinity.Renderer\Infinity.Renderer.csproj", "{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,14 +33,6 @@ Global
 		{F41D8123-2D24-477E-B60F-AB48239B5172}.Release|x64.Build.0 = Release|x64
 		{F41D8123-2D24-477E-B60F-AB48239B5172}.Release|x86.ActiveCfg = Release|x86
 		{F41D8123-2D24-477E-B60F-AB48239B5172}.Release|x86.Build.0 = Release|x86
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}.Debug|x64.ActiveCfg = Debug|x64
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}.Debug|x64.Build.0 = Debug|x64
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}.Debug|x86.ActiveCfg = Debug|x86
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}.Debug|x86.Build.0 = Debug|x86
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}.Release|x64.ActiveCfg = Release|x64
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}.Release|x64.Build.0 = Release|x64
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}.Release|x86.ActiveCfg = Release|x86
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8}.Release|x86.Build.0 = Release|x86
 		{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9}.Debug|x64.ActiveCfg = Debug|x64
 		{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9}.Debug|x64.Build.0 = Debug|x64
 		{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9}.Debug|x86.ActiveCfg = Debug|x86
@@ -45,14 +41,22 @@ Global
 		{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9}.Release|x64.Build.0 = Release|x64
 		{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9}.Release|x86.ActiveCfg = Release|x86
 		{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9}.Release|x86.Build.0 = Release|x86
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}.Debug|x64.ActiveCfg = Debug|x64
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}.Debug|x64.Build.0 = Debug|x64
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}.Debug|x86.ActiveCfg = Debug|x86
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}.Debug|x86.Build.0 = Debug|x86
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}.Release|x64.ActiveCfg = Release|x64
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}.Release|x64.Build.0 = Release|x64
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}.Release|x86.ActiveCfg = Release|x86
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F41D8123-2D24-477E-B60F-AB48239B5172} = {074295D5-556B-4F58-A0FE-28143A790BED}
-		{AA6BD1E7-860D-48F9-8CAB-E323E67D1AB8} = {074295D5-556B-4F58-A0FE-28143A790BED}
 		{1D89AE71-3C84-4C7E-A0AE-3EF9E01400A9} = {6FA7ECE4-32EA-45BB-B807-F7809487633B}
+		{2BCB3BF6-A6B8-4885-8863-7DE1AD75E569} = {074295D5-556B-4F58-A0FE-28143A790BED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27220D00-A0A0-4FA3-8075-AEA7FB523FAF}
