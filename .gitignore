@@ -3,4 +3,5 @@
 .vscode/
 
 # Binary Files
+obj/*
 Binaries/*
