@@ -1,12 +1,12 @@
 ﻿using System;
 using Vortice.DXGI;
 using Vortice.Direct3D12;
-using InfinityEngine.Core.UObject;
+using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Native.Utility;
 
 namespace InfinityEngine.Graphics.RHI
 {
-	public class RHITimeQuery : UObject
+	public class RHITimeQuery : FObject
 	{
 		private float TimeResult;
 		private ID3D12QueryHeap Timestamp_Heap;
@@ -121,7 +121,7 @@ namespace InfinityEngine.Graphics.RHI
 		}
 	}
 
-    public class RHIStatisticsQuery : UObject
+    public class RHIStatisticsQuery : FObject
     {
         public RHIStatisticsQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
         {
@@ -139,7 +139,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIOcclusionQuery : UObject
+    public class RHIOcclusionQuery : FObject
 	{
 		private int OcclusinResult;
 		private ID3D12QueryHeap Occlusion_Heap;

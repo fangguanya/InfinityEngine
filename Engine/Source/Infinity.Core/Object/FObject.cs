@@ -1,17 +1,17 @@
 ﻿using System;
 
-namespace InfinityEngine.Core.UObject
+namespace InfinityEngine.Core.Object
 {
-    public abstract class UObject : IDisposable
+    public abstract class FObject : IDisposable
     {
         private bool IsDisposed = false;
 
-        public UObject()
+        public FObject()
         {
             
         }
 
-        ~UObject()
+        ~FObject()
         {
             Dispose(false);
         }

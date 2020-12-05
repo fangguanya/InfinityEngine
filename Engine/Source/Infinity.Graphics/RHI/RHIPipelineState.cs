@@ -1,8 +1,8 @@
-﻿using InfinityEngine.Core.UObject;
+﻿using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIComputePipelineState : UObject
+    public class RHIComputePipelineState : FObject
     {
         protected override void DisposeManaged()
         {
@@ -15,7 +15,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIRayTracePipelineState : UObject
+    public class RHIRayTracePipelineState : FObject
     {
         protected override void DisposeManaged()
         {
@@ -28,7 +28,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIGraphicsPipelineState : UObject
+    public class RHIGraphicsPipelineState : FObject
     {
         protected override void DisposeManaged()
         {

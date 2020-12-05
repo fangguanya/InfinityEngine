@@ -1,7 +1,7 @@
 ﻿using System;
 using Vortice.DXGI;
 using Vortice.Direct3D12;
-using InfinityEngine.Core.UObject;
+using InfinityEngine.Core.Object;
 using System.Runtime.CompilerServices;
 using InfinityEngine.Core.Native.Utility;
 
@@ -149,7 +149,7 @@ namespace InfinityEngine.Graphics.RHI
     }
 
 
-    public class RHIResource : UObject
+    public class RHIResource : FObject
     {
         public string Name;
 
@@ -364,7 +364,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIResourceViewRange : UObject
+    public class RHIResourceViewRange : FObject
     {
         public string name;
 
@@ -414,7 +414,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    internal sealed class RHIMemoryHeapFactory : UObject
+    internal sealed class RHIMemoryHeapFactory : FObject
     {
         internal string name;
 
@@ -435,7 +435,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    internal class RHIDescriptorHeapFactory : UObject
+    internal class RHIDescriptorHeapFactory : FObject
     {
         internal string name;
 

@@ -1,8 +1,8 @@
-﻿using InfinityEngine.Core.UObject;
+﻿using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIShader : UObject
+    public class RHIShader : FObject
     {
         public string name;
 

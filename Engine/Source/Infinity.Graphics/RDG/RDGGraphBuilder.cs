@@ -1,8 +1,8 @@
-﻿using InfinityEngine.Core.UObject;
+﻿using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RDG
 {
-    public class RDGGraphBuilder : UObject
+    public class RDGGraphBuilder : FObject
     {
         public string name;
 

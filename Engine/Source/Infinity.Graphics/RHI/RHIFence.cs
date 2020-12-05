@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using Vortice.Direct3D12;
-using InfinityEngine.Core.UObject;
+using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIFence : UObject
+    public class RHIFence : FObject
     {
         private ulong FenceValue;
         private ulong LastFenceValue;

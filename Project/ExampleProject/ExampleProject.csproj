@@ -2,7 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
     <Platforms>x64;x86</Platforms>
   </PropertyGroup>
 
@@ -26,5 +29,11 @@
     <OutputPath>../Binaries/bin/Win64/Release/</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Source\Infinity.Core\Infinity.Core.csproj" />
+    <ProjectReference Include="..\..\Engine\Source\Infinity.Graphics\Infinity.Graphics.csproj" />
+    <ProjectReference Include="..\..\Engine\Source\Infinity.Renderer\Infinity.Renderer.csproj" />
+  </ItemGroup>
 
 </Project>

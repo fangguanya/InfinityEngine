@@ -2,7 +2,7 @@
 
 namespace InfinityEngine.Core.Container
 {
-    public class TArray<T> /*where T : new()*/
+    public class TArray<T>
     {
         T[] m_Array = null;
 

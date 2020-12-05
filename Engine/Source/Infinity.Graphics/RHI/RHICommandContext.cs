@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using Vortice.Direct3D;
 using Vortice.Direct3D12;
-using InfinityEngine.Core.UObject;
+using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHICommandContext : UObject
+    public class RHICommandContext : FObject
     {
         public RHIFence FrameFence;
         public ManualResetEvent FenceEvent;
