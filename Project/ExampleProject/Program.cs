@@ -75,7 +75,6 @@ namespace ExampleProject
             Task TaskRefC = TaskC.Dispatch(TaskRefA, TaskRefB);
 
             Console.WriteLine(TaskRefC.IsCompleted);
-
             TaskRefC.Wait();
             Console.WriteLine(TaskRefC.IsCompleted);
 

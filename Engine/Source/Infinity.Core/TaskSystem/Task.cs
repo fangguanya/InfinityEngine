@@ -2,26 +2,6 @@
 
 namespace InfinityEngine.Core.TaskSystem
 {
-    /*public struct TaskHandle
-    {
-        Task TaskRef;
-
-        public TaskHandle(Task InTask)
-        {
-            TaskRef = InTask;
-        }
-
-        public bool Complete()
-        {
-            return TaskRef.IsCompleted;
-        }
-
-        public void Sync()
-        {
-            TaskRef.Wait();
-        }
-    }*/
-
     public interface ITask
     {
         public abstract void Execute();
