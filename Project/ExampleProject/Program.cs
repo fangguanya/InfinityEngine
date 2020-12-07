@@ -79,7 +79,7 @@ namespace ExampleProject
             App.Run();*/
 
             // TaskExample
-            int[] IntArray = new int[10];
+            /*int[] IntArray = new int[10];
 
             FTestTaskA TaskA;
             TaskA.TArray = IntArray;
@@ -98,7 +98,18 @@ namespace ExampleProject
             ChildTask.TArray = IntArray;
             ChildTask.Schedule(TaskRefC).Wait();
 
-            Console.WriteLine("ReadKey");
+            Console.WriteLine("ReadKey");*/
+
+            // SerializeExample
+            string path = @"d:\test.material";
+
+            string WritContext = "123456789";
+            System.IO.File.WriteAllText(path, WritContext);
+
+            string ReadContext = System.IO.File.ReadAllText(path);
+            Console.WriteLine(ReadContext);
+
+
             Console.ReadKey();
         }
 
