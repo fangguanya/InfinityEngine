@@ -5,7 +5,7 @@ using InfinityEngine.Core.Container;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIRenderContext : FObject
+    public class RHIRenderContext : UObject
     {
         internal RHIDevice Device;
         internal RHICopyCmdContext CopyContext;

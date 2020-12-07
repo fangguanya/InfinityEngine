@@ -4,7 +4,7 @@ using InfinityEngine.Graphics.RHI;
 
 namespace Infinity.Runtime.Render.RenderPipeline
 {
-    public abstract class RenderPipeline : FObject
+    public abstract class RenderPipeline : UObject
     {
         public string name;
         protected RDGGraphBuilder GraphBuilder;

@@ -6,7 +6,7 @@ using InfinityEngine.Core.Object;
 namespace ExampleProject
 {
     [Serializable]
-    class FApplication : FObject
+    class FApplication : UObject
     {
         public bool bRun;
         public Form Window;

@@ -5,7 +5,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHICommandContext : FObject
+    public class RHICommandContext : UObject
     {
         public RHIFence FrameFence;
         public ManualResetEvent FenceEvent;

@@ -2,16 +2,16 @@
 
 namespace InfinityEngine.Core.Object
 {
-    public abstract class FObject : IDisposable
+    public abstract class UObject : IDisposable
     {
         private bool IsDisposed = false;
 
-        public FObject()
+        public UObject()
         {
             
         }
 
-        ~FObject()
+        ~UObject()
         {
             Dispose(false);
         }

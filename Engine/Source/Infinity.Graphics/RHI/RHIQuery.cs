@@ -6,7 +6,7 @@ using InfinityEngine.Core.Native.Utility;
 
 namespace InfinityEngine.Graphics.RHI
 {
-	public class RHITimeQuery : FObject
+	public class RHITimeQuery : UObject
 	{
 		private float TimeResult;
 		private ID3D12QueryHeap Timestamp_Heap;
@@ -121,7 +121,7 @@ namespace InfinityEngine.Graphics.RHI
 		}
 	}
 
-    public class RHIStatisticsQuery : FObject
+    public class RHIStatisticsQuery : UObject
     {
         public RHIStatisticsQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
         {
@@ -139,7 +139,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIOcclusionQuery : FObject
+    public class RHIOcclusionQuery : UObject
 	{
 		private int OcclusinResult;
 		private ID3D12QueryHeap Occlusion_Heap;

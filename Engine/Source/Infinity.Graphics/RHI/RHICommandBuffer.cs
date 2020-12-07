@@ -474,7 +474,7 @@ namespace InfinityEngine.Graphics.RHI
         public ERenderCommandType GetRenderCmdType => RenderCmdType;
     };
 
-    public class RHICommandBuffer : FObject
+    public class RHICommandBuffer : UObject
     {
         public string name;
         internal bool bASyncCompute;

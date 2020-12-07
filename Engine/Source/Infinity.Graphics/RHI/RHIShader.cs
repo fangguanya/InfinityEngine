@@ -2,7 +2,7 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIShader : FObject
+    public class RHIShader : UObject
     {
         public string name;
 

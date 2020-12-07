@@ -2,7 +2,7 @@
 
 namespace InfinityEngine.Graphics.RDG
 {
-    public class RDGGraphBuilder : FObject
+    public class RDGGraphBuilder : UObject
     {
         public string name;
 

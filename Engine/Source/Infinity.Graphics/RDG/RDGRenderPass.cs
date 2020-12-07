@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace InfinityEngine.Graphics.RDG
 {
-    public class RDGRenderPass
+    public abstract class IRDGPass
     {
+
+    }
+
+    internal sealed class RDGRenderPass<T> : IRDGPass where T : struct
+    {
+
     }
 }

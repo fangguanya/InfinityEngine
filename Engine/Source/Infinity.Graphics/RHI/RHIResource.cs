@@ -149,7 +149,7 @@ namespace InfinityEngine.Graphics.RHI
     }
 
 
-    public class RHIResource : FObject
+    public class RHIResource : UObject
     {
         public string Name;
 
@@ -364,7 +364,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIResourceViewRange : FObject
+    public class RHIResourceViewRange : UObject
     {
         public string name;
 
@@ -414,7 +414,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    internal sealed class RHIMemoryHeapFactory : FObject
+    internal sealed class RHIMemoryHeapFactory : UObject
     {
         internal string name;
 
@@ -435,7 +435,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    internal class RHIDescriptorHeapFactory : FObject
+    internal class RHIDescriptorHeapFactory : UObject
     {
         internal string name;
 

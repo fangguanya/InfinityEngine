@@ -5,7 +5,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIFence : FObject
+    public class RHIFence : UObject
     {
         private ulong FenceValue;
         private ulong LastFenceValue;

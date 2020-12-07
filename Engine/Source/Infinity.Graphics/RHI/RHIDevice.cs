@@ -5,7 +5,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal class RHIDevice : FObject
+    internal class RHIDevice : UObject
     {
         internal ID3D12Device6 NativeDevice;
         internal IDXGIFactory7 NativeFactory;

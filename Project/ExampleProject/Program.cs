@@ -51,33 +51,54 @@ namespace ExampleProject
         }
     }
 
+    public struct FChildTask : ITask
+    {
+        public int[] TArray;
+
+        public void Execute()
+        {
+            Console.WriteLine("ChildTask");
+            for (int i = 0; i < 10; i++)
+            {
+                TArray[i] = TArray[i] + 5;
+                Console.WriteLine(TArray[i]);
+            }
+
+            FTestTaskA TaskA;
+            TaskA.TArray = TArray;
+            TaskA.Run();
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
-            //FApplication App = new FApplication("Example", 1280, 720);
-            //App.Init();
-            //App.Run();
+            /*FApplication App = new FApplication("Example", 1280, 720);
+            App.Init();
+            App.Run();*/
 
             // TaskExample
             int[] IntArray = new int[10];
 
             FTestTaskA TaskA;
             TaskA.TArray = IntArray;
-            Task TaskRefA = TaskA.Dispatch();
+            Task TaskRefA = TaskA.Schedule();
 
             FTestTaskB TaskB;
             TaskB.TArray = IntArray;
-            Task TaskRefB = TaskB.Dispatch(TaskRefA);
+            Task TaskRefB = TaskB.Schedule(TaskRefA);
 
             FTestTaskC TaskC;
             TaskC.TArray = IntArray;
-            Task TaskRefC = TaskC.Dispatch(TaskRefA, TaskRefB);
+            //TaskC.Run();
+            Task TaskRefC = TaskC.Schedule(TaskRefA, TaskRefB);
 
-            Console.WriteLine(TaskRefC.IsCompleted);
-            TaskRefC.Wait();
-            Console.WriteLine(TaskRefC.IsCompleted);
+            FChildTask ChildTask;
+            ChildTask.TArray = IntArray;
+            ChildTask.Schedule(TaskRefC).Wait();
 
+            Console.WriteLine("ReadKey");
             Console.ReadKey();
         }
 

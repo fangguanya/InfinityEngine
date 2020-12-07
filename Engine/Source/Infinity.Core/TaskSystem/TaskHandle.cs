@@ -1,24 +1,27 @@
 ﻿using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Core.TaskSystem
 {
-    public struct TaskRef
+    public struct TaskHandle
     {
-        Task TaskHandle;
+        Task TaskRef;
 
-        public TaskRef(Task InTask)
+        public TaskHandle(Task InTask)
         {
-            TaskHandle = InTask;
+            TaskRef = InTask;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Complete()
         {
-            return TaskHandle.IsCompleted;
+            return TaskRef.IsCompleted;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Sync()
         {
-            TaskHandle.Wait();
+            TaskRef.Wait();
         }
     }
 }
