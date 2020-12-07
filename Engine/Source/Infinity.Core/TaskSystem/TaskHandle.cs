@@ -5,7 +5,7 @@ namespace InfinityEngine.Core.TaskSystem
 {
     public struct TaskHandle
     {
-        Task TaskRef;
+        internal Task TaskRef;
 
         public TaskHandle(Task InTask)
         {
@@ -19,7 +19,7 @@ namespace InfinityEngine.Core.TaskSystem
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Sync()
+        public void Wait()
         {
             TaskRef.Wait();
         }

@@ -22,26 +22,32 @@ namespace InfinityEngine.Core.TaskSystem
         }
     }
 
-    public static class ITaskExtensions
+    public static class ITaskExtension
     {
         public static void Run<T>(this T jobData) where T : struct, ITask
         {
             jobData.Execute();
         }
 
-        public static Task Schedule<T>(this T jobData) where T : struct, ITask
+        public static TaskHandle Schedule<T>(this T jobData) where T : struct, ITask
         {
-            return Task.Factory.StartNew(jobData.Execute);
+            return new TaskHandle(Task.Factory.StartNew(jobData.Execute));
         }
 
-        public static Task Schedule<T>(this T jobData, Task dependsTask) where T : struct, ITask
+        public static TaskHandle Schedule<T>(this T jobData, TaskHandle dependsHandle) where T : struct, ITask
         {
-            return dependsTask.ContinueWith(jobData.Execute);
+            return new TaskHandle(dependsHandle.TaskRef.ContinueWith(jobData.Execute));
         }
 
-        public static Task Schedule<T>(this T jobData, params Task[] dependsTask) where T : struct, ITask
+        public static TaskHandle Schedule<T>(this T jobData, params TaskHandle[] dependsHandle) where T : struct, ITask
         {
-            return Task.Factory.ContinueWhenAll(dependsTask, jobData.Execute);
+            Task[] dependsTask = new Task[dependsHandle.Length];
+            for (int i = 0; i < dependsHandle.Length; i++)
+            {
+                dependsTask[i] = dependsHandle[i].TaskRef;
+            }
+
+            return new TaskHandle(Task.Factory.ContinueWhenAll(dependsTask, jobData.Execute));
         }
     }
 }

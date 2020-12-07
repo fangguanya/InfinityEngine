@@ -1,53 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using InfinityEngine.Core.TaskSystem;
 
 namespace ExampleProject
 {
-    public struct FTestTaskA : ITask
+    public struct FTestTask : ITask
     {
+        public string PrintData;
+        public int SleepTime;
         public int[] TArray;
 
         public void Execute()
         {
-            Console.WriteLine("TaskA");
-            for (int i = 0; i < 10; i++)
+            Thread.Sleep(SleepTime);
+            Console.WriteLine(PrintData);
+
+            /*for (int i = 0; i < 10; i++)
             {
                 TArray[i] = i;
                 Console.WriteLine(TArray[i]);
-            }
-        }
-    }
-
-    public struct FTestTaskB : ITask
-    {
-        public int[] TArray;
-
-        public void Execute()
-        {
-            Thread.Sleep(2000);
-            Console.WriteLine("TaskB");
-            for (int i = 0; i < 10; i++)
-            {
-                TArray[i] = TArray[i] + 1;
-                Console.WriteLine(TArray[i]);
-            }
-        }
-    }
-
-    public struct FTestTaskC : ITask
-    {
-        public int[] TArray;
-
-        public void Execute()
-        {
-            Console.WriteLine("TaskC");
-            for (int i = 0; i < 10; i++)
-            {
-                TArray[i] = TArray[i] + 2;
-                Console.WriteLine(TArray[i]);
-            }
+            }*/
         }
     }
 
@@ -57,16 +31,18 @@ namespace ExampleProject
 
         public void Execute()
         {
-            Console.WriteLine("ChildTask");
-            for (int i = 0; i < 10; i++)
+            Console.WriteLine("FatherTask");
+            /*for (int i = 0; i < 10; i++)
             {
                 TArray[i] = TArray[i] + 5;
                 Console.WriteLine(TArray[i]);
-            }
+            }*/
 
-            FTestTaskA TaskA;
-            TaskA.TArray = TArray;
-            TaskA.Run();
+            FTestTask ChildTask;
+            ChildTask.PrintData = "ChildTask";
+            ChildTask.SleepTime = 0;
+            ChildTask.TArray = TArray;
+            ChildTask.Run();
         }
     }
 
@@ -79,36 +55,40 @@ namespace ExampleProject
             App.Run();*/
 
             // TaskExample
-            /*int[] IntArray = new int[10];
+            int[] IntArray = new int[10];
 
-            FTestTaskA TaskA;
+            FTestTask TaskA;
+            TaskA.SleepTime = 0;
             TaskA.TArray = IntArray;
-            Task TaskRefA = TaskA.Schedule();
+            TaskA.PrintData = "TaskA";
+            TaskHandle TaskRefA = TaskA.Schedule();
 
-            FTestTaskB TaskB;
+            FTestTask TaskB;
+            TaskB.SleepTime = 2000;
             TaskB.TArray = IntArray;
-            Task TaskRefB = TaskB.Schedule(TaskRefA);
+            TaskB.PrintData = "TaskB";
+            TaskHandle TaskRefB = TaskB.Schedule(TaskRefA);
 
-            FTestTaskC TaskC;
+            FTestTask TaskC;
+            TaskC.SleepTime = 0;
             TaskC.TArray = IntArray;
-            //TaskC.Run();
-            Task TaskRefC = TaskC.Schedule(TaskRefA, TaskRefB);
+            TaskC.PrintData = "TaskC";
+            TaskHandle TaskRefC = TaskC.Schedule(TaskRefA, TaskRefB);
 
             FChildTask ChildTask;
             ChildTask.TArray = IntArray;
             ChildTask.Schedule(TaskRefC).Wait();
 
-            Console.WriteLine("ReadKey");*/
+            Console.WriteLine("ReadKey");
 
             // SerializeExample
-            string path = @"d:\test.material";
+            /*string path = @"d:\test.material";
 
             string WritContext = "123456789";
             System.IO.File.WriteAllText(path, WritContext);
 
             string ReadContext = System.IO.File.ReadAllText(path);
-            Console.WriteLine(ReadContext);
-
+            Console.WriteLine(ReadContext);*/
 
             Console.ReadKey();
         }
