@@ -1,4 +1,5 @@
 ﻿using InfinityEngine.Graphics.RHI;
+using Vortice.Direct3D;
 
 namespace Infinity.Runtime.Render.RenderPipeline
 {
@@ -27,10 +28,10 @@ namespace Infinity.Runtime.Render.RenderPipeline
 
 
             //ASyncCompute Example
-            RHIFence ComputeFence = RenderContext.CreateComputeFence();
+            /*RHIFence ComputeFence = RenderContext.CreateComputeFence();
             RHIFence GraphicsFence = RenderContext.CreateGraphicsFence();
 
-            CmdBuffer.DrawPrimitiveInstance();
+            CmdBuffer.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
             CmdBuffer.WriteFence(GraphicsFence);
             RenderContext.ExecuteCmdBuffer(CmdBuffer);
 
@@ -43,7 +44,7 @@ namespace Infinity.Runtime.Render.RenderPipeline
             CmdBuffer.DrawPrimitiveInstance();
             RenderContext.ExecuteCmdBuffer(CmdBuffer);
 
-            RenderContext.Submit();
+            RenderContext.Submit();*/
         }
 
         protected override void DisposeManaged()
