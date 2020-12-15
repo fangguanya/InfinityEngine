@@ -39,14 +39,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public RHIFence CreateGraphicsFence()
+        public RHIFence CreateGPUFence()
         {
-            return new RHIFence(Device.NativeDevice, GraphicsContext, ComputeContext);
-        }
-
-        public RHIFence CreateComputeFence()
-        {
-            return new RHIFence(Device.NativeDevice, ComputeContext, GraphicsContext);
+            return new RHIFence(Device.NativeDevice);
         }
 
         public void CreateViewport()

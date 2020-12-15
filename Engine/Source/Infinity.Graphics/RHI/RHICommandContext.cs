@@ -16,21 +16,11 @@ namespace InfinityEngine.Graphics.RHI
         public RHICommandContext(ID3D12Device6 NativeDevice, CommandListType CommandBufferType) : base()
         {
             FenceEvent = new ManualResetEvent(false);
-            FrameFence = new RHIFence(NativeDevice, this, this);
+            FrameFence = new RHIFence(NativeDevice);
             NativeCmdQueue = NativeDevice.CreateCommandQueue(CommandBufferType);
         }
 
-        public void WriteFence(RHIFence GPUFence)
-        {
-            GPUFence.Signal();
-        }
-
-        public void WaitFence(RHIFence GPUFence)
-        {
-            GPUFence.WaitOnGPU();
-        }
-
-        public void ExecuteCmdBuffer(RHICommandBuffer CmdBuffer)
+        public void ExecuteCmdBuffer(RHICommandBuffer CmdBuffer, ECmdBufferExecuteType CmdBufferExecuteType = ECmdBufferExecuteType.Execute)
         {
             CmdBuffer.Close();
             NativeCmdQueue.ExecuteCommandList(CmdBuffer.NativeCmdList);
@@ -38,7 +28,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Flush()
         {
-            FrameFence.Signal();
+            FrameFence.Signal(NativeCmdQueue);
             FrameFence.WaitOnCPU(FenceEvent);
         }
 

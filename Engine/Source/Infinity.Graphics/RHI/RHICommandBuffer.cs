@@ -4,17 +4,22 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
+    public enum ECmdBufferExecuteType
+    {
+        Execute = 1,
+        WaitFence = 2,
+        WriteFence = 3
+    }
+
     public class RHICommandBuffer : UObject
     {
         public string name;
-        internal bool bASyncCompute;
         internal ID3D12GraphicsCommandList6 NativeCmdList;
         internal ID3D12CommandAllocator NativeCmdAllocator;
 
         public RHICommandBuffer(string InName, ID3D12Device6 NativeDevice, CommandListType CommandBufferType)
         {
             name = InName;
-            bASyncCompute = false;
             NativeCmdAllocator = NativeDevice.CreateCommandAllocator(CommandBufferType);
             NativeCmdList = NativeDevice.CreateCommandList<ID3D12GraphicsCommandList6>(0, CommandBufferType, NativeCmdAllocator, null);
         }
