@@ -1,594 +1,117 @@
 ﻿using Vortice.Direct3D;
-using System.Collections.Generic;
+using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal enum ERenderCommandType
+    public enum ECmdBufferExecuteType
     {
-        GenerateMipmap,
-        ResourceBarrier,
-        WriteFence,
-        WaitOnFence,
-        BeginFrame,
-        BeginEvent,
-        BuildAccelerationStructure,
-        BeginTimeQuery,
-        BeginOcclusionQuery,
-        BeginStatisticsQuery,
-        EndFrame,
-        EndEvent,
-        EndTimeQuery,
-        EndOcclusionQuery,
-        EndStatisticsQuery,
-        GetOcclusionQueryResult,
-        GetStatisticsQueryResult,
-        GetTimeQueryResult,
-        ClearBuffer,
-        ClearTexture,
-        CopyBufferToBuffer,
-        CopyBufferToTexture,
-        CopyTextureToBuffer,
-        CopyTextureToTexture,
-        CopyAccelerationStructure,
-        SetAccelerationStructure,
-        SetComputeState,
-        SetComputeSampler,
-        SetComputeBuffer,
-        SetComputeTexture,
-        SetRayGenState,
-        SetRayGenSampler,
-        SetRayGenBuffer,
-        SetRayGenTexture,
-        SetViewport,
-        SetScissorRect,
-        SetRenderTarget,
-        SetRenderTargets,
-        SetRandomWriteTarget,
-        SetStencilRef,
-        SetBlendFactor,
-        SetDepthBounds,
-        SetShadingRate,
-        SetShadingRateIndirect,
-        SetGraphicsState,
-        SetGraphicsSampler,
-        SetGraphicsBuffer,
-        SetGraphicsTexture,
-        DispatchRay,
-        DispatchRayIndirect,
-        DispatchCompute,
-        DispatchComputeIndirect,
-        DrawPrimitiveInstance,
-        DrawPrimitiveInstanceIndirect,
-        DrawMultiPrimitiveInstance,
-        DrawMultiPrimitiveInstanceIndirect
-    };
-
-    internal interface IRenderCommand
-    {
-        ERenderCommandType GetRenderCmdType { get;}
+        Execute = 1,
+        WaitFence = 2,
+        WriteFence = 3
     }
-
-    internal struct RenderCommandGenerateMipmap : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandResourceBarrier : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandWriteFence : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        internal RenderCommandWriteFence(ERenderCommandType InRenderCmdType)
-        {
-            this.RenderCmdType = InRenderCmdType;
-
-        }
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandWaitOnFence : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandBeginFrame : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandBeginEvent : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandBeginTimeQuery : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandBeginOcclusionQuery : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandBeginStatisticsQuery : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandBuildAccelerationStructure : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandEndFrame : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandEndEvent : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandEndTimeQuery : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandEndOcclusionQuery : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandEndStatisticsQuery : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandGetTimeQueryResult : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandGetOcclusionQueryResult : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandGetStatisticsQueryResult : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandClearBuffer : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandClearTexture : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandCopyBufferToBuffer : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandCopyBufferToTexture : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandCopyTextureToBuffer : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandCopyTextureToTexture : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandCopyAccelerationStructure : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetAccelerationStructure : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetComputeState : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetComputeSampler : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetComputeBuffer : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetComputeTexture : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetRayGenState : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetRayGenSampler : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetRayGenBuffer : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetRayGenTexture : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetViewport : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetScissorRect : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetRenderTarget : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetRenderTargets : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetRandomWriteTarget : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetStencilRef : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetBlendFactor : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetDepthBounds : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetShadingRate : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetShadingRateIndirect : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetGraphicsState : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetGraphicsSampler : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetGraphicsBuffer : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandSetGraphicsTexture : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandDispatchRay : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandDispatchRayIndirect : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandDispatchCompute : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-        internal RHIComputeShader shader;
-        internal uint x;
-        internal uint y;
-        internal uint z;
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandDispatchComputeIndirect : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandDrawPrimitiveInstance : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-        internal uint IndexCount;
-        internal uint InstanceCount;
-        internal RHIBuffer IndexBuffer;
-        internal RHIBuffer VertexBuffer;
-        internal PrimitiveTopology TopologyType; 
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandDrawPrimitiveInstanceIndirect : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandDrawMultiPrimitiveInstance : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
-
-    internal struct RenderCommandDrawMultiPrimitiveInstanceIndirect : IRenderCommand
-    {
-        internal ERenderCommandType RenderCmdType;
-
-        public ERenderCommandType GetRenderCmdType => RenderCmdType;
-    };
 
     public class RHICommandBuffer : UObject
     {
         public string name;
-        internal bool bASyncCompute;
-        internal List<IRenderCommand> CmdList;
+        internal ID3D12GraphicsCommandList6 NativeCmdList;
+        internal ID3D12CommandAllocator NativeCmdAllocator;
 
-        public RHICommandBuffer(string InName)
+        public RHICommandBuffer(string InName, ID3D12Device6 NativeDevice, CommandListType CommandBufferType)
         {
             name = InName;
-            bASyncCompute = false;
-            CmdList = new List<IRenderCommand>(128);
+            NativeCmdAllocator = NativeDevice.CreateCommandAllocator(CommandBufferType);
+            NativeCmdList = NativeDevice.CreateCommandList<ID3D12GraphicsCommandList6>(0, CommandBufferType, NativeCmdAllocator, null);
         }
 
-        public void Clear()
+        public void Reset()
         {
-            CmdList.Clear();
+            NativeCmdAllocator.Reset();
+            NativeCmdList.Reset(NativeCmdAllocator, null);
         }
 
-        internal int Size()
+        internal void Close()
         {
-            return CmdList.Count;
+            NativeCmdList.Close();
         }
 
-        public void WriteFence(RHIFence GPUFence)
-        {
-            RenderCommandWriteFence RenderCmdWriteFence = new RenderCommandWriteFence(ERenderCommandType.WriteFence);
-            CmdList.Add(RenderCmdWriteFence);
-        }
-
-        public void WaitFence(RHIFence GPUFence)
+        public void ClearTexture(RHITexture GPUTexture)
         {
 
         }
 
-        public void ClearBuffer()
+        public void ClearBuffer(RHIBuffer GPUBuffer)
         {
 
         }
 
-        public void ClearTexture()
+        public void CopyBufferToBuffer(RHIBuffer SourceBuffer, RHIBuffer DescBuffer)
         {
 
         }
 
-        public void CopyBufferToBuffer()
+        public void CopyBufferToTexture(RHIBuffer SourceBuffer, RHITexture DescTexture)
         {
 
         }
 
-        public void CopyBufferToTexture()
+        public void CopyTextureToBuffer(RHITexture SourceTexture, RHIBuffer DescBuffer)
         {
 
         }
 
-        public void CopyTextureToBuffer()
+        public void CopyTextureToTexture(RHITexture SourceTexture, RHITexture DescTexture)
         {
 
         }
 
-        public void CopyTextureToTexture()
+        public void GenerateMipmaps(RHITexture GPUTexture)
         {
 
         }
 
-        public void GenerateMipmaps()
+        public void BeginTimeQuery(RHITimeQuery TimeQuery)
         {
-
+            TimeQuery.Begin();
         }
 
-        public void ResourceBarrier()
+        public void EndTimeQuery(RHITimeQuery TimeQuery)
         {
-
+            TimeQuery.End();
         }
 
-        public void BeginTimeQuery()
-        {
-
-        }
-
-        public void EndTimeQuery()
-        {
-
-        }
-
-        public float GetTimeQueryResult()
+        public float GetTimeQueryResult(RHITimeQuery TimeQuery)
         {
             return 1;
+            //return TimeQuery.GetQueryResult(NativeCmdQueue.TimestampFrequency);
         }
 
-        public void SetComputePipelineState()
+        public void SetComputePipelineState(RHIComputeShader ComputeShader, RHIComputePipelineState ComputeState)
         {
 
         }
 
-        public void SetComputeSamplerState()
+        public void SetComputeSamplerState(RHIComputeShader ComputeShader)
         {
 
         }
 
-        public void SetComputeBuffer()
+        public void SetComputeBuffer(RHIComputeShader ComputeShader, RHIBuffer GPUBuffer)
         {
 
         }
 
-        public void SetComputeTexture()
+        public void SetComputeTexture(RHIComputeShader ComputeShader, RHITexture GPUTexture)
         {
 
         }
 
-        public void DispatchCompute()
+        public void DispatchCompute(RHIComputeShader ComputeShader, uint SizeX, uint SizeY, uint SizeZ)
         {
 
         }
 
-        public void DispatchComputeIndirect()
+        public void DispatchComputeIndirect(RHIComputeShader ComputeShader, RHIBuffer ArgsBuffer, uint ArgsOffset)
         {
 
         }
@@ -603,67 +126,68 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetAccelerationStructure()
+        public void SetAccelerationStructure(RHIRayGenShader RayGenShader)
         {
 
         }
 
-        public void SetRayGenPipelineState()
+        public void SetRayTracePipelineState(RHIRayGenShader RayGenShader, RHIRayTracePipelineState RayTraceState)
         {
 
         }
 
-        public void SetRayGenSamplerState()
+        public void SetRayTraceSamplerState(RHIRayGenShader RayGenShader)
         {
 
         }
 
-        public void SetRayGenBuffer()
+        public void SetRayTraceBuffer(RHIRayGenShader RayGenShader, RHIBuffer GPUBuffer)
         {
 
         }
 
-        public void SetRayGenTexture()
+        public void SetRayTraceTexture(RHIRayGenShader RayGenShader, RHITexture GPUTexture)
         {
 
         }
 
-        public void DispatchRay()
+        public void DispatchRay(RHIRayGenShader RayGenShader, uint SizeX, uint SizeY, uint SizeZ)
         {
 
         }
 
-        public void DispatchRayIndirect()
+        public void DispatchRayIndirect(RHIRayGenShader RayGenShader, RHIBuffer ArgsBuffer, uint ArgsOffset)
         {
 
         }
 
-        public void BeginOcclusionQuery()
+
+        public void BeginOcclusionQuery(RHIOcclusionQuery OcclusionQuery)
+        {
+            OcclusionQuery.Begin();
+        }
+
+        public void EndOcclusionQuery(RHIOcclusionQuery OcclusionQuery)
+        {
+            OcclusionQuery.End();
+        }
+
+        public int GetOcclusionQueryResult(RHIOcclusionQuery OcclusionQuery)
+        {
+            return OcclusionQuery.GetQueryResult();
+        }
+
+        public void BeginStatisticsQuery(RHIStatisticsQuery StatisticsQuery)
         {
 
         }
 
-        public void EndOcclusionQuery()
+        public void EndStatisticsQuery(RHIStatisticsQuery StatisticsQuery)
         {
 
         }
 
-        public float GetOcclusionQueryResult()
-        {
-            return 1;
-        }
-
-        public void BeginStatisticsQuery()
-        {
-
-        }
-
-        public void EndStatisticsQuery()
-        {
-
-        }
-
-        public float GetStatisticsQueryResult()
+        public float GetStatisticsQueryResult(RHIStatisticsQuery StatisticsQuery)
         {
             return 1;
         }
@@ -698,17 +222,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetRenderTarget()
+        public void BeginRenderPass(RHITexture[] ColorBuffer, RHITexture DepthBuffer)
         {
 
         }
 
-        public void SetRenderTargets()
-        {
-
-        }
-
-        public void SetRandomWriteTarget()
+        public void EndRenderPass(RHITexture[] ColorBuffer, RHITexture DepthBuffer)
         {
 
         }
@@ -728,42 +247,42 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetShadingRate()
+        public void SetShadingRate(ShadingRate EShadingRate, ShadingRateCombiner[] CombineMathdo)
+        {
+            NativeCmdList.RSSetShadingRate(EShadingRate, CombineMathdo);
+        }
+
+        public void SetShadingRateIndirect(RHITexture IndirectTexture)
+        {
+            NativeCmdList.RSSetShadingRateImage(IndirectTexture.DefaultResource);
+        }
+
+        public void SetGraphicsPipelineState(RHIGraphicsShader GraphicsShader, RHIGraphicsPipelineState GraphcisState)
         {
 
         }
 
-        public void SetShadingRateIndirect()
+        public void SetGraphicsSamplerState(RHIGraphicsShader GraphicsShader, string PropertyName)
         {
 
         }
 
-        public void SetGraphicsPipelineState()
+        public void SetGraphicsBuffer(RHIGraphicsShader GraphicsShader, string PropertyName, RHIBuffer GPUBuffer)
         {
 
         }
 
-        public void SetGraphicsSamplerState()
+        public void SetGraphicsTexture(RHIGraphicsShader GraphicsShader, string PropertyName, RHITexture GPUTexture)
         {
 
         }
 
-        public void SetGraphicsBuffer()
+        public void DrawPrimitiveInstance(RHIBuffer IndexBuffer, RHIBuffer VertexBuffer, PrimitiveTopology TopologyType, uint IndexCount, uint InstanceCount)
         {
 
         }
 
-        public void SetGraphicsTexture()
-        {
-
-        }
-
-        public void DrawPrimitiveInstance()
-        {
-
-        }
-
-        public void DrawPrimitiveInstanceIndirect()
+        public void DrawPrimitiveInstanceIndirect(RHIBuffer IndexBuffer, RHIBuffer VertexBuffer, PrimitiveTopology TopologyType, RHIBuffer ArgsBuffer, uint ArgsOffset)
         {
 
         }
@@ -777,12 +296,9 @@ namespace InfinityEngine.Graphics.RHI
         {
 
         }
-
-        internal RHICommandBuffer Clone()
+        public void ResourceBarrier()
         {
-            RHICommandBuffer CopyCmdBuffer = new RHICommandBuffer(this.name);
-            CopyCmdBuffer.CmdList = new List<IRenderCommand>(CmdList);
-            return CopyCmdBuffer;
+
         }
 
         protected override void DisposeManaged()
@@ -792,7 +308,8 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void DisposeUnManaged()
         {
-
+            NativeCmdList.Dispose();
+            NativeCmdAllocator.Dispose();
         }
     }
 }
