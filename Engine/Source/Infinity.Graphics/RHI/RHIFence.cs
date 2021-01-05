@@ -10,16 +10,20 @@ namespace InfinityEngine.Graphics.RHI
         private ulong FenceValue;
         private ulong LastFenceValue;
         private ID3D12Fence NativeFence;
+        protected ID3D12CommandQueue SrcNativeCmdQueue;
+        protected ID3D12CommandQueue DescNativeCmdQueue;
 
-        public RHIFence(ID3D12Device6 D3D12Device) : base()
+        public RHIFence(ID3D12Device6 D3D12Device, RHICommandContext SrcCmdBuffer, RHICommandContext DescCmdBuffer) : base()
         {
             NativeFence = D3D12Device.CreateFence(0, FenceFlags.None);
+            SrcNativeCmdQueue = SrcCmdBuffer.NativeCmdQueue;
+            DescNativeCmdQueue = DescCmdBuffer.NativeCmdQueue;
         }
 
-        public void Signal(ID3D12CommandQueue NativeCmdQueue)
+        public void Signal()
         {
             ++FenceValue;
-            NativeCmdQueue.Signal(NativeFence, FenceValue);
+            SrcNativeCmdQueue.Signal(NativeFence, FenceValue);
         }
 
         public bool Completed()
@@ -41,9 +45,9 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public void WaitOnGPU(ID3D12CommandQueue NativeCmdQueue)
+        public void WaitOnGPU()
         {
-            NativeCmdQueue.Wait(NativeFence, FenceValue);
+            DescNativeCmdQueue.Wait(NativeFence, FenceValue);
         }
 
         protected override void DisposeManaged()

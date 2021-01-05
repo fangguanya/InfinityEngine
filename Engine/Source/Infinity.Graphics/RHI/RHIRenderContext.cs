@@ -8,40 +8,116 @@ namespace InfinityEngine.Graphics.RHI
     public class RHIRenderContext : UObject
     {
         internal RHIDevice Device;
-        internal RHICommandContext CopyContext;
-        internal RHICommandContext ComputeContext;
-        internal RHICommandContext GraphicsContext;
+        internal RHICopyCmdContext CopyContext;
+        internal RHIComputeCmdContext ComputeContext;
+        internal RHIGraphicsCmdContext GraphicsContext;
+        internal TArray<RHICommandBuffer> CmdBufferArray;
         internal RHIDescriptorHeapFactory CbvSrvUavDescriptorFactory;
 
         public RHIRenderContext() : base()
         {
             Device = new RHIDevice();
 
-            CopyContext = new RHICommandContext(Device.NativeDevice, CommandListType.Copy);
-            ComputeContext = new RHICommandContext(Device.NativeDevice, CommandListType.Compute);
-            GraphicsContext = new RHICommandContext(Device.NativeDevice, CommandListType.Direct);
+            CmdBufferArray = new TArray<RHICommandBuffer>();
+
+            CopyContext = new RHICopyCmdContext(Device.NativeDevice, CommandListType.Copy);
+            ComputeContext = new RHIComputeCmdContext(Device.NativeDevice, CommandListType.Compute);
+            GraphicsContext = new RHIGraphicsCmdContext(Device.NativeDevice, CommandListType.Direct);
 
             CbvSrvUavDescriptorFactory = new RHIDescriptorHeapFactory(Device.NativeDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
         public void ExecuteCmdBuffer(RHICommandBuffer CmdBuffer)
         {
-
+            RHICommandBuffer CopyCmdBuffer = CmdBuffer.Clone();
+            CopyCmdBuffer.bASyncCompute = false;
+            CmdBufferArray.Add(CopyCmdBuffer);
+            CmdBuffer.Clear();
         }
 
         public void ExecuteCmdBufferASync(RHICommandBuffer CmdBuffer)
         {
+            RHICommandBuffer CopyCmdBuffer = CmdBuffer.Clone();
+            CopyCmdBuffer.bASyncCompute = true;
+            CmdBufferArray.Add(CopyCmdBuffer);
+        }
 
+        internal void TranslateToNativeCommand(RHICommandBuffer CmdBuffer, RHICommandContext CmdContext)
+        {
+            RHICopyCmdContext CopyCmdContex = (RHICopyCmdContext)CmdContext;
+            RHIComputeCmdContext ComputeCmdContex = (RHIComputeCmdContext)CmdContext;
+            RHIGraphicsCmdContext GraphicsCmdContex = (RHIGraphicsCmdContext)CmdContext;
+
+            for (int CoordIndex = 0; CoordIndex < CmdBuffer.Size(); CoordIndex++)
+            {
+                IRenderCommand RenderCmd = CmdBuffer.CmdList[CoordIndex];
+
+                switch (RenderCmd.GetRenderCmdType)
+                {
+                    case ERenderCommandType.GenerateMipmap:
+                        //RenderCommandGenerateMipmap RenderCmdGenerateMipmap = (RenderCommandGenerateMipmap)RenderCmd;
+                        //CmdContext.GenerateMipmaps(null);
+                        break;
+
+                    case ERenderCommandType.ResourceBarrier:
+                        //RenderCommandResourceBarrier RenderCmdResourceBarrier = (RenderCommandResourceBarrier)RenderCmd;
+                        CopyCmdContex.ResourceBarrier();
+                        break;
+
+                    case ERenderCommandType.DispatchCompute:
+                        RenderCommandDispatchCompute RenderCmdDispatchCompute = (RenderCommandDispatchCompute)RenderCmd;
+                        ComputeCmdContex.DispatchCompute(RenderCmdDispatchCompute.shader, RenderCmdDispatchCompute.x, RenderCmdDispatchCompute.y, RenderCmdDispatchCompute.z);
+                        break;
+
+                    case ERenderCommandType.DrawPrimitiveInstance:
+                        RenderCommandDrawPrimitiveInstance RenderCmdDrawInstance = (RenderCommandDrawPrimitiveInstance)RenderCmd;
+                        GraphicsCmdContex.DrawPrimitiveInstance(RenderCmdDrawInstance.IndexBuffer, RenderCmdDrawInstance.VertexBuffer, RenderCmdDrawInstance.TopologyType, RenderCmdDrawInstance.IndexCount, RenderCmdDrawInstance.InstanceCount);
+                        break;
+
+                    default:
+                        //
+                        break;
+                }
+            }
         }
 
         public void Submit()
         {
+            // Reset CmdList
+            //CmdContext.Reset();
 
+            for (int i = 0; i != CmdBufferArray.size; i++)
+            {
+                RHICommandBuffer CmdBuffer = CmdBufferArray[i];
+                RHICommandContext CmdContext = CmdBuffer.bASyncCompute ? ComputeContext : GraphicsContext;
+
+                TranslateToNativeCommand(CmdBuffer, CmdContext);
+            }
+
+            // Execute CmdList
+            CmdBufferArray.Clear();
+            //CmdContext.Execute();
+            //CmdContext.Flush();
         }
 
-        public RHIFence CreateGPUFence()
+        public RHIComputeCmdContext GetComputeContext()
         {
-            return new RHIFence(Device.NativeDevice);
+            return ComputeContext;
+        }
+
+        public RHIGraphicsCmdContext GetGraphicsContext()
+        {
+            return GraphicsContext;
+        }
+
+        public RHIFence CreateGraphicsFence()
+        {
+            return new RHIFence(Device.NativeDevice, GraphicsContext, ComputeContext);
+        }
+
+        public RHIFence CreateComputeFence()
+        {
+            return new RHIFence(Device.NativeDevice, ComputeContext, GraphicsContext);
         }
 
         public void CreateViewport()
@@ -49,19 +125,22 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public RHITimeQuery CreateTimeQuery(RHICommandBuffer CmdBuffer)
+        public RHITimeQuery CreateTimeQuery(bool bComputeQueue)
         {
-            return new RHITimeQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
+            ID3D12GraphicsCommandList6 NativeCmdList = (!bComputeQueue) ? GraphicsContext.NativeCmdList : ComputeContext.NativeCmdList;
+            return new RHITimeQuery(Device.NativeDevice, NativeCmdList);
         }
 
-        public RHIOcclusionQuery CreateOcclusionQuery(RHICommandBuffer CmdBuffer)
+        public RHIOcclusionQuery CreateOcclusionQuery(bool bComputeQueue)
         {
-            return new RHIOcclusionQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
+            ID3D12GraphicsCommandList6 NativeCmdList = (!bComputeQueue) ? GraphicsContext.NativeCmdList : ComputeContext.NativeCmdList;
+            return new RHIOcclusionQuery(Device.NativeDevice, NativeCmdList);
         }
 
-        public RHIStatisticsQuery CreateStatisticsQuery(RHICommandBuffer CmdBuffer)
+        public RHIStatisticsQuery CreateStatisticsQuery(bool bComputeQueue)
         {
-            return new RHIStatisticsQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
+            ID3D12GraphicsCommandList6 NativeCmdList = (!bComputeQueue) ? GraphicsContext.NativeCmdList : ComputeContext.NativeCmdList;
+            return new RHIStatisticsQuery(Device.NativeDevice, NativeCmdList);
         }
 
         public void CreateInputVertexLayout()
@@ -96,13 +175,13 @@ namespace InfinityEngine.Graphics.RHI
 
         public RHIBuffer CreateBuffer(ulong InCount, ulong InStride, EUseFlag InUseFlag, EBufferType InBufferType)
         {
-            RHIBuffer GPUBuffer = new RHIBuffer(Device.NativeDevice, null, InUseFlag, InBufferType, InCount, InStride);
+            RHIBuffer GPUBuffer = new RHIBuffer(Device.NativeDevice, CopyContext.NativeCmdList, InUseFlag, InBufferType, InCount, InStride);
             return GPUBuffer;
         }
 
         public RHITexture CreateTexture(EUseFlag InUseFlag, ETextureType InTextureType)
         {
-            RHITexture Texture = new RHITexture(Device.NativeDevice, null, InUseFlag, InTextureType);
+            RHITexture Texture = new RHITexture(Device.NativeDevice, CopyContext.NativeCmdList, InUseFlag, InTextureType);
             return Texture;
         }
 
