@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Core.Native.Utility
 {
-    public static class MemoryExtensions
+    public static class FMemoryExtensions
     {
         public static void CopyMemory(IntPtr dest, IntPtr src, int sizeInBytesToCopy)
         {

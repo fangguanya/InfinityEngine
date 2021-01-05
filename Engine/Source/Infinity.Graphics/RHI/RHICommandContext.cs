@@ -5,22 +5,22 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHICommandContext : UObject
+    public class FRHICommandContext : UObject
     {
-        public RHIFence FrameFence;
+        public FRHIFence FrameFence;
         public ManualResetEvent FenceEvent;
 
         public ID3D12CommandQueue NativeCmdQueue;
 
 
-        public RHICommandContext(ID3D12Device6 NativeDevice, CommandListType CommandBufferType) : base()
+        public FRHICommandContext(ID3D12Device6 NativeDevice, CommandListType CommandBufferType) : base()
         {
             FenceEvent = new ManualResetEvent(false);
-            FrameFence = new RHIFence(NativeDevice);
+            FrameFence = new FRHIFence(NativeDevice);
             NativeCmdQueue = NativeDevice.CreateCommandQueue(CommandBufferType);
         }
 
-        public void ExecuteCmdBuffer(RHICommandBuffer CmdBuffer, ECmdBufferExecuteType CmdBufferExecuteType = ECmdBufferExecuteType.Execute)
+        public void ExecuteCmdBuffer(FRHICommandBuffer CmdBuffer, ECmdBufferExecuteType CmdBufferExecuteType = ECmdBufferExecuteType.Execute)
         {
             CmdBuffer.Close();
             NativeCmdQueue.ExecuteCommandList(CmdBuffer.NativeCmdList);

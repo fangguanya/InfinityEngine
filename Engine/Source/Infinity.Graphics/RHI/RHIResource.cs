@@ -50,34 +50,34 @@ namespace InfinityEngine.Graphics.RHI
         Tex3D,
     };
 
-    public struct RHIIndexBufferView
+    public struct FRHIIndexBufferView
     {
 
     }
 
-    public struct RHIVertexBufferView
+    public struct FRHIVertexBufferView
     {
 
     }
 
-    public struct RHIDeptnStencilView
+    public struct FRHIDeptnStencilView
     {
 
     }
 
-    public struct RHIRenderTargetView
+    public struct FRHIRenderTargetView
     {
 
     }
 
-    public struct RHIConstantBufferView
+    public struct FRHIConstantBufferView
     {
         internal int DescriptorSize;
         internal int DescriptorIndex;
         internal CpuDescriptorHandle CPUDescriptorHandle;
 
 
-        public RHIConstantBufferView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
+        public FRHIConstantBufferView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
         {
             DescriptorSize = InDescriptorSize;
             DescriptorIndex = InDescriptorIndex;
@@ -96,14 +96,14 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public struct RHIShaderResourceView
+    public struct FRHIShaderResourceView
     {
         internal int DescriptorSize;
         internal int DescriptorIndex;
         internal CpuDescriptorHandle CPUDescriptorHandle;
 
 
-        public RHIShaderResourceView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
+        public FRHIShaderResourceView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
         {
             DescriptorSize = InDescriptorSize;
             DescriptorIndex = InDescriptorIndex;
@@ -122,14 +122,14 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public struct RHIUnorderedAccessView
+    public struct FRHIUnorderedAccessView
     {
         internal int DescriptorSize;
         internal int DescriptorIndex;
         internal CpuDescriptorHandle CPUDescriptorHandle;
 
 
-        public RHIUnorderedAccessView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
+        public FRHIUnorderedAccessView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
         {
             DescriptorSize = InDescriptorSize;
             DescriptorIndex = InDescriptorIndex;
@@ -149,7 +149,7 @@ namespace InfinityEngine.Graphics.RHI
     }
 
 
-    public class RHIResource : UObject
+    public class FRHIResource : UObject
     {
         public string Name;
 
@@ -161,14 +161,14 @@ namespace InfinityEngine.Graphics.RHI
         internal ID3D12Resource UploadResource;
         internal ID3D12Resource ReadbackResource;
 
-        internal RHIShaderResourceView SRV;
-        internal RHIUnorderedAccessView UAV;
+        internal FRHIShaderResourceView SRV;
+        internal FRHIUnorderedAccessView UAV;
 
         protected ID3D12Device6 NativeDevice;
         protected ID3D12GraphicsCommandList6 NativeCopyList;
 
 
-        public RHIResource(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCopyList, EUseFlag InUseFlag) : base()
+        public FRHIResource(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCopyList, EUseFlag InUseFlag) : base()
         {
             UseFlag = InUseFlag;
             NativeDevice = InNativeDevice;
@@ -202,17 +202,17 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIBuffer : RHIResource
+    public class FRHIBuffer : FRHIResource
     {
         internal ulong Count;
         internal ulong Stride;
         internal EBufferType BufferType;
 
-        internal RHIIndexBufferView IBV;
-        internal RHIVertexBufferView VBV;
-        internal RHIConstantBufferView CBV;
+        internal FRHIIndexBufferView IBV;
+        internal FRHIVertexBufferView VBV;
+        internal FRHIConstantBufferView CBV;
 
-        internal RHIBuffer(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCopyList, EUseFlag InUseFlag, EBufferType InBufferType, ulong InCount, ulong InStride) : base(InNativeDevice, InNativeCopyList, InUseFlag)
+        internal FRHIBuffer(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCopyList, EUseFlag InUseFlag, EBufferType InBufferType, ulong InCount, ulong InStride) : base(InNativeDevice, InNativeCopyList, InUseFlag)
         {
             Count = InCount;
             Stride = InStride;
@@ -340,14 +340,14 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHITexture : RHIResource
+    public class FRHITexture : FRHIResource
     {
         internal ETextureType TextureType;
 
-        internal RHIDeptnStencilView DSV;
-        internal RHIRenderTargetView RTV;
+        internal FRHIDeptnStencilView DSV;
+        internal FRHIRenderTargetView RTV;
 
-        public RHITexture(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InCopyCmdList, EUseFlag InUseFlag, ETextureType InTextureType) : base(InNativeDevice, InCopyCmdList, InUseFlag)
+        public FRHITexture(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InCopyCmdList, EUseFlag InUseFlag, ETextureType InTextureType) : base(InNativeDevice, InCopyCmdList, InUseFlag)
         {
             TextureType = InTextureType;
             ResourceType = EResourceType.Texture;
@@ -364,7 +364,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIResourceViewRange : UObject
+    public class FRHIResourceViewRange : UObject
     {
         public string name;
 
@@ -375,7 +375,7 @@ namespace InfinityEngine.Graphics.RHI
         protected CpuDescriptorHandle DescriptorHandle;
 
 
-        internal RHIResourceViewRange(ID3D12Device6 InNativeDevice, RHIDescriptorHeapFactory DescriptorHeapFactory, int DescriptorLength) : base()
+        internal FRHIResourceViewRange(ID3D12Device6 InNativeDevice, FRHIDescriptorHeapFactory DescriptorHeapFactory, int DescriptorLength) : base()
         {
             RangeSize = DescriptorLength;
             NativeDevice = InNativeDevice;
@@ -388,17 +388,17 @@ namespace InfinityEngine.Graphics.RHI
             return DescriptorHandle + NativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (DescriptorIndex + Offset);
         }
 
-        public void SetConstantBufferView(int Index, RHIConstantBufferView ConstantBufferView)
+        public void SetConstantBufferView(int Index, FRHIConstantBufferView ConstantBufferView)
         {
             NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), ConstantBufferView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
-        public void SetShaderResourceView(int Index, RHIShaderResourceView ShaderResourceView)
+        public void SetShaderResourceView(int Index, FRHIShaderResourceView ShaderResourceView)
         {
             NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), ShaderResourceView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
-        public void SetUnorderedAccessView(int Index, RHIUnorderedAccessView UnorderedAccessView)
+        public void SetUnorderedAccessView(int Index, FRHIUnorderedAccessView UnorderedAccessView)
         {
             NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), UnorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
@@ -414,12 +414,12 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    internal sealed class RHIMemoryHeapFactory : UObject
+    internal sealed class FRHIMemoryHeapFactory : UObject
     {
         internal string name;
 
 
-        internal RHIMemoryHeapFactory(ID3D12Device6 InNativeDevice, int HeapCount) : base()
+        internal FRHIMemoryHeapFactory(ID3D12Device6 InNativeDevice, int HeapCount) : base()
         {
 
         }
@@ -435,7 +435,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    internal class RHIDescriptorHeapFactory : UObject
+    internal class FRHIDescriptorHeapFactory : UObject
     {
         internal string name;
 
@@ -446,7 +446,7 @@ namespace InfinityEngine.Graphics.RHI
         protected ID3D12DescriptorHeap GPUDescriptorHeap;
 
 
-        internal RHIDescriptorHeapFactory(ID3D12Device6 InNativeDevice, DescriptorHeapType InType, int DescriptorCount) : base()
+        internal FRHIDescriptorHeapFactory(ID3D12Device6 InNativeDevice, DescriptorHeapType InType, int DescriptorCount) : base()
         {
             NativeDevice = InNativeDevice;
 

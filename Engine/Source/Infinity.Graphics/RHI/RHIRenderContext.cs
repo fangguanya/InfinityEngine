@@ -5,31 +5,31 @@ using InfinityEngine.Core.Container;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIRenderContext : UObject
+    public class FRHIRenderContext : UObject
     {
-        internal RHIDevice Device;
-        internal RHICommandContext CopyContext;
-        internal RHICommandContext ComputeContext;
-        internal RHICommandContext GraphicsContext;
-        internal RHIDescriptorHeapFactory CbvSrvUavDescriptorFactory;
+        internal FRHIDevice Device;
+        internal FRHICommandContext CopyContext;
+        internal FRHICommandContext ComputeContext;
+        internal FRHICommandContext GraphicsContext;
+        internal FRHIDescriptorHeapFactory CbvSrvUavDescriptorFactory;
 
-        public RHIRenderContext() : base()
+        public FRHIRenderContext() : base()
         {
-            Device = new RHIDevice();
+            Device = new FRHIDevice();
 
-            CopyContext = new RHICommandContext(Device.NativeDevice, CommandListType.Copy);
-            ComputeContext = new RHICommandContext(Device.NativeDevice, CommandListType.Compute);
-            GraphicsContext = new RHICommandContext(Device.NativeDevice, CommandListType.Direct);
+            CopyContext = new FRHICommandContext(Device.NativeDevice, CommandListType.Copy);
+            ComputeContext = new FRHICommandContext(Device.NativeDevice, CommandListType.Compute);
+            GraphicsContext = new FRHICommandContext(Device.NativeDevice, CommandListType.Direct);
 
-            CbvSrvUavDescriptorFactory = new RHIDescriptorHeapFactory(Device.NativeDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
+            CbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(Device.NativeDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
-        public void ExecuteCmdBuffer(RHICommandBuffer CmdBuffer)
+        public void ExecuteCmdBuffer(FRHICommandBuffer CmdBuffer)
         {
 
         }
 
-        public void ExecuteCmdBufferASync(RHICommandBuffer CmdBuffer)
+        public void ExecuteCmdBufferASync(FRHICommandBuffer CmdBuffer)
         {
 
         }
@@ -39,9 +39,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public RHIFence CreateGPUFence()
+        public FRHIFence CreateGPUFence()
         {
-            return new RHIFence(Device.NativeDevice);
+            return new FRHIFence(Device.NativeDevice);
         }
 
         public void CreateViewport()
@@ -49,19 +49,19 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public RHITimeQuery CreateTimeQuery(RHICommandBuffer CmdBuffer)
+        public FRHITimeQuery CreateTimeQuery(FRHICommandBuffer CmdBuffer)
         {
-            return new RHITimeQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
+            return new FRHITimeQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
         }
 
-        public RHIOcclusionQuery CreateOcclusionQuery(RHICommandBuffer CmdBuffer)
+        public FRHIOcclusionQuery CreateOcclusionQuery(FRHICommandBuffer CmdBuffer)
         {
-            return new RHIOcclusionQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
+            return new FRHIOcclusionQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
         }
 
-        public RHIStatisticsQuery CreateStatisticsQuery(RHICommandBuffer CmdBuffer)
+        public FRHIStatisticsQuery CreateStatisticsQuery(FRHICommandBuffer CmdBuffer)
         {
-            return new RHIStatisticsQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
+            return new FRHIStatisticsQuery(Device.NativeDevice, CmdBuffer.NativeCmdList);
         }
 
         public void CreateInputVertexLayout()
@@ -74,19 +74,19 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public RHIComputePipelineState CreateComputePipelineState()
+        public FRHIComputePipelineState CreateComputePipelineState()
         {
-            return new RHIComputePipelineState();
+            return new FRHIComputePipelineState();
         }
 
-        public RHIRayTracePipelineState CreateRayTracePipelineState()
+        public FRHIRayTracePipelineState CreateRayTracePipelineState()
         {
-            return new RHIRayTracePipelineState();
+            return new FRHIRayTracePipelineState();
         }
 
-        public RHIGraphicsPipelineState CreateGraphicsPipelineState()
+        public FRHIGraphicsPipelineState CreateGraphicsPipelineState()
         {
-            return new RHIGraphicsPipelineState();
+            return new FRHIGraphicsPipelineState();
         }
 
         public void CreateSamplerState()
@@ -94,49 +94,49 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public RHIBuffer CreateBuffer(ulong InCount, ulong InStride, EUseFlag InUseFlag, EBufferType InBufferType)
+        public FRHIBuffer CreateBuffer(ulong InCount, ulong InStride, EUseFlag InUseFlag, EBufferType InBufferType)
         {
-            RHIBuffer GPUBuffer = new RHIBuffer(Device.NativeDevice, null, InUseFlag, InBufferType, InCount, InStride);
+            FRHIBuffer GPUBuffer = new FRHIBuffer(Device.NativeDevice, null, InUseFlag, InBufferType, InCount, InStride);
             return GPUBuffer;
         }
 
-        public RHITexture CreateTexture(EUseFlag InUseFlag, ETextureType InTextureType)
+        public FRHITexture CreateTexture(EUseFlag InUseFlag, ETextureType InTextureType)
         {
-            RHITexture Texture = new RHITexture(Device.NativeDevice, null, InUseFlag, InTextureType);
+            FRHITexture Texture = new FRHITexture(Device.NativeDevice, null, InUseFlag, InTextureType);
             return Texture;
         }
 
-        public RHIDeptnStencilView CreateDepthStencilView(RHITexture Texture)
+        public FRHIDeptnStencilView CreateDepthStencilView(FRHITexture Texture)
         {
-            RHIDeptnStencilView DSV = new RHIDeptnStencilView();
+            FRHIDeptnStencilView DSV = new FRHIDeptnStencilView();
             return DSV;
         }
 
-        public RHIRenderTargetView CreateRenderTargetView(RHITexture Texture)
+        public FRHIRenderTargetView CreateRenderTargetView(FRHITexture Texture)
         {
-            RHIRenderTargetView RTV = new RHIRenderTargetView();
+            FRHIRenderTargetView RTV = new FRHIRenderTargetView();
             return RTV;
         }
 
-        public RHIIndexBufferView CreateIndexBufferView(RHIBuffer IndexBuffer)
+        public FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer IndexBuffer)
         {
-            RHIIndexBufferView IBO = new RHIIndexBufferView();
+            FRHIIndexBufferView IBO = new FRHIIndexBufferView();
             return IBO;
         }
 
-        public RHIVertexBufferView CreateVertexBufferView(RHIBuffer VertexBuffer)
+        public FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer VertexBuffer)
         {
-            RHIVertexBufferView VBO = new RHIVertexBufferView();
+            FRHIVertexBufferView VBO = new FRHIVertexBufferView();
             return VBO;
         }
 
-        public RHIConstantBufferView CreateConstantBufferView(RHIBuffer ConstantBuffer)
+        public FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer ConstantBuffer)
         {
-            RHIConstantBufferView CBV = new RHIConstantBufferView();
+            FRHIConstantBufferView CBV = new FRHIConstantBufferView();
             return CBV;
         }
 
-        public RHIShaderResourceView CreateShaderResourceView(RHIBuffer Buffer)
+        public FRHIShaderResourceView CreateShaderResourceView(FRHIBuffer Buffer)
         {
             ShaderResourceViewDescription SRVDescriptor = new ShaderResourceViewDescription
             {
@@ -149,16 +149,16 @@ namespace InfinityEngine.Graphics.RHI
             CpuDescriptorHandle DescriptorHandle = CbvSrvUavDescriptorFactory.GetCPUHandleStart() + CbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
             Device.NativeDevice.CreateShaderResourceView(Buffer.DefaultResource, SRVDescriptor, DescriptorHandle);
 
-            return new RHIShaderResourceView(CbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
+            return new FRHIShaderResourceView(CbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
         }
 
-        public RHIShaderResourceView CreateShaderResourceView(RHITexture Texture)
+        public FRHIShaderResourceView CreateShaderResourceView(FRHITexture Texture)
         {
-            RHIShaderResourceView SRV = new RHIShaderResourceView();
+            FRHIShaderResourceView SRV = new FRHIShaderResourceView();
             return SRV;
         }
 
-        public RHIUnorderedAccessView CreateUnorderedAccessView(RHIBuffer Buffer)
+        public FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer Buffer)
         {
             UnorderedAccessViewDescription UAVDescriptor = new UnorderedAccessViewDescription
             {
@@ -170,18 +170,18 @@ namespace InfinityEngine.Graphics.RHI
             CpuDescriptorHandle DescriptorHandle = CbvSrvUavDescriptorFactory.GetCPUHandleStart() + CbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
             Device.NativeDevice.CreateUnorderedAccessView(Buffer.DefaultResource, null, UAVDescriptor, DescriptorHandle);
 
-            return new RHIUnorderedAccessView(CbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
+            return new FRHIUnorderedAccessView(CbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
         }
 
-        public RHIUnorderedAccessView CreateUnorderedAccessView(RHITexture Texture)
+        public FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture Texture)
         {
-            RHIUnorderedAccessView UAV = new RHIUnorderedAccessView();
+            FRHIUnorderedAccessView UAV = new FRHIUnorderedAccessView();
             return UAV;
         }
 
-        public RHIResourceViewRange CreateRHIResourceViewRange(int Count)
+        public FRHIResourceViewRange CreateRHIResourceViewRange(int Count)
         {
-            return new RHIResourceViewRange(Device.NativeDevice, CbvSrvUavDescriptorFactory, Count);
+            return new FRHIResourceViewRange(Device.NativeDevice, CbvSrvUavDescriptorFactory, Count);
         }
 
         protected override void DisposeManaged()

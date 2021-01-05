@@ -4,20 +4,20 @@ using InfinityEngine.Graphics.RHI;
 
 namespace Infinity.Runtime.Render.RenderPipeline
 {
-    public abstract class RenderPipeline : UObject
+    public abstract class FRenderPipeline : UObject
     {
         public string name;
-        protected RDGGraphBuilder GraphBuilder;
+        protected FRDGBuilder GraphBuilder;
 
-        public RenderPipeline(string Name)
+        public FRenderPipeline(string Name)
         {
             name = Name;
-            GraphBuilder = new RDGGraphBuilder(name + "Graph");
+            GraphBuilder = new FRDGBuilder(name + "Graph");
         }
 
-        protected abstract void Init(RHIRenderContext RenderContext, RHICommandBuffer CmdBuffer);
+        protected abstract void Init(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer);
 
-        protected abstract void Render(RHIRenderContext RenderContext, RHICommandBuffer CmdBuffer);
+        protected abstract void Render(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer);
 
         protected override void DisposeManaged()
         {

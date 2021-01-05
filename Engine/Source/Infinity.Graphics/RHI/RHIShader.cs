@@ -2,11 +2,11 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIShader : UObject
+    public class FRHIShader : UObject
     {
         public string name;
 
-        public RHIShader() : base()
+        public FRHIShader() : base()
         {
 
         }
@@ -22,9 +22,9 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIComputeShader : RHIShader
+    public class FRHIComputeShader : FRHIShader
     {
-        public RHIComputeShader() : base()
+        public FRHIComputeShader() : base()
         {
 
         }
@@ -40,10 +40,10 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIRayGenShader : RHIShader
+    public class FRHIRayGenShader : FRHIShader
     {
         //Intersection, AnyHit, ClosestHit, Miss, RayGeneration
-        public RHIRayGenShader() : base()
+        public FRHIRayGenShader() : base()
         {
 
         }
@@ -59,9 +59,9 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIGraphicsShader : RHIShader
+    public class FRHIGraphicsShader : FRHIShader
     {
-        public RHIGraphicsShader() : base()
+        public FRHIGraphicsShader() : base()
         {
 
         }

@@ -3,11 +3,11 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Core.EntitySystem
 {
-    public class Component : UObject
+    public class UComponent : UObject
     {
-        internal Entity OwnerEntity;
+        internal AEntity OwnerEntity;
 
-        public Component()
+        public UComponent()
         {
 
         }

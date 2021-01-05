@@ -3,26 +3,26 @@ using Vortice.Direct3D;
 
 namespace Infinity.Runtime.Render.RenderPipeline
 {
-    public class InfinityRenderPipeline : RenderPipeline
+    public class FInfinityRenderPipeline : FRenderPipeline
     {
-        public InfinityRenderPipeline(string PipelineName) : base(PipelineName)
+        public FInfinityRenderPipeline(string PipelineName) : base(PipelineName)
         {
 
         }
 
-        protected override void Init(RHIRenderContext RenderContext, RHICommandBuffer CmdBuffer)
+        protected override void Init(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer)
         {
 
         }
 
-        protected override void Render(RHIRenderContext RenderContext, RHICommandBuffer CmdBuffer)
+        protected override void Render(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer)
         {
             //ResourceBind Example
-            RHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
-            RHIShaderResourceView SRV = RenderContext.CreateShaderResourceView(Buffer);
-            RHIUnorderedAccessView UAV = RenderContext.CreateUnorderedAccessView(Buffer);
+            FRHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+            FRHIShaderResourceView SRV = RenderContext.CreateShaderResourceView(Buffer);
+            FRHIUnorderedAccessView UAV = RenderContext.CreateUnorderedAccessView(Buffer);
 
-            RHIResourceViewRange ResourceViewRange = RenderContext.CreateRHIResourceViewRange(2);
+            FRHIResourceViewRange ResourceViewRange = RenderContext.CreateRHIResourceViewRange(2);
             ResourceViewRange.SetShaderResourceView(0, SRV);
             ResourceViewRange.SetUnorderedAccessView(1, UAV);
 

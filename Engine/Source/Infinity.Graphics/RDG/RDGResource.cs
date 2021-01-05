@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InfinityEngine.Graphics.RDG
 {
-    public class RDGResource
+    public class FRDGResource
     {
     }
 }

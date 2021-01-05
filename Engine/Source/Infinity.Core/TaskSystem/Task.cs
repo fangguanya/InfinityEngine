@@ -29,17 +29,17 @@ namespace InfinityEngine.Core.TaskSystem
             jobData.Execute();
         }
 
-        public static TaskHandle Schedule<T>(this T jobData) where T : struct, ITask
+        public static FTaskHandle Schedule<T>(this T jobData) where T : struct, ITask
         {
-            return new TaskHandle(Task.Factory.StartNew(jobData.Execute));
+            return new FTaskHandle(Task.Factory.StartNew(jobData.Execute));
         }
 
-        public static TaskHandle Schedule<T>(this T jobData, TaskHandle dependsHandle) where T : struct, ITask
+        public static FTaskHandle Schedule<T>(this T jobData, FTaskHandle dependsHandle) where T : struct, ITask
         {
-            return new TaskHandle(dependsHandle.TaskRef.ContinueWith(jobData.Execute));
+            return new FTaskHandle(dependsHandle.TaskRef.ContinueWith(jobData.Execute));
         }
 
-        public static TaskHandle Schedule<T>(this T jobData, params TaskHandle[] dependsHandle) where T : struct, ITask
+        public static FTaskHandle Schedule<T>(this T jobData, params FTaskHandle[] dependsHandle) where T : struct, ITask
         {
             Task[] dependsTask = new Task[dependsHandle.Length];
             for (int i = 0; i < dependsHandle.Length; i++)
@@ -47,7 +47,7 @@ namespace InfinityEngine.Core.TaskSystem
                 dependsTask[i] = dependsHandle[i].TaskRef;
             }
 
-            return new TaskHandle(Task.Factory.ContinueWhenAll(dependsTask, jobData.Execute));
+            return new FTaskHandle(Task.Factory.ContinueWhenAll(dependsTask, jobData.Execute));
         }
     }
 }

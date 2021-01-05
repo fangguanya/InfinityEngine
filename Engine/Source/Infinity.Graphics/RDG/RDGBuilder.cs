@@ -2,11 +2,11 @@
 
 namespace InfinityEngine.Graphics.RDG
 {
-    public class RDGGraphBuilder : UObject
+    public class FRDGBuilder : UObject
     {
         public string name;
 
-        public RDGGraphBuilder(string Name)
+        public FRDGBuilder(string Name)
         {
             name = Name;
         }

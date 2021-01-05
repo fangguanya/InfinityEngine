@@ -5,12 +5,12 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal class RHIDevice : UObject
+    internal class FRHIDevice : UObject
     {
         internal ID3D12Device6 NativeDevice;
         internal IDXGIFactory7 NativeFactory;
 
-        public RHIDevice() : base()
+        public FRHIDevice() : base()
         {
             DXGI.CreateDXGIFactory1<IDXGIFactory7>(out NativeFactory);
 

@@ -61,19 +61,19 @@ namespace ExampleProject
             TaskA.SleepTime = 0;
             TaskA.TArray = IntArray;
             TaskA.PrintData = "TaskA";
-            TaskHandle TaskRefA = TaskA.Schedule();
+            FTaskHandle TaskRefA = TaskA.Schedule();
 
             FTestTask TaskB;
             TaskB.SleepTime = 2000;
             TaskB.TArray = IntArray;
             TaskB.PrintData = "TaskB";
-            TaskHandle TaskRefB = TaskB.Schedule(TaskRefA);
+            FTaskHandle TaskRefB = TaskB.Schedule(TaskRefA);
 
             FTestTask TaskC;
             TaskC.SleepTime = 0;
             TaskC.TArray = IntArray;
             TaskC.PrintData = "TaskC";
-            TaskHandle TaskRefC = TaskC.Schedule(TaskRefA, TaskRefB);
+            FTaskHandle TaskRefC = TaskC.Schedule(TaskRefA, TaskRefB);
 
             FChildTask ChildTask;
             ChildTask.TArray = IntArray;

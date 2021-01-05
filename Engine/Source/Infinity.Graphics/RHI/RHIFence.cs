@@ -5,13 +5,13 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class RHIFence : UObject
+    public class FRHIFence : UObject
     {
         private ulong FenceValue;
         private ulong LastFenceValue;
         private ID3D12Fence NativeFence;
 
-        public RHIFence(ID3D12Device6 D3D12Device) : base()
+        public FRHIFence(ID3D12Device6 D3D12Device) : base()
         {
             NativeFence = D3D12Device.CreateFence(0, FenceFlags.None);
         }

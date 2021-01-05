@@ -3,11 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Core.TaskSystem
 {
-    public struct TaskHandle
+    public struct FTaskHandle
     {
         internal Task TaskRef;
 
-        public TaskHandle(Task InTask)
+        public FTaskHandle(Task InTask)
         {
             TaskRef = InTask;
         }

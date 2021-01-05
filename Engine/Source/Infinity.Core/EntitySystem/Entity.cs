@@ -4,30 +4,24 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Core.EntitySystem
 {
-    internal struct CastHelper<T>
-    {
-        public T t;
-        public System.IntPtr onePointerFurtherThanT;
-    }
-
-    public class Entity : UObject, IComparable<Entity>, IEquatable<Entity>
+    public class AEntity : UObject, IComparable<AEntity>, IEquatable<AEntity>
     {
         public string name;
-        internal Entity ParentEntity;
-        internal Entity[] ChildEntityList;
-        internal List<Component> ComponentList;
+        internal AEntity ParentEntity;
+        internal AEntity[] ChildEntityList;
+        internal List<UComponent> ComponentList;
 
-        public Entity()
+        public AEntity()
         {
 
         }
 
-        public bool Equals(Entity other)
+        public bool Equals(AEntity other)
         {
             return name.Equals(other.name);
         }
 
-        public int CompareTo(Entity other)
+        public int CompareTo(AEntity other)
         {
             return 0;
         }
@@ -77,13 +71,13 @@ namespace InfinityEngine.Core.EntitySystem
             return null;
         }*/
 
-        public void AddComponent<T>(T InComponent) where T : Component
+        public void AddComponent<T>(T InComponent) where T : UComponent
         {
             InComponent.OwnerEntity = this;
             ComponentList.Add(InComponent);
         }
 
-        public void RemoveComponent<T>(T InComponent) where T : Component
+        public void RemoveComponent<T>(T InComponent) where T : UComponent
         {
             for (int i = 0; i < ComponentList.Count; i++)
             {
@@ -95,7 +89,7 @@ namespace InfinityEngine.Core.EntitySystem
             }
         }
 
-        public T GetComponent<T>() where T : Component
+        public T GetComponent<T>() where T : UComponent
         {
             for (int i = 0; i < ComponentList.Count; i++)
             {

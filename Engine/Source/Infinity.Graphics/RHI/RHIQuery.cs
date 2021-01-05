@@ -6,7 +6,7 @@ using InfinityEngine.Core.Native.Utility;
 
 namespace InfinityEngine.Graphics.RHI
 {
-	public class RHITimeQuery : UObject
+	public class FRHITimeQuery : UObject
 	{
 		private float TimeResult;
 		private ID3D12QueryHeap Timestamp_Heap;
@@ -15,7 +15,7 @@ namespace InfinityEngine.Graphics.RHI
 
 		private ID3D12GraphicsCommandList6 NativeCmdList;
 
-		public RHITimeQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
+		public FRHITimeQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
 		{
 			NativeCmdList = InNativeCmdList;
 
@@ -121,9 +121,9 @@ namespace InfinityEngine.Graphics.RHI
 		}
 	}
 
-    public class RHIStatisticsQuery : UObject
+    public class FRHIStatisticsQuery : UObject
     {
-        public RHIStatisticsQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
+        public FRHIStatisticsQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
         {
 
         }
@@ -139,7 +139,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class RHIOcclusionQuery : UObject
+    public class FRHIOcclusionQuery : UObject
 	{
 		private int OcclusinResult;
 		private ID3D12QueryHeap Occlusion_Heap;
@@ -148,7 +148,7 @@ namespace InfinityEngine.Graphics.RHI
 
 		private ID3D12GraphicsCommandList6 NativeCmdList;
 
-		public RHIOcclusionQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
+		public FRHIOcclusionQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
 		{
 			NativeCmdList = InNativeCmdList;
 

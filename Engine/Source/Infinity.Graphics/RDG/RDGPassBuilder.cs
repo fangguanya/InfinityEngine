@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InfinityEngine.Graphics.RDG
 {
-    public class RDGPassBuilder
+    public class FRDGPassBuilder
     {
     }
 }

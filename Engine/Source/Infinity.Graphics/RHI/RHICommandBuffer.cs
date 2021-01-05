@@ -11,13 +11,13 @@ namespace InfinityEngine.Graphics.RHI
         WriteFence = 3
     }
 
-    public class RHICommandBuffer : UObject
+    public class FRHICommandBuffer : UObject
     {
         public string name;
         internal ID3D12GraphicsCommandList6 NativeCmdList;
         internal ID3D12CommandAllocator NativeCmdAllocator;
 
-        public RHICommandBuffer(string InName, ID3D12Device6 NativeDevice, CommandListType CommandBufferType)
+        public FRHICommandBuffer(string InName, ID3D12Device6 NativeDevice, CommandListType CommandBufferType)
         {
             name = InName;
             NativeCmdAllocator = NativeDevice.CreateCommandAllocator(CommandBufferType);
@@ -35,83 +35,83 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdList.Close();
         }
 
-        public void ClearTexture(RHITexture GPUTexture)
+        public void ClearTexture(FRHITexture GPUTexture)
         {
 
         }
 
-        public void ClearBuffer(RHIBuffer GPUBuffer)
+        public void ClearBuffer(FRHIBuffer GPUBuffer)
         {
 
         }
 
-        public void CopyBufferToBuffer(RHIBuffer SourceBuffer, RHIBuffer DescBuffer)
+        public void CopyBufferToBuffer(FRHIBuffer SourceBuffer, FRHIBuffer DescBuffer)
         {
 
         }
 
-        public void CopyBufferToTexture(RHIBuffer SourceBuffer, RHITexture DescTexture)
+        public void CopyBufferToTexture(FRHIBuffer SourceBuffer, FRHITexture DescTexture)
         {
 
         }
 
-        public void CopyTextureToBuffer(RHITexture SourceTexture, RHIBuffer DescBuffer)
+        public void CopyTextureToBuffer(FRHITexture SourceTexture, FRHIBuffer DescBuffer)
         {
 
         }
 
-        public void CopyTextureToTexture(RHITexture SourceTexture, RHITexture DescTexture)
+        public void CopyTextureToTexture(FRHITexture SourceTexture, FRHITexture DescTexture)
         {
 
         }
 
-        public void GenerateMipmaps(RHITexture GPUTexture)
+        public void GenerateMipmaps(FRHITexture GPUTexture)
         {
 
         }
 
-        public void BeginTimeQuery(RHITimeQuery TimeQuery)
+        public void BeginTimeQuery(FRHITimeQuery TimeQuery)
         {
             TimeQuery.Begin();
         }
 
-        public void EndTimeQuery(RHITimeQuery TimeQuery)
+        public void EndTimeQuery(FRHITimeQuery TimeQuery)
         {
             TimeQuery.End();
         }
 
-        public float GetTimeQueryResult(RHITimeQuery TimeQuery)
+        public float GetTimeQueryResult(FRHITimeQuery TimeQuery)
         {
             return 1;
             //return TimeQuery.GetQueryResult(NativeCmdQueue.TimestampFrequency);
         }
 
-        public void SetComputePipelineState(RHIComputeShader ComputeShader, RHIComputePipelineState ComputeState)
+        public void SetComputePipelineState(FRHIComputeShader ComputeShader, FRHIComputePipelineState ComputeState)
         {
 
         }
 
-        public void SetComputeSamplerState(RHIComputeShader ComputeShader)
+        public void SetComputeSamplerState(FRHIComputeShader ComputeShader)
         {
 
         }
 
-        public void SetComputeBuffer(RHIComputeShader ComputeShader, RHIBuffer GPUBuffer)
+        public void SetComputeBuffer(FRHIComputeShader ComputeShader, FRHIBuffer GPUBuffer)
         {
 
         }
 
-        public void SetComputeTexture(RHIComputeShader ComputeShader, RHITexture GPUTexture)
+        public void SetComputeTexture(FRHIComputeShader ComputeShader, FRHITexture GPUTexture)
         {
 
         }
 
-        public void DispatchCompute(RHIComputeShader ComputeShader, uint SizeX, uint SizeY, uint SizeZ)
+        public void DispatchCompute(FRHIComputeShader ComputeShader, uint SizeX, uint SizeY, uint SizeZ)
         {
 
         }
 
-        public void DispatchComputeIndirect(RHIComputeShader ComputeShader, RHIBuffer ArgsBuffer, uint ArgsOffset)
+        public void DispatchComputeIndirect(FRHIComputeShader ComputeShader, FRHIBuffer ArgsBuffer, uint ArgsOffset)
         {
 
         }
@@ -126,68 +126,68 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetAccelerationStructure(RHIRayGenShader RayGenShader)
+        public void SetAccelerationStructure(FRHIRayGenShader RayGenShader)
         {
 
         }
 
-        public void SetRayTracePipelineState(RHIRayGenShader RayGenShader, RHIRayTracePipelineState RayTraceState)
+        public void SetRayTracePipelineState(FRHIRayGenShader RayGenShader, FRHIRayTracePipelineState RayTraceState)
         {
 
         }
 
-        public void SetRayTraceSamplerState(RHIRayGenShader RayGenShader)
+        public void SetRayTraceSamplerState(FRHIRayGenShader RayGenShader)
         {
 
         }
 
-        public void SetRayTraceBuffer(RHIRayGenShader RayGenShader, RHIBuffer GPUBuffer)
+        public void SetRayTraceBuffer(FRHIRayGenShader RayGenShader, FRHIBuffer GPUBuffer)
         {
 
         }
 
-        public void SetRayTraceTexture(RHIRayGenShader RayGenShader, RHITexture GPUTexture)
+        public void SetRayTraceTexture(FRHIRayGenShader RayGenShader, FRHITexture GPUTexture)
         {
 
         }
 
-        public void DispatchRay(RHIRayGenShader RayGenShader, uint SizeX, uint SizeY, uint SizeZ)
+        public void DispatchRay(FRHIRayGenShader RayGenShader, uint SizeX, uint SizeY, uint SizeZ)
         {
 
         }
 
-        public void DispatchRayIndirect(RHIRayGenShader RayGenShader, RHIBuffer ArgsBuffer, uint ArgsOffset)
+        public void DispatchRayIndirect(FRHIRayGenShader RayGenShader, FRHIBuffer ArgsBuffer, uint ArgsOffset)
         {
 
         }
 
 
-        public void BeginOcclusionQuery(RHIOcclusionQuery OcclusionQuery)
+        public void BeginOcclusionQuery(FRHIOcclusionQuery OcclusionQuery)
         {
             OcclusionQuery.Begin();
         }
 
-        public void EndOcclusionQuery(RHIOcclusionQuery OcclusionQuery)
+        public void EndOcclusionQuery(FRHIOcclusionQuery OcclusionQuery)
         {
             OcclusionQuery.End();
         }
 
-        public int GetOcclusionQueryResult(RHIOcclusionQuery OcclusionQuery)
+        public int GetOcclusionQueryResult(FRHIOcclusionQuery OcclusionQuery)
         {
             return OcclusionQuery.GetQueryResult();
         }
 
-        public void BeginStatisticsQuery(RHIStatisticsQuery StatisticsQuery)
+        public void BeginStatisticsQuery(FRHIStatisticsQuery StatisticsQuery)
         {
 
         }
 
-        public void EndStatisticsQuery(RHIStatisticsQuery StatisticsQuery)
+        public void EndStatisticsQuery(FRHIStatisticsQuery StatisticsQuery)
         {
 
         }
 
-        public float GetStatisticsQueryResult(RHIStatisticsQuery StatisticsQuery)
+        public float GetStatisticsQueryResult(FRHIStatisticsQuery StatisticsQuery)
         {
             return 1;
         }
@@ -222,12 +222,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void BeginRenderPass(RHITexture[] ColorBuffer, RHITexture DepthBuffer)
+        public void BeginRenderPass(FRHITexture[] ColorBuffer, FRHITexture DepthBuffer)
         {
 
         }
 
-        public void EndRenderPass(RHITexture[] ColorBuffer, RHITexture DepthBuffer)
+        public void EndRenderPass(FRHITexture[] ColorBuffer, FRHITexture DepthBuffer)
         {
 
         }
@@ -252,37 +252,37 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdList.RSSetShadingRate(EShadingRate, CombineMathdo);
         }
 
-        public void SetShadingRateIndirect(RHITexture IndirectTexture)
+        public void SetShadingRateIndirect(FRHITexture IndirectTexture)
         {
             NativeCmdList.RSSetShadingRateImage(IndirectTexture.DefaultResource);
         }
 
-        public void SetGraphicsPipelineState(RHIGraphicsShader GraphicsShader, RHIGraphicsPipelineState GraphcisState)
+        public void SetGraphicsPipelineState(FRHIGraphicsShader GraphicsShader, FRHIGraphicsPipelineState GraphcisState)
         {
 
         }
 
-        public void SetGraphicsSamplerState(RHIGraphicsShader GraphicsShader, string PropertyName)
+        public void SetGraphicsSamplerState(FRHIGraphicsShader GraphicsShader, string PropertyName)
         {
 
         }
 
-        public void SetGraphicsBuffer(RHIGraphicsShader GraphicsShader, string PropertyName, RHIBuffer GPUBuffer)
+        public void SetGraphicsBuffer(FRHIGraphicsShader GraphicsShader, string PropertyName, FRHIBuffer GPUBuffer)
         {
 
         }
 
-        public void SetGraphicsTexture(RHIGraphicsShader GraphicsShader, string PropertyName, RHITexture GPUTexture)
+        public void SetGraphicsTexture(FRHIGraphicsShader GraphicsShader, string PropertyName, FRHITexture GPUTexture)
         {
 
         }
 
-        public void DrawPrimitiveInstance(RHIBuffer IndexBuffer, RHIBuffer VertexBuffer, PrimitiveTopology TopologyType, uint IndexCount, uint InstanceCount)
+        public void DrawPrimitiveInstance(FRHIBuffer IndexBuffer, FRHIBuffer VertexBuffer, PrimitiveTopology TopologyType, uint IndexCount, uint InstanceCount)
         {
 
         }
 
-        public void DrawPrimitiveInstanceIndirect(RHIBuffer IndexBuffer, RHIBuffer VertexBuffer, PrimitiveTopology TopologyType, RHIBuffer ArgsBuffer, uint ArgsOffset)
+        public void DrawPrimitiveInstanceIndirect(FRHIBuffer IndexBuffer, FRHIBuffer VertexBuffer, PrimitiveTopology TopologyType, FRHIBuffer ArgsBuffer, uint ArgsOffset)
         {
 
         }
