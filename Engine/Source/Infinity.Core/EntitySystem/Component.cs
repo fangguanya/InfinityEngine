@@ -18,9 +18,7 @@ namespace InfinityEngine.Core.EntitySystem
 
         protected virtual void OnTransformChanged() { }
 
-        public virtual void OnGameUpdate(float frameTime) { }
-
-        public virtual void OnEditorUpdate(float frameTime) { }
+        public virtual void OnUpdate(float frameTime) { }
 
         public virtual void OnDisable() { }
 
