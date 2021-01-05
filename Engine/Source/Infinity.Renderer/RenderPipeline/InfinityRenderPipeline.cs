@@ -44,6 +44,7 @@ namespace Infinity.Runtime.Render.RenderPipeline
             CmdBuffer.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
             RenderContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);
 
+            //Submit Context
             RenderContext.Submit();
         }
 
