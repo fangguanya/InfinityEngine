@@ -35,32 +35,32 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdList.Close();
         }
 
+        public void ClearBuffer(FRHIBuffer GPUBuffer)
+        {
+        
+        }
+
         public void ClearTexture(FRHITexture GPUTexture)
         {
 
         }
 
-        public void ClearBuffer(FRHIBuffer GPUBuffer)
+        public void CopyBufferToBuffer(FRHIBuffer SrcBuffer, FRHIBuffer DstBuffer)
         {
 
         }
 
-        public void CopyBufferToBuffer(FRHIBuffer SourceBuffer, FRHIBuffer DescBuffer)
+        public void CopyBufferToTexture(FRHIBuffer SrcBuffer, FRHITexture DstTexture)
         {
 
         }
 
-        public void CopyBufferToTexture(FRHIBuffer SourceBuffer, FRHITexture DescTexture)
+        public void CopyTextureToBuffer(FRHITexture SrcTexture, FRHIBuffer DstBuffer)
         {
 
         }
 
-        public void CopyTextureToBuffer(FRHITexture SourceTexture, FRHIBuffer DescBuffer)
-        {
-
-        }
-
-        public void CopyTextureToTexture(FRHITexture SourceTexture, FRHITexture DescTexture)
+        public void CopyTextureToTexture(FRHITexture SrcTexture, FRHITexture DstTexture)
         {
 
         }
@@ -160,7 +160,6 @@ namespace InfinityEngine.Graphics.RHI
         {
 
         }
-
 
         public void BeginOcclusionQuery(FRHIOcclusionQuery OcclusionQuery)
         {

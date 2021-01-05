@@ -16,7 +16,7 @@ namespace InfinityEngine.Core.EntitySystem
 
         public virtual void OnEnable() { }
 
-        protected virtual void OnTransformChanged() { }
+        public virtual void OnTransform() { }
 
         public virtual void OnUpdate(float frameTime) { }
 
