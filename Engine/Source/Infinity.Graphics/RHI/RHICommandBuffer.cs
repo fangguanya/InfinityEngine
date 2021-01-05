@@ -4,11 +4,19 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public enum ECmdBufferExecuteType
+    public enum EExecuteType
     {
-        Execute = 1,
-        WaitFence = 2,
-        WriteFence = 3
+        Signal = 0,
+        Wait = 1,
+        Execute = 2
+    }
+
+    internal struct FExecuteInfo
+    {
+        internal FRHIFence RHIFence;
+        internal EExecuteType ExecuteType;
+        internal FRHICommandBuffer RHICmdBuffer;
+        internal FRHICommandContext TargetContext;
     }
 
     public class FRHICommandBuffer : UObject
@@ -70,6 +78,11 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
+        public void ResourceBarrierTransition()
+        {
+
+        }
+
         public void BeginTimeQuery(FRHITimeQuery TimeQuery)
         {
             TimeQuery.Begin();
@@ -78,12 +91,6 @@ namespace InfinityEngine.Graphics.RHI
         public void EndTimeQuery(FRHITimeQuery TimeQuery)
         {
             TimeQuery.End();
-        }
-
-        public float GetTimeQueryResult(FRHITimeQuery TimeQuery)
-        {
-            return 1;
-            //return TimeQuery.GetQueryResult(NativeCmdQueue.TimestampFrequency);
         }
 
         public void SetComputePipelineState(FRHIComputeShader ComputeShader, FRHIComputePipelineState ComputeState)
@@ -171,11 +178,6 @@ namespace InfinityEngine.Graphics.RHI
             OcclusionQuery.End();
         }
 
-        public int GetOcclusionQueryResult(FRHIOcclusionQuery OcclusionQuery)
-        {
-            return OcclusionQuery.GetQueryResult();
-        }
-
         public void BeginStatisticsQuery(FRHIStatisticsQuery StatisticsQuery)
         {
 
@@ -184,11 +186,6 @@ namespace InfinityEngine.Graphics.RHI
         public void EndStatisticsQuery(FRHIStatisticsQuery StatisticsQuery)
         {
 
-        }
-
-        public float GetStatisticsQueryResult(FRHIStatisticsQuery StatisticsQuery)
-        {
-            return 1;
         }
 
         public void SetViewport()
@@ -292,10 +289,6 @@ namespace InfinityEngine.Graphics.RHI
         }
 
         public void DrawMultiPrimitiveInstanceIndirect()
-        {
-
-        }
-        public void ResourceBarrier()
         {
 
         }

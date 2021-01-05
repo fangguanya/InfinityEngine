@@ -245,7 +245,7 @@ namespace InfinityEngine.Graphics.RHI
             DefaultResource = NativeDevice.CreateCommittedResource(DefaultHeapProperty, HeapFlags.None, DefaultResourceDesc, ResourceStates.Common, null);
 
             // CPUMemory
-            if (UseFlag == EUseFlag.CPURW || UseFlag == EUseFlag.CPUWrite)
+            if (UseFlag == EUseFlag.CPUWrite || UseFlag == EUseFlag.CPURW)
             {
                 HeapProperties UploadHeapProperty;
                 {
@@ -273,7 +273,7 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             // Readback
-            if (UseFlag == EUseFlag.CPURW || UseFlag == EUseFlag.CPURead)
+            if (UseFlag == EUseFlag.CPURead || UseFlag == EUseFlag.CPURW)
             {
                 HeapProperties ReadbackHeapProperties;
                 {

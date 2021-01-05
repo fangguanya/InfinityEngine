@@ -5,17 +5,27 @@ using InfinityEngine.Core.Container;
 
 namespace InfinityEngine.Graphics.RHI
 {
+    public enum EContextType
+    {
+        Copy = 0,
+        Compute = 1,
+        Graphics = 2
+    }
+
     public class FRHIRenderContext : UObject
     {
         internal FRHIDevice Device;
         internal FRHICommandContext CopyContext;
         internal FRHICommandContext ComputeContext;
         internal FRHICommandContext GraphicsContext;
+        internal TArray<FExecuteInfo> ExecuteInfoList;
         internal FRHIDescriptorHeapFactory CbvSrvUavDescriptorFactory;
 
         public FRHIRenderContext() : base()
         {
             Device = new FRHIDevice();
+
+            ExecuteInfoList = new TArray<FExecuteInfo>(64);
 
             CopyContext = new FRHICommandContext(Device.NativeDevice, CommandListType.Copy);
             ComputeContext = new FRHICommandContext(Device.NativeDevice, CommandListType.Compute);
@@ -24,17 +34,86 @@ namespace InfinityEngine.Graphics.RHI
             CbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(Device.NativeDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
-        public void ExecuteCmdBuffer(FRHICommandBuffer CmdBuffer)
+        public void ExecuteCmdBuffer(EContextType ContextType, FRHICommandBuffer CmdBuffer)
         {
-
+            FExecuteInfo ExecuteInfo;
+            ExecuteInfo.RHIFence = null;
+            ExecuteInfo.RHICmdBuffer = CmdBuffer;
+            ExecuteInfo.ExecuteType = EExecuteType.Execute;
+            ExecuteInfo.TargetContext = SelectContext(ContextType);
+            ExecuteInfoList.Add(ExecuteInfo);
         }
 
-        public void ExecuteCmdBufferASync(FRHICommandBuffer CmdBuffer)
+        public void WritFence(EContextType ContextType, FRHIFence GPUFence)
         {
+            FExecuteInfo ExecuteInfo;
+            ExecuteInfo.RHIFence = GPUFence;
+            ExecuteInfo.RHICmdBuffer = null;
+            ExecuteInfo.ExecuteType = EExecuteType.Signal;
+            ExecuteInfo.TargetContext = SelectContext(ContextType);
+            ExecuteInfoList.Add(ExecuteInfo);
+        }
 
+        public void WaitFence(EContextType ContextType, FRHIFence GPUFence)
+        {
+            FExecuteInfo ExecuteInfo;
+            ExecuteInfo.RHIFence = GPUFence;
+            ExecuteInfo.RHICmdBuffer = null;
+            ExecuteInfo.ExecuteType = EExecuteType.Wait;
+            ExecuteInfo.TargetContext = SelectContext(ContextType);
+            ExecuteInfoList.Add(ExecuteInfo);
+        }
+
+        private FRHICommandContext SelectContext(EContextType ContextType)
+        {
+            FRHICommandContext OutContext = GraphicsContext;
+
+            switch (ContextType)
+            {
+                case EContextType.Copy:
+                    OutContext = CopyContext;
+                    break;
+
+                case EContextType.Compute:
+                    OutContext = ComputeContext;
+                    break;
+
+                case EContextType.Graphics:
+                    OutContext = GraphicsContext;
+                    break;
+            }
+
+            return OutContext;
         }
 
         public void Submit()
+        {
+            for(int i = 0; i < ExecuteInfoList.size; i++)
+            {
+                FExecuteInfo ExecuteInfo = ExecuteInfoList[i];
+                switch (ExecuteInfo.ExecuteType)
+                {
+                    case EExecuteType.Signal:
+                        ExecuteInfo.TargetContext.SignalQueue(ExecuteInfo.RHIFence);
+                        break;
+
+                    case EExecuteType.Wait:
+                        ExecuteInfo.TargetContext.WaitQueue(ExecuteInfo.RHIFence);
+                        break;
+
+                    case EExecuteType.Execute:
+                        ExecuteInfo.TargetContext.ExecuteQueue(ExecuteInfo.RHICmdBuffer);
+                        break;
+                }
+            }
+
+            ExecuteInfoList.Clear();
+
+            ComputeContext.Flush();
+            GraphicsContext.Flush();
+        }
+
+        public void CreateViewport()
         {
 
         }
@@ -42,11 +121,6 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIFence CreateGPUFence()
         {
             return new FRHIFence(Device.NativeDevice);
-        }
-
-        public void CreateViewport()
-        {
-
         }
 
         public FRHITimeQuery CreateTimeQuery(FRHICommandBuffer CmdBuffer)
@@ -94,15 +168,15 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public FRHIBuffer CreateBuffer(ulong InCount, ulong InStride, EUseFlag InUseFlag, EBufferType InBufferType)
+        public FRHIBuffer CreateBuffer(ulong Count, ulong Stride, EUseFlag UseFlag, EBufferType BufferType, FRHICommandBuffer CmdBuffer)
         {
-            FRHIBuffer GPUBuffer = new FRHIBuffer(Device.NativeDevice, null, InUseFlag, InBufferType, InCount, InStride);
+            FRHIBuffer GPUBuffer = new FRHIBuffer(Device.NativeDevice, CmdBuffer.NativeCmdList, UseFlag, BufferType, Count, Stride);
             return GPUBuffer;
         }
 
-        public FRHITexture CreateTexture(EUseFlag InUseFlag, ETextureType InTextureType)
+        public FRHITexture CreateTexture(EUseFlag UseFlag, ETextureType TextureType, FRHICommandBuffer CmdBuffer)
         {
-            FRHITexture Texture = new FRHITexture(Device.NativeDevice, null, InUseFlag, InTextureType);
+            FRHITexture Texture = new FRHITexture(Device.NativeDevice, CmdBuffer.NativeCmdList, UseFlag, TextureType);
             return Texture;
         }
 
@@ -179,7 +253,7 @@ namespace InfinityEngine.Graphics.RHI
             return UAV;
         }
 
-        public FRHIResourceViewRange CreateRHIResourceViewRange(int Count)
+        public FRHIResourceViewRange CreateResourceViewRange(int Count)
         {
             return new FRHIResourceViewRange(Device.NativeDevice, CbvSrvUavDescriptorFactory, Count);
         }

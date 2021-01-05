@@ -18,33 +18,33 @@ namespace Infinity.Runtime.Render.RenderPipeline
         protected override void Render(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer)
         {
             //ResourceBind Example
-            FRHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+            FRHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured, CmdBuffer);
             FRHIShaderResourceView SRV = RenderContext.CreateShaderResourceView(Buffer);
             FRHIUnorderedAccessView UAV = RenderContext.CreateUnorderedAccessView(Buffer);
 
-            FRHIResourceViewRange ResourceViewRange = RenderContext.CreateRHIResourceViewRange(2);
+            FRHIResourceViewRange ResourceViewRange = RenderContext.CreateResourceViewRange(2);
             ResourceViewRange.SetShaderResourceView(0, SRV);
             ResourceViewRange.SetUnorderedAccessView(1, UAV);
 
 
             //ASyncCompute Example
-            /*RHIFence ComputeFence = RenderContext.CreateComputeFence();
-            RHIFence GraphicsFence = RenderContext.CreateGraphicsFence();
+            FRHIFence ComputeFence = RenderContext.CreateGPUFence();
+            FRHIFence GraphicsFence = RenderContext.CreateGPUFence();
 
             CmdBuffer.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-            CmdBuffer.WriteFence(GraphicsFence);
-            RenderContext.ExecuteCmdBuffer(CmdBuffer);
+            RenderContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);
+            RenderContext.WritFence(EContextType.Graphics, GraphicsFence);
 
-            CmdBuffer.WaitFence(GraphicsFence);
-            CmdBuffer.DispatchCompute();
-            CmdBuffer.WriteFence(ComputeFence);
-            RenderContext.ExecuteCmdBufferASync(CmdBuffer);
+            RenderContext.WaitFence(EContextType.Compute, GraphicsFence);
+            CmdBuffer.DispatchCompute(null, 16, 16, 1);
+            RenderContext.ExecuteCmdBuffer(EContextType.Compute, CmdBuffer);
+            RenderContext.WritFence(EContextType.Compute, ComputeFence);
 
-            CmdBuffer.WaitFence(ComputeFence);
-            CmdBuffer.DrawPrimitiveInstance();
-            RenderContext.ExecuteCmdBuffer(CmdBuffer);
+            RenderContext.WaitFence(EContextType.Graphics, ComputeFence);
+            CmdBuffer.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
+            RenderContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);
 
-            RenderContext.Submit();*/
+            RenderContext.Submit();
         }
 
         protected override void DisposeManaged()

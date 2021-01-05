@@ -20,7 +20,17 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdQueue = NativeDevice.CreateCommandQueue(CommandBufferType);
         }
 
-        public void ExecuteCmdBuffer(FRHICommandBuffer CmdBuffer, ECmdBufferExecuteType CmdBufferExecuteType = ECmdBufferExecuteType.Execute)
+        public void SignalQueue(FRHIFence GPUFence)
+        {
+            GPUFence.Signal(NativeCmdQueue);
+        }
+
+        public void WaitQueue(FRHIFence GPUFence)
+        {
+            GPUFence.WaitOnGPU(NativeCmdQueue);
+        }
+
+        public void ExecuteQueue(FRHICommandBuffer CmdBuffer)
         {
             CmdBuffer.Close();
             NativeCmdQueue.ExecuteCommandList(CmdBuffer.NativeCmdList);
