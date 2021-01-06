@@ -20,6 +20,8 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdQueue = NativeDevice.CreateCommandQueue(CommandBufferType);
         }
 
+        public static implicit operator ID3D12CommandQueue(FRHICommandContext RHICmdContext) { return RHICmdContext.NativeCmdQueue; }
+
         public void SignalQueue(FRHIFence GPUFence)
         {
             GPUFence.Signal(NativeCmdQueue);

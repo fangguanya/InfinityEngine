@@ -13,17 +13,13 @@ namespace InfinityEngine.Graphics.RHI
 		private ID3D12Resource Timestamp_GPUResult;
 		private ID3D12Resource Timestamp_CPUResult;
 
-		private ID3D12GraphicsCommandList6 NativeCmdList;
-
-		public FRHITimeQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
+		public FRHITimeQuery(ID3D12Device6 NativeDevice) : base()
 		{
-			NativeCmdList = InNativeCmdList;
-
 			QueryHeapDescription QueryHeapDesc;
 			QueryHeapDesc.Type = QueryHeapType.Timestamp;
 			QueryHeapDesc.Count = 2;
 			QueryHeapDesc.NodeMask = 0;
-			Timestamp_Heap = InNativeDevice.CreateQueryHeap<ID3D12QueryHeap>(QueryHeapDesc);
+			Timestamp_Heap = NativeDevice.CreateQueryHeap<ID3D12QueryHeap>(QueryHeapDesc);
 
 
             HeapProperties GPUResultProperties;
@@ -48,7 +44,7 @@ namespace InfinityEngine.Graphics.RHI
 				GPUResultDesc.Layout = TextureLayout.RowMajor;
 				GPUResultDesc.Flags = ResourceFlags.None;
             }
-            Timestamp_GPUResult = InNativeDevice.CreateCommittedResource(GPUResultProperties, HeapFlags.None, GPUResultDesc, ResourceStates.Predication, null);
+            Timestamp_GPUResult = NativeDevice.CreateCommittedResource(GPUResultProperties, HeapFlags.None, GPUResultDesc, ResourceStates.Predication, null);
 
 
             HeapProperties CPUResultProperties;
@@ -73,15 +69,15 @@ namespace InfinityEngine.Graphics.RHI
                 CPUResultDesc.Layout = TextureLayout.RowMajor;
                 CPUResultDesc.Flags = ResourceFlags.None;
             }
-            Timestamp_CPUResult = InNativeDevice.CreateCommittedResource(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
+            Timestamp_CPUResult = NativeDevice.CreateCommittedResource(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
         }
 
-		public void Begin()
+		public void Begin(ID3D12GraphicsCommandList6 NativeCmdList)
 		{
 			NativeCmdList.EndQuery(Timestamp_Heap, QueryType.Timestamp, 0);
 		}
 
-		public void End()
+		public void End(ID3D12GraphicsCommandList6 NativeCmdList)
 		{
 			NativeCmdList.EndQuery(Timestamp_Heap, QueryType.Timestamp, 1);
 
@@ -94,7 +90,6 @@ namespace InfinityEngine.Graphics.RHI
 
 		public float GetQueryResult(float TimestampFrequency)
 		{
-			// GetData
 			float[] Timestamp = new float[2];
 			IntPtr Timeesult_Ptr = Timestamp_CPUResult.Map(0);
 			Timeesult_Ptr.CopyTo(Timestamp.AsSpan());
@@ -123,7 +118,7 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIStatisticsQuery : UObject
     {
-        public FRHIStatisticsQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
+        public FRHIStatisticsQuery(ID3D12Device6 NativeDevice) : base()
         {
 
         }
@@ -146,17 +141,13 @@ namespace InfinityEngine.Graphics.RHI
 		private ID3D12Resource Occlusion_CPUResult;
 		private ID3D12Resource Occlusion_GPUResult;
 
-		private ID3D12GraphicsCommandList6 NativeCmdList;
-
-		public FRHIOcclusionQuery(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCmdList) : base()
+		public FRHIOcclusionQuery(ID3D12Device6 NativeDevice) : base()
 		{
-			NativeCmdList = InNativeCmdList;
-
 			QueryHeapDescription QueryHeapDesc;
 			QueryHeapDesc.Type = QueryHeapType.Occlusion;
 			QueryHeapDesc.Count = 1;
 			QueryHeapDesc.NodeMask = 0;
-			Occlusion_Heap = InNativeDevice.CreateQueryHeap<ID3D12QueryHeap>(QueryHeapDesc);
+			Occlusion_Heap = NativeDevice.CreateQueryHeap<ID3D12QueryHeap>(QueryHeapDesc);
 
 
 			HeapProperties GPUResultProperties;
@@ -181,7 +172,7 @@ namespace InfinityEngine.Graphics.RHI
 				GPUResultDesc.Layout = TextureLayout.RowMajor;
 				GPUResultDesc.Flags = ResourceFlags.None;
 			}
-			Occlusion_GPUResult = InNativeDevice.CreateCommittedResource(GPUResultProperties, HeapFlags.None, GPUResultDesc, ResourceStates.Predication, null);
+			Occlusion_GPUResult = NativeDevice.CreateCommittedResource(GPUResultProperties, HeapFlags.None, GPUResultDesc, ResourceStates.Predication, null);
 
 
             HeapProperties CPUResultProperties;
@@ -206,17 +197,17 @@ namespace InfinityEngine.Graphics.RHI
 				CPUResultDesc.Layout = TextureLayout.RowMajor;
 				CPUResultDesc.Flags = ResourceFlags.None;
             }
-			Occlusion_CPUResult = InNativeDevice.CreateCommittedResource(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
+			Occlusion_CPUResult = NativeDevice.CreateCommittedResource(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
         }
 
-		public void Begin()
+		public void Begin(ID3D12GraphicsCommandList6 NativeCmdList)
 		{
 			NativeCmdList.BeginQuery(Occlusion_Heap, QueryType.Occlusion, 0);
 		}
 
-		public void End()
+		public void End(ID3D12GraphicsCommandList6 NativeCmdList)
 		{
-			NativeCmdList.EndQuery(Occlusion_Heap, QueryType.Timestamp, 0);
+			NativeCmdList.EndQuery(Occlusion_Heap, QueryType.Occlusion, 0);
 
 
             NativeCmdList.ResourceBarrierTransition(Occlusion_GPUResult, ResourceStates.Predication, ResourceStates.CopyDestination, 0);

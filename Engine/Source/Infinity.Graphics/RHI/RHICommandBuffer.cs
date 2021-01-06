@@ -32,6 +32,8 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdList = NativeDevice.CreateCommandList<ID3D12GraphicsCommandList6>(0, CommandBufferType, NativeCmdAllocator, null);
         }
 
+        public static implicit operator ID3D12GraphicsCommandList6(FRHICommandBuffer RHICmdBuffer) { return RHICmdBuffer.NativeCmdList; }
+
         public void Reset()
         {
             NativeCmdAllocator.Reset();
@@ -43,12 +45,12 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdList.Close();
         }
 
-        public void ClearBuffer(FRHIBuffer GPUBuffer)
+        public void ClearBuffer(FRHIBuffer Buffer)
         {
         
         }
 
-        public void ClearTexture(FRHITexture GPUTexture)
+        public void ClearTexture(FRHITexture Texture)
         {
 
         }
@@ -73,24 +75,24 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void GenerateMipmaps(FRHITexture GPUTexture)
+        public void GenerateMipmaps(FRHITexture Texture)
         {
 
         }
 
-        public void ResourceBarrierTransition()
+        public void TransitionResource()
         {
 
         }
 
         public void BeginTimeQuery(FRHITimeQuery TimeQuery)
         {
-            TimeQuery.Begin();
+            TimeQuery.Begin(NativeCmdList);
         }
 
         public void EndTimeQuery(FRHITimeQuery TimeQuery)
         {
-            TimeQuery.End();
+            TimeQuery.End(NativeCmdList);
         }
 
         public void SetComputePipelineState(FRHIComputeShader ComputeShader, FRHIComputePipelineState ComputeState)
@@ -103,12 +105,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetComputeBuffer(FRHIComputeShader ComputeShader, FRHIBuffer GPUBuffer)
+        public void SetComputeBuffer(FRHIComputeShader ComputeShader, FRHIBuffer Buffer)
         {
 
         }
 
-        public void SetComputeTexture(FRHIComputeShader ComputeShader, FRHITexture GPUTexture)
+        public void SetComputeTexture(FRHIComputeShader ComputeShader, FRHITexture Texture)
         {
 
         }
@@ -148,12 +150,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetRayTraceBuffer(FRHIRayGenShader RayGenShader, FRHIBuffer GPUBuffer)
+        public void SetRayTraceBuffer(FRHIRayGenShader RayGenShader, FRHIBuffer Buffer)
         {
 
         }
 
-        public void SetRayTraceTexture(FRHIRayGenShader RayGenShader, FRHITexture GPUTexture)
+        public void SetRayTraceTexture(FRHIRayGenShader RayGenShader, FRHITexture Texture)
         {
 
         }
@@ -170,12 +172,12 @@ namespace InfinityEngine.Graphics.RHI
 
         public void BeginOcclusionQuery(FRHIOcclusionQuery OcclusionQuery)
         {
-            OcclusionQuery.Begin();
+            OcclusionQuery.Begin(NativeCmdList);
         }
 
         public void EndOcclusionQuery(FRHIOcclusionQuery OcclusionQuery)
         {
-            OcclusionQuery.End();
+            OcclusionQuery.End(NativeCmdList);
         }
 
         public void BeginStatisticsQuery(FRHIStatisticsQuery StatisticsQuery)
@@ -218,12 +220,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void BeginRenderPass(FRHITexture[] ColorBuffer, FRHITexture DepthBuffer)
+        public void BeginRenderPass(FRHITexture DepthBuffer, params FRHITexture[] ColorBuffer)
         {
 
         }
 
-        public void EndRenderPass(FRHITexture[] ColorBuffer, FRHITexture DepthBuffer)
+        public void EndRenderPass(FRHITexture DepthBuffer, params FRHITexture[] ColorBuffer)
         {
 
         }
@@ -263,12 +265,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetGraphicsBuffer(FRHIGraphicsShader GraphicsShader, string PropertyName, FRHIBuffer GPUBuffer)
+        public void SetGraphicsBuffer(FRHIGraphicsShader GraphicsShader, string PropertyName, FRHIBuffer Buffer)
         {
 
         }
 
-        public void SetGraphicsTexture(FRHIGraphicsShader GraphicsShader, string PropertyName, FRHITexture GPUTexture)
+        public void SetGraphicsTexture(FRHIGraphicsShader GraphicsShader, string PropertyName, FRHITexture Texture)
         {
 
         }

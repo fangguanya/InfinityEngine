@@ -18,7 +18,8 @@ namespace Infinity.Runtime.Render.RenderPipeline
         protected override void Render(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer)
         {
             //ResourceBind Example
-            FRHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured, CmdBuffer);
+            FRHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+
             FRHIShaderResourceView SRV = RenderContext.CreateShaderResourceView(Buffer);
             FRHIUnorderedAccessView UAV = RenderContext.CreateUnorderedAccessView(Buffer);
 

@@ -21,6 +21,8 @@ namespace InfinityEngine.Graphics.RHI
             NativeDevice.QueryInterface<ID3D12Device6>();
         }
 
+        public static implicit operator ID3D12Device6(FRHIDevice RHIDevice) { return RHIDevice.NativeDevice; }
+
         protected override void DisposeManaged()
         {
 

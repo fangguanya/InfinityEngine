@@ -151,40 +151,26 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIResource : UObject
     {
-        public string Name;
-
         protected EUseFlag UseFlag;
-        protected EResourceType ResourceType;
         protected Format GraphicsFormat;
+        protected EResourceType ResourceType;
 
         internal ID3D12Resource DefaultResource;
         internal ID3D12Resource UploadResource;
         internal ID3D12Resource ReadbackResource;
 
-        internal FRHIShaderResourceView SRV;
-        internal FRHIUnorderedAccessView UAV;
 
-        protected ID3D12Device6 NativeDevice;
-        protected ID3D12GraphicsCommandList6 NativeCopyList;
-
-
-        public FRHIResource(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCopyList, EUseFlag InUseFlag) : base()
+        public FRHIResource(EUseFlag InUseFlag) : base()
         {
             UseFlag = InUseFlag;
-            NativeDevice = InNativeDevice;
-            NativeCopyList = InNativeCopyList;
         }
 
         protected override void DisposeManaged()
         {
-            UAV.Release();
         }
 
         protected override void DisposeUnManaged()
         {
-            NativeDevice = null;
-            NativeCopyList = null;
-
             DefaultResource.Release();
             DefaultResource.Dispose();
 
@@ -208,11 +194,7 @@ namespace InfinityEngine.Graphics.RHI
         internal ulong Stride;
         internal EBufferType BufferType;
 
-        internal FRHIIndexBufferView IBV;
-        internal FRHIVertexBufferView VBV;
-        internal FRHIConstantBufferView CBV;
-
-        internal FRHIBuffer(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InNativeCopyList, EUseFlag InUseFlag, EBufferType InBufferType, ulong InCount, ulong InStride) : base(InNativeDevice, InNativeCopyList, InUseFlag)
+        internal FRHIBuffer(ID3D12Device6 NativeDevice, EUseFlag InUseFlag, EBufferType InBufferType, ulong InCount, ulong InStride) : base(InUseFlag)
         {
             Count = InCount;
             Stride = InStride;
@@ -301,32 +283,30 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public unsafe void GetData<T>(T[] Data) where T : unmanaged
+        public unsafe void GetData<T>(ID3D12GraphicsCommandList6 NativeCopyList, T[] Data) where T : unmanaged
         {
-            if (UseFlag == EUseFlag.CPURW || UseFlag == EUseFlag.CPURead)
-            {
-                NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                NativeCopyList.CopyBufferRegion(ReadbackResource, 0, DefaultResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
-                NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopySource, ResourceStates.Common);
+            if (UseFlag != EUseFlag.CPURW || UseFlag != EUseFlag.CPURead) { return; }
 
-                IntPtr ReadbackResourcePtr = ReadbackResource.Map(0);
-                ReadbackResourcePtr.CopyTo(Data.AsSpan());
-                ReadbackResource.Unmap(0);
-            }
+            NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.Common, ResourceStates.CopySource);
+            NativeCopyList.CopyBufferRegion(ReadbackResource, 0, DefaultResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
+            NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopySource, ResourceStates.Common);
+
+            IntPtr ReadbackResourcePtr = ReadbackResource.Map(0);
+            ReadbackResourcePtr.CopyTo(Data.AsSpan());
+            ReadbackResource.Unmap(0);
         }
 
-        public unsafe void SetData<T>(T[] Data) where T : unmanaged
+        public unsafe void SetData<T>(ID3D12GraphicsCommandList6 NativeCopyList, T[] Data) where T : unmanaged
         {
-            if (UseFlag == EUseFlag.CPURW || UseFlag == EUseFlag.CPUWrite)
-            {
-                IntPtr UploadResourcePtr = UploadResource.Map(0);
-                Data.AsSpan().CopyTo(UploadResourcePtr);
-                UploadResource.Unmap(0);
+            if (UseFlag != EUseFlag.CPURW || UseFlag != EUseFlag.CPUWrite) { return; }
 
-                NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                NativeCopyList.CopyBufferRegion(DefaultResource, 0, UploadResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
-                NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopyDestination, ResourceStates.GenericRead);
-            }
+            IntPtr UploadResourcePtr = UploadResource.Map(0);
+            Data.AsSpan().CopyTo(UploadResourcePtr);
+            UploadResource.Unmap(0);
+
+            NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+            NativeCopyList.CopyBufferRegion(DefaultResource, 0, UploadResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
+            NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopyDestination, ResourceStates.GenericRead);
         }
 
         protected override void DisposeManaged()
@@ -344,10 +324,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal ETextureType TextureType;
 
-        internal FRHIDeptnStencilView DSV;
-        internal FRHIRenderTargetView RTV;
-
-        public FRHITexture(ID3D12Device6 InNativeDevice, ID3D12GraphicsCommandList6 InCopyCmdList, EUseFlag InUseFlag, ETextureType InTextureType) : base(InNativeDevice, InCopyCmdList, InUseFlag)
+        public FRHITexture(ID3D12Device6 NativeDevice, EUseFlag InUseFlag, ETextureType InTextureType) : base(InUseFlag)
         {
             TextureType = InTextureType;
             ResourceType = EResourceType.Texture;
@@ -366,8 +343,6 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIResourceViewRange : UObject
     {
-        public string name;
-
         protected int RangeSize;
         protected int DescriptorIndex;
 
@@ -416,9 +391,6 @@ namespace InfinityEngine.Graphics.RHI
 
     internal sealed class FRHIMemoryHeapFactory : UObject
     {
-        internal string name;
-
-
         internal FRHIMemoryHeapFactory(ID3D12Device6 InNativeDevice, int HeapCount) : base()
         {
 
