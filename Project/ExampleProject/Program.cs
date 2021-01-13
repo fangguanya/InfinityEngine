@@ -46,6 +46,22 @@ namespace ExampleProject
         }
     }
 
+    public class MyClass
+    {
+        public float A;
+
+        public MyClass(float Value)
+        {
+            A = Value;
+            Console.WriteLine("Spawn");
+        }
+
+        ~MyClass()
+        {
+            Console.WriteLine("Destroy");
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -55,7 +71,7 @@ namespace ExampleProject
             App.Run();*/
 
             // TaskExample
-            int[] IntArray = new int[10];
+            /*int[] IntArray = new int[10];
 
             FTestTask TaskA;
             TaskA.SleepTime = 0;
@@ -79,7 +95,7 @@ namespace ExampleProject
             ChildTask.TArray = IntArray;
             ChildTask.Schedule(TaskRefC).Wait();
 
-            Console.WriteLine("ReadKey");
+            Console.WriteLine("ReadKey");*/
 
             // SerializeExample
             /*string path = @"d:\test.material";
@@ -90,6 +106,15 @@ namespace ExampleProject
             string ReadContext = System.IO.File.ReadAllText(path);
             Console.WriteLine(ReadContext);*/
 
+            // GC Test
+            MyClass Class = new MyClass(1);
+            MyClass ClassRef = Class;
+            ClassRef.A = 2;
+            ClassRef = null;
+            //Class = null;
+            GC.Collect();
+
+            Console.ReadKey();
             Console.ReadKey();
         }
 

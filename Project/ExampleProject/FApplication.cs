@@ -12,6 +12,9 @@ namespace ExampleProject
         public Form Window;
         public string Name;
 
+        MyClass Class;
+        MyClass ClassRef;
+
         public FApplication(string InName, int Width, int Height)
         {
             bRun = true;
@@ -32,6 +35,13 @@ namespace ExampleProject
         {
             Window.Show();
             Window.Update();
+
+            // GC Test
+            Class = new MyClass(1);
+            ClassRef = Class;
+            ClassRef.A = 2;
+            ClassRef = null;
+            Class = null;
         }
 
         public void Run()
