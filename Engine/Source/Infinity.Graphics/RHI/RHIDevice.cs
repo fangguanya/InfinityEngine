@@ -17,7 +17,7 @@ namespace InfinityEngine.Graphics.RHI
             IDXGIAdapter1 NativeAdapter;
             NativeFactory.EnumAdapters1(0, out NativeAdapter);
 
-            D3D12.D3D12CreateDevice<ID3D12Device6>(NativeAdapter, FeatureLevel.Level_12_1, out NativeDevice);
+            D3D12.D3D12CreateDevice<ID3D12Device6>(NativeAdapter, FeatureLevel.Level_12_2, out NativeDevice);
             NativeDevice.QueryInterface<ID3D12Device6>();
         }
 
