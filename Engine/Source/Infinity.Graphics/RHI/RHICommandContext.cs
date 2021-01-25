@@ -17,7 +17,7 @@ namespace InfinityEngine.Graphics.RHI
         {
             FenceEvent = new ManualResetEvent(false);
             FrameFence = new FRHIFence(NativeDevice);
-            NativeCmdQueue = NativeDevice.CreateCommandQueue(CommandBufferType);
+            NativeCmdQueue = NativeDevice.CreateCommandQueue<ID3D12CommandQueue>(CommandBufferType);
         }
 
         public static implicit operator ID3D12CommandQueue(FRHICommandContext RHICmdContext) { return RHICmdContext.NativeCmdQueue; }

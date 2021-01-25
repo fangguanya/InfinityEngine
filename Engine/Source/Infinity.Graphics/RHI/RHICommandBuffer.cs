@@ -28,7 +28,7 @@ namespace InfinityEngine.Graphics.RHI
         public FRHICommandBuffer(string InName, ID3D12Device6 NativeDevice, CommandListType CommandBufferType)
         {
             name = InName;
-            NativeCmdAllocator = NativeDevice.CreateCommandAllocator(CommandBufferType);
+            NativeCmdAllocator = NativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>(CommandBufferType);
             NativeCmdList = NativeDevice.CreateCommandList<ID3D12GraphicsCommandList6>(0, CommandBufferType, NativeCmdAllocator, null);
         }
 

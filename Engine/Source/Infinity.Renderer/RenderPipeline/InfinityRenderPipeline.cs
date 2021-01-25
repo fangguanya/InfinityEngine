@@ -10,12 +10,12 @@ namespace Infinity.Runtime.Render.RenderPipeline
 
         }
 
-        protected override void Init(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer)
+        protected override void Init(FRHIRenderContext RenderContext)
         {
 
         }
 
-        protected override void Render(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer)
+        protected override void Render(FRHIRenderContext RenderContext)
         {
             //ResourceBind Example
             FRHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
@@ -29,7 +29,7 @@ namespace Infinity.Runtime.Render.RenderPipeline
 
 
             //ASyncCompute Example
-            FRHIFence ComputeFence = RenderContext.CreateGPUFence();
+            /*FRHIFence ComputeFence = RenderContext.CreateGPUFence();
             FRHIFence GraphicsFence = RenderContext.CreateGPUFence();
 
             //Pass-A in GraphicsQueue
@@ -54,7 +54,7 @@ namespace Infinity.Runtime.Render.RenderPipeline
             //Pass-E in GraphicsQueue and Wait Pass-C
             RenderContext.WaitFence(EContextType.Graphics, ComputeFence);
             CmdBuffer.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
-            RenderContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);
+            RenderContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);*/
 
             //Submit Context
             RenderContext.Submit();

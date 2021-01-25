@@ -224,7 +224,7 @@ namespace InfinityEngine.Graphics.RHI
                 DefaultResourceDesc.Layout = TextureLayout.RowMajor;
                 DefaultResourceDesc.Flags = ResourceFlags.None;
             }
-            DefaultResource = NativeDevice.CreateCommittedResource(DefaultHeapProperty, HeapFlags.None, DefaultResourceDesc, ResourceStates.Common, null);
+            DefaultResource = NativeDevice.CreateCommittedResource<ID3D12Resource>(DefaultHeapProperty, HeapFlags.None, DefaultResourceDesc, ResourceStates.Common, null);
 
             // CPUMemory
             if (UseFlag == EUseFlag.CPUWrite || UseFlag == EUseFlag.CPURW)
@@ -251,7 +251,7 @@ namespace InfinityEngine.Graphics.RHI
                     UploadResourceDesc.Layout = TextureLayout.RowMajor;
                     UploadResourceDesc.Flags = ResourceFlags.None;
                 }
-                UploadResource = NativeDevice.CreateCommittedResource(UploadHeapProperty, HeapFlags.None, UploadResourceDesc, ResourceStates.GenericRead, null);
+                UploadResource = NativeDevice.CreateCommittedResource<ID3D12Resource>(UploadHeapProperty, HeapFlags.None, UploadResourceDesc, ResourceStates.GenericRead, null);
             }
 
             // Readback
@@ -279,7 +279,7 @@ namespace InfinityEngine.Graphics.RHI
                     ReadbackResourceDesc.Layout = TextureLayout.RowMajor;
                     ReadbackResourceDesc.Flags = ResourceFlags.None;
                 }
-                ReadbackResource = NativeDevice.CreateCommittedResource(ReadbackHeapProperties, HeapFlags.None, ReadbackResourceDesc, ResourceStates.CopyDestination, null);
+                ReadbackResource = NativeDevice.CreateCommittedResource<ID3D12Resource>(ReadbackHeapProperties, HeapFlags.None, ReadbackResourceDesc, ResourceStates.CopyDestination, null);
             }
         }
 
@@ -409,8 +409,6 @@ namespace InfinityEngine.Graphics.RHI
 
     internal class FRHIDescriptorHeapFactory : UObject
     {
-        internal string name;
-
         protected int DescriptorSize;
 
         protected ID3D12Device6 NativeDevice;
@@ -425,10 +423,10 @@ namespace InfinityEngine.Graphics.RHI
             DescriptorSize = InNativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
 
             DescriptorHeapDescription CPUDescriptorHeapDescription = new DescriptorHeapDescription(InType, DescriptorCount, DescriptorHeapFlags.ShaderVisible);
-            CPUDescriptorHeap = InNativeDevice.CreateDescriptorHeap(CPUDescriptorHeapDescription);
+            CPUDescriptorHeap = InNativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(CPUDescriptorHeapDescription);
 
             DescriptorHeapDescription GPUDescriptorHeapDescription = new DescriptorHeapDescription(InType, DescriptorCount, DescriptorHeapFlags.None);
-            GPUDescriptorHeap = InNativeDevice.CreateDescriptorHeap(GPUDescriptorHeapDescription);
+            GPUDescriptorHeap = InNativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(GPUDescriptorHeapDescription);
         }
 
         protected static DescriptorHeapType GetDescriptorType(EDescriptorType DescriptorType)

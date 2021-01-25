@@ -44,7 +44,7 @@ namespace InfinityEngine.Graphics.RHI
 				GPUResultDesc.Layout = TextureLayout.RowMajor;
 				GPUResultDesc.Flags = ResourceFlags.None;
             }
-            Timestamp_GPUResult = NativeDevice.CreateCommittedResource(GPUResultProperties, HeapFlags.None, GPUResultDesc, ResourceStates.Predication, null);
+            Timestamp_GPUResult = NativeDevice.CreateCommittedResource<ID3D12Resource>(GPUResultProperties, HeapFlags.None, GPUResultDesc, ResourceStates.Predication, null);
 
 
             HeapProperties CPUResultProperties;
@@ -69,7 +69,7 @@ namespace InfinityEngine.Graphics.RHI
                 CPUResultDesc.Layout = TextureLayout.RowMajor;
                 CPUResultDesc.Flags = ResourceFlags.None;
             }
-            Timestamp_CPUResult = NativeDevice.CreateCommittedResource(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
+            Timestamp_CPUResult = NativeDevice.CreateCommittedResource<ID3D12Resource>(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
         }
 
 		public void Begin(ID3D12GraphicsCommandList6 NativeCmdList)
@@ -172,7 +172,7 @@ namespace InfinityEngine.Graphics.RHI
 				GPUResultDesc.Layout = TextureLayout.RowMajor;
 				GPUResultDesc.Flags = ResourceFlags.None;
 			}
-			Occlusion_GPUResult = NativeDevice.CreateCommittedResource(GPUResultProperties, HeapFlags.None, GPUResultDesc, ResourceStates.Predication, null);
+			Occlusion_GPUResult = NativeDevice.CreateCommittedResource<ID3D12Resource>(GPUResultProperties, HeapFlags.None, GPUResultDesc, ResourceStates.Predication, null);
 
 
             HeapProperties CPUResultProperties;
@@ -197,7 +197,7 @@ namespace InfinityEngine.Graphics.RHI
 				CPUResultDesc.Layout = TextureLayout.RowMajor;
 				CPUResultDesc.Flags = ResourceFlags.None;
             }
-			Occlusion_CPUResult = NativeDevice.CreateCommittedResource(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
+			Occlusion_CPUResult = NativeDevice.CreateCommittedResource<ID3D12Resource>(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
         }
 
 		public void Begin(ID3D12GraphicsCommandList6 NativeCmdList)

@@ -13,7 +13,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public FRHIFence(ID3D12Device6 D3D12Device) : base()
         {
-            NativeFence = D3D12Device.CreateFence(0, FenceFlags.None);
+            NativeFence = D3D12Device.CreateFence<ID3D12Fence>(0, FenceFlags.None);
         }
 
         public void Signal(ID3D12CommandQueue NativeCmdQueue)

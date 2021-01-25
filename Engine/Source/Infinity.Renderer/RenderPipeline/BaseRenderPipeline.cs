@@ -15,9 +15,9 @@ namespace Infinity.Runtime.Render.RenderPipeline
             GraphBuilder = new FRDGBuilder(name + "Graph");
         }
 
-        protected abstract void Init(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer);
+        protected abstract void Init(FRHIRenderContext RenderContext);
 
-        protected abstract void Render(FRHIRenderContext RenderContext, FRHICommandBuffer CmdBuffer);
+        protected abstract void Render(FRHIRenderContext RenderContext);
 
         protected override void DisposeManaged()
         {
