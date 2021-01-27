@@ -2,10 +2,14 @@
 using System.Threading;
 using InfinityEngine.Core.Engine;
 using InfinityEngine.Core.Object;
+using InfinityEngine.Graphics.RHI;
+using System.Collections.Generic;
 using InfinityEngine.Core.TaskSystem;
 
 namespace ExampleProject
 {
+    public delegate void RenderTask(FRHIRenderContext RHIRenderContext);
+
     public struct FTestTask : ITask
     {
         public string PrintData;
@@ -53,6 +57,25 @@ namespace ExampleProject
             FApplication App = new FApplication("InfinityExample", 1280, 720);
             App.Run();
 
+            /*RenderTask Task;
+            Queue<RenderTask> RenderTasks = new Queue<RenderTask>(32);
+
+            RenderTasks.Enqueue((FRHIRenderContext RHIRenderContext) =>
+            {
+                Console.WriteLine("Task 1");
+            });
+
+            RenderTasks.Enqueue((FRHIRenderContext RHIRenderContext) =>
+            {
+                Console.WriteLine("Task 2");
+            });
+
+            Task = RenderTasks.Dequeue();
+            Task(null);
+
+            Task = RenderTasks.Dequeue();
+            Task(null);*/
+
             // TaskExample
             /*int[] IntArray = new int[10];
 
@@ -76,9 +99,7 @@ namespace ExampleProject
 
             FChildTask ChildTask;
             ChildTask.TArray = IntArray;
-            ChildTask.Schedule(TaskRefC).Wait();
-
-            Console.ReadKey();*/
+            ChildTask.Schedule(TaskRefC).Wait();*/
 
             // SerializeExample
             /*string path = @"d:\test.material";
@@ -88,6 +109,8 @@ namespace ExampleProject
 
             string ReadContext = System.IO.File.ReadAllText(path);
             Console.WriteLine(ReadContext);*/
+
+            //Console.ReadKey();
         }
     }
 }

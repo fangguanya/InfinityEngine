@@ -51,7 +51,9 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void DisposeUnManaged()
         {
-
+            FrameFence.Dispose();
+            NativeCmdQueue.Release();
+            NativeCmdQueue.Dispose();
         }
     }
 }
