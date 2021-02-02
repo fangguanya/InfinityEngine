@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Threading;
-using InfinityEngine.Core.Engine;
-using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
-using System.Collections.Generic;
 using InfinityEngine.Core.TaskSystem;
 
 namespace ExampleProject
@@ -54,7 +51,7 @@ namespace ExampleProject
     {
         static void Main(string[] args)
         {
-            FApplication App = new FApplication("InfinityExample", 1280, 720);
+            TestApplication App = new TestApplication("InfinityExample", 1280, 720);
             App.Run();
 
             /*RenderTask Task;

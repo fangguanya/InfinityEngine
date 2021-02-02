@@ -13,7 +13,14 @@ namespace InfinityEngine.Core.EntitySystem
 
         public AEntity()
         {
+            ParentEntity = null;
+            ComponentList = new List<UComponent>(8);
+        }
 
+        public AEntity(AEntity InParentEntity)
+        {
+            ParentEntity = InParentEntity;
+            ComponentList = new List<UComponent>(8);
         }
 
         public bool Equals(AEntity other)
@@ -26,13 +33,45 @@ namespace InfinityEngine.Core.EntitySystem
             return 0;
         }
 
-        public virtual void OnCreate() { }
+        public virtual void OnCreate() 
+        {
+            for (int i = 0; i < ComponentList.Count; i++)
+            {
+                if (!ComponentList[i].bSpawnFlush)
+                {
+                    ComponentList[i].OnCreate();
+                }
+            }
+        }
 
-        public virtual void OnEnable() { }
+        public virtual void OnEnable()
+        {
+            for (int i = 0; i < ComponentList.Count; i++)
+            {
+                if (!ComponentList[i].bSpawnFlush)
+                {
+                    ComponentList[i].OnEnable();
+                    ComponentList[i].bSpawnFlush = false;
+                }
+            }
+        }
 
         public virtual void OnTransform() { }
 
-        public virtual void OnUpdate(float frameTime) { }
+        public virtual void OnUpdate(float frameTime)
+        {
+            for (int i = 0; i < ComponentList.Count; i++)
+            {
+                if (ComponentList[i].bSpawnFlush)
+                {
+                    ComponentList[i].OnCreate();
+                    ComponentList[i].OnEnable();
+                    ComponentList[i].bSpawnFlush = false;
+                }
+
+                ComponentList[i].OnUpdate(frameTime);
+            }
+        }
 
         public virtual void OnDisable() { }
 
@@ -68,6 +107,11 @@ namespace InfinityEngine.Core.EntitySystem
 
             return null;
         }*/
+
+        public void SetParent(AEntity InParentEntity)
+        {
+            ParentEntity = InParentEntity;
+        }
 
         public void AddComponent<T>(T InComponent) where T : UComponent
         {

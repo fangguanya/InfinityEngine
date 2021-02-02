@@ -5,11 +5,12 @@ namespace InfinityEngine.Core.EntitySystem
 {
     public class UComponent : UObject
     {
+        internal bool bSpawnFlush;
         internal AEntity OwnerEntity;
 
         public UComponent()
         {
-
+            bSpawnFlush = true;
         }
 
         public virtual void OnCreate() { }
