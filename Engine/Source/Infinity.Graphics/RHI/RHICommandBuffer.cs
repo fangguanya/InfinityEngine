@@ -225,9 +225,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void EndRenderPass(FRHITexture DepthBuffer, params FRHITexture[] ColorBuffer)
+        public void EndRenderPass()
         {
-
+            NativeCmdList.EndRenderPass();
         }
 
         public void SetStencilRef()
