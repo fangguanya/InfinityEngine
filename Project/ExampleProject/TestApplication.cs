@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using InfinityEngine.Core.Engine;
 using InfinityEngine.Core.EntitySystem;
 
 namespace ExampleProject
 {
+    [Serializable]
     public class TestComponent : UComponent
     {
         public TestComponent()
@@ -21,17 +23,30 @@ namespace ExampleProject
             Console.WriteLine("Enable Component");
         }
 
-        public override void OnUpdate(float frameTime)
+        public override void OnUpdate()
         {
             //Console.WriteLine("Update Component");
         }
     }
 
+    [Serializable]
     public class TestEntity : AEntity
     {
         TestComponent Component;
 
-        public TestEntity()
+        public TestEntity() : base()
+        {
+            Component = new TestComponent();
+            AddComponent(Component);
+        }
+
+        public TestEntity(string InName) : base(InName)
+        {
+            Component = new TestComponent();
+            AddComponent(Component);
+        }
+
+        public TestEntity(string InName, AEntity InParent) : base(InName, InParent)
         {
             Component = new TestComponent();
             AddComponent(Component);
@@ -46,11 +61,13 @@ namespace ExampleProject
         public override void OnEnable()
         {
             base.OnEnable();
+            //AddComponent(Component);
         }
 
-        public override void OnUpdate(float frameTime)
+        public override void OnUpdate()
         {
-            base.OnUpdate(frameTime);
+            base.OnUpdate();
+            //AddComponent(Component);
         }
     }
 
@@ -60,7 +77,7 @@ namespace ExampleProject
 
         public TestApplication(string Name, int Width, int Height) : base(Name, Width, Height)
         {
-            Entity = new TestEntity();
+            Entity = new TestEntity("TestEntity");
         }
 
         protected override void Init()
@@ -71,7 +88,7 @@ namespace ExampleProject
 
         protected override void Tick()
         {
-            Entity.OnUpdate(0);
+            Entity.OnUpdate();
         }
     }
 }

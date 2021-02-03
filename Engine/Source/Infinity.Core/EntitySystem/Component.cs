@@ -1,16 +1,26 @@
 ﻿
+using System;
 using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Core.EntitySystem
 {
+    [Serializable]
     public class UComponent : UObject
     {
+        public string Name;
+        public AEntity Owner;
         internal bool bSpawnFlush;
-        internal AEntity OwnerEntity;
 
         public UComponent()
         {
+            Name = "";
             bSpawnFlush = true;
+        }
+
+        public UComponent(string InName)
+        {
+            Name = InName;
+            Owner = null;
         }
 
         public virtual void OnCreate() { }
@@ -19,7 +29,7 @@ namespace InfinityEngine.Core.EntitySystem
 
         public virtual void OnTransform() { }
 
-        public virtual void OnUpdate(float frameTime) { }
+        public virtual void OnUpdate() { }
 
         public virtual void OnDisable() { }
 

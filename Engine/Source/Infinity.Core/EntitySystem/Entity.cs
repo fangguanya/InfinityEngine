@@ -4,72 +4,75 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Core.EntitySystem
 {
+    [Serializable]
     public class AEntity : UObject, IComparable<AEntity>, IEquatable<AEntity>
     {
-        public string name;
-        internal AEntity ParentEntity;
-        internal AEntity[] ChildEntityList;
-        internal List<UComponent> ComponentList;
+        public string Name;
+        public AEntity Parent;
+        internal List<AEntity> Childs;
+        internal List<UComponent> Components;
 
         public AEntity()
         {
-            ParentEntity = null;
-            ComponentList = new List<UComponent>(8);
+            Name = "";
+            Parent = null;
+            Childs = new List<AEntity>(32);
+            Components = new List<UComponent>(8);
         }
 
-        public AEntity(AEntity InParentEntity)
+        public AEntity(string InName)
         {
-            ParentEntity = InParentEntity;
-            ComponentList = new List<UComponent>(8);
+            Name = InName;
+            Parent = null;
+            Childs = new List<AEntity>(32);
+            Components = new List<UComponent>(8);
         }
 
-        public bool Equals(AEntity other)
+        public AEntity(string InName, AEntity InParent)
         {
-            return name.Equals(other.name);
-        }
-
-        public int CompareTo(AEntity other)
-        {
-            return 0;
+            Name = InName;
+            Parent = InParent;
+            Childs = new List<AEntity>(32);
+            Components = new List<UComponent>(8);
         }
 
         public virtual void OnCreate() 
         {
-            for (int i = 0; i < ComponentList.Count; i++)
+            for (int i = 0; i < Components.Count; i++)
             {
-                if (!ComponentList[i].bSpawnFlush)
+                if (!Components[i].bSpawnFlush)
                 {
-                    ComponentList[i].OnCreate();
+                    Components[i].OnCreate();
                 }
             }
         }
 
         public virtual void OnEnable()
         {
-            for (int i = 0; i < ComponentList.Count; i++)
+            for (int i = 0; i < Components.Count; i++)
             {
-                if (!ComponentList[i].bSpawnFlush)
+                if (!Components[i].bSpawnFlush)
                 {
-                    ComponentList[i].OnEnable();
-                    ComponentList[i].bSpawnFlush = false;
+                    Components[i].OnEnable();
+                    Components[i].bSpawnFlush = false;
                 }
             }
         }
 
         public virtual void OnTransform() { }
 
-        public virtual void OnUpdate(float frameTime)
+        public virtual void OnUpdate()
         {
-            for (int i = 0; i < ComponentList.Count; i++)
+            for (int i = 0; i < Components.Count; i++)
             {
-                if (ComponentList[i].bSpawnFlush)
+                if (Components[i].bSpawnFlush)
                 {
-                    ComponentList[i].OnCreate();
-                    ComponentList[i].OnEnable();
-                    ComponentList[i].bSpawnFlush = false;
+                    Components[i].OnCreate();
+                    Components[i].OnEnable();
+                    Components[i].bSpawnFlush = false;
                 }
 
-                ComponentList[i].OnUpdate(frameTime);
+                Components[i].OnUpdate();
             }
         }
 
@@ -77,71 +80,81 @@ namespace InfinityEngine.Core.EntitySystem
 
         public virtual void OnRemove() { }
 
-        /*public void AddChildEntity<T>(T InEntity) where T : Entity
+        public bool Equals(AEntity other)
         {
-            InEntity.ParentEntity = this;
-            ComponentList.Add(InComponent);
+            return Name.Equals(other.Name) && Parent.Equals(other.Parent) && Childs.Equals(other.Childs) && Components.Equals(other.Components);
         }
 
-        public void RemoveChildEntity<T>(T InComponent) where T : Entity
+        public int CompareTo(AEntity other)
         {
-            for (int i = 0; i < ComponentList.Count; i++)
-            {
-                if (ComponentList[i] == InComponent)
-                {
-                    ComponentList[i].OnRemove();
-                    ComponentList.RemoveAt(i);
-                }
-            }
+            return 0;
         }
 
-        public T GetChildEntity<T>() where T : Entity
+        public void SetParent(AEntity InParent)
         {
-            for (int i = 0; i < ComponentList.Count; i++)
+            Parent = InParent;
+        }
+
+        public void AddChildEntity<T>(T InEntity) where T : AEntity
+        {
+            InEntity.Parent = this;
+            Childs.Add(InEntity);
+        }
+
+        public T FindChildEntity<T>() where T : AEntity
+        {
+            for (int i = 0; i < Childs.Count; i++)
             {
-                if (ComponentList[i].GetType() == typeof(T))
+                if (Childs[i].GetType() == typeof(T))
                 {
-                    return (T)ComponentList[i];
+                    return (T)Childs[i];
                 }
             }
 
             return null;
-        }*/
+        }
 
-        public void SetParent(AEntity InParentEntity)
+        public void RemoveChildEntity<T>(T InEntity) where T : AEntity
         {
-            ParentEntity = InParentEntity;
+            for (int i = 0; i < Childs.Count; i++)
+            {
+                if (Childs[i] == InEntity)
+                {
+                    Childs[i].OnRemove();
+                    Childs.RemoveAt(i);
+                }
+            }
         }
 
         public void AddComponent<T>(T InComponent) where T : UComponent
         {
-            InComponent.OwnerEntity = this;
-            ComponentList.Add(InComponent);
+            InComponent.Owner = this;
+            Components.Add(InComponent);
         }
 
-        public void RemoveComponent<T>(T InComponent) where T : UComponent
+        public T FindComponent<T>() where T : UComponent
         {
-            for (int i = 0; i < ComponentList.Count; i++)
+            for (int i = 0; i < Components.Count; i++)
             {
-                if (ComponentList[i] == InComponent)
+                if (Components[i].GetType() == typeof(T))
                 {
-                    ComponentList[i].OnRemove();
-                    ComponentList.RemoveAt(i);
-                }
-            }
-        }
-
-        public T GetComponent<T>() where T : UComponent
-        {
-            for (int i = 0; i < ComponentList.Count; i++)
-            {
-                if (ComponentList[i].GetType() == typeof(T))
-                {
-                    return (T)ComponentList[i];
+                    return (T)Components[i];
                 }
             }
 
             return null;
+        }
+
+        public void RemoveComponent<T>(T InComponent) where T : UComponent
+        {
+            for (int i = 0; i < Components.Count; i++)
+            {
+                if (Components[i] == InComponent)
+                {
+                    Components[i].OnRemove();
+                    Components.RemoveAt(i);
+                }
+            }
         }
 
         protected override void DisposeManaged()
