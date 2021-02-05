@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using InfinityEngine.Core.Engine;
 using InfinityEngine.Core.EntitySystem;
@@ -8,6 +9,8 @@ namespace ExampleProject
     [Serializable]
     public class TestComponent : UComponent
     {
+        int[] IntArray;
+
         public TestComponent()
         {
 
@@ -15,6 +18,7 @@ namespace ExampleProject
 
         public override void OnCreate()
         {
+            IntArray = new int[32768];
             Console.WriteLine("Create Component");
         }
 
@@ -25,7 +29,22 @@ namespace ExampleProject
 
         public override void OnUpdate()
         {
-            //Console.WriteLine("Update Component");
+            Stopwatch Timer = Stopwatch.StartNew();
+            Managed();
+            Timer.Stop();
+            Console.WriteLine(Timer.Elapsed.TotalMilliseconds + "ms");
+        }
+
+        void Managed()
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                for (int j = 0; j < IntArray.Length; j++)
+                {
+                    ref int Value = ref IntArray[j];
+                    Value = i + j;
+                }
+            }
         }
     }
 
