@@ -88,6 +88,16 @@ namespace ExampleProject
             base.OnUpdate();
             //AddComponent(Component);
         }
+
+        protected override void DisposeManaged()
+        {
+            Console.WriteLine("DisposeManaged");
+        }
+
+        protected override void DisposeUnManaged()
+        {
+            Console.WriteLine("DisposeUnManaged");
+        }
     }
 
     public class TestApplication : FApplication
@@ -103,6 +113,8 @@ namespace ExampleProject
         {
             Entity.OnCreate();
             Entity.OnEnable();
+
+            //Entity.Dispose();
         }
 
         protected override void Tick()
