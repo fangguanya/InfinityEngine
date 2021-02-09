@@ -2,14 +2,66 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using InfinityEngine.Core.Engine;
+using System.Runtime.InteropServices;
 using InfinityEngine.Core.EntitySystem;
 
 namespace ExampleProject
 {
+    public unsafe class CPUTimer : IDisposable
+    {
+        [DllImport("CPUTimer")]
+        public static extern IntPtr CreateCPUTimer();
+
+        [DllImport("CPUTimer")]
+        public static extern void BeginCPUTimer(IntPtr cpuTimer);
+
+        [DllImport("CPUTimer")]
+        public static extern void EndCPUTimer(IntPtr cpuTimer);
+
+        [DllImport("CPUTimer")]
+        public static extern long GetCPUTimer(IntPtr cpuTimer);
+
+        [DllImport("CPUTimer")]
+        public static extern void ReleaseCPUTimer(IntPtr cpuTimer);
+
+        [DllImport("CPUTimer")]
+        public static extern void DoTask(int* IntArray, int BaseCount, int SecondCount);
+
+
+        //
+        private IntPtr cpuTimer;
+
+        public CPUTimer()
+        {
+            cpuTimer = CreateCPUTimer();
+        }
+
+        public void Begin()
+        {
+            BeginCPUTimer(cpuTimer);
+        }
+
+        public void End()
+        {
+            EndCPUTimer(cpuTimer);
+        }
+
+        public long GetMillisecond()
+        {
+            return GetCPUTimer(cpuTimer);
+        }
+
+        public void Dispose()
+        {
+            ReleaseCPUTimer(cpuTimer);
+        }
+    }
+
     [Serializable]
-    public class TestComponent : UComponent
+    public unsafe class TestComponent : UComponent
     {
         int[] IntArray;
+        CPUTimer cpuTimer;
 
         public TestComponent()
         {
@@ -19,6 +71,7 @@ namespace ExampleProject
         public override void OnCreate()
         {
             IntArray = new int[32768];
+            cpuTimer = new CPUTimer();
             Console.WriteLine("Create Component");
         }
 
@@ -29,14 +82,29 @@ namespace ExampleProject
 
         public override void OnUpdate()
         {
-            Stopwatch Timer = Stopwatch.StartNew();
+            cpuTimer.Begin();
+            //Stopwatch Timer = Stopwatch.StartNew();
             Managed();
-            Timer.Stop();
-            Console.WriteLine(Timer.Elapsed.TotalMilliseconds + "ms");
+            //Timer.Stop();
+            cpuTimer.End();
+            //Console.WriteLine(Timer.Elapsed.TotalMilliseconds + "ms");
+            Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
         }
 
         void Managed()
         {
+            //int* MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
+            //CPUTimer.DoTask(MyData, 1000, 32768);
+            /*for (int i = 0; i < 1000; i++)
+            {
+                for (int j = 0; j < 32768; j++)
+                {
+                    ref int Value = ref MyData[j];
+                    Value = i + j;
+                }
+            }*/
+            //Marshal.FreeHGlobal((IntPtr)MyData);
+
             for (int i = 0; i < 1000; i++)
             {
                 for (int j = 0; j < IntArray.Length; j++)
