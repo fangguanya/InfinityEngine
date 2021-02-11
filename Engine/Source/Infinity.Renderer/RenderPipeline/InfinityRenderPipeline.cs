@@ -1,7 +1,7 @@
 ﻿using InfinityEngine.Graphics.RHI;
 using Vortice.Direct3D;
 
-namespace Infinity.Runtime.Render.RenderPipeline
+namespace InfinityEngine.Renderer.RenderPipeline
 {
     public class FInfinityRenderPipeline : FRenderPipeline
     {
