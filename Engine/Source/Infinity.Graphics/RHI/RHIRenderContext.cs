@@ -59,30 +59,30 @@ namespace InfinityEngine.Graphics.RHI
         public void ExecuteCmdBuffer(EContextType ContextType, FRHICommandBuffer CmdBuffer)
         {
             FExecuteInfo ExecuteInfo;
-            ExecuteInfo.RHIFence = null;
-            ExecuteInfo.RHICmdBuffer = CmdBuffer;
+            ExecuteInfo.Fence = null;
+            ExecuteInfo.CmdBuffer = CmdBuffer;
             ExecuteInfo.ExecuteType = EExecuteType.Execute;
-            ExecuteInfo.TargetContext = SelectContext(ContextType);
+            ExecuteInfo.CmdContext = SelectContext(ContextType);
             ExecuteInfoList.Add(ExecuteInfo);
         }
 
-        public void WritFence(EContextType ContextType, FRHIFence GPUFence)
+        public void WritFence(EContextType ContextType, FRHIFence Fence)
         {
             FExecuteInfo ExecuteInfo;
-            ExecuteInfo.RHIFence = GPUFence;
-            ExecuteInfo.RHICmdBuffer = null;
+            ExecuteInfo.Fence = Fence;
+            ExecuteInfo.CmdBuffer = null;
             ExecuteInfo.ExecuteType = EExecuteType.Signal;
-            ExecuteInfo.TargetContext = SelectContext(ContextType);
+            ExecuteInfo.CmdContext = SelectContext(ContextType);
             ExecuteInfoList.Add(ExecuteInfo);
         }
 
-        public void WaitFence(EContextType ContextType, FRHIFence GPUFence)
+        public void WaitFence(EContextType ContextType, FRHIFence Fence)
         {
             FExecuteInfo ExecuteInfo;
-            ExecuteInfo.RHIFence = GPUFence;
-            ExecuteInfo.RHICmdBuffer = null;
+            ExecuteInfo.Fence = Fence;
+            ExecuteInfo.CmdBuffer = null;
             ExecuteInfo.ExecuteType = EExecuteType.Wait;
-            ExecuteInfo.TargetContext = SelectContext(ContextType);
+            ExecuteInfo.CmdContext = SelectContext(ContextType);
             ExecuteInfoList.Add(ExecuteInfo);
         }
 
@@ -94,15 +94,15 @@ namespace InfinityEngine.Graphics.RHI
                 switch (ExecuteInfo.ExecuteType)
                 {
                     case EExecuteType.Signal:
-                        ExecuteInfo.TargetContext.SignalQueue(ExecuteInfo.RHIFence);
+                        ExecuteInfo.CmdContext.SignalQueue(ExecuteInfo.Fence);
                         break;
 
                     case EExecuteType.Wait:
-                        ExecuteInfo.TargetContext.WaitQueue(ExecuteInfo.RHIFence);
+                        ExecuteInfo.CmdContext.WaitQueue(ExecuteInfo.Fence);
                         break;
 
                     case EExecuteType.Execute:
-                        ExecuteInfo.TargetContext.ExecuteQueue(ExecuteInfo.RHICmdBuffer);
+                        ExecuteInfo.CmdContext.ExecuteQueue(ExecuteInfo.CmdBuffer);
                         break;
                 }
             }
@@ -257,18 +257,22 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHIResourceViewRange(PhyscisDevice, CbvSrvUavDescriptorFactory, Count);
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
+            PhyscisDevice?.Dispose();
+            PhyscisDevice = null;
 
-        }
+            CopyContext?.Dispose();
+            CopyContext = null;
 
-        protected override void DisposeUnManaged()
-        {
-            PhyscisDevice.Dispose();
-            CopyContext.Dispose();
-            ComputeContext.Dispose();
-            GraphicsContext.Dispose();
-            CbvSrvUavDescriptorFactory.Dispose();
+            ComputeContext?.Dispose();
+            ComputeContext = null;
+
+            GraphicsContext?.Dispose();
+            GraphicsContext = null;
+
+            CbvSrvUavDescriptorFactory?.Dispose();
+            CbvSrvUavDescriptorFactory = null;
         }
     }
 }

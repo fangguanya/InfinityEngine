@@ -89,7 +89,7 @@ namespace InfinityEngine.Graphics.RHI
             return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
         }
 
-        public void Release()
+        public void Disposed()
         {
             DescriptorSize = 0;
             DescriptorIndex = 0;
@@ -115,7 +115,7 @@ namespace InfinityEngine.Graphics.RHI
             return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
         }
 
-        public void Release()
+        public void Disposed()
         {
             DescriptorSize = 0;
             DescriptorIndex = 0;
@@ -141,7 +141,7 @@ namespace InfinityEngine.Graphics.RHI
             return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
         }
 
-        public void Release()
+        public void Disposed()
         {
             DescriptorSize = 0;
             DescriptorIndex = 0;
@@ -165,26 +165,19 @@ namespace InfinityEngine.Graphics.RHI
             UseFlag = InUseFlag;
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-        }
+            //DefaultResource.Release();
+            //UploadResource.Release();
+            //ReadbackResource.Release();
 
-        protected override void DisposeUnManaged()
-        {
-            DefaultResource.Release();
-            DefaultResource.Dispose();
+            DefaultResource?.Dispose();
+            UploadResource?.Dispose();
+            ReadbackResource?.Dispose();
 
-            if (UploadResource != null)
-            {
-                UploadResource.Release();
-                UploadResource.Dispose();
-            }
-
-            if (ReadbackResource != null)
-            {
-                ReadbackResource.Release();
-                ReadbackResource.Dispose();
-            }
+            DefaultResource = null;
+            UploadResource = null;
+            ReadbackResource = null;
         }
     }
 
@@ -309,14 +302,9 @@ namespace InfinityEngine.Graphics.RHI
             NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopyDestination, ResourceStates.GenericRead);
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-            base.DisposeManaged();
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            base.DisposeUnManaged();
+            base.Disposed();
         }
     }
 
@@ -330,14 +318,9 @@ namespace InfinityEngine.Graphics.RHI
             ResourceType = EResourceType.Texture;
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-            base.DisposeManaged();
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            base.DisposeUnManaged();
+            base.Disposed();
         }
     }
 
@@ -378,12 +361,7 @@ namespace InfinityEngine.Graphics.RHI
             NativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(Index), UnorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
             NativeDevice = null;
         }
@@ -396,12 +374,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
 
         }
@@ -471,18 +444,17 @@ namespace InfinityEngine.Graphics.RHI
             return GPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
+            //CPUDescriptorHeap.Release();
+            CPUDescriptorHeap?.Dispose();
+            CPUDescriptorHeap = null;
 
-        }
+            //GPUDescriptorHeap.Release();
+            GPUDescriptorHeap?.Dispose();
+            GPUDescriptorHeap = null;
 
-        protected override void DisposeUnManaged()
-        {
-            CPUDescriptorHeap.Release();
-            CPUDescriptorHeap.Dispose();
-
-            GPUDescriptorHeap.Release();
-            GPUDescriptorHeap.Dispose();
+            NativeDevice = null;
         }
     }
 }

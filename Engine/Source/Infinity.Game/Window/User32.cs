@@ -6,7 +6,7 @@ using System.Drawing;
 using Vortice.Mathematics;
 using System.Runtime.InteropServices;
 
-namespace InfinityEngine.Core.Engine
+namespace InfinityEngine.Game.Window
 {
     #region Enums
     [Flags]

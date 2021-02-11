@@ -44,16 +44,17 @@ namespace InfinityEngine.Graphics.RHI
             FrameFence.WaitOnCPU(FenceEvent);
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
+            FrameFence?.Dispose();
+            FrameFence = null;
 
-        }
+            FenceEvent?.Dispose();
+            FenceEvent = null;
 
-        protected override void DisposeUnManaged()
-        {
-            FrameFence.Dispose();
-            NativeCmdQueue.Release();
-            NativeCmdQueue.Dispose();
+            //NativeCmdQueue.Release();
+            NativeCmdQueue?.Dispose();
+            NativeCmdQueue = null;
         }
     }
 }

@@ -1,65 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using InfinityEngine.Core.Engine;
+using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
 using InfinityEngine.Core.EntitySystem;
+using InfinityEngine.Game.Application;
 
 namespace ExampleProject
 {
-    public unsafe class CPUTimer : IDisposable
-    {
-        [DllImport("CPUTimer")]
-        public static extern IntPtr CreateCPUTimer();
-
-        [DllImport("CPUTimer")]
-        public static extern void BeginCPUTimer(IntPtr cpuTimer);
-
-        [DllImport("CPUTimer")]
-        public static extern void EndCPUTimer(IntPtr cpuTimer);
-
-        [DllImport("CPUTimer")]
-        public static extern long GetCPUTimer(IntPtr cpuTimer);
-
-        [DllImport("CPUTimer")]
-        public static extern void ReleaseCPUTimer(IntPtr cpuTimer);
-
-        [DllImport("CPUTimer")]
-        public static extern void DoTask(int* IntArray, int BaseCount, int SecondCount);
-
-
-        //
-        private IntPtr cpuTimer;
-
-        public CPUTimer()
-        {
-            cpuTimer = CreateCPUTimer();
-        }
-
-        public void Begin()
-        {
-            BeginCPUTimer(cpuTimer);
-        }
-
-        public void End()
-        {
-            EndCPUTimer(cpuTimer);
-        }
-
-        public long GetMillisecond()
-        {
-            return GetCPUTimer(cpuTimer);
-        }
-
-        public void Dispose()
-        {
-            ReleaseCPUTimer(cpuTimer);
-        }
-    }
-
     [Serializable]
     public unsafe class TestComponent : UComponent
     {
+        int* MyData;
         int[] IntArray;
         CPUTimer cpuTimer;
 
@@ -72,68 +22,74 @@ namespace ExampleProject
         {
             IntArray = new int[32768];
             cpuTimer = new CPUTimer();
-            Console.WriteLine("Create Component");
+            //Console.WriteLine("Create Component");
         }
 
         public override void OnEnable()
         {
-            Console.WriteLine("Enable Component");
+            //Console.WriteLine("Enable Component");
+            MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
         }
 
         public override void OnUpdate()
         {
             cpuTimer.Begin();
-            //Stopwatch Timer = Stopwatch.StartNew();
-            Managed();
-            //Timer.Stop();
+            ExecuteFunc(100, 32768);
             cpuTimer.End();
-            //Console.WriteLine(Timer.Elapsed.TotalMilliseconds + "ms");
+
             Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
+            //Console.WriteLine(Timer.Elapsed.TotalMilliseconds + "ms");
         }
 
-        void Managed()
+        public override void OnDisable()
         {
-            //int* MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
-            //CPUTimer.DoTask(MyData, 1000, 32768);
-            /*for (int i = 0; i < 1000; i++)
+            //Console.WriteLine("Disable Component");
+
+            cpuTimer?.Dispose();
+            Marshal.FreeHGlobal((IntPtr)MyData);
+        }
+
+        void ExecuteFunc(in int Count, in int Length)
+        {
+            //CPUTimer.DoTask(MyData, Count, Length);
+            for (int i = 0; i < Count; i++)
             {
-                for (int j = 0; j < 32768; j++)
+                for (int j = 0; j < Length; j++)
                 {
                     ref int Value = ref MyData[j];
                     Value = i + j;
                 }
-            }*/
-            //Marshal.FreeHGlobal((IntPtr)MyData);
+            }
 
-            for (int i = 0; i < 1000; i++)
+            /*for (int i = 0; i < Count; i++)
             {
-                for (int j = 0; j < IntArray.Length; j++)
+                for (int j = 0; j < Length; j++)
                 {
                     ref int Value = ref IntArray[j];
                     Value = i + j;
                 }
-            }
+            }*/
         }
     }
 
     [Serializable]
-    public class TestEntity : AEntity
+    public class TestActor : AActor
     {
         TestComponent Component;
 
-        public TestEntity() : base()
+        public TestActor() : base()
         {
             Component = new TestComponent();
             AddComponent(Component);
         }
 
-        public TestEntity(string InName) : base(InName)
+        public TestActor(string InName) : base(InName)
         {
             Component = new TestComponent();
             AddComponent(Component);
         }
 
-        public TestEntity(string InName, AEntity InParent) : base(InName, InParent)
+        public TestActor(string InName, AActor InParent) : base(InName, InParent)
         {
             Component = new TestComponent();
             AddComponent(Component);
@@ -157,37 +113,38 @@ namespace ExampleProject
             //AddComponent(Component);
         }
 
-        protected override void DisposeManaged()
+        public override void OnDisable()
         {
-            Console.WriteLine("DisposeManaged");
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            Console.WriteLine("DisposeUnManaged");
+            Console.WriteLine("Disable Actor");
+            base.OnDisable();
+            //AddComponent(Component);
         }
     }
 
     public class TestApplication : FApplication
     {
-        TestEntity Entity;
+        TestActor Actor;
 
         public TestApplication(string Name, int Width, int Height) : base(Name, Width, Height)
         {
-            Entity = new TestEntity("TestEntity");
+            Actor = new TestActor("TestActor");
         }
 
-        protected override void Init()
+        protected override void Play()
         {
-            Entity.OnCreate();
-            Entity.OnEnable();
-
-            //Entity.Dispose();
+            Actor.OnCreate();
+            Actor.OnEnable();
         }
 
         protected override void Tick()
         {
-            Entity.OnUpdate();
+            Actor.OnUpdate();
+        }
+
+        protected override void End()
+        {
+            Actor.OnDisable();
+            Actor.OnRemove();
         }
     }
 }

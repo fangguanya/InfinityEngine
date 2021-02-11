@@ -1,6 +1,7 @@
 ﻿using System;
+using InfinityEngine.Game.Application;
 
-namespace InfinityEngine.Core.Engine
+namespace InfinityEngine.Game.Window
 {
     public class FWindow
     {
@@ -73,7 +74,7 @@ namespace InfinityEngine.Core.Engine
 
             var hwnd = User32.CreateWindowEx(
                 (int)styleEx,
-                FApplication.WndClassName,
+                Application.FApplication.WndClassName,
                 Title,
                 (int)style,
                 x,

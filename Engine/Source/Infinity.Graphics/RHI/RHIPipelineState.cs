@@ -4,12 +4,7 @@ namespace InfinityEngine.Graphics.RHI
 {
     public class FRHIComputePipelineState : UObject
     {
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
 
         }
@@ -17,12 +12,7 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIRayTracePipelineState : UObject
     {
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
 
         }
@@ -30,12 +20,7 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIGraphicsPipelineState : UObject
     {
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
 
         }

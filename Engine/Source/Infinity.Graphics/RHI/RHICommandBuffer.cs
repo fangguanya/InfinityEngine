@@ -13,10 +13,10 @@ namespace InfinityEngine.Graphics.RHI
 
     internal struct FExecuteInfo
     {
-        internal FRHIFence RHIFence;
+        internal FRHIFence Fence;
         internal EExecuteType ExecuteType;
-        internal FRHICommandBuffer RHICmdBuffer;
-        internal FRHICommandContext TargetContext;
+        internal FRHICommandBuffer CmdBuffer;
+        internal FRHICommandContext CmdContext;
     }
 
     public class FRHICommandBuffer : UObject
@@ -32,7 +32,7 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdList = NativeDevice.CreateCommandList<ID3D12GraphicsCommandList6>(0, CommandBufferType, NativeCmdAllocator, null);
         }
 
-        public static implicit operator ID3D12GraphicsCommandList6(FRHICommandBuffer RHICmdBuffer) { return RHICmdBuffer.NativeCmdList; }
+        public static implicit operator ID3D12GraphicsCommandList6(FRHICommandBuffer CmdBuffer) { return CmdBuffer.NativeCmdList; }
 
         public void Reset()
         {
@@ -295,15 +295,10 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            NativeCmdList.Dispose();
-            NativeCmdAllocator.Dispose();
+            NativeCmdList?.Dispose();
+            NativeCmdAllocator?.Dispose();
         }
     }
 }

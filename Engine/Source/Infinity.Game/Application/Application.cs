@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace InfinityEngine.Core.Engine
+namespace InfinityEngine.Game.Application
 {
     public class FApplication : FBaseApplication
     {
@@ -9,12 +9,17 @@ namespace InfinityEngine.Core.Engine
             
         }
 
-        protected override void Init()
+        protected override void Play()
         {
 
         }
 
         protected override void Tick()
+        {
+
+        }
+
+        protected override void End()
         {
 
         }

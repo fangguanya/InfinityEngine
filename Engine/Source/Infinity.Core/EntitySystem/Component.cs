@@ -8,7 +8,7 @@ namespace InfinityEngine.Core.EntitySystem
     public class UComponent : UObject
     {
         public string Name;
-        public AEntity Owner;
+        public AActor Owner;
         internal bool bSpawnFlush;
 
         public UComponent()
@@ -35,12 +35,7 @@ namespace InfinityEngine.Core.EntitySystem
 
         public virtual void OnRemove() { }
 
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
 
         }

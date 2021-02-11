@@ -19,14 +19,9 @@ namespace Infinity.Runtime.Render.RenderPipeline
 
         protected abstract void Render(FRHIRenderContext RenderContext);
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-            
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            GraphBuilder.Dispose();
+            GraphBuilder?.Dispose();
         }
     }
 }

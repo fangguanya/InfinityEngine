@@ -6,6 +6,7 @@
     <Platforms>x86;x64</Platforms>
     <Nullable>warnings</Nullable>
     <AssemblyName>InfinityEngine.Core</AssemblyName>
+    <RootNamespace>InfinityEngine.Core</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -35,15 +36,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\**" />
+    <EmbeddedResource Remove="Application\**" />
+    <None Remove="Application\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Mathematics\" />
-    <Folder Include="Application\" />
-    <Folder Include="Profiler\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Veldrid.ImGui" Version="5.72.0" />
-    <PackageReference Include="Vortice.Mathematics" Version="1.3.3" />
   </ItemGroup>
 
 </Project>

@@ -46,15 +46,10 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdQueue.Wait(NativeFence, FenceValue);
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            NativeFence.Release();
-            NativeFence.Dispose();
+            //NativeFence.Release();
+            NativeFence?.Dispose();
         }
     }
 }

@@ -60,14 +60,9 @@ namespace Infinity.Runtime.Render.RenderPipeline
             RenderContext.Submit();
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-            base.DisposeManaged();
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            base.DisposeUnManaged();
+            base.Disposed();
         }
     }
 }

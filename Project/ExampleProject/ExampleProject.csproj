@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Source\Infinity.Core\Infinity.Core.csproj" />
+    <ProjectReference Include="..\..\Engine\Source\Infinity.Game\Infinity.Game.csproj" />
     <ProjectReference Include="..\..\Engine\Source\Infinity.Graphics\Infinity.Graphics.csproj" />
     <ProjectReference Include="..\..\Engine\Source\Infinity.Renderer\Infinity.Renderer.csproj" />
   </ItemGroup>

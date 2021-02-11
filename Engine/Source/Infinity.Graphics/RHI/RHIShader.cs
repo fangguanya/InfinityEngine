@@ -11,12 +11,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
 
         }
@@ -29,14 +24,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-            base.DisposeManaged();
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            base.DisposeUnManaged();
+            base.Disposed();
         }
     }
 
@@ -48,14 +38,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-            base.DisposeManaged();
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            base.DisposeUnManaged();
+            base.Disposed();
         }
     }
 
@@ -66,14 +51,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
-            base.DisposeManaged();
-        }
-
-        protected override void DisposeUnManaged()
-        {
-            base.DisposeUnManaged();
+            base.Disposed();
         }
     }
 }

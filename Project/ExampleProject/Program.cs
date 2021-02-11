@@ -2,11 +2,12 @@
 using System.Threading;
 using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Core.TaskSystem;
+using Vortice.Direct3D12;
+using Vortice.DXGI;
+using Vortice.Direct3D;
 
 namespace ExampleProject
 {
-    public delegate void RenderTask(FRHIRenderContext RHIRenderContext);
-
     public struct FTestTask : ITask
     {
         public string PrintData;
@@ -51,27 +52,33 @@ namespace ExampleProject
     {
         static void Main(string[] args)
         {
+            /*IDXGIFactory7 NativeFactory;
+            IDXGIAdapter1 NativeAdapter;
+            ID3D12Device6 NativeDevice;
+
+            DXGI.CreateDXGIFactory1<IDXGIFactory7>(out NativeFactory);
+            NativeFactory.EnumAdapters1(0, out NativeAdapter);
+
+            D3D12.D3D12CreateDevice<ID3D12Device6>(NativeAdapter, FeatureLevel.Level_12_1, out NativeDevice);
+            //NativeDevice.QueryInterface<ID3D12Device6>();
+
+            NativeDevice.Release();
+            //NativeDevice.Dispose();
+            //NativeDevice = null;
+
+            NativeAdapter.Release();
+            //NativeAdapter.Dispose();
+            //NativeAdapter = null;
+
+            NativeFactory.Release();
+            //NativeFactory.Dispose();
+            //NativeFactory = null;
+
+            NativeDevice.QueryInterface<ID3D12Device6>();
+            Console.ReadKey();*/
+
             TestApplication App = new TestApplication("InfinityExample", 1280, 720);
             App.Run();
-
-            /*RenderTask Task;
-            Queue<RenderTask> RenderTasks = new Queue<RenderTask>(32);
-
-            RenderTasks.Enqueue((FRHIRenderContext RHIRenderContext) =>
-            {
-                Console.WriteLine("Task 1");
-            });
-
-            RenderTasks.Enqueue((FRHIRenderContext RHIRenderContext) =>
-            {
-                Console.WriteLine("Task 2");
-            });
-
-            Task = RenderTasks.Dequeue();
-            Task(null);
-
-            Task = RenderTasks.Dequeue();
-            Task(null);*/
 
             // TaskExample
             /*int[] IntArray = new int[10];

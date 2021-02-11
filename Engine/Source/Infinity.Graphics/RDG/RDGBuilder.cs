@@ -11,15 +11,9 @@ namespace InfinityEngine.Graphics.RDG
             name = Name;
         }
 
-        protected override void DisposeManaged()
+        protected override void Disposed()
         {
 
         }
-
-        protected override void DisposeUnManaged()
-        {
-
-        }
-
     }
 }

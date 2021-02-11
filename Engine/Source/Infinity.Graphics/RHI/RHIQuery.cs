@@ -99,21 +99,20 @@ namespace InfinityEngine.Graphics.RHI
 			return TimeResult;
 		}
 
-		protected override void DisposeManaged()
+		protected override void Disposed()
 		{
+			//Timestamp_Heap.Release();
+			//Timestamp_CPUResult.Release();
+			//Timestamp_GPUResult.Release();
 
-		}
+			Timestamp_Heap?.Dispose();
+			Timestamp_CPUResult?.Dispose();
+			Timestamp_GPUResult?.Dispose();
 
-		protected override void DisposeUnManaged()
-		{
-			Timestamp_Heap.Release();
-			Timestamp_CPUResult.Release();
-			Timestamp_GPUResult.Release();
-
-			Timestamp_Heap.Dispose();
-			Timestamp_CPUResult.Dispose();
-			Timestamp_GPUResult.Dispose();
-		}
+            Timestamp_Heap = null;
+			Timestamp_CPUResult = null;
+			Timestamp_GPUResult = null;
+        }
 	}
 
     public class FRHIStatisticsQuery : UObject
@@ -123,12 +122,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
 
         }
@@ -229,20 +223,19 @@ namespace InfinityEngine.Graphics.RHI
 			return OcclusinResult;
 		}
 
-		protected override void DisposeManaged()
+		protected override void Disposed()
 		{
+			//Occlusion_Heap.Release();
+			//Occlusion_CPUResult.Release();
+			//Occlusion_GPUResult.Release();
 
-		}
+			Occlusion_Heap?.Dispose();
+			Occlusion_CPUResult?.Dispose();
+			Occlusion_GPUResult?.Dispose();
 
-		protected override void DisposeUnManaged()
-		{
-			Occlusion_Heap.Release();
-			Occlusion_CPUResult.Release();
-			Occlusion_GPUResult.Release();
-
-			Occlusion_Heap.Dispose();
-			Occlusion_CPUResult.Dispose();
-			Occlusion_GPUResult.Dispose();
+			Occlusion_Heap = null;
+			Occlusion_CPUResult = null;
+			Occlusion_GPUResult = null;
         }
 	}
 

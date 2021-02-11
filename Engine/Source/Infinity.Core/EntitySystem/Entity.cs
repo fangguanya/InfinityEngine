@@ -5,34 +5,34 @@ using InfinityEngine.Core.Object;
 namespace InfinityEngine.Core.EntitySystem
 {
     [Serializable]
-    public class AEntity : UObject, IComparable<AEntity>, IEquatable<AEntity>
+    public class AActor : UObject, IComparable<AActor>, IEquatable<AActor>
     {
         public string Name;
-        public AEntity Parent;
-        internal List<AEntity> Childs;
+        public AActor Parent;
+        internal List<AActor> Childs;
         internal List<UComponent> Components;
 
-        public AEntity()
+        public AActor()
         {
             Name = "";
             Parent = null;
-            Childs = new List<AEntity>(32);
+            Childs = new List<AActor>(32);
             Components = new List<UComponent>(8);
         }
 
-        public AEntity(string InName)
+        public AActor(string InName)
         {
             Name = InName;
             Parent = null;
-            Childs = new List<AEntity>(32);
+            Childs = new List<AActor>(32);
             Components = new List<UComponent>(8);
         }
 
-        public AEntity(string InName, AEntity InParent)
+        public AActor(string InName, AActor InParent)
         {
             Name = InName;
             Parent = InParent;
-            Childs = new List<AEntity>(32);
+            Childs = new List<AActor>(32);
             Components = new List<UComponent>(8);
         }
 
@@ -76,32 +76,44 @@ namespace InfinityEngine.Core.EntitySystem
             }
         }
 
-        public virtual void OnDisable() { }
+        public virtual void OnDisable() 
+        {
+            for (int i = 0; i < Components.Count; i++)
+            {
+                Components[i].OnDisable();
+            }
+        }
 
-        public virtual void OnRemove() { }
+        public virtual void OnRemove() 
+        {
+            for (int i = 0; i < Components.Count; i++)
+            {
+                Components[i].OnRemove();
+            }
+        }
 
-        public bool Equals(AEntity other)
+        public bool Equals(AActor other)
         {
             return Name.Equals(other.Name) && Parent.Equals(other.Parent) && Childs.Equals(other.Childs) && Components.Equals(other.Components);
         }
 
-        public int CompareTo(AEntity other)
+        public int CompareTo(AActor other)
         {
             return 0;
         }
 
-        public void SetParent(AEntity InParent)
+        public void SetParent(AActor InParent)
         {
             Parent = InParent;
         }
 
-        public void AddChildEntity<T>(T InEntity) where T : AEntity
+        public void AddChildEntity<T>(T InEntity) where T : AActor
         {
             InEntity.Parent = this;
             Childs.Add(InEntity);
         }
 
-        public T FindChildEntity<T>() where T : AEntity
+        public T FindChildEntity<T>() where T : AActor
         {
             for (int i = 0; i < Childs.Count; i++)
             {
@@ -114,7 +126,7 @@ namespace InfinityEngine.Core.EntitySystem
             return null;
         }
 
-        public void RemoveChildEntity<T>(T InEntity) where T : AEntity
+        public void RemoveChildEntity<T>(T InEntity) where T : AActor
         {
             for (int i = 0; i < Childs.Count; i++)
             {
@@ -157,12 +169,7 @@ namespace InfinityEngine.Core.EntitySystem
             }
         }
 
-        protected override void DisposeManaged()
-        {
-
-        }
-
-        protected override void DisposeUnManaged()
+        protected override void Disposed()
         {
 
         }
