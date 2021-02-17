@@ -29,6 +29,11 @@ namespace InfinityEngine.Game.Module
             PhyscisThread.Start();
         }
 
+        internal void Sync()
+        {
+            PhyscisThread.Join();
+        }
+
         private void PhyscisLoop()
         {
             while (!m_LoopExit)

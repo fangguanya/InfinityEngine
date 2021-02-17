@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
+using InfinityEngine.Renderer.RenderPipeline;
 
 namespace InfinityEngine.Game.Module
 {
@@ -14,6 +15,7 @@ namespace InfinityEngine.Game.Module
         private bool m_LoopExit;
         internal Thread RenderThread;
         internal FRHIRenderContext RenderContext;
+        internal FInfinityRenderPipeline RenderPipeline;
 
         internal static Queue<FRenderTask> RenderTasks;
 
@@ -27,6 +29,7 @@ namespace InfinityEngine.Game.Module
             RenderTasks = new Queue<FRenderTask>(512);
 
             RenderContext = new FRHIRenderContext();
+            RenderPipeline = new FInfinityRenderPipeline("InfinityRenderPipeline");
         }
 
         internal void RenderFunc()
@@ -44,6 +47,11 @@ namespace InfinityEngine.Game.Module
             RenderThread.Start();
         }
 
+        internal void Sync()
+        {
+            RenderThread.Join();
+        }
+
         private void ProcessRenderTask()
         {
             for(int i = 0; i < RenderTasks.Count; i++)
@@ -55,9 +63,13 @@ namespace InfinityEngine.Game.Module
 
         private void RenderLoop()
         {
+            RenderPipeline.Init(RenderContext);
+
             while (!m_LoopExit)
             {
                 ProcessRenderTask();
+
+                RenderPipeline.Render(RenderContext);
             }
         }
 
@@ -65,6 +77,7 @@ namespace InfinityEngine.Game.Module
         {
             m_LoopExit = true;
             RenderContext?.Dispose();
+            RenderPipeline?.Dispose();
         }
 
         protected override void Disposed()

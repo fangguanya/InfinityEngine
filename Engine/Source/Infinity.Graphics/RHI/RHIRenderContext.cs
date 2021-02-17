@@ -18,14 +18,14 @@ namespace InfinityEngine.Graphics.RHI
         internal FRHICommandContext CopyContext;
         internal FRHICommandContext ComputeContext;
         internal FRHICommandContext GraphicsContext;
-        internal TArray<FExecuteInfo> ExecuteInfoList;
+        internal TArray<FExecuteInfo> ExecuteInfos;
         internal FRHIDescriptorHeapFactory CbvSrvUavDescriptorFactory;
 
         public FRHIRenderContext() : base()
         {
             PhyscisDevice = new FRHIDevice();
 
-            ExecuteInfoList = new TArray<FExecuteInfo>(64);
+            ExecuteInfos = new TArray<FExecuteInfo>(64);
 
             CopyContext = new FRHICommandContext(PhyscisDevice, CommandListType.Copy);
             ComputeContext = new FRHICommandContext(PhyscisDevice, CommandListType.Compute);
@@ -63,7 +63,7 @@ namespace InfinityEngine.Graphics.RHI
             ExecuteInfo.CmdBuffer = CmdBuffer;
             ExecuteInfo.ExecuteType = EExecuteType.Execute;
             ExecuteInfo.CmdContext = SelectContext(ContextType);
-            ExecuteInfoList.Add(ExecuteInfo);
+            ExecuteInfos.Add(ExecuteInfo);
         }
 
         public void WritFence(EContextType ContextType, FRHIFence Fence)
@@ -73,7 +73,7 @@ namespace InfinityEngine.Graphics.RHI
             ExecuteInfo.CmdBuffer = null;
             ExecuteInfo.ExecuteType = EExecuteType.Signal;
             ExecuteInfo.CmdContext = SelectContext(ContextType);
-            ExecuteInfoList.Add(ExecuteInfo);
+            ExecuteInfos.Add(ExecuteInfo);
         }
 
         public void WaitFence(EContextType ContextType, FRHIFence Fence)
@@ -83,14 +83,14 @@ namespace InfinityEngine.Graphics.RHI
             ExecuteInfo.CmdBuffer = null;
             ExecuteInfo.ExecuteType = EExecuteType.Wait;
             ExecuteInfo.CmdContext = SelectContext(ContextType);
-            ExecuteInfoList.Add(ExecuteInfo);
+            ExecuteInfos.Add(ExecuteInfo);
         }
 
         public void Submit()
         {
-            for(int i = 0; i < ExecuteInfoList.size; i++)
+            for(int i = 0; i < ExecuteInfos.size; i++)
             {
-                FExecuteInfo ExecuteInfo = ExecuteInfoList[i];
+                FExecuteInfo ExecuteInfo = ExecuteInfos[i];
                 switch (ExecuteInfo.ExecuteType)
                 {
                     case EExecuteType.Signal:
@@ -109,7 +109,7 @@ namespace InfinityEngine.Graphics.RHI
 
             ComputeContext.Flush();
             GraphicsContext.Flush();
-            ExecuteInfoList.Clear();
+            ExecuteInfos.Clear();
         }
 
         public void CreateViewport()
@@ -117,7 +117,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public FRHIFence CreateGPUFence()
+        public FRHIFence CreateFence()
         {
             return new FRHIFence(PhyscisDevice);
         }

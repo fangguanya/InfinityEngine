@@ -12,12 +12,12 @@ namespace InfinityEngine.Renderer.RenderPipeline
         public FRenderPipeline(string Name)
         {
             name = Name;
-            GraphBuilder = new FRDGBuilder(name + "Graph");
+            GraphBuilder = new FRDGBuilder("InfinityRenderGraph");
         }
 
-        protected abstract void Init(FRHIRenderContext RenderContext);
+        public abstract void Init(FRHIRenderContext RenderContext);
 
-        protected abstract void Render(FRHIRenderContext RenderContext);
+        public abstract void Render(FRHIRenderContext RenderContext);
 
         protected override void Disposed()
         {

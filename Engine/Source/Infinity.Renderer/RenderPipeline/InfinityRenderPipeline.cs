@@ -1,5 +1,5 @@
-﻿using InfinityEngine.Graphics.RHI;
-using Vortice.Direct3D;
+﻿using System;
+using InfinityEngine.Graphics.RHI;
 
 namespace InfinityEngine.Renderer.RenderPipeline
 {
@@ -10,22 +10,23 @@ namespace InfinityEngine.Renderer.RenderPipeline
 
         }
 
-        protected override void Init(FRHIRenderContext RenderContext)
+        public override void Init(FRHIRenderContext RenderContext)
         {
 
         }
 
-        protected override void Render(FRHIRenderContext RenderContext)
+        public override void Render(FRHIRenderContext RenderContext)
         {
+            Console.WriteLine("Rendering");
             //ResourceBind Example
-            FRHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+            /*FRHIBuffer Buffer = RenderContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
 
             FRHIShaderResourceView SRV = RenderContext.CreateShaderResourceView(Buffer);
             FRHIUnorderedAccessView UAV = RenderContext.CreateUnorderedAccessView(Buffer);
 
             FRHIResourceViewRange ResourceViewRange = RenderContext.CreateResourceViewRange(2);
             ResourceViewRange.SetShaderResourceView(0, SRV);
-            ResourceViewRange.SetUnorderedAccessView(1, UAV);
+            ResourceViewRange.SetUnorderedAccessView(1, UAV);*/
 
 
             //ASyncCompute Example
@@ -57,7 +58,7 @@ namespace InfinityEngine.Renderer.RenderPipeline
             RenderContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);*/
 
             //Submit Context
-            RenderContext.Submit();
+            //RenderContext.Submit();
         }
 
         protected override void Disposed()

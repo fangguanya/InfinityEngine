@@ -84,8 +84,8 @@ namespace InfinityEngine.Game.Application
 
         private void PlatformRun()
         {
-            RenderModule.Start();
             PhyscisModule.Start();
+            RenderModule.Start();
             GameModule.Start();
         }
 
@@ -93,7 +93,9 @@ namespace InfinityEngine.Game.Application
         {
             GameModule.Exit();
             RenderModule.Exit();
+            RenderModule.Sync();
             PhyscisModule.Exit();
+            PhyscisModule.Sync();
         }
 
         private IntPtr ProcessWindowMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)

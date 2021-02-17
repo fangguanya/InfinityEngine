@@ -33,11 +33,11 @@ namespace ExampleProject
 
         public override void OnUpdate()
         {
-            cpuTimer.Begin();
-            ExecuteFunc(100, 32768);
-            cpuTimer.End();
+            //cpuTimer.Begin();
+            //ExecuteFunc(100, 32768);
+            //cpuTimer.End();
 
-            Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
+            //Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
             //Console.WriteLine(Timer.Elapsed.TotalMilliseconds + "ms");
         }
 
