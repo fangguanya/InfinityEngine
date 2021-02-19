@@ -26,17 +26,17 @@ namespace InfinityEngine.Core.Native.Utility
             CopyTo(new ReadOnlySpan<byte>(source.ToPointer(), sizeInBytesToCopy), destination);
         }
 
-        public static unsafe void CopyTo<T>(this Span<T> source, IntPtr destination) where T : unmanaged
+        public static unsafe void CopyTo<T>(this Span<T> source, IntPtr destination) where T : struct
         {
             source.CopyTo(new Span<T>(destination.ToPointer(), source.Length));
         }
 
-        public static unsafe void CopyTo<T>(this ReadOnlySpan<T> source, IntPtr destination) where T : unmanaged
+        public static unsafe void CopyTo<T>(this ReadOnlySpan<T> source, IntPtr destination) where T : struct
         {
             source.CopyTo(new Span<T>(destination.ToPointer(), source.Length));
         }
 
-        public static unsafe void CopyTo<T>(this IntPtr source, Span<T> destination) where T : unmanaged
+        public static unsafe void CopyTo<T>(this IntPtr source, Span<T> destination) where T : struct
         {
             new Span<T>(source.ToPointer(), destination.Length).CopyTo(destination);
         }

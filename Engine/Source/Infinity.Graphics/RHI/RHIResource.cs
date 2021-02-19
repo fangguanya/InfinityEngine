@@ -276,7 +276,7 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public unsafe void GetData<T>(ID3D12GraphicsCommandList6 NativeCopyList, T[] Data) where T : unmanaged
+        public void GetData<T>(ID3D12GraphicsCommandList6 NativeCopyList, T[] Data) where T : struct
         {
             if (UseFlag != EUseFlag.CPURW || UseFlag != EUseFlag.CPURead) { return; }
 
@@ -289,7 +289,7 @@ namespace InfinityEngine.Graphics.RHI
             ReadbackResource.Unmap(0);
         }
 
-        public unsafe void SetData<T>(ID3D12GraphicsCommandList6 NativeCopyList, T[] Data) where T : unmanaged
+        public void SetData<T>(ID3D12GraphicsCommandList6 NativeCopyList, T[] Data) where T : struct
         {
             if (UseFlag != EUseFlag.CPURW || UseFlag != EUseFlag.CPUWrite) { return; }
 
