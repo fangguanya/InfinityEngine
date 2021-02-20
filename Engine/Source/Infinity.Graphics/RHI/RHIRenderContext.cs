@@ -88,7 +88,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Submit()
         {
-            for(int i = 0; i < ExecuteInfos.size; i++)
+            for(int i = 0; i < ExecuteInfos.length; i++)
             {
                 FExecuteInfo ExecuteInfo = ExecuteInfos[i];
                 switch (ExecuteInfo.ExecuteType)

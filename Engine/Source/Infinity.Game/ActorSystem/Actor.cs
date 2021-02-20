@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 
-namespace InfinityEngine.Core.EntitySystem
+namespace InfinityEngine.Game.ActorSystem
 {
     [Serializable]
     public class AActor : UObject, IComparable<AActor>, IEquatable<AActor>
@@ -107,13 +107,13 @@ namespace InfinityEngine.Core.EntitySystem
             Parent = InParent;
         }
 
-        public void AddChildEntity<T>(T InEntity) where T : AActor
+        public void AddChildActor<T>(T InChild) where T : AActor
         {
-            InEntity.Parent = this;
-            Childs.Add(InEntity);
+            InChild.Parent = this;
+            Childs.Add(InChild);
         }
 
-        public T FindChildEntity<T>() where T : AActor
+        public T FindChildActor<T>() where T : AActor
         {
             for (int i = 0; i < Childs.Count; i++)
             {
@@ -126,11 +126,11 @@ namespace InfinityEngine.Core.EntitySystem
             return null;
         }
 
-        public void RemoveChildEntity<T>(T InEntity) where T : AActor
+        public void RemoveChildActor<T>(T InChild) where T : AActor
         {
             for (int i = 0; i < Childs.Count; i++)
             {
-                if (Childs[i] == InEntity)
+                if (Childs[i] == InChild)
                 {
                     Childs[i].OnRemove();
                     Childs.RemoveAt(i);

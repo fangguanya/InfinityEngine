@@ -4,71 +4,90 @@ namespace InfinityEngine.Core.Container
 {
     public class TArray<T>
     {
-        T[] m_Array = null;
-
-        public int size { get; private set; }
+        public int length;
+        private T[] m_Array;
 
         public TArray()
         {
+            length = 0;
             m_Array = new T[64];
-            size = 64;
         }
 
-        public TArray(int InSize)
+        public TArray(int capacity)
         {
-            m_Array = new T[InSize];
-            size = InSize;
+            length = 0;
+            m_Array = new T[capacity];
         }
 
         public void Clear()
         {
-            size = 0;
+            length = 0;
         }
 
         public int Add(in T value)
         {
-            int index = size;
-
             // Grow array if needed;
-            if (index >= m_Array.Length)
+            if (length >= m_Array.Length)
             {
                 var newArray = new T[m_Array.Length * 2];
                 Array.Copy(m_Array, newArray, m_Array.Length);
                 m_Array = newArray;
             }
 
-            m_Array[index] = value;
-            size++;
-            return index;
+            m_Array[length] = value;
+            length++;
+
+            return length;
         }
 
         public int AddUnique(in T value)
         {
+            for(int i = 0; i < length; ++i)
+            {
+                if (value.Equals(m_Array[i]))
+                {
+                    return -1;
+                }
+            }
+            Add(value);
+
             return 0;
+        }
+
+        public void RemoveAtIndex(in int index)
+        {
+            m_Array[index] = m_Array[length - 1];
+            m_Array[length - 1] = default(T);
+            length--;
         }
 
         public void Remove(in T value)
         {
-
+            for (int i = 0; i < length; ++i)
+            {
+                if (value.Equals(m_Array[i]))
+                {
+                    RemoveAtIndex(i);
+                    break;
+                }
+            }
         }
 
-        public void Resize(int newSize, bool keepContent = true)
+        public void Resize(int newLength, bool keepContent = true)
         {
-            if (newSize > m_Array.Length)
+            if (newLength > m_Array.Length)
             {
                 if (keepContent)
                 {
-                    var newArray = new T[newSize];
+                    var newArray = new T[newLength];
                     Array.Copy(m_Array, newArray, m_Array.Length);
                     m_Array = newArray;
-                }
-                else
-                {
-                    m_Array = new T[newSize];
+                } else {
+                    m_Array = new T[newLength];
                 }
             }
 
-            size = newSize;
+            length = newLength;
         }
 
         public ref T this[int index]

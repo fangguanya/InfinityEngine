@@ -1,7 +1,7 @@
 ﻿using System;
 using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
-using InfinityEngine.Core.EntitySystem;
+using InfinityEngine.Game.ActorSystem;
 using InfinityEngine.Game.Application;
 
 namespace ExampleProject
