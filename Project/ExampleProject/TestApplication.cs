@@ -18,16 +18,11 @@ namespace ExampleProject
 
         }
 
-        public override void OnCreate()
-        {
-            IntArray = new int[32768];
-            cpuTimer = new CPUTimer();
-            //Console.WriteLine("Create Component");
-        }
-
         public override void OnEnable()
         {
-            //Console.WriteLine("Enable Component");
+            Console.WriteLine("Enable Component");
+            IntArray = new int[32768];
+            cpuTimer = new CPUTimer();
             MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
         }
 
@@ -95,12 +90,6 @@ namespace ExampleProject
             AddComponent(Component);
         }
 
-        public override void OnCreate()
-        {
-            base.OnCreate();
-            //AddComponent(Component);
-        }
-
         public override void OnEnable()
         {
             base.OnEnable();
@@ -110,14 +99,12 @@ namespace ExampleProject
         public override void OnUpdate()
         {
             base.OnUpdate();
-            //AddComponent(Component);
         }
 
         public override void OnDisable()
         {
-            Console.WriteLine("Disable Actor");
             base.OnDisable();
-            //AddComponent(Component);
+            Console.WriteLine("Disable Actor");
         }
     }
 
@@ -132,7 +119,6 @@ namespace ExampleProject
 
         protected override void Play()
         {
-            Actor.OnCreate();
             Actor.OnEnable();
         }
 
@@ -144,7 +130,6 @@ namespace ExampleProject
         protected override void End()
         {
             Actor.OnDisable();
-            Actor.OnRemove();
         }
     }
 }

@@ -22,32 +22,33 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHICommandBuffer : UObject
     {
         public string name;
-        internal ID3D12GraphicsCommandList6 NativeCmdList;
+        internal ID3D12GraphicsCommandList5 NativeCmdList;
         internal ID3D12CommandAllocator NativeCmdAllocator;
 
-        public FRHICommandBuffer(string InName, ID3D12Device6 NativeDevice, CommandListType CommandBufferType)
+        public FRHICommandBuffer(string Name, ID3D12Device6 NativeDevice, CommandListType CommandBufferType)
         {
-            name = InName;
+            name = Name;
             NativeCmdAllocator = NativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>(CommandBufferType);
-            NativeCmdList = NativeDevice.CreateCommandList<ID3D12GraphicsCommandList6>(0, CommandBufferType, NativeCmdAllocator, null);
+            NativeCmdList = NativeDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, CommandBufferType, NativeCmdAllocator, null);
+            NativeCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
-        public static implicit operator ID3D12GraphicsCommandList6(FRHICommandBuffer CmdBuffer) { return CmdBuffer.NativeCmdList; }
+        public static implicit operator ID3D12GraphicsCommandList5(FRHICommandBuffer CmdBuffer) { return CmdBuffer.NativeCmdList; }
 
-        public void Reset()
+        public void Clear()
         {
             NativeCmdAllocator.Reset();
             NativeCmdList.Reset(NativeCmdAllocator, null);
         }
 
-        internal void Close()
+        public void Close()
         {
             NativeCmdList.Close();
         }
 
         public void ClearBuffer(FRHIBuffer Buffer)
         {
-        
+
         }
 
         public void ClearTexture(FRHITexture Texture)

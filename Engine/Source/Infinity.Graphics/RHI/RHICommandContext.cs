@@ -17,7 +17,11 @@ namespace InfinityEngine.Graphics.RHI
         {
             FenceEvent = new ManualResetEvent(false);
             FrameFence = new FRHIFence(NativeDevice);
-            NativeCmdQueue = NativeDevice.CreateCommandQueue<ID3D12CommandQueue>(CommandBufferType);
+
+            CommandQueueDescription CmdQueueDescription = new CommandQueueDescription();
+            CmdQueueDescription.Type = CommandBufferType;
+            CmdQueueDescription.Flags = CommandQueueFlags.None;
+            NativeCmdQueue = NativeDevice.CreateCommandQueue<ID3D12CommandQueue>(CmdQueueDescription);
         }
 
         public static implicit operator ID3D12CommandQueue(FRHICommandContext RHICmdContext) { return RHICmdContext.NativeCmdQueue; }
@@ -35,7 +39,7 @@ namespace InfinityEngine.Graphics.RHI
         public void ExecuteQueue(FRHICommandBuffer CmdBuffer)
         {
             CmdBuffer.Close();
-            NativeCmdQueue.ExecuteCommandList(CmdBuffer.NativeCmdList);
+            NativeCmdQueue.ExecuteCommandList(CmdBuffer);
         }
 
         public void Flush()
@@ -47,14 +51,8 @@ namespace InfinityEngine.Graphics.RHI
         protected override void Disposed()
         {
             FrameFence?.Dispose();
-            FrameFence = null;
-
             FenceEvent?.Dispose();
-            FenceEvent = null;
-
-            //NativeCmdQueue.Release();
             NativeCmdQueue?.Dispose();
-            NativeCmdQueue = null;
         }
     }
 }

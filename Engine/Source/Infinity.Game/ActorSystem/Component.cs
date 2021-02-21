@@ -23,8 +23,6 @@ namespace InfinityEngine.Game.ActorSystem
             Owner = null;
         }
 
-        public virtual void OnCreate() { }
-
         public virtual void OnEnable() { }
 
         public virtual void OnTransform() { }
@@ -32,8 +30,6 @@ namespace InfinityEngine.Game.ActorSystem
         public virtual void OnUpdate() { }
 
         public virtual void OnDisable() { }
-
-        public virtual void OnRemove() { }
 
         protected override void Disposed()
         {

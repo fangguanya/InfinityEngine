@@ -155,8 +155,8 @@ namespace InfinityEngine.Graphics.RHI
         protected Format GraphicsFormat;
         protected EResourceType ResourceType;
 
-        internal ID3D12Resource DefaultResource;
         internal ID3D12Resource UploadResource;
+        internal ID3D12Resource DefaultResource;
         internal ID3D12Resource ReadbackResource;
 
 
@@ -167,17 +167,9 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            //DefaultResource.Release();
-            //UploadResource.Release();
-            //ReadbackResource.Release();
-
-            DefaultResource?.Dispose();
             UploadResource?.Dispose();
+            DefaultResource?.Dispose();
             ReadbackResource?.Dispose();
-
-            DefaultResource = null;
-            UploadResource = null;
-            ReadbackResource = null;
         }
     }
 
@@ -207,7 +199,7 @@ namespace InfinityEngine.Graphics.RHI
             {
                 DefaultResourceDesc.Dimension = ResourceDimension.Buffer;
                 DefaultResourceDesc.Alignment = 0;
-                DefaultResourceDesc.Width = Stride;
+                DefaultResourceDesc.Width = Stride * Count;
                 DefaultResourceDesc.Height = 1;
                 DefaultResourceDesc.DepthOrArraySize = 1;
                 DefaultResourceDesc.MipLevels = 1;
@@ -234,7 +226,7 @@ namespace InfinityEngine.Graphics.RHI
                 {
                     UploadResourceDesc.Dimension = ResourceDimension.Buffer;
                     UploadResourceDesc.Alignment = 0;
-                    UploadResourceDesc.Width = Stride;
+                    UploadResourceDesc.Width = Stride * Count;
                     UploadResourceDesc.Height = 1;
                     UploadResourceDesc.DepthOrArraySize = 1;
                     UploadResourceDesc.MipLevels = 1;
@@ -262,7 +254,7 @@ namespace InfinityEngine.Graphics.RHI
                 {
                     ReadbackResourceDesc.Dimension = ResourceDimension.Buffer;
                     ReadbackResourceDesc.Alignment = 0;
-                    ReadbackResourceDesc.Width = Stride;
+                    ReadbackResourceDesc.Width = Stride * Count;
                     ReadbackResourceDesc.Height = 1;
                     ReadbackResourceDesc.DepthOrArraySize = 1;
                     ReadbackResourceDesc.MipLevels = 1;
@@ -276,30 +268,32 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public void GetData<T>(ID3D12GraphicsCommandList6 NativeCopyList, T[] Data) where T : struct
+        public void GetData<T>(ID3D12GraphicsCommandList5 NativeCopyList, T[] Data) where T : struct
         {
-            if (UseFlag != EUseFlag.CPURW || UseFlag != EUseFlag.CPURead) { return; }
+            if (UseFlag == EUseFlag.CPURead || UseFlag == EUseFlag.CPURW)
+            {
+                NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.Common, ResourceStates.CopySource);
+                NativeCopyList.CopyBufferRegion(ReadbackResource, 0, DefaultResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
+                NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopySource, ResourceStates.Common);
 
-            NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.Common, ResourceStates.CopySource);
-            NativeCopyList.CopyBufferRegion(ReadbackResource, 0, DefaultResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
-            NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopySource, ResourceStates.Common);
-
-            IntPtr ReadbackResourcePtr = ReadbackResource.Map(0);
-            ReadbackResourcePtr.CopyTo(Data.AsSpan());
-            ReadbackResource.Unmap(0);
+                IntPtr ReadbackResourcePtr = ReadbackResource.Map(0);
+                ReadbackResourcePtr.CopyTo(Data.AsSpan());
+                ReadbackResource.Unmap(0);
+            }
         }
 
-        public void SetData<T>(ID3D12GraphicsCommandList6 NativeCopyList, T[] Data) where T : struct
+        public void SetData<T>(ID3D12GraphicsCommandList5 NativeCopyList, params T[] Data) where T : struct
         {
-            if (UseFlag != EUseFlag.CPURW || UseFlag != EUseFlag.CPUWrite) { return; }
+            if (UseFlag == EUseFlag.CPUWrite || UseFlag == EUseFlag.CPURW) 
+            {
+                IntPtr UploadResourcePtr = UploadResource.Map(0);
+                Data.AsSpan().CopyTo(UploadResourcePtr);
+                UploadResource.Unmap(0);
 
-            IntPtr UploadResourcePtr = UploadResource.Map(0);
-            Data.AsSpan().CopyTo(UploadResourcePtr);
-            UploadResource.Unmap(0);
-
-            NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-            NativeCopyList.CopyBufferRegion(DefaultResource, 0, UploadResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
-            NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopyDestination, ResourceStates.GenericRead);
+                NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+                NativeCopyList.CopyBufferRegion(DefaultResource, 0, UploadResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
+                NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+            }
         }
 
         protected override void Disposed()
@@ -363,7 +357,7 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            NativeDevice = null;
+
         }
     }
 
@@ -446,15 +440,8 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            //CPUDescriptorHeap.Release();
             CPUDescriptorHeap?.Dispose();
-            CPUDescriptorHeap = null;
-
-            //GPUDescriptorHeap.Release();
             GPUDescriptorHeap?.Dispose();
-            GPUDescriptorHeap = null;
-
-            NativeDevice = null;
         }
     }
 }

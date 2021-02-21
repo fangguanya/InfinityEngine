@@ -36,17 +36,6 @@ namespace InfinityEngine.Game.ActorSystem
             Components = new List<UComponent>(8);
         }
 
-        public virtual void OnCreate() 
-        {
-            for (int i = 0; i < Components.Count; i++)
-            {
-                if (!Components[i].bSpawnFlush)
-                {
-                    Components[i].OnCreate();
-                }
-            }
-        }
-
         public virtual void OnEnable()
         {
             for (int i = 0; i < Components.Count; i++)
@@ -67,7 +56,6 @@ namespace InfinityEngine.Game.ActorSystem
             {
                 if (Components[i].bSpawnFlush)
                 {
-                    Components[i].OnCreate();
                     Components[i].OnEnable();
                     Components[i].bSpawnFlush = false;
                 }
@@ -81,14 +69,6 @@ namespace InfinityEngine.Game.ActorSystem
             for (int i = 0; i < Components.Count; i++)
             {
                 Components[i].OnDisable();
-            }
-        }
-
-        public virtual void OnRemove() 
-        {
-            for (int i = 0; i < Components.Count; i++)
-            {
-                Components[i].OnRemove();
             }
         }
 
@@ -132,7 +112,6 @@ namespace InfinityEngine.Game.ActorSystem
             {
                 if (Childs[i] == InChild)
                 {
-                    Childs[i].OnRemove();
                     Childs.RemoveAt(i);
                 }
             }
@@ -163,7 +142,6 @@ namespace InfinityEngine.Game.ActorSystem
             {
                 if (Components[i] == InComponent)
                 {
-                    Components[i].OnRemove();
                     Components.RemoveAt(i);
                 }
             }

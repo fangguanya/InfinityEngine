@@ -15,9 +15,9 @@ namespace InfinityEngine.Renderer.RenderPipeline
             GraphBuilder = new FRDGBuilder("InfinityRenderGraph");
         }
 
-        public abstract void Init(FRHIRenderContext RenderContext);
+        public abstract void Init(FRHIGraphicsContext GraphicsContext);
 
-        public abstract void Render(FRHIRenderContext RenderContext);
+        public abstract void Render(FRHIGraphicsContext GraphicsContext);
 
         protected override void Disposed()
         {

@@ -8,13 +8,13 @@ using InfinityEngine.Renderer.RenderPipeline;
 
 namespace InfinityEngine.Game.Module
 {
-    public delegate void FRenderTask(FRHIRenderContext RHIRenderContext);
+    public delegate void FRenderTask(FRHIGraphicsContext RHIGraphicsContext);
 
     public class FRenderModule : UObject
     {
         private bool m_LoopExit;
         internal Thread RenderThread;
-        internal FRHIRenderContext RenderContext;
+        internal FRHIGraphicsContext GraphicsContext;
         internal FInfinityRenderPipeline RenderPipeline;
 
         internal static Queue<FRenderTask> RenderTasks;
@@ -28,7 +28,7 @@ namespace InfinityEngine.Game.Module
 
             RenderTasks = new Queue<FRenderTask>(512);
 
-            RenderContext = new FRHIRenderContext();
+            GraphicsContext = new FRHIGraphicsContext();
             RenderPipeline = new FInfinityRenderPipeline("InfinityRenderPipeline");
         }
 
@@ -57,26 +57,26 @@ namespace InfinityEngine.Game.Module
             for(int i = 0; i < RenderTasks.Count; i++)
             {
                 FRenderTask RenderTask = RenderTasks.Dequeue();
-                RenderTask(RenderContext);
+                RenderTask(GraphicsContext);
             }
         }
 
         private void RenderLoop()
         {
-            RenderPipeline.Init(RenderContext);
+            RenderPipeline.Init(GraphicsContext);
 
             while (!m_LoopExit)
             {
                 ProcessRenderTask();
 
-                RenderPipeline.Render(RenderContext);
+                RenderPipeline.Render(GraphicsContext);
             }
         }
 
         internal void Exit()
         {
             m_LoopExit = true;
-            RenderContext?.Dispose();
+            GraphicsContext?.Dispose();
             RenderPipeline?.Dispose();
         }
 

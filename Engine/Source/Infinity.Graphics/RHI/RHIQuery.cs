@@ -72,12 +72,12 @@ namespace InfinityEngine.Graphics.RHI
             Timestamp_CPUResult = NativeDevice.CreateCommittedResource<ID3D12Resource>(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
         }
 
-		public void Begin(ID3D12GraphicsCommandList6 NativeCmdList)
+		public void Begin(ID3D12GraphicsCommandList5 NativeCmdList)
 		{
 			NativeCmdList.EndQuery(Timestamp_Heap, QueryType.Timestamp, 0);
 		}
 
-		public void End(ID3D12GraphicsCommandList6 NativeCmdList)
+		public void End(ID3D12GraphicsCommandList5 NativeCmdList)
 		{
 			NativeCmdList.EndQuery(Timestamp_Heap, QueryType.Timestamp, 1);
 
@@ -101,17 +101,9 @@ namespace InfinityEngine.Graphics.RHI
 
 		protected override void Disposed()
 		{
-			//Timestamp_Heap.Release();
-			//Timestamp_CPUResult.Release();
-			//Timestamp_GPUResult.Release();
-
 			Timestamp_Heap?.Dispose();
 			Timestamp_CPUResult?.Dispose();
 			Timestamp_GPUResult?.Dispose();
-
-            Timestamp_Heap = null;
-			Timestamp_CPUResult = null;
-			Timestamp_GPUResult = null;
         }
 	}
 
@@ -194,12 +186,12 @@ namespace InfinityEngine.Graphics.RHI
 			Occlusion_CPUResult = NativeDevice.CreateCommittedResource<ID3D12Resource>(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.CopyDestination, null);
         }
 
-		public void Begin(ID3D12GraphicsCommandList6 NativeCmdList)
+		public void Begin(ID3D12GraphicsCommandList5 NativeCmdList)
 		{
 			NativeCmdList.BeginQuery(Occlusion_Heap, QueryType.Occlusion, 0);
 		}
 
-		public void End(ID3D12GraphicsCommandList6 NativeCmdList)
+		public void End(ID3D12GraphicsCommandList5 NativeCmdList)
 		{
 			NativeCmdList.EndQuery(Occlusion_Heap, QueryType.Occlusion, 0);
 
@@ -225,17 +217,9 @@ namespace InfinityEngine.Graphics.RHI
 
 		protected override void Disposed()
 		{
-			//Occlusion_Heap.Release();
-			//Occlusion_CPUResult.Release();
-			//Occlusion_GPUResult.Release();
-
 			Occlusion_Heap?.Dispose();
 			Occlusion_CPUResult?.Dispose();
 			Occlusion_GPUResult?.Dispose();
-
-			Occlusion_Heap = null;
-			Occlusion_CPUResult = null;
-			Occlusion_GPUResult = null;
         }
 	}
 

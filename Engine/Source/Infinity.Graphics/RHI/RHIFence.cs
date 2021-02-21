@@ -8,7 +8,6 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHIFence : UObject
     {
         private ulong FenceValue;
-        private ulong LastFenceValue;
         private ID3D12Fence NativeFence;
 
         public FRHIFence(ID3D12Device6 D3D12Device) : base()
@@ -18,22 +17,22 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Signal(ID3D12CommandQueue NativeCmdQueue)
         {
-            ++FenceValue;
+            FenceValue++;
             NativeCmdQueue.Signal(NativeFence, FenceValue);
         }
 
         public bool Completed()
         {
-            if (FenceValue > LastFenceValue)
+            if (NativeFence.CompletedValue < FenceValue)
             {
-                LastFenceValue = Math.Max(LastFenceValue, NativeFence.CompletedValue);
+                return false;
             }
-            return FenceValue <= LastFenceValue;
+            return true;
         }
 
         public void WaitOnCPU(ManualResetEvent FenceEvent)
         {
-            if (!this.Completed())
+            if (!Completed())
             {
                 //ManualResetEvent FenceEvent = new ManualResetEvent(false);
                 NativeFence.SetEventOnCompletion(FenceValue, FenceEvent);

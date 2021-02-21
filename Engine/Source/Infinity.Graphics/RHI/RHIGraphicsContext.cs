@@ -1,5 +1,6 @@
 ﻿using Vortice.DXGI;
 using Vortice.Direct3D12;
+using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Container;
 
@@ -12,20 +13,20 @@ namespace InfinityEngine.Graphics.RHI
         Graphics = 2
     }
 
-    public class FRHIRenderContext : UObject
+    public class FRHIGraphicsContext : UObject
     {
         internal FRHIDevice PhyscisDevice;
         internal FRHICommandContext CopyContext;
         internal FRHICommandContext ComputeContext;
         internal FRHICommandContext GraphicsContext;
-        internal TArray<FExecuteInfo> ExecuteInfos;
+        internal List<FExecuteInfo> ExecuteInfos;
         internal FRHIDescriptorHeapFactory CbvSrvUavDescriptorFactory;
 
-        public FRHIRenderContext() : base()
+        public FRHIGraphicsContext() : base()
         {
             PhyscisDevice = new FRHIDevice();
 
-            ExecuteInfos = new TArray<FExecuteInfo>(64);
+            ExecuteInfos = new List<FExecuteInfo>(64);
 
             CopyContext = new FRHICommandContext(PhyscisDevice, CommandListType.Copy);
             ComputeContext = new FRHICommandContext(PhyscisDevice, CommandListType.Compute);
@@ -88,7 +89,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Submit()
         {
-            for(int i = 0; i < ExecuteInfos.length; i++)
+            for(int i = 0; i < ExecuteInfos.Count; ++i)
             {
                 FExecuteInfo ExecuteInfo = ExecuteInfos[i];
                 switch (ExecuteInfo.ExecuteType)
@@ -107,9 +108,18 @@ namespace InfinityEngine.Graphics.RHI
                 }
             }
 
+            ExecuteInfos.Clear();
+
+            CopyContext.Flush();
             ComputeContext.Flush();
             GraphicsContext.Flush();
-            ExecuteInfos.Clear();
+        }
+
+        public FRHICommandBuffer CreateCmdBuffer(string Name, CommandListType CmdBufferType)
+        {
+            FRHICommandBuffer CmdBuffer = new FRHICommandBuffer(Name, PhyscisDevice, CmdBufferType);
+            CmdBuffer.Close();
+            return CmdBuffer;
         }
 
         public void CreateViewport()
@@ -260,19 +270,10 @@ namespace InfinityEngine.Graphics.RHI
         protected override void Disposed()
         {
             PhyscisDevice?.Dispose();
-            PhyscisDevice = null;
-
             CopyContext?.Dispose();
-            CopyContext = null;
-
             ComputeContext?.Dispose();
-            ComputeContext = null;
-
             GraphicsContext?.Dispose();
-            GraphicsContext = null;
-
             CbvSrvUavDescriptorFactory?.Dispose();
-            CbvSrvUavDescriptorFactory = null;
         }
     }
 }

@@ -49,7 +49,7 @@ namespace ExampleProject
     {
         static void Main(string[] args)
         {
-            TestApplication App = new TestApplication("InfinityExample", 1280, 720);
+            TestApplication App = new TestApplication("InfinityExample", 1600, 900);
             App.Run();
 
             // TaskExample
