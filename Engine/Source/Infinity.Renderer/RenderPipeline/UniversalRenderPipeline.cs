@@ -1,14 +1,13 @@
-﻿using System;
-using InfinityEngine.Graphics.RHI;
+﻿using InfinityEngine.Graphics.RHI;
 
 namespace InfinityEngine.Renderer.RenderPipeline
 {
-    public class FInfinityRenderPipeline : FRenderPipeline
+    public class FUniversalRenderPipeline : FRenderPipeline
     {
         FRHIBuffer GPUBuffer;
         FRHICommandBuffer CmdBuffer;
 
-        public FInfinityRenderPipeline(string PipelineName) : base(PipelineName)
+        public FUniversalRenderPipeline(string PipelineName) : base(PipelineName)
         {
 
         }

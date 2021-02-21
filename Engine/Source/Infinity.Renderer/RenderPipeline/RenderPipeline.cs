@@ -12,7 +12,7 @@ namespace InfinityEngine.Renderer.RenderPipeline
         public FRenderPipeline(string Name)
         {
             name = Name;
-            GraphBuilder = new FRDGBuilder("InfinityRenderGraph");
+            GraphBuilder = new FRDGBuilder("UniversalGraphBuilder");
         }
 
         public abstract void Init(FRHIGraphicsContext GraphicsContext);

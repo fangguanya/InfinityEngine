@@ -1,5 +1,4 @@
 ﻿using System.Threading;
-using Vortice.Direct3D;
 using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
 

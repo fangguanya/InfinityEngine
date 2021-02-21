@@ -35,7 +35,7 @@ namespace InfinityEngine.Graphics.RHI
             CbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(PhyscisDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
-        private FRHICommandContext SelectContext(EContextType ContextType)
+        private FRHICommandContext SelectContext(in EContextType ContextType)
         {
             FRHICommandContext OutContext = GraphicsContext;
 
@@ -57,7 +57,7 @@ namespace InfinityEngine.Graphics.RHI
             return OutContext;
         }
 
-        public void ExecuteCmdBuffer(EContextType ContextType, FRHICommandBuffer CmdBuffer)
+        public void ExecuteCmdBuffer(in EContextType ContextType, FRHICommandBuffer CmdBuffer)
         {
             FExecuteInfo ExecuteInfo;
             ExecuteInfo.Fence = null;
@@ -67,7 +67,7 @@ namespace InfinityEngine.Graphics.RHI
             ExecuteInfos.Add(ExecuteInfo);
         }
 
-        public void WritFence(EContextType ContextType, FRHIFence Fence)
+        public void WritFence(in EContextType ContextType, FRHIFence Fence)
         {
             FExecuteInfo ExecuteInfo;
             ExecuteInfo.Fence = Fence;
@@ -77,7 +77,7 @@ namespace InfinityEngine.Graphics.RHI
             ExecuteInfos.Add(ExecuteInfo);
         }
 
-        public void WaitFence(EContextType ContextType, FRHIFence Fence)
+        public void WaitFence(in EContextType ContextType, FRHIFence Fence)
         {
             FExecuteInfo ExecuteInfo;
             ExecuteInfo.Fence = Fence;
@@ -177,13 +177,13 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public FRHIBuffer CreateBuffer(ulong Count, ulong Stride, EUseFlag UseFlag, EBufferType BufferType)
+        public FRHIBuffer CreateBuffer(in ulong Count, in ulong Stride, in EUseFlag UseFlag, in EBufferType BufferType)
         {
             FRHIBuffer GPUBuffer = new FRHIBuffer(PhyscisDevice, UseFlag, BufferType, Count, Stride);
             return GPUBuffer;
         }
 
-        public FRHITexture CreateTexture(EUseFlag UseFlag, ETextureType TextureType)
+        public FRHITexture CreateTexture(in EUseFlag UseFlag, in ETextureType TextureType)
         {
             FRHITexture Texture = new FRHITexture(PhyscisDevice, UseFlag, TextureType);
             return Texture;
@@ -262,7 +262,7 @@ namespace InfinityEngine.Graphics.RHI
             return UAV;
         }
 
-        public FRHIResourceViewRange CreateResourceViewRange(int Count)
+        public FRHIResourceViewRange CreateResourceViewRange(in int Count)
         {
             return new FRHIResourceViewRange(PhyscisDevice, CbvSrvUavDescriptorFactory, Count);
         }

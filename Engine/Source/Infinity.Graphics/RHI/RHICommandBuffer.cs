@@ -41,7 +41,7 @@ namespace InfinityEngine.Graphics.RHI
             NativeCmdList.Reset(NativeCmdAllocator, null);
         }
 
-        public void Close()
+        internal void Close()
         {
             NativeCmdList.Close();
         }

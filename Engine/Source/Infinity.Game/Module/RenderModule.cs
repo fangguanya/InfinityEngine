@@ -14,8 +14,8 @@ namespace InfinityEngine.Game.Module
     {
         private bool m_LoopExit;
         internal Thread RenderThread;
+        internal FRenderPipeline RenderPipeline;
         internal FRHIGraphicsContext GraphicsContext;
-        internal FInfinityRenderPipeline RenderPipeline;
 
         internal static Queue<FRenderTask> RenderTasks;
 
@@ -29,7 +29,7 @@ namespace InfinityEngine.Game.Module
             RenderTasks = new Queue<FRenderTask>(512);
 
             GraphicsContext = new FRHIGraphicsContext();
-            RenderPipeline = new FInfinityRenderPipeline("InfinityRenderPipeline");
+            RenderPipeline = new FUniversalRenderPipeline("UniversalRP");
         }
 
         internal void RenderFunc()
