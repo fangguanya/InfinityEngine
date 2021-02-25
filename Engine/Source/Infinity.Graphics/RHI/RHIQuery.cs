@@ -2,13 +2,13 @@
 using Vortice.DXGI;
 using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
+using InfinityEngine.Core.Mathmatics;
 using InfinityEngine.Core.Native.Utility;
 
 namespace InfinityEngine.Graphics.RHI
 {
 	public class FRHITimeQuery : UObject
 	{
-		private float TimeResult;
 		private ID3D12QueryHeap Timestamp_Heap;
 		private ID3D12Resource Timestamp_Result;
 
@@ -32,7 +32,7 @@ namespace InfinityEngine.Graphics.RHI
             {
                 CPUResultDesc.Dimension = ResourceDimension.Buffer;
                 CPUResultDesc.Alignment = 0;
-                CPUResultDesc.Width = sizeof(long) * 2;
+                CPUResultDesc.Width = sizeof(ulong) * 2;
                 CPUResultDesc.Height = 1;
                 CPUResultDesc.DepthOrArraySize = 1;
                 CPUResultDesc.MipLevels = 1;
@@ -59,14 +59,14 @@ namespace InfinityEngine.Graphics.RHI
 
 		public float GetQueryResult(float TimestampFrequency)
 		{
-			float[] Timestamp = new float[2];
-			IntPtr Timeesult_Ptr = Timestamp_Result.Map(0);
-			Timeesult_Ptr.CopyTo(Timestamp.AsSpan());
-			TimeResult = (Timestamp[1] - Timestamp[0]) / TimestampFrequency;
-			Timestamp_Result.Unmap(0);
+            ulong[] Timestamp = new ulong[2];
+            IntPtr Timeesult_Ptr = Timestamp_Result.Map(0);
+            Timeesult_Ptr.CopyTo(Timestamp.AsSpan());
+            Timestamp_Result.Unmap(0);
 
-			return TimeResult;
-		}
+			float TimeResult = (float)((Timestamp[1] - Timestamp[0]) / TimestampFrequency) * 1000;
+            return math.round(TimeResult * 100) / 100;
+        }
 
 		protected override void Disposed()
 		{

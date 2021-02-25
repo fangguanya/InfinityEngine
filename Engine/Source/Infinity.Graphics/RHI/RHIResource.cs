@@ -154,7 +154,6 @@ namespace InfinityEngine.Graphics.RHI
         protected EUseFlag UseFlag;
         protected Format GraphicsFormat;
         protected EResourceType ResourceType;
-
         internal ID3D12Resource UploadResource;
         internal ID3D12Resource DefaultResource;
         internal ID3D12Resource ReadbackResource;
@@ -178,6 +177,7 @@ namespace InfinityEngine.Graphics.RHI
         internal ulong Count;
         internal ulong Stride;
         internal EBufferType BufferType;
+
 
         internal FRHIBuffer(ID3D12Device6 NativeDevice, in EUseFlag InUseFlag, in EBufferType InBufferType, in ulong InCount, in ulong InStride) : base(InUseFlag)
         {
@@ -276,6 +276,7 @@ namespace InfinityEngine.Graphics.RHI
                 NativeCopyList.CopyBufferRegion(ReadbackResource, 0, DefaultResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
                 NativeCopyList.ResourceBarrierTransition(DefaultResource, ResourceStates.CopySource, ResourceStates.Common);
 
+                //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
                 IntPtr ReadbackResourcePtr = ReadbackResource.Map(0);
                 ReadbackResourcePtr.CopyTo(Data.AsSpan());
                 ReadbackResource.Unmap(0);
