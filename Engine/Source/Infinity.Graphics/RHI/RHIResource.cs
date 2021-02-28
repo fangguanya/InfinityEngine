@@ -16,20 +16,6 @@ namespace InfinityEngine.Graphics.RHI
         CPUWrite,
     };
 
-    public enum EResourceType
-    {
-        Buffer,
-        Texture,
-    };
-
-    public enum EDescriptorType
-    {
-        DSV = 0,
-        RTV = 1,
-        CbvSrvUav = 2,
-        Sample = 3
-    };
-
     public enum EBufferType
     {
         Append,
@@ -50,104 +36,11 @@ namespace InfinityEngine.Graphics.RHI
         Tex3D,
     };
 
-    public struct FRHIIndexBufferView
+    public enum EResourceType
     {
-
-    }
-
-    public struct FRHIVertexBufferView
-    {
-
-    }
-
-    public struct FRHIDeptnStencilView
-    {
-
-    }
-
-    public struct FRHIRenderTargetView
-    {
-
-    }
-
-    public struct FRHIConstantBufferView
-    {
-        internal int DescriptorSize;
-        internal int DescriptorIndex;
-        internal CpuDescriptorHandle CPUDescriptorHandle;
-
-
-        public FRHIConstantBufferView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
-        {
-            DescriptorSize = InDescriptorSize;
-            DescriptorIndex = InDescriptorIndex;
-            CPUDescriptorHandle = InCPUDescriptorHandle;
-        }
-
-        public CpuDescriptorHandle GetDescriptorHandle()
-        {
-            return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
-        }
-
-        public void Disposed()
-        {
-            DescriptorSize = 0;
-            DescriptorIndex = 0;
-        }
-    }
-
-    public struct FRHIShaderResourceView
-    {
-        internal int DescriptorSize;
-        internal int DescriptorIndex;
-        internal CpuDescriptorHandle CPUDescriptorHandle;
-
-
-        public FRHIShaderResourceView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
-        {
-            DescriptorSize = InDescriptorSize;
-            DescriptorIndex = InDescriptorIndex;
-            CPUDescriptorHandle = InCPUDescriptorHandle;
-        }
-
-        public CpuDescriptorHandle GetDescriptorHandle()
-        {
-            return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
-        }
-
-        public void Disposed()
-        {
-            DescriptorSize = 0;
-            DescriptorIndex = 0;
-        }
-    }
-
-    public struct FRHIUnorderedAccessView
-    {
-        internal int DescriptorSize;
-        internal int DescriptorIndex;
-        internal CpuDescriptorHandle CPUDescriptorHandle;
-
-
-        public FRHIUnorderedAccessView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
-        {
-            DescriptorSize = InDescriptorSize;
-            DescriptorIndex = InDescriptorIndex;
-            CPUDescriptorHandle = InCPUDescriptorHandle;
-        }
-
-        public CpuDescriptorHandle GetDescriptorHandle()
-        {
-            return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
-        }
-
-        public void Disposed()
-        {
-            DescriptorSize = 0;
-            DescriptorIndex = 0;
-        }
-    }
-
+        Buffer,
+        Texture,
+    };
 
     public class FRHIResource : UObject
     {
@@ -359,90 +252,6 @@ namespace InfinityEngine.Graphics.RHI
         protected override void Disposed()
         {
 
-        }
-    }
-
-    internal sealed class FRHIMemoryHeapFactory : UObject
-    {
-        internal FRHIMemoryHeapFactory(ID3D12Device6 InNativeDevice, in int HeapCount) : base()
-        {
-
-        }
-
-        protected override void Disposed()
-        {
-
-        }
-    }
-
-    internal class FRHIDescriptorHeapFactory : UObject
-    {
-        protected int DescriptorSize;
-
-        protected ID3D12Device6 NativeDevice;
-        protected ID3D12DescriptorHeap CPUDescriptorHeap;
-        protected ID3D12DescriptorHeap GPUDescriptorHeap;
-
-
-        internal FRHIDescriptorHeapFactory(ID3D12Device6 InNativeDevice, in DescriptorHeapType InType, in int DescriptorCount) : base()
-        {
-            NativeDevice = InNativeDevice;
-
-            DescriptorSize = InNativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
-
-            DescriptorHeapDescription CPUDescriptorHeapDescription = new DescriptorHeapDescription(InType, DescriptorCount, DescriptorHeapFlags.ShaderVisible);
-            CPUDescriptorHeap = InNativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(CPUDescriptorHeapDescription);
-
-            DescriptorHeapDescription GPUDescriptorHeapDescription = new DescriptorHeapDescription(InType, DescriptorCount, DescriptorHeapFlags.None);
-            GPUDescriptorHeap = InNativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(GPUDescriptorHeapDescription);
-        }
-
-        protected static DescriptorHeapType GetDescriptorType(in EDescriptorType DescriptorType)
-        {
-            DescriptorHeapType OutType = DescriptorHeapType.Sampler;
-
-            switch (DescriptorType)
-            {
-                case EDescriptorType.DSV:
-                    OutType = DescriptorHeapType.DepthStencilView;
-                    break;
-
-                case EDescriptorType.RTV:
-                    OutType = DescriptorHeapType.RenderTargetView;
-                    break;
-
-                case EDescriptorType.CbvSrvUav:
-                    OutType = DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView;
-                    break;
-            }
-
-            return OutType;
-        }
-
-        internal int Allocator(in int Count)
-        {
-            return 1;
-        }
-
-        internal int GetDescriptorSize()
-        {
-            return DescriptorSize;
-        }
-
-        internal CpuDescriptorHandle GetCPUHandleStart()
-        {
-            return CPUDescriptorHeap.GetCPUDescriptorHandleForHeapStart();
-        }
-
-        internal GpuDescriptorHandle GetGPUHandleStart()
-        {
-            return GPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
-        }
-
-        protected override void Disposed()
-        {
-            CPUDescriptorHeap?.Dispose();
-            GPUDescriptorHeap?.Dispose();
         }
     }
 }
