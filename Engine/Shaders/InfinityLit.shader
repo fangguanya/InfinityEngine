@@ -3,14 +3,12 @@
 	Pass
 	{
 		Tags {"Name" = "OpaqueDepth", "Type" = "Graphics"}
-		ZWrite On 
-		ZTest LEqual 
-		Cull Back 
+		ZWrite On ZTest LEqual Cull Back 
 		ColorMask 0 
 
 		HLSLPROGRAM
-		#pragma vertexFunc Vertex
-		#pragma pixelFunc Pixel
+		#pragma vertex vert
+		#pragma fragment frag
 
 		#include "../Private/Common.hlsl"
 
@@ -26,7 +24,7 @@
 			float4 vertex : SV_POSITION;
 		};
 
-		Varyings Vertex(Attributes In)
+		Varyings vert(Attributes In)
 		{
 			Varyings Out = (Varyings)0;
 
@@ -36,12 +34,8 @@
 			return Out;
 		}
 
-		float4 Pixel(Varyings In) : SV_Target
+		float4 frag(Varyings In) : SV_Target
 		{
-			/*UNITY_SETUP_INSTANCE_ID(In);
-			if (In.uv.x < 0.5) {
-				discard;
-			}*/
 			return 0;
 		}
 		ENDHLSL
@@ -50,13 +44,11 @@
 	Pass
 	{
 		Tags {"Name" = "OpaqueGBuffer", "Type" = "Graphics"}
-		ZWrite On 
-		ZTest LEqual 
-		Cull Back 
+		ZWrite On ZTest LEqual Cull Back 
 
 		HLSLPROGRAM
-		#pragma vertexFunc Vertex
-		#pragma pixelFunc Pixel
+		#pragma vertex vert
+		#pragma fragment frag
 
 		#include "../Private/Common.hlsl"
 
@@ -70,7 +62,6 @@
 			float2 uv : TEXCOORD0;
 			float3 normal : NORMAL;
 			float4 vertex : POSITION;
-			UNITY_VERTEX_INPUT_INSTANCE_ID
 		};
 
 		struct Varyings
@@ -79,10 +70,9 @@
 			float3 normal : TEXCOORD1;
 			float4 worldPos : TEXCOORD2;
 			float4 vertex : SV_POSITION;
-			UNITY_VERTEX_INPUT_INSTANCE_ID
 		};
 		
-		Varyings Vertex(Attributes In)
+		Varyings vert(Attributes In)
 		{
 			Varyings Out = (Varyings)0;
 
@@ -93,25 +83,17 @@
 			return Out;
 		}
 		
-		void Pixle(Varyings In, out float4 ThinGBufferA : SV_Target0, out uint4 ThinGBufferB : SV_Target1)
+		void frag(Varyings In, out float4 GBufferA : SV_Target0, out uint4 GBufferB : SV_Target1)
 		{
 			float3 WS_PixelPos = In.worldPos.xyz;
 			float3 BaseColor = _MainTex.Sample(sampler_MainTex, In.uv).rgb;
 			
-			//ThinGBufferA = float4(BaseColor, 1);
-			//ThinGBufferB = uint4((In.normal * 127 + 127), 1);
-			ThinGBufferData GBufferData;
-			GBufferData.WorldNormal = normalize(In.normal);
-			GBufferData.BaseColor = BaseColor;
-			GBufferData.Roughness = BaseColor.r;
-			GBufferData.Specular = _SpecularLevel;
-			GBufferData.Reflactance = BaseColor.b;
-			EncodeGBuffer(GBufferData, ThinGBufferA, ThinGBufferB);
+			GBufferA = float4(BaseColor, 1);
+			GBufferB = uint4((In.normal * 127 + 127), 1);
 		}
 		ENDHLSL
 	}
 
-	//RayTrace AO
 	Pass
 	{
 		Tags {"Name" = "RTAO", "Type" = "HitGroup"}

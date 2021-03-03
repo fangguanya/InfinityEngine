@@ -9,9 +9,11 @@ namespace ExampleProject
     [Serializable]
     public unsafe class TestComponent : UComponent
     {
+        Timer timer;
+        CPUTimer cpuTimer;
+
         int* MyData;
         int[] IntArray;
-        CPUTimer cpuTimer;
 
         public TestComponent()
         {
@@ -21,19 +23,26 @@ namespace ExampleProject
         public override void OnEnable()
         {
             Console.WriteLine("Enable Component");
-            IntArray = new int[32768];
+
+            timer = new Timer();
             cpuTimer = new CPUTimer();
+
+            IntArray = new int[32768];
             MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
         }
 
         public override void OnUpdate()
         {
             //cpuTimer.Begin();
-            //ExecuteFunc(100, 32768);
+            //timer.Restart();
+            //RunNative(4000, 32768);
+            //RunUnsafe(4000, 32768);
+            //RunManaged(4000, 32768);
+            //timer.Stop();
             //cpuTimer.End();
 
             //Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
-            //Console.WriteLine(Timer.Elapsed.TotalMilliseconds + "ms");
+            //Console.WriteLine(timer.ElapsedMilliseconds + "ms");
         }
 
         public override void OnDisable()
@@ -44,9 +53,13 @@ namespace ExampleProject
             Marshal.FreeHGlobal((IntPtr)MyData);
         }
 
-        void ExecuteFunc(in int Count, in int Length)
+        void RunNative(in int Count, in int Length)
         {
-            //CPUTimer.DoTask(MyData, Count, Length);
+            CPUTimer.DoTask(MyData, Count, Length);
+        }
+
+        void RunUnsafe(in int Count, in int Length)
+        {
             for (int i = 0; i < Count; i++)
             {
                 for (int j = 0; j < Length; j++)
@@ -55,15 +68,18 @@ namespace ExampleProject
                     Value = i + j;
                 }
             }
+        }
 
-            /*for (int i = 0; i < Count; i++)
+        void RunManaged(in int Count, in int Length)
+        {
+            for (int i = 0; i < Count; i++)
             {
                 for (int j = 0; j < Length; j++)
                 {
-                    ref int Value = ref IntArray[j];
+                    ref int Value = ref MyData[j];
                     Value = i + j;
                 }
-            }*/
+            }
         }
     }
 
