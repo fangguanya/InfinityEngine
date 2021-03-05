@@ -29,6 +29,9 @@ namespace ExampleProject
 
             IntArray = new int[32768];
             MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
+
+            Console.WriteLine((0 >> 16) + (3 << 16 | 1));
+            Console.WriteLine((1 >> 16) + (3 << 16 | 0));
         }
 
         public override void OnUpdate()
