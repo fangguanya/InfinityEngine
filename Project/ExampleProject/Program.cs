@@ -49,8 +49,8 @@ namespace ExampleProject
     {
         static void Main(string[] args)
         {
-            TestApplication App = new TestApplication("InfinityExample", 1600, 900);
-            App.Run();
+            /*TestApplication App = new TestApplication("InfinityExample", 1600, 900);
+            App.Run();*/
 
             // TaskExample
             /*int[] IntArray = new int[10];
@@ -108,6 +108,65 @@ namespace ExampleProject
             MyArray.Remove(0.6f);
 
             Console.ReadKey();*/
+
+
+            string shaderSource = @"
+            struct PSInput 
+            {
+                float4 position : SV_POSITION;
+                float4 color : COLOR;
+            };
+
+            PSInput VSMain(float4 position : POSITION, float4 color : COLOR) 
+            {
+                PSInput result;
+                result.position = position;
+                result.color = color;
+                return result;
+            }
+
+            float4 PSMain(PSInput input) : SV_TARGET 
+            {
+                return input.color;
+            }";
+
+            string ShaderSource = @"
+		    HLSLPROGRAM
+		    #pragma vertex vert
+		    #pragma fragment frag
+
+            struct Attributes
+	        {
+		        float2 uv : TEXCOORD0;
+		        float4 vertex : POSITION;
+	        };
+
+	        struct Varyings
+	        {
+		        float2 uv : TEXCOORD0;
+		        float4 vertex : SV_POSITION;
+	        };
+
+		    Varyings vert(Attributes In)
+		    {
+			    Varyings Out = (Varyings)0;
+
+			    Out.uv = In.uv;
+			    float4 WorldPos = mul(UNITY_MATRIX_M, float4(In.vertex.xyz, 1.0));
+			    Out.vertex = mul(Matrix_ViewJitterProj, WorldPos);
+			    return Out;
+		    }
+
+		    float4 frag(Varyings In) : SV_Target
+		    {
+			    return 0;
+		    }
+            ENDHLSL";
+
+            int StartIndex = ShaderSource.IndexOf("HLSLPROGRAM") + 11;
+            int EndIndex = ShaderSource.IndexOf("ENDHLSL");
+            Console.WriteLine(ShaderSource.Substring(StartIndex, EndIndex - StartIndex));
+            Console.ReadKey();
         }
     }
 }

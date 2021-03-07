@@ -61,8 +61,4 @@
     <ProjectReference Include="..\Infinity.Core\Infinity.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="HLSLCC\" />
-  </ItemGroup>
-
 </Project>
