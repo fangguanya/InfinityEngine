@@ -9,11 +9,11 @@ namespace ExampleProject
     [Serializable]
     public unsafe class TestComponent : UComponent
     {
-        Timer timer;
-        CPUTimer cpuTimer;
+        private Timer timer;
+        private CPUTimer cpuTimer;
 
-        int* MyData;
-        int[] IntArray;
+        private int* MyData;
+        private int[] IntArray;
 
         public TestComponent()
         {
@@ -30,8 +30,8 @@ namespace ExampleProject
             IntArray = new int[32768];
             MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
 
-            Console.WriteLine((0 >> 16) + (3 << 16 | 1));
-            Console.WriteLine((1 >> 16) + (3 << 16 | 0));
+            //Console.WriteLine((0 >> 16) + (3 << 16 | 1));
+            //Console.WriteLine((1 >> 16) + (3 << 16 | 0));
         }
 
         public override void OnUpdate()
@@ -56,12 +56,12 @@ namespace ExampleProject
             Marshal.FreeHGlobal((IntPtr)MyData);
         }
 
-        void RunNative(in int Count, in int Length)
+        private void RunNative(in int Count, in int Length)
         {
             CPUTimer.DoTask(MyData, Count, Length);
         }
 
-        void RunUnsafe(in int Count, in int Length)
+        private void RunUnsafe(in int Count, in int Length)
         {
             for (int i = 0; i < Count; i++)
             {
@@ -73,7 +73,7 @@ namespace ExampleProject
             }
         }
 
-        void RunManaged(in int Count, in int Length)
+        private void RunManaged(in int Count, in int Length)
         {
             for (int i = 0; i < Count; i++)
             {
@@ -89,8 +89,9 @@ namespace ExampleProject
     [Serializable]
     public class TestActor : AActor
     {
-        TestComponent Component;
+        private TestComponent Component;
 
+        
         public TestActor() : base()
         {
             Component = new TestComponent();
@@ -118,7 +119,7 @@ namespace ExampleProject
         public override void OnUpdate()
         {
             base.OnUpdate();
-            Console.WriteLine("Update Actor");
+            //Console.WriteLine("Update Actor");
         }
 
         public override void OnDisable()
@@ -130,8 +131,9 @@ namespace ExampleProject
 
     public class TestApplication : FApplication
     {
-        TestActor Actor;
+        private TestActor Actor;
 
+        
         public TestApplication(string Name, int Width, int Height) : base(Name, Width, Height)
         {
             Actor = new TestActor("TestActor");

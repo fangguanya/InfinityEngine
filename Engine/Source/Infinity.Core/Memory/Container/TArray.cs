@@ -6,7 +6,16 @@ namespace InfinityEngine.Core.Container
     {
         public int length;
         private T[] m_Array;
+        
 
+        public ref T this[int index]
+        {
+            get
+            {
+                return ref m_Array[index];
+            }
+        }
+        
         public TArray()
         {
             length = 0;
@@ -26,7 +35,6 @@ namespace InfinityEngine.Core.Container
 
         public int Add(in T value)
         {
-            // Grow array if needed;
             if (length >= m_Array.Length)
             {
                 var newArray = new T[m_Array.Length * 2];
@@ -54,13 +62,6 @@ namespace InfinityEngine.Core.Container
             return 0;
         }
 
-        public void RemoveAtIndex(in int index)
-        {
-            m_Array[index] = m_Array[length - 1];
-            m_Array[length - 1] = default(T);
-            length--;
-        }
-
         public void Remove(in T value)
         {
             for (int i = 0; i < length; ++i)
@@ -71,6 +72,36 @@ namespace InfinityEngine.Core.Container
                     break;
                 }
             }
+        }
+        
+        public void RemoveAtIndex(in int index)
+        {
+            int lastIndex = length - 1;
+            if (index > lastIndex) { return; }
+
+            Array.Copy(m_Array, index + 1, m_Array, index, lastIndex - index);
+
+            m_Array[lastIndex] = default(T);
+            length--;
+        }
+
+        public void RemoveSwap(in T value)
+        {
+            for (int i = 0; i < length; ++i)
+            {
+                if (value.Equals(m_Array[i]))
+                {
+                    RemoveSwapIndex(i);
+                    break;
+                }
+            }
+        }
+        
+        public void RemoveSwapIndex(in int index)
+        {
+            m_Array[index] = m_Array[length - 1];
+            m_Array[length - 1] = default(T);
+            length--;
         }
 
         public void Resize(int newLength, bool keepContent = true)
@@ -88,14 +119,6 @@ namespace InfinityEngine.Core.Container
             }
 
             length = newLength;
-        }
-
-        public ref T this[int index]
-        {
-            get
-            {
-                return ref m_Array[index];
-            }
         }
     }
 }

@@ -99,7 +99,7 @@ namespace ExampleProject
             MyArray.Add(0.5f);
             MyArray.Add(0.6f);
 
-            MyArray.Remove(4);
+            MyArray.RemoveAtIndex(4);
             MyArray.Add(0.5f);
 
             MyArray.AddUnique(0.6f);
@@ -107,6 +107,8 @@ namespace ExampleProject
 
             MyArray.Remove(0.6f);
 
+            ref float value = ref MyArray[1];
+            value += 0.5f;
             Console.ReadKey();*/
 
 
