@@ -1,5 +1,6 @@
 # Visual Studio cache directory
 .vs/
+.idea/
 .vscode/
 
 # Binary Files

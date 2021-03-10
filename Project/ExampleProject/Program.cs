@@ -49,8 +49,8 @@ namespace ExampleProject
     {
         static void Main(string[] args)
         {
-            /*TestApplication App = new TestApplication("InfinityExample", 1600, 900);
-            App.Run();*/
+            TestApplication App = new TestApplication("InfinityExample", 1280, 720);
+            App.Run();
 
             // TaskExample
             /*int[] IntArray = new int[10];
@@ -110,7 +110,7 @@ namespace ExampleProject
             Console.ReadKey();*/
 
 
-            string shaderSource = @"
+            /*string shaderSource = @"
             struct PSInput 
             {
                 float4 position : SV_POSITION;
@@ -166,7 +166,7 @@ namespace ExampleProject
             int StartIndex = ShaderSource.IndexOf("HLSLPROGRAM") + 11;
             int EndIndex = ShaderSource.IndexOf("ENDHLSL");
             Console.WriteLine(ShaderSource.Substring(StartIndex, EndIndex - StartIndex));
-            Console.ReadKey();
+            Console.ReadKey();*/
         }
     }
 }

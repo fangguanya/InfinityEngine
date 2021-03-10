@@ -118,6 +118,7 @@ namespace ExampleProject
         public override void OnUpdate()
         {
             base.OnUpdate();
+            Console.WriteLine("Update Actor");
         }
 
         public override void OnDisable()
