@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace InfinityEngine.Core.Object
 {
@@ -16,7 +17,7 @@ namespace InfinityEngine.Core.Object
             Finalizer();
         }
 
-        protected abstract void Disposed();
+        protected virtual void Disposed() { }
 
         private void Finalizer()
         {
