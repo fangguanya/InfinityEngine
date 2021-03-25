@@ -15,7 +15,7 @@ namespace InfinityEngine.Renderer.RenderPipeline
         public override void Init(FRHIGraphicsContext graphicsContext)
         {
             buffer = graphicsContext.CreateBuffer(5, 4, EUseFlag.CPUWrite, EBufferType.Structured);
-            rhiCmdList = graphicsContext.CreateCmdBuffer("DefaultCmdList", Vortice.Direct3D12.CommandListType.Copy);
+            rhiCmdList = graphicsContext.CreateCmdList("DefaultCmdList", Vortice.Direct3D12.CommandListType.Copy);
         }
 
         public override void Render(FRHIGraphicsContext graphicsContext)
@@ -23,49 +23,49 @@ namespace InfinityEngine.Renderer.RenderPipeline
             rhiCmdList.Clear();
             buffer.SetData<int>(rhiCmdList, 1, 2, 3, 4, 5);
 
-            graphicsContext.ExecuteCmdBuffer(EContextType.Copy, rhiCmdList);
+            graphicsContext.ExecuteCmdList(EContextType.Copy, rhiCmdList);
             graphicsContext.Submit();
 
 
             //Console.WriteLine("Rendering");
             //ResourceBind Example
-            /*FRHIBuffer Buffer = GraphicsContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+            /*FRHIBuffer Buffer = graphicsContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
 
-            FRHIShaderResourceView SRV = GraphicsContext.CreateShaderResourceView(Buffer);
-            FRHIUnorderedAccessView UAV = GraphicsContext.CreateUnorderedAccessView(Buffer);
+            FRHIShaderResourceView SRV = graphicsContext.CreateShaderResourceView(Buffer);
+            FRHIUnorderedAccessView UAV = graphicsContext.CreateUnorderedAccessView(Buffer);
 
-            FRHIResourceViewRange ResourceViewRange = GraphicsContext.CreateResourceViewRange(2);
+            FRHIResourceViewRange ResourceViewRange = graphicsContext.CreateResourceViewRange(2);
             ResourceViewRange.SetShaderResourceView(0, SRV);
             ResourceViewRange.SetUnorderedAccessView(1, UAV);*/
 
 
             //ASyncCompute Example
-            /*FRHIFence ComputeFence = GraphicsContext.CreateGPUFence();
-            FRHIFence GraphicsFence = GraphicsContext.CreateGPUFence();
+            /*FRHIFence computeFence = graphicsContext.CreateFence();
+            FRHIFence graphicsFence = graphicsContext.CreateFence();
 
             //Pass-A in GraphicsQueue
-            CmdBuffer.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-            GraphicsContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);
-            GraphicsContext.WritFence(EContextType.Graphics, GraphicsFence);
+            rhiCmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
+            graphicsContext.ExecuteCmdList(EContextType.Graphics, rhiCmdList);
+            graphicsContext.WritFence(EContextType.Graphics, graphicsFence);
 
             //Pass-B in GraphicsQueue
-            CmdBuffer.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-            GraphicsContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);
+            rhiCmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
+            graphicsContext.ExecuteCmdList(EContextType.Graphics, rhiCmdList);
 
             //Pass-C in ComputeQueue and Wait Pass-A
-            GraphicsContext.WaitFence(EContextType.Compute, GraphicsFence);
-            CmdBuffer.DispatchCompute(null, 16, 16, 1);
-            GraphicsContext.ExecuteCmdBuffer(EContextType.Compute, CmdBuffer);
-            GraphicsContext.WritFence(EContextType.Compute, ComputeFence);
+            graphicsContext.WaitFence(EContextType.Compute, graphicsFence);
+            rhiCmdList.DispatchCompute(null, 16, 16, 1);
+            graphicsContext.ExecuteCmdList(EContextType.Compute, rhiCmdList);
+            graphicsContext.WritFence(EContextType.Compute, computeFence);
 
             //Pass-D in ComputeQueue
-            CmdBuffer.DispatchCompute(null, 16, 16, 1);
-            GraphicsContext.ExecuteCmdBuffer(EContextType.Compute, CmdBuffer);
+            rhiCmdList.DispatchCompute(null, 16, 16, 1);
+            graphicsContext.ExecuteCmdList(EContextType.Compute, rhiCmdList);
 
             //Pass-E in GraphicsQueue and Wait Pass-C
-            GraphicsContext.WaitFence(EContextType.Graphics, ComputeFence);
-            CmdBuffer.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
-            GraphicsContext.ExecuteCmdBuffer(EContextType.Graphics, CmdBuffer);*/
+            graphicsContext.WaitFence(EContextType.Graphics, computeFence);
+            rhiCmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
+            graphicsContext.ExecuteCmdList(EContextType.Graphics, rhiCmdList);*/
         }
 
         protected override void Disposed()

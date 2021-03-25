@@ -33,7 +33,7 @@ namespace InfinityEngine.Graphics.RHI
             d3D12CmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
-        public static implicit operator ID3D12GraphicsCommandList5(FRHICommandList rhiCmdBuffer) { return rhiCmdBuffer.d3D12CmdList; }
+        public static implicit operator ID3D12GraphicsCommandList5(FRHICommandList rhiCmdList) { return rhiCmdList.d3D12CmdList; }
 
         public void Clear()
         {

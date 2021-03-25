@@ -50,7 +50,7 @@ namespace InfinityEngine.Graphics.RHI
             return outContext;
         }
 
-        public void ExecuteCmdBuffer(in EContextType contextType, FRHICommandList rhiCmdList)
+        public void ExecuteCmdList(in EContextType contextType, FRHICommandList rhiCmdList)
         {
             FExecuteInfo executeInfo;
             executeInfo.rhiFence = null;
@@ -108,7 +108,7 @@ namespace InfinityEngine.Graphics.RHI
             rhiGraphicsContext.Flush();
         }
 
-        public FRHICommandList CreateCmdBuffer(string name, CommandListType cmdListType)
+        public FRHICommandList CreateCmdList(string name, CommandListType cmdListType)
         {
             FRHICommandList rhiCmdList = new FRHICommandList(name, rhiDevice, cmdListType);
             rhiCmdList.Close();
