@@ -6,52 +6,51 @@ namespace InfinityEngine.Graphics.RHI
 {
     public class FRHICommandContext : UObject
     {
-        public FRHIFence FrameFence;
-        public ManualResetEvent FenceEvent;
+        public FRHIFence rhiFence;
+        public ManualResetEvent fenceEvent;
+        public ID3D12CommandQueue d3D12CmdQueue;
 
-        public ID3D12CommandQueue NativeCmdQueue;
 
-
-        public FRHICommandContext(ID3D12Device6 NativeDevice, CommandListType CommandBufferType) : base()
+        public FRHICommandContext(ID3D12Device6 d3D12Device, CommandListType cmdListType) : base()
         {
-            FenceEvent = new ManualResetEvent(false);
-            FrameFence = new FRHIFence(NativeDevice);
+            rhiFence = new FRHIFence(d3D12Device);
+            fenceEvent = new ManualResetEvent(false);
 
             CommandQueueDescription CmdQueueDescription = new CommandQueueDescription();
-            CmdQueueDescription.Type = CommandBufferType;
+            CmdQueueDescription.Type = cmdListType;
             CmdQueueDescription.Flags = CommandQueueFlags.None;
-            NativeCmdQueue = NativeDevice.CreateCommandQueue<ID3D12CommandQueue>(CmdQueueDescription);
+            d3D12CmdQueue = d3D12Device.CreateCommandQueue<ID3D12CommandQueue>(CmdQueueDescription);
         }
 
-        public static implicit operator ID3D12CommandQueue(FRHICommandContext RHICmdContext) { return RHICmdContext.NativeCmdQueue; }
+        public static implicit operator ID3D12CommandQueue(FRHICommandContext RHICmdContext) { return RHICmdContext.d3D12CmdQueue; }
 
-        public void SignalQueue(FRHIFence GPUFence)
+        public void SignalQueue(FRHIFence rhiFence)
         {
-            GPUFence.Signal(NativeCmdQueue);
+            rhiFence.Signal(d3D12CmdQueue);
         }
 
-        public void WaitQueue(FRHIFence GPUFence)
+        public void WaitQueue(FRHIFence rhiFence)
         {
-            GPUFence.WaitOnGPU(NativeCmdQueue);
+            rhiFence.WaitOnGPU(d3D12CmdQueue);
         }
 
         public void ExecuteQueue(FRHICommandList rhiCmdList)
         {
             rhiCmdList.Close();
-            NativeCmdQueue.ExecuteCommandList(rhiCmdList);
+            d3D12CmdQueue.ExecuteCommandList(rhiCmdList);
         }
 
         public void Flush()
         {
-            FrameFence.Signal(NativeCmdQueue);
-            FrameFence.WaitOnCPU(FenceEvent);
+            rhiFence.Signal(d3D12CmdQueue);
+            rhiFence.WaitOnCPU(fenceEvent);
         }
 
         protected override void Disposed()
         {
-            FrameFence?.Dispose();
-            FenceEvent?.Dispose();
-            NativeCmdQueue?.Dispose();
+            rhiFence?.Dispose();
+            fenceEvent?.Dispose();
+            d3D12CmdQueue?.Dispose();
         }
     }
 }
