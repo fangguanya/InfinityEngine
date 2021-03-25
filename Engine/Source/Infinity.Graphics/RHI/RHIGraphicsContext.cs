@@ -25,13 +25,10 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIGraphicsContext() : base()
         {
             rhiDevice = new FRHIDevice();
-
-            rhiCmdListExecuteInfos = new List<FExecuteInfo>(64);
-
             rhiCopyContext = new FRHICommandContext(rhiDevice, CommandListType.Copy);
             rhiComputeContext = new FRHICommandContext(rhiDevice, CommandListType.Compute);
             rhiGraphicsContext = new FRHICommandContext(rhiDevice, CommandListType.Direct);
-
+            rhiCmdListExecuteInfos = new List<FExecuteInfo>(64);
             rhiCbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(rhiDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
