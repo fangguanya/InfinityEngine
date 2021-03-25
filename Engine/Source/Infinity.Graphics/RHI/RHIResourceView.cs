@@ -37,79 +37,79 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHIConstantBufferView
     {
-        internal int DescriptorSize;
-        internal int DescriptorIndex;
-        internal CpuDescriptorHandle CPUDescriptorHandle;
+        internal int descriptorSize;
+        internal int descriptorIndex;
+        internal CpuDescriptorHandle descriptorHandle;
 
 
-        public FRHIConstantBufferView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
+        public FRHIConstantBufferView(int descriptorSize, int descriptorIndex, CpuDescriptorHandle descriptorHandle)
         {
-            DescriptorSize = InDescriptorSize;
-            DescriptorIndex = InDescriptorIndex;
-            CPUDescriptorHandle = InCPUDescriptorHandle;
+            this.descriptorSize = descriptorSize;
+            this.descriptorIndex = descriptorIndex;
+            this.descriptorHandle = descriptorHandle;
         }
 
         public CpuDescriptorHandle GetDescriptorHandle()
         {
-            return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
+            return descriptorHandle + descriptorSize * descriptorIndex;
         }
 
         public void Disposed()
         {
-            DescriptorSize = 0;
-            DescriptorIndex = 0;
+            descriptorSize = 0;
+            descriptorIndex = 0;
         }
     }
 
     public struct FRHIShaderResourceView
     {
-        internal int DescriptorSize;
-        internal int DescriptorIndex;
-        internal CpuDescriptorHandle CPUDescriptorHandle;
+        internal int descriptorSize;
+        internal int descriptorIndex;
+        internal CpuDescriptorHandle descriptorHandle;
 
 
-        public FRHIShaderResourceView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
+        public FRHIShaderResourceView(int descriptorSize, int descriptorIndex, CpuDescriptorHandle descriptorHandle)
         {
-            DescriptorSize = InDescriptorSize;
-            DescriptorIndex = InDescriptorIndex;
-            CPUDescriptorHandle = InCPUDescriptorHandle;
+            this.descriptorSize = descriptorSize;
+            this.descriptorIndex = descriptorIndex;
+            this.descriptorHandle = descriptorHandle;
         }
 
         public CpuDescriptorHandle GetDescriptorHandle()
         {
-            return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
+            return descriptorHandle + descriptorSize * descriptorIndex;
         }
 
         public void Disposed()
         {
-            DescriptorSize = 0;
-            DescriptorIndex = 0;
+            descriptorSize = 0;
+            descriptorIndex = 0;
         }
     }
 
     public struct FRHIUnorderedAccessView
     {
-        internal int DescriptorSize;
-        internal int DescriptorIndex;
-        internal CpuDescriptorHandle CPUDescriptorHandle;
+        internal int descriptorSize;
+        internal int descriptorIndex;
+        internal CpuDescriptorHandle descriptorHandle;
 
 
-        public FRHIUnorderedAccessView(int InDescriptorSize, int InDescriptorIndex, CpuDescriptorHandle InCPUDescriptorHandle)
+        public FRHIUnorderedAccessView(int descriptorSize, int descriptorIndex, CpuDescriptorHandle descriptorHandle)
         {
-            DescriptorSize = InDescriptorSize;
-            DescriptorIndex = InDescriptorIndex;
-            CPUDescriptorHandle = InCPUDescriptorHandle;
+            this.descriptorSize = descriptorSize;
+            this.descriptorIndex = descriptorIndex;
+            this.descriptorHandle = descriptorHandle;
         }
 
         public CpuDescriptorHandle GetDescriptorHandle()
         {
-            return CPUDescriptorHandle + DescriptorSize * DescriptorIndex;
+            return descriptorHandle + descriptorSize * descriptorIndex;
         }
 
         public void Disposed()
         {
-            DescriptorSize = 0;
-            DescriptorIndex = 0;
+            descriptorSize = 0;
+            descriptorIndex = 0;
         }
     }
 }

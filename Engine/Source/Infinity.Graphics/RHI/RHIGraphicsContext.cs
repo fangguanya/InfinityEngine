@@ -15,111 +15,107 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIGraphicsContext : UObject
     {
-        internal FRHIDevice PhyscisDevice;
-        internal FRHICommandContext CopyContext;
-        internal FRHICommandContext ComputeContext;
-        internal FRHICommandContext GraphicsContext;
-        internal List<FExecuteInfo> ExecuteInfos;
-        internal FRHIDescriptorHeapFactory CbvSrvUavDescriptorFactory;
+        internal FRHIDevice rhiDevice;
+        internal FRHICommandContext rhiCopyContext;
+        internal FRHICommandContext rhiComputeContext;
+        internal FRHICommandContext rhiGraphicsContext;
+        internal List<FExecuteInfo> rhiCmdListExecuteInfos;
+        internal FRHIDescriptorHeapFactory rhiCbvSrvUavDescriptorFactory;
 
         public FRHIGraphicsContext() : base()
         {
-            PhyscisDevice = new FRHIDevice();
+            rhiDevice = new FRHIDevice();
 
-            ExecuteInfos = new List<FExecuteInfo>(64);
+            rhiCmdListExecuteInfos = new List<FExecuteInfo>(64);
 
-            CopyContext = new FRHICommandContext(PhyscisDevice, CommandListType.Copy);
-            ComputeContext = new FRHICommandContext(PhyscisDevice, CommandListType.Compute);
-            GraphicsContext = new FRHICommandContext(PhyscisDevice, CommandListType.Direct);
+            rhiCopyContext = new FRHICommandContext(rhiDevice, CommandListType.Copy);
+            rhiComputeContext = new FRHICommandContext(rhiDevice, CommandListType.Compute);
+            rhiGraphicsContext = new FRHICommandContext(rhiDevice, CommandListType.Direct);
 
-            CbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(PhyscisDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
+            rhiCbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(rhiDevice, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
-        private FRHICommandContext SelectContext(in EContextType ContextType)
+        private FRHICommandContext SelectContext(in EContextType contextType)
         {
-            FRHICommandContext OutContext = GraphicsContext;
+            FRHICommandContext outContext = rhiGraphicsContext;
 
-            switch (ContextType)
+            switch (contextType)
             {
                 case EContextType.Copy:
-                    OutContext = CopyContext;
+                    outContext = rhiCopyContext;
                     break;
 
                 case EContextType.Compute:
-                    OutContext = ComputeContext;
-                    break;
-
-                case EContextType.Graphics:
-                    OutContext = GraphicsContext;
+                    outContext = rhiComputeContext;
                     break;
             }
 
-            return OutContext;
+            return outContext;
         }
 
-        public void ExecuteCmdBuffer(in EContextType ContextType, FRHICommandBuffer CmdBuffer)
+        public void ExecuteCmdBuffer(in EContextType contextType, FRHICommandList rhiCmdList)
         {
-            FExecuteInfo ExecuteInfo;
-            ExecuteInfo.Fence = null;
-            ExecuteInfo.CmdBuffer = CmdBuffer;
-            ExecuteInfo.ExecuteType = EExecuteType.Execute;
-            ExecuteInfo.CmdContext = SelectContext(ContextType);
-            ExecuteInfos.Add(ExecuteInfo);
+            FExecuteInfo executeInfo;
+            executeInfo.rhiFence = null;
+            executeInfo.rhiCmdList = rhiCmdList;
+            executeInfo.executeType = EExecuteType.Execute;
+            executeInfo.rhiCmdContext = SelectContext(contextType);
+            rhiCmdListExecuteInfos.Add(executeInfo);
         }
 
-        public void WritFence(in EContextType ContextType, FRHIFence Fence)
+        public void WritFence(in EContextType contextType, FRHIFence rhiFence)
         {
-            FExecuteInfo ExecuteInfo;
-            ExecuteInfo.Fence = Fence;
-            ExecuteInfo.CmdBuffer = null;
-            ExecuteInfo.ExecuteType = EExecuteType.Signal;
-            ExecuteInfo.CmdContext = SelectContext(ContextType);
-            ExecuteInfos.Add(ExecuteInfo);
+            FExecuteInfo executeInfo;
+            executeInfo.rhiFence = rhiFence;
+            executeInfo.rhiCmdList = null;
+            executeInfo.executeType = EExecuteType.Signal;
+            executeInfo.rhiCmdContext = SelectContext(contextType);
+            rhiCmdListExecuteInfos.Add(executeInfo);
         }
 
-        public void WaitFence(in EContextType ContextType, FRHIFence Fence)
+        public void WaitFence(in EContextType contextType, FRHIFence rhiFence)
         {
-            FExecuteInfo ExecuteInfo;
-            ExecuteInfo.Fence = Fence;
-            ExecuteInfo.CmdBuffer = null;
-            ExecuteInfo.ExecuteType = EExecuteType.Wait;
-            ExecuteInfo.CmdContext = SelectContext(ContextType);
-            ExecuteInfos.Add(ExecuteInfo);
+            FExecuteInfo executeInfo;
+            executeInfo.rhiFence = rhiFence;
+            executeInfo.rhiCmdList = null;
+            executeInfo.executeType = EExecuteType.Wait;
+            executeInfo.rhiCmdContext = SelectContext(contextType);
+            rhiCmdListExecuteInfos.Add(executeInfo);
         }
 
         public void Submit()
         {
-            for(int i = 0; i < ExecuteInfos.Count; ++i)
+            for(int i = 0; i < rhiCmdListExecuteInfos.Count; ++i)
             {
-                FExecuteInfo ExecuteInfo = ExecuteInfos[i];
-                switch (ExecuteInfo.ExecuteType)
+                FExecuteInfo executeInfo = rhiCmdListExecuteInfos[i];
+                switch (executeInfo.executeType)
                 {
                     case EExecuteType.Signal:
-                        ExecuteInfo.CmdContext.SignalQueue(ExecuteInfo.Fence);
+                        executeInfo.rhiCmdContext.SignalQueue(executeInfo.rhiFence);
                         break;
 
                     case EExecuteType.Wait:
-                        ExecuteInfo.CmdContext.WaitQueue(ExecuteInfo.Fence);
+                        executeInfo.rhiCmdContext.WaitQueue(executeInfo.rhiFence);
                         break;
 
                     case EExecuteType.Execute:
-                        ExecuteInfo.CmdContext.ExecuteQueue(ExecuteInfo.CmdBuffer);
+                        executeInfo.rhiCmdContext.ExecuteQueue(executeInfo.rhiCmdList);
                         break;
                 }
             }
 
-            ExecuteInfos.Clear();
+            rhiCmdListExecuteInfos.Clear();
 
-            CopyContext.Flush();
-            ComputeContext.Flush();
-            GraphicsContext.Flush();
+            rhiCopyContext.Flush();
+            rhiComputeContext.Flush();
+            rhiGraphicsContext.Flush();
         }
 
-        public FRHICommandBuffer CreateCmdBuffer(string Name, CommandListType CmdBufferType)
+        public FRHICommandList CreateCmdBuffer(string name, CommandListType cmdListType)
         {
-            FRHICommandBuffer CmdBuffer = new FRHICommandBuffer(Name, PhyscisDevice, CmdBufferType);
-            CmdBuffer.Close();
-            return CmdBuffer;
+            FRHICommandList rhiCmdList = new FRHICommandList(name, rhiDevice, cmdListType);
+            rhiCmdList.Close();
+            return rhiCmdList;
         }
 
         public void CreateViewport()
@@ -129,22 +125,22 @@ namespace InfinityEngine.Graphics.RHI
 
         public FRHIFence CreateFence()
         {
-            return new FRHIFence(PhyscisDevice);
+            return new FRHIFence(rhiDevice);
         }
 
         public FRHITimeQuery CreateTimeQuery()
         {
-            return new FRHITimeQuery(PhyscisDevice);
+            return new FRHITimeQuery(rhiDevice);
         }
 
         public FRHIOcclusionQuery CreateOcclusionQuery()
         {
-            return new FRHIOcclusionQuery(PhyscisDevice);
+            return new FRHIOcclusionQuery(rhiDevice);
         }
 
         public FRHIStatisticsQuery CreateStatisticsQuery()
         {
-            return new FRHIStatisticsQuery(PhyscisDevice);
+            return new FRHIStatisticsQuery(rhiDevice);
         }
 
         public void CreateInputVertexLayout()
@@ -177,103 +173,103 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public FRHIBuffer CreateBuffer(in ulong Count, in ulong Stride, in EUseFlag UseFlag, in EBufferType BufferType)
+        public FRHIBuffer CreateBuffer(in ulong count, in ulong stride, in EUseFlag useFlag, in EBufferType bufferType)
         {
-            FRHIBuffer GPUBuffer = new FRHIBuffer(PhyscisDevice, UseFlag, BufferType, Count, Stride);
-            return GPUBuffer;
+            FRHIBuffer buffer = new FRHIBuffer(rhiDevice, useFlag, bufferType, count, stride);
+            return buffer;
         }
 
-        public FRHITexture CreateTexture(in EUseFlag UseFlag, in ETextureType TextureType)
+        public FRHITexture CreateTexture(in EUseFlag useFlag, in ETextureType textureType)
         {
-            FRHITexture Texture = new FRHITexture(PhyscisDevice, UseFlag, TextureType);
-            return Texture;
+            FRHITexture texture = new FRHITexture(rhiDevice, useFlag, textureType);
+            return texture;
         }
 
-        public FRHIDeptnStencilView CreateDepthStencilView(FRHITexture Texture)
+        public FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture)
         {
-            FRHIDeptnStencilView DSV = new FRHIDeptnStencilView();
-            return DSV;
+            FRHIDeptnStencilView dsv = new FRHIDeptnStencilView();
+            return dsv;
         }
 
-        public FRHIRenderTargetView CreateRenderTargetView(FRHITexture Texture)
+        public FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture)
         {
-            FRHIRenderTargetView RTV = new FRHIRenderTargetView();
-            return RTV;
+            FRHIRenderTargetView rtv = new FRHIRenderTargetView();
+            return rtv;
         }
 
-        public FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer IndexBuffer)
+        public FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer indexBuffer)
         {
-            FRHIIndexBufferView IBO = new FRHIIndexBufferView();
-            return IBO;
+            FRHIIndexBufferView ibv = new FRHIIndexBufferView();
+            return ibv;
         }
 
-        public FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer VertexBuffer)
+        public FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer vertexBuffer)
         {
-            FRHIVertexBufferView VBO = new FRHIVertexBufferView();
-            return VBO;
+            FRHIVertexBufferView vbo = new FRHIVertexBufferView();
+            return vbo;
         }
 
-        public FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer ConstantBuffer)
+        public FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer constantBuffer)
         {
-            FRHIConstantBufferView CBV = new FRHIConstantBufferView();
-            return CBV;
+            FRHIConstantBufferView cbv = new FRHIConstantBufferView();
+            return cbv;
         }
 
-        public FRHIShaderResourceView CreateShaderResourceView(FRHIBuffer Buffer)
+        public FRHIShaderResourceView CreateShaderResourceView(FRHIBuffer buffer)
         {
             ShaderResourceViewDescription SRVDescriptor = new ShaderResourceViewDescription
             {
                 Format = Format.Unknown,
                 ViewDimension = ShaderResourceViewDimension.Buffer,
                 Shader4ComponentMapping = 256,
-                Buffer = new BufferShaderResourceView { FirstElement = 0, NumElements = (int)Buffer.Count, StructureByteStride = (int)Buffer.Stride }
+                Buffer = new BufferShaderResourceView { FirstElement = 0, NumElements = (int)buffer.count, StructureByteStride = (int)buffer.stride }
             };
-            int DescriptorIndex = CbvSrvUavDescriptorFactory.Allocator(1);
-            CpuDescriptorHandle DescriptorHandle = CbvSrvUavDescriptorFactory.GetCPUHandleStart() + CbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
-            PhyscisDevice.NativeDevice.CreateShaderResourceView(Buffer.DefaultResource, SRVDescriptor, DescriptorHandle);
+            int DescriptorIndex = rhiCbvSrvUavDescriptorFactory.Allocator(1);
+            CpuDescriptorHandle DescriptorHandle = rhiCbvSrvUavDescriptorFactory.GetCPUHandleStart() + rhiCbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
+            rhiDevice.d3D12Device.CreateShaderResourceView(buffer.defaultResource, SRVDescriptor, DescriptorHandle);
 
-            return new FRHIShaderResourceView(CbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
+            return new FRHIShaderResourceView(rhiCbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
         }
 
-        public FRHIShaderResourceView CreateShaderResourceView(FRHITexture Texture)
+        public FRHIShaderResourceView CreateShaderResourceView(FRHITexture texture)
         {
-            FRHIShaderResourceView SRV = new FRHIShaderResourceView();
-            return SRV;
+            FRHIShaderResourceView srv = new FRHIShaderResourceView();
+            return srv;
         }
 
-        public FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer Buffer)
+        public FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer buffer)
         {
             UnorderedAccessViewDescription UAVDescriptor = new UnorderedAccessViewDescription
             {
                 Format = Format.Unknown,
                 ViewDimension = UnorderedAccessViewDimension.Buffer,
-                Buffer = new BufferUnorderedAccessView { NumElements = (int)Buffer.Count, StructureByteStride = (int)Buffer.Stride }
+                Buffer = new BufferUnorderedAccessView { NumElements = (int)buffer.count, StructureByteStride = (int)buffer.stride }
             };
-            int DescriptorIndex = CbvSrvUavDescriptorFactory.Allocator(1);
-            CpuDescriptorHandle DescriptorHandle = CbvSrvUavDescriptorFactory.GetCPUHandleStart() + CbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
-            PhyscisDevice.NativeDevice.CreateUnorderedAccessView(Buffer.DefaultResource, null, UAVDescriptor, DescriptorHandle);
+            int DescriptorIndex = rhiCbvSrvUavDescriptorFactory.Allocator(1);
+            CpuDescriptorHandle DescriptorHandle = rhiCbvSrvUavDescriptorFactory.GetCPUHandleStart() + rhiCbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
+            rhiDevice.d3D12Device.CreateUnorderedAccessView(buffer.defaultResource, null, UAVDescriptor, DescriptorHandle);
 
-            return new FRHIUnorderedAccessView(CbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
+            return new FRHIUnorderedAccessView(rhiCbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
         }
 
-        public FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture Texture)
+        public FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture)
         {
-            FRHIUnorderedAccessView UAV = new FRHIUnorderedAccessView();
-            return UAV;
+            FRHIUnorderedAccessView uav = new FRHIUnorderedAccessView();
+            return uav;
         }
 
-        public FRHIResourceViewRange CreateResourceViewRange(in int Count)
+        public FRHIResourceViewRange CreateResourceViewRange(in int count)
         {
-            return new FRHIResourceViewRange(PhyscisDevice, CbvSrvUavDescriptorFactory, Count);
+            return new FRHIResourceViewRange(rhiDevice, rhiCbvSrvUavDescriptorFactory, count);
         }
 
         protected override void Disposed()
         {
-            PhyscisDevice?.Dispose();
-            CopyContext?.Dispose();
-            ComputeContext?.Dispose();
-            GraphicsContext?.Dispose();
-            CbvSrvUavDescriptorFactory?.Dispose();
+            rhiDevice?.Dispose();
+            rhiCopyContext?.Dispose();
+            rhiComputeContext?.Dispose();
+            rhiGraphicsContext?.Dispose();
+            rhiCbvSrvUavDescriptorFactory?.Dispose();
         }
     }
 }

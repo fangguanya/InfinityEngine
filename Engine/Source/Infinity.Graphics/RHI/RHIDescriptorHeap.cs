@@ -9,24 +9,23 @@ namespace InfinityEngine.Graphics.RHI
 {
     internal class FRHIDescriptorHeapFactory : UObject
     {
-        protected int DescriptorSize;
+        protected int descriptorSize;
+        protected ID3D12Device6 d3D12Device;
+        protected ID3D12DescriptorHeap d3D12CPUDescriptorHeap;
+        protected ID3D12DescriptorHeap d3D12GPUDescriptorHeap;
 
-        protected ID3D12Device6 NativeDevice;
-        protected ID3D12DescriptorHeap CPUDescriptorHeap;
-        protected ID3D12DescriptorHeap GPUDescriptorHeap;
 
-
-        internal FRHIDescriptorHeapFactory(ID3D12Device6 InNativeDevice, in DescriptorHeapType InType, in int DescriptorCount) : base()
+        internal FRHIDescriptorHeapFactory(ID3D12Device6 d3D12Device, in DescriptorHeapType descriptorType, in int descriptorCount) : base()
         {
-            NativeDevice = InNativeDevice;
+            this.d3D12Device = d3D12Device;
 
-            DescriptorSize = InNativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
+            descriptorSize = d3D12Device.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
 
-            DescriptorHeapDescription CPUDescriptorHeapDescription = new DescriptorHeapDescription(InType, DescriptorCount, DescriptorHeapFlags.ShaderVisible);
-            CPUDescriptorHeap = InNativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(CPUDescriptorHeapDescription);
+            DescriptorHeapDescription CPUDescriptorHeapDescription = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.ShaderVisible);
+            d3D12CPUDescriptorHeap = d3D12Device.CreateDescriptorHeap<ID3D12DescriptorHeap>(CPUDescriptorHeapDescription);
 
-            DescriptorHeapDescription GPUDescriptorHeapDescription = new DescriptorHeapDescription(InType, DescriptorCount, DescriptorHeapFlags.None);
-            GPUDescriptorHeap = InNativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(GPUDescriptorHeapDescription);
+            DescriptorHeapDescription GPUDescriptorHeapDescription = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.None);
+            d3D12GPUDescriptorHeap = d3D12Device.CreateDescriptorHeap<ID3D12DescriptorHeap>(GPUDescriptorHeapDescription);
         }
 
         protected static DescriptorHeapType GetDescriptorType(in EDescriptorType DescriptorType)
@@ -58,23 +57,23 @@ namespace InfinityEngine.Graphics.RHI
 
         internal int GetDescriptorSize()
         {
-            return DescriptorSize;
+            return descriptorSize;
         }
 
         internal CpuDescriptorHandle GetCPUHandleStart()
         {
-            return CPUDescriptorHeap.GetCPUDescriptorHandleForHeapStart();
+            return d3D12CPUDescriptorHeap.GetCPUDescriptorHandleForHeapStart();
         }
 
         internal GpuDescriptorHandle GetGPUHandleStart()
         {
-            return GPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
+            return d3D12GPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
         }
 
         protected override void Disposed()
         {
-            CPUDescriptorHeap?.Dispose();
-            GPUDescriptorHeap?.Dispose();
+            d3D12CPUDescriptorHeap?.Dispose();
+            d3D12GPUDescriptorHeap?.Dispose();
         }
     }
 }

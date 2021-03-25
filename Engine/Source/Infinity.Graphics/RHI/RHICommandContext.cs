@@ -35,10 +35,10 @@ namespace InfinityEngine.Graphics.RHI
             GPUFence.WaitOnGPU(NativeCmdQueue);
         }
 
-        public void ExecuteQueue(FRHICommandBuffer CmdBuffer)
+        public void ExecuteQueue(FRHICommandList rhiCmdList)
         {
-            CmdBuffer.Close();
-            NativeCmdQueue.ExecuteCommandList(CmdBuffer);
+            rhiCmdList.Close();
+            NativeCmdQueue.ExecuteCommandList(rhiCmdList);
         }
 
         public void Flush()

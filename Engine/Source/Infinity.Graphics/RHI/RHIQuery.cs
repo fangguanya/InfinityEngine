@@ -9,75 +9,74 @@ namespace InfinityEngine.Graphics.RHI
 {
 	public class FRHITimeQuery : UObject
 	{
-		private ID3D12QueryHeap Timestamp_Heap;
-		private ID3D12Resource Timestamp_Result;
+		private ID3D12QueryHeap timestamp_Heap;
+		private ID3D12Resource timestamp_Result;
 
-		public FRHITimeQuery(ID3D12Device6 NativeDevice) : base()
+		public FRHITimeQuery(ID3D12Device6 d3D12Device) : base()
 		{
-			QueryHeapDescription QueryHeapDesc;
-			QueryHeapDesc.Type = QueryHeapType.Timestamp;
-			QueryHeapDesc.Count = 2;
-			QueryHeapDesc.NodeMask = 0;
-			Timestamp_Heap = NativeDevice.CreateQueryHeap<ID3D12QueryHeap>(QueryHeapDesc);
+			QueryHeapDescription queryHeapDesc;
+			queryHeapDesc.Type = QueryHeapType.Timestamp;
+			queryHeapDesc.Count = 2;
+			queryHeapDesc.NodeMask = 0;
+			timestamp_Heap = d3D12Device.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
 
-            HeapProperties CPUResultProperties;
+            HeapProperties resultProperties;
             {
-                CPUResultProperties.Type = HeapType.Readback;
-                CPUResultProperties.CPUPageProperty = CpuPageProperty.Unknown;
-                CPUResultProperties.MemoryPoolPreference = MemoryPool.Unknown;
-                CPUResultProperties.CreationNodeMask = 0;
-                CPUResultProperties.VisibleNodeMask = 0;
+				resultProperties.Type = HeapType.Readback;
+				resultProperties.CPUPageProperty = CpuPageProperty.Unknown;
+				resultProperties.MemoryPoolPreference = MemoryPool.Unknown;
+				resultProperties.CreationNodeMask = 0;
+				resultProperties.VisibleNodeMask = 0;
             }
-            ResourceDescription CPUResultDesc;
+            ResourceDescription resultDesc;
             {
-                CPUResultDesc.Dimension = ResourceDimension.Buffer;
-                CPUResultDesc.Alignment = 0;
-                CPUResultDesc.Width = sizeof(ulong) * 2;
-                CPUResultDesc.Height = 1;
-                CPUResultDesc.DepthOrArraySize = 1;
-                CPUResultDesc.MipLevels = 1;
-                CPUResultDesc.Format = Format.Unknown;
-                CPUResultDesc.SampleDescription.Count = 1;
-                CPUResultDesc.SampleDescription.Quality = 0;
-                CPUResultDesc.Layout = TextureLayout.RowMajor;
-                CPUResultDesc.Flags = ResourceFlags.None;
+				resultDesc.Dimension = ResourceDimension.Buffer;
+				resultDesc.Alignment = 0;
+				resultDesc.Width = sizeof(ulong) * 2;
+				resultDesc.Height = 1;
+				resultDesc.DepthOrArraySize = 1;
+				resultDesc.MipLevels = 1;
+				resultDesc.Format = Format.Unknown;
+				resultDesc.SampleDescription.Count = 1;
+				resultDesc.SampleDescription.Quality = 0;
+				resultDesc.Layout = TextureLayout.RowMajor;
+				resultDesc.Flags = ResourceFlags.None;
             }
-			Timestamp_Result = NativeDevice.CreateCommittedResource<ID3D12Resource>(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.Common, null);
+			timestamp_Result = d3D12Device.CreateCommittedResource<ID3D12Resource>(resultProperties, HeapFlags.None, resultDesc, ResourceStates.Common, null);
         }
 
-		public void Begin(ID3D12GraphicsCommandList5 NativeCmdList)
+		public void Begin(ID3D12GraphicsCommandList5 d3d12CmdList)
 		{
-			NativeCmdList.EndQuery(Timestamp_Heap, QueryType.Timestamp, 0);
+			d3d12CmdList.EndQuery(timestamp_Heap, QueryType.Timestamp, 0);
 		}
 
-		public void End(ID3D12GraphicsCommandList5 NativeCmdList)
+		public void End(ID3D12GraphicsCommandList5 d3d12CmdList)
 		{
-			NativeCmdList.EndQuery(Timestamp_Heap, QueryType.Timestamp, 1);
-
-			NativeCmdList.ResolveQueryData(Timestamp_Heap, QueryType.Timestamp, 0, 2, Timestamp_Result, 0);
+			d3d12CmdList.EndQuery(timestamp_Heap, QueryType.Timestamp, 1);
+			d3d12CmdList.ResolveQueryData(timestamp_Heap, QueryType.Timestamp, 0, 2, timestamp_Result, 0);
 		}
 
-		public float GetQueryResult(float TimestampFrequency)
+		public float GetQueryResult(float timestampFrequency)
 		{
-            ulong[] Timestamp = new ulong[2];
-            IntPtr Timeesult_Ptr = Timestamp_Result.Map(0);
-            Timeesult_Ptr.CopyTo(Timestamp.AsSpan());
-            Timestamp_Result.Unmap(0);
+            ulong[] timestamp = new ulong[2];
+            IntPtr timeesult_Ptr = timestamp_Result.Map(0);
+            timeesult_Ptr.CopyTo(timestamp.AsSpan());
+            timestamp_Result.Unmap(0);
 
-			float TimeResult = (float)((Timestamp[1] - Timestamp[0]) / TimestampFrequency) * 1000;
-            return math.round(TimeResult * 100) / 100;
+			float timeResult = (float)((timestamp[1] - timestamp[0]) / timestampFrequency) * 1000;
+            return math.round(timeResult * 100) / 100;
         }
 
 		protected override void Disposed()
 		{
-			Timestamp_Heap?.Dispose();
-            Timestamp_Result?.Dispose();
+			timestamp_Heap?.Dispose();
+            timestamp_Result?.Dispose();
         }
 	}
 
     public class FRHIStatisticsQuery : UObject
     {
-        public FRHIStatisticsQuery(ID3D12Device6 NativeDevice) : base()
+        public FRHIStatisticsQuery(ID3D12Device6 d3D12Device) : base()
         {
 
         }
@@ -90,71 +89,69 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIOcclusionQuery : UObject
 	{
-		private int OcclusinResult;
-		private ID3D12QueryHeap Occlusion_Heap;
-		private ID3D12Resource Occlusion_Result;
+		private int occlusinResult;
+		private ID3D12QueryHeap occlusion_Heap;
+		private ID3D12Resource occlusion_Result;
 
-		public FRHIOcclusionQuery(ID3D12Device6 NativeDevice) : base()
+		public FRHIOcclusionQuery(ID3D12Device6 d3D12Device) : base()
 		{
-			QueryHeapDescription QueryHeapDesc;
-			QueryHeapDesc.Type = QueryHeapType.Occlusion;
-			QueryHeapDesc.Count = 1;
-			QueryHeapDesc.NodeMask = 0;
-			Occlusion_Heap = NativeDevice.CreateQueryHeap<ID3D12QueryHeap>(QueryHeapDesc);
+			QueryHeapDescription queryHeapDesc;
+			queryHeapDesc.Type = QueryHeapType.Occlusion;
+			queryHeapDesc.Count = 1;
+			queryHeapDesc.NodeMask = 0;
+			occlusion_Heap = d3D12Device.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
 
-            HeapProperties CPUResultProperties;
+            HeapProperties resultProperties;
             {
-				CPUResultProperties.Type = HeapType.Readback;
-				CPUResultProperties.CPUPageProperty = CpuPageProperty.Unknown;
-				CPUResultProperties.MemoryPoolPreference = MemoryPool.Unknown;
-				CPUResultProperties.CreationNodeMask = 0;
-				CPUResultProperties.VisibleNodeMask = 0;
+				resultProperties.Type = HeapType.Readback;
+				resultProperties.CPUPageProperty = CpuPageProperty.Unknown;
+				resultProperties.MemoryPoolPreference = MemoryPool.Unknown;
+				resultProperties.CreationNodeMask = 0;
+				resultProperties.VisibleNodeMask = 0;
             }
-            ResourceDescription CPUResultDesc;
+            ResourceDescription resultDesc;
             {
-				CPUResultDesc.Dimension = ResourceDimension.Buffer;
-				CPUResultDesc.Alignment = 0;
-				CPUResultDesc.Width = sizeof(long);
-				CPUResultDesc.Height = 1;
-				CPUResultDesc.DepthOrArraySize = 1;
-				CPUResultDesc.MipLevels = 1;
-				CPUResultDesc.Format = Format.Unknown;
-				CPUResultDesc.SampleDescription.Count = 1;
-				CPUResultDesc.SampleDescription.Quality = 0;
-				CPUResultDesc.Layout = TextureLayout.RowMajor;
-				CPUResultDesc.Flags = ResourceFlags.None;
+				resultDesc.Dimension = ResourceDimension.Buffer;
+				resultDesc.Alignment = 0;
+				resultDesc.Width = sizeof(long);
+				resultDesc.Height = 1;
+				resultDesc.DepthOrArraySize = 1;
+				resultDesc.MipLevels = 1;
+				resultDesc.Format = Format.Unknown;
+				resultDesc.SampleDescription.Count = 1;
+				resultDesc.SampleDescription.Quality = 0;
+				resultDesc.Layout = TextureLayout.RowMajor;
+				resultDesc.Flags = ResourceFlags.None;
             }
-			Occlusion_Result = NativeDevice.CreateCommittedResource<ID3D12Resource>(CPUResultProperties, HeapFlags.None, CPUResultDesc, ResourceStates.Common, null);
+			occlusion_Result = d3D12Device.CreateCommittedResource<ID3D12Resource>(resultProperties, HeapFlags.None, resultDesc, ResourceStates.Common, null);
         }
 
-		public void Begin(ID3D12GraphicsCommandList5 NativeCmdList)
+		public void Begin(ID3D12GraphicsCommandList5 d3d12CmdList)
 		{
-			NativeCmdList.BeginQuery(Occlusion_Heap, QueryType.Occlusion, 0);
+			d3d12CmdList.BeginQuery(occlusion_Heap, QueryType.Occlusion, 0);
 		}
 
-		public void End(ID3D12GraphicsCommandList5 NativeCmdList)
+		public void End(ID3D12GraphicsCommandList5 d3d12CmdList)
 		{
-			NativeCmdList.EndQuery(Occlusion_Heap, QueryType.Occlusion, 0);
-
-
-			NativeCmdList.ResolveQueryData(Occlusion_Heap, QueryType.Timestamp, 0, 2, Occlusion_Result, 0);
+			d3d12CmdList.EndQuery(occlusion_Heap, QueryType.Occlusion, 0);
+			d3d12CmdList.ResolveQueryData(occlusion_Heap, QueryType.Timestamp, 0, 2, occlusion_Result, 0);
 		}
 
 		public int GetQueryResult()
 		{
-			int[] OcclusinValue = new int[1];
-			IntPtr Timeesult_Ptr = Occlusion_Result.Map(0);
-			Timeesult_Ptr.CopyTo(OcclusinValue.AsSpan());
-			OcclusinResult = OcclusinValue[0];
-			Occlusion_Result.Unmap(0);
+			int[] occlusinValue = new int[1];
+			IntPtr occlusin_Ptr = occlusion_Result.Map(0);
+			occlusin_Ptr.CopyTo(occlusinValue.AsSpan());
+			occlusinResult = occlusinValue[0];
+			occlusion_Result.Unmap(0);
 
-			return OcclusinResult;
+			return occlusinResult;
 		}
 
 		protected override void Disposed()
 		{
-			Occlusion_Heap?.Dispose();
-			Occlusion_Result?.Dispose();
+			occlusion_Heap?.Dispose();
+			occlusion_Result?.Dispose();
         }
 	}
 }

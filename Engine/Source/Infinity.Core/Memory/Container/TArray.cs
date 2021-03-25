@@ -91,13 +91,13 @@ namespace InfinityEngine.Core.Container
             {
                 if (value.Equals(m_Array[i]))
                 {
-                    RemoveSwapIndex(i);
+                    RemoveSwapAtIndex(i);
                     break;
                 }
             }
         }
         
-        public void RemoveSwapIndex(in int index)
+        public void RemoveSwapAtIndex(in int index)
         {
             m_Array[index] = m_Array[length - 1];
             m_Array[length - 1] = default(T);

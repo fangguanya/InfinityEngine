@@ -4,8 +4,8 @@ namespace InfinityEngine.Renderer.RenderPipeline
 {
     public class FUniversalRenderPipeline : FRenderPipeline
     {
-        FRHIBuffer GPUBuffer;
-        FRHICommandBuffer CmdBuffer;
+        FRHIBuffer buffer;
+        FRHICommandList rhiCmdList;
 
         public FUniversalRenderPipeline(string PipelineName) : base(PipelineName)
         {
@@ -14,16 +14,16 @@ namespace InfinityEngine.Renderer.RenderPipeline
 
         public override void Init(FRHIGraphicsContext GraphicsContext)
         {
-            GPUBuffer = GraphicsContext.CreateBuffer(5, 4, EUseFlag.CPUWrite, EBufferType.Structured);
-            CmdBuffer = GraphicsContext.CreateCmdBuffer("DefaultCmdBuffer", Vortice.Direct3D12.CommandListType.Copy);
+            buffer = GraphicsContext.CreateBuffer(5, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+            rhiCmdList = GraphicsContext.CreateCmdBuffer("DefaultCmdList", Vortice.Direct3D12.CommandListType.Copy);
         }
 
         public override void Render(FRHIGraphicsContext GraphicsContext)
         {
-            CmdBuffer.Clear();
-            GPUBuffer.SetData<int>(CmdBuffer, 1, 2, 3, 4, 5);
+            rhiCmdList.Clear();
+            buffer.SetData<int>(rhiCmdList, 1, 2, 3, 4, 5);
 
-            GraphicsContext.ExecuteCmdBuffer(EContextType.Copy, CmdBuffer);
+            GraphicsContext.ExecuteCmdBuffer(EContextType.Copy, rhiCmdList);
             GraphicsContext.Submit();
 
 
@@ -72,8 +72,8 @@ namespace InfinityEngine.Renderer.RenderPipeline
         {
             base.Disposed();
 
-            GPUBuffer?.Dispose();
-            CmdBuffer?.Dispose();
+            buffer?.Dispose();
+            rhiCmdList?.Dispose();
         }
     }
 }
