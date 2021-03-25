@@ -9,15 +9,15 @@ namespace InfinityEngine.Renderer.RenderPipeline
         public string name;
         protected FRDGBuilder graphBuilder;
 
-        public FRenderPipeline(string Name)
+        public FRenderPipeline(string name)
         {
-            name = Name;
-            graphBuilder = new FRDGBuilder("UniversalGraphBuilder");
+            this.name = name;
+            this.graphBuilder = new FRDGBuilder("UniversalGraphBuilder");
         }
 
-        public abstract void Init(FRHIGraphicsContext GraphicsContext);
+        public abstract void Init(FRHIGraphicsContext graphicsContext);
 
-        public abstract void Render(FRHIGraphicsContext GraphicsContext);
+        public abstract void Render(FRHIGraphicsContext graphicsContext);
 
         protected override void Disposed()
         {

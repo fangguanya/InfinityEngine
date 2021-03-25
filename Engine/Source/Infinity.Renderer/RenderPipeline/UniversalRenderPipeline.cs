@@ -7,24 +7,24 @@ namespace InfinityEngine.Renderer.RenderPipeline
         FRHIBuffer buffer;
         FRHICommandList rhiCmdList;
 
-        public FUniversalRenderPipeline(string PipelineName) : base(PipelineName)
+        public FUniversalRenderPipeline(string pipelineName) : base(pipelineName)
         {
 
         }
 
-        public override void Init(FRHIGraphicsContext GraphicsContext)
+        public override void Init(FRHIGraphicsContext graphicsContext)
         {
-            buffer = GraphicsContext.CreateBuffer(5, 4, EUseFlag.CPUWrite, EBufferType.Structured);
-            rhiCmdList = GraphicsContext.CreateCmdBuffer("DefaultCmdList", Vortice.Direct3D12.CommandListType.Copy);
+            buffer = graphicsContext.CreateBuffer(5, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+            rhiCmdList = graphicsContext.CreateCmdBuffer("DefaultCmdList", Vortice.Direct3D12.CommandListType.Copy);
         }
 
-        public override void Render(FRHIGraphicsContext GraphicsContext)
+        public override void Render(FRHIGraphicsContext graphicsContext)
         {
             rhiCmdList.Clear();
             buffer.SetData<int>(rhiCmdList, 1, 2, 3, 4, 5);
 
-            GraphicsContext.ExecuteCmdBuffer(EContextType.Copy, rhiCmdList);
-            GraphicsContext.Submit();
+            graphicsContext.ExecuteCmdBuffer(EContextType.Copy, rhiCmdList);
+            graphicsContext.Submit();
 
 
             //Console.WriteLine("Rendering");
