@@ -22,7 +22,7 @@ namespace ExampleProject
 
         public override void OnEnable()
         {
-            Console.WriteLine("Enable Component");
+            //Console.WriteLine("Enable Component");
 
             timer = new Timer();
             cpuTimer = new CPUTimer();
