@@ -112,4 +112,47 @@ namespace InfinityEngine.Graphics.RHI
             descriptorIndex = 0;
         }
     }
+
+    public class FRHIResourceViewRange : UObject
+    {
+        protected int rangeSize;
+        protected int descriptorIndex;
+
+        protected ID3D12Device6 d3D12Device;
+        protected CpuDescriptorHandle descriptorHandle;
+
+
+        internal FRHIResourceViewRange(ID3D12Device6 d3D12Device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int descriptorLength) : base()
+        {
+            this.rangeSize = descriptorLength;
+            this.d3D12Device = d3D12Device;
+            this.descriptorIndex = descriptorHeapFactory.Allocator(descriptorLength);
+            this.descriptorHandle = descriptorHeapFactory.GetCPUHandleStart();
+        }
+
+        protected CpuDescriptorHandle GetDescriptorHandle(in int offset)
+        {
+            return descriptorHandle + d3D12Device.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
+        }
+
+        public void SetConstantBufferView(in int index, FRHIConstantBufferView constantBufferView)
+        {
+            d3D12Device.CopyDescriptorsSimple(1, GetDescriptorHandle(index), constantBufferView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+        }
+
+        public void SetShaderResourceView(in int index, FRHIShaderResourceView shaderResourceView)
+        {
+            d3D12Device.CopyDescriptorsSimple(1, GetDescriptorHandle(index), shaderResourceView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+        }
+
+        public void SetUnorderedAccessView(in int index, FRHIUnorderedAccessView unorderedAccessView)
+        {
+            d3D12Device.CopyDescriptorsSimple(1, GetDescriptorHandle(index), unorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+        }
+
+        protected override void Disposed()
+        {
+
+        }
+    }
 }

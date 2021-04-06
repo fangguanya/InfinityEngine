@@ -3298,7 +3298,6 @@ namespace InfinityEngine.Core.Mathmatics
                 w = v.w;
             }
         }
-
     }
 
     public static partial class math

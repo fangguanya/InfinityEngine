@@ -7,12 +7,12 @@ namespace InfinityEngine.Renderer.RenderPipeline
     public abstract class FRenderPipeline : UObject
     {
         public string name;
-        protected FRDGBuilder graphBuilder;
+        protected FRDGGraphBuilder graphBuilder;
 
         public FRenderPipeline(string name)
         {
             this.name = name;
-            this.graphBuilder = new FRDGBuilder("UniversalGraphBuilder");
+            this.graphBuilder = new FRDGGraphBuilder("UniversalGraphBuilder");
         }
 
         public abstract void Init(FRHIGraphicsContext graphicsContext);

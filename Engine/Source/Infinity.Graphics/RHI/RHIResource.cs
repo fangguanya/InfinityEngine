@@ -2,12 +2,12 @@
 using Vortice.DXGI;
 using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
+using InfinityEngine.Core.Mathmatics;
 using System.Runtime.CompilerServices;
 using InfinityEngine.Core.Native.Utility;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    // Resource
     public enum EUseFlag
     {
         GPURW,
@@ -42,8 +42,140 @@ namespace InfinityEngine.Graphics.RHI
         Texture,
     };
 
+    public enum EDepthBits
+    {
+        None = 0,
+        Depth8 = 8,
+        Depth16 = 16,
+        Depth24 = 24,
+        Depth32 = 32
+    }
+
+    public enum EFilterMode
+    {
+        Point = 0,
+        Bilinear = 1,
+        Trilinear = 2
+    }
+
+    public enum ETextureWrapMode
+    {
+        Repeat = 0,
+        Clamp = 1,
+        Mirror = 2,
+        MirrorOnce = 3
+    }
+
+    public enum EMSAASamples
+    {
+        None = 1,
+        MSAA2x = 2,
+        MSAA4x = 4,
+        MSAA8x = 8
+    }
+
+    public enum EGraphicsFormat
+    {
+        None = 0,
+        R8_SRGB = 1,
+        R8G8_SRGB = 2,
+        R8G8B8_SRGB = 3,
+        R8G8B8A8_SRGB = 4,
+        R8_UNorm = 5,
+        R8G8_UNorm = 6,
+        R8G8B8_UNorm = 7,
+        R8G8B8A8_UNorm = 8,
+        R8_SNorm = 9,
+        R8G8_SNorm = 10,
+        R8G8B8_SNorm = 11,
+        R8G8B8A8_SNorm = 12,
+        R8_UInt = 13,
+        R8G8_UInt = 14,
+        R8G8B8_UInt = 15,
+        R8G8B8A8_UInt = 16,
+        R8_SInt = 17,
+        R8G8_SInt = 18,
+        R8G8B8_SInt = 19,
+        R8G8B8A8_SInt = 20,
+        R16_UNorm = 21,
+        R16G16_UNorm = 22,
+        R16G16B16_UNorm = 23,
+        R16G16B16A16_UNorm = 24,
+        R16_SNorm = 25,
+        R16G16_SNorm = 26,
+        R16G16B16_SNorm = 27,
+        R16G16B16A16_SNorm = 28,
+        R16_UInt = 29,
+        R16G16_UInt = 30,
+        R16G16B16_UInt = 31,
+        R16G16B16A16_UInt = 32,
+        R16_SInt = 33,
+        R16G16_SInt = 34,
+        R16G16B16_SInt = 35,
+        R16G16B16A16_SInt = 36,
+        R32_UInt = 37,
+        R32G32_UInt = 38,
+        R32G32B32_UInt = 39,
+        R32G32B32A32_UInt = 40,
+        R32_SInt = 41,
+        R32G32_SInt = 42,
+        R32G32B32_SInt = 43,
+        R32G32B32A32_SInt = 44,
+        R16_SFloat = 45,
+        R16G16_SFloat = 46,
+        R16G16B16_SFloat = 47,
+        R16G16B16A16_SFloat = 48,
+        R32_SFloat = 49,
+        R32G32_SFloat = 50,
+        R32G32B32_SFloat = 51,
+        R32G32B32A32_SFloat = 52,
+        B8G8R8_SRGB = 56,
+        B8G8R8A8_SRGB = 57,
+        B8G8R8_UNorm = 58,
+        B8G8R8A8_UNorm = 59,
+        B8G8R8_SNorm = 60,
+        B8G8R8A8_SNorm = 61,
+        B8G8R8_UInt = 62,
+        B8G8R8A8_UInt = 63,
+        B8G8R8_SInt = 64,
+        B8G8R8A8_SInt = 65,
+        R4G4B4A4_UNormPack16 = 66,
+        B4G4R4A4_UNormPack16 = 67,
+        R5G6B5_UNormPack16 = 68,
+        B5G6R5_UNormPack16 = 69,
+        R5G5B5A1_UNormPack16 = 70,
+        B5G5R5A1_UNormPack16 = 71,
+        A1R5G5B5_UNormPack16 = 72,
+        E5B9G9R9_UFloatPack32 = 73,
+        B10G11R11_UFloatPack32 = 74,
+        A2B10G10R10_UNormPack32 = 75,
+        A2B10G10R10_UIntPack32 = 76,
+        A2B10G10R10_SIntPack32 = 77,
+        A2R10G10B10_UNormPack32 = 78,
+        A2R10G10B10_UIntPack32 = 79,
+        A2R10G10B10_SIntPack32 = 80,
+        RGB_DXT1_SRGB = 96,
+        RGBA_DXT1_SRGB = 96,
+        RGB_DXT1_UNorm = 97,
+        RGBA_DXT1_UNorm = 97,
+        RGBA_DXT3_SRGB = 98,
+        RGBA_DXT3_UNorm = 99,
+        RGBA_DXT5_SRGB = 100,
+        RGBA_DXT5_UNorm = 101,
+        R_BC4_UNorm = 102,
+        R_BC4_SNorm = 103,
+        RG_BC5_UNorm = 104,
+        RG_BC5_SNorm = 105,
+        RGB_BC6H_UFloat = 106,
+        RGB_BC6H_SFloat = 107,
+        RGBA_BC7_SRGB = 108,
+        RGBA_BC7_UNorm = 109,
+    }
+
+
     public class FRHIResource : UObject
     {
+        public string name;
         protected EUseFlag useFlag;
         protected Format graphicsFormat;
         protected EResourceType resourceType;
@@ -62,6 +194,38 @@ namespace InfinityEngine.Graphics.RHI
             uploadResource?.Dispose();
             defaultResource?.Dispose();
             readbackResource?.Dispose();
+        }
+    }
+
+    public struct FRHIBufferDescription
+    {
+        public string name;
+        public int count;
+        public int stride;
+        public EBufferType type;
+
+        public FRHIBufferDescription(int count, int stride) : this()
+        {
+            this.count = count;
+            this.stride = stride;
+            type = EBufferType.Structured;
+        }
+
+        public FRHIBufferDescription(int count, int stride, EBufferType type) : this()
+        {
+            this.type = type;
+            this.count = count;
+            this.stride = stride;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 0;
+            hashCode += count;
+            hashCode += stride;
+            hashCode += (int)type;
+
+            return hashCode;
         }
     }
 
@@ -196,6 +360,75 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
+    public struct FRHIBufferRef
+    {
+        internal int Handle;
+        public FRHIBuffer Buffer;
+
+        internal FRHIBufferRef(int InHandle, FRHIBuffer InBuffer) { Handle = InHandle; Buffer = InBuffer; }
+    }
+
+    public struct FRHITextureDescription
+    {
+        public string name;
+        public int width;
+        public int height;
+        public int slices;
+        public EDepthBits depthBufferBits;
+        public EGraphicsFormat colorFormat;
+        public EFilterMode filterMode;
+        public ETextureWrapMode wrapMode;
+        public ETextureType type;
+        public bool enableRandomWrite;
+        public bool useMipMap;
+        public bool autoGenerateMips;
+        public bool isShadowMap;
+        public int anisoLevel;
+        public float mipMapBias;
+        public bool enableMSAA;
+        public bool bindTextureMS;
+        public EMSAASamples msaaSamples;
+        public bool clearBuffer;
+        public float4 clearColor;
+
+
+        public FRHITextureDescription(int Width, int Height) : this()
+        {
+            width = Width;
+            height = Height;
+            slices = 1;
+
+            isShadowMap = false;
+            enableRandomWrite = false;
+
+            msaaSamples = EMSAASamples.None;
+            depthBufferBits = EDepthBits.None;
+            wrapMode = ETextureWrapMode.Repeat;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 0;
+            hashCode += width;
+            hashCode += height;
+            hashCode += slices;
+            hashCode += mipMapBias.GetHashCode();
+            hashCode += (int)depthBufferBits;
+            hashCode += (int)colorFormat;
+            hashCode += (int)filterMode;
+            hashCode += (int)wrapMode;
+            hashCode += (int)type;
+            hashCode += anisoLevel;
+            hashCode += (enableRandomWrite ? 1 : 0);
+            hashCode += (useMipMap ? 1 : 0);
+            hashCode += (autoGenerateMips ? 1 : 0);
+            hashCode += (isShadowMap ? 1 : 0);
+            hashCode += (bindTextureMS ? 1 : 0);
+
+            return hashCode;
+        }
+    }
+
     public class FRHITexture : FRHIResource
     {
         internal ETextureType textureType;
@@ -212,46 +445,11 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIResourceViewRange : UObject
+    public struct FRHITextureRef
     {
-        protected int rangeSize;
-        protected int descriptorIndex;
+        internal int Handle;
+        public FRHITexture Texture;
 
-        protected ID3D12Device6 d3D12Device;
-        protected CpuDescriptorHandle descriptorHandle;
-
-
-        internal FRHIResourceViewRange(ID3D12Device6 d3D12Device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int descriptorLength) : base()
-        {
-            this.rangeSize = descriptorLength;
-            this.d3D12Device = d3D12Device;
-            this.descriptorIndex = descriptorHeapFactory.Allocator(descriptorLength);
-            this.descriptorHandle = descriptorHeapFactory.GetCPUHandleStart();
-        }
-
-        protected CpuDescriptorHandle GetDescriptorHandle(in int offset)
-        {
-            return descriptorHandle + d3D12Device.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
-        }
-
-        public void SetConstantBufferView(in int index, FRHIConstantBufferView constantBufferView)
-        {
-            d3D12Device.CopyDescriptorsSimple(1, GetDescriptorHandle(index), constantBufferView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
-        }
-
-        public void SetShaderResourceView(in int index, FRHIShaderResourceView shaderResourceView)
-        {
-            d3D12Device.CopyDescriptorsSimple(1, GetDescriptorHandle(index), shaderResourceView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
-        }
-
-        public void SetUnorderedAccessView(in int index, FRHIUnorderedAccessView unorderedAccessView)
-        {
-            d3D12Device.CopyDescriptorsSimple(1, GetDescriptorHandle(index), unorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
-        }
-
-        protected override void Disposed()
-        {
-
-        }
+        internal FRHITextureRef(int InHandle, FRHITexture InTexture) { Handle = InHandle; Texture = InTexture; }
     }
 }
