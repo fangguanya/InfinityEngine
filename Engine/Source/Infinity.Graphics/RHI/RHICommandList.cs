@@ -276,17 +276,20 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void DrawPrimitiveInstance(FRHIBuffer indexBuffer, FRHIBuffer vertexBuffer, PrimitiveTopology topologyType, uint indexCount, uint instanceCount)
+        public void DrawPrimitiveInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
+        {
+            d3D12CmdList.IASetPrimitiveTopology(topologyType);
+            d3D12CmdList.IASetIndexBuffer(indexBufferView.d3DIBV);
+            d3D12CmdList.IASetVertexBuffers(0, vertexBufferView.d3DVBO);
+            d3D12CmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
+        }
+
+        public void DrawPrimitiveInstanceIndirect(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
         {
 
         }
 
-        public void DrawPrimitiveInstanceIndirect(FRHIBuffer indexBuffer, FRHIBuffer vertexBuffer, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
-        {
-
-        }
-
-        public void DrawMultiPrimitiveInstance()
+        public void DrawMultiPrimitiveInstance(FRHIBuffer cmdsBuffer, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
         {
 
         }

@@ -1,6 +1,6 @@
 ﻿using InfinityEngine.Graphics.RHI;
 
-namespace InfinityEngine.Renderer.RenderPipeline
+namespace InfinityEngine.Rendering.RenderPipeline
 {
     public class FUniversalRenderPipeline : FRenderPipeline
     {

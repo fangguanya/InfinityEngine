@@ -325,32 +325,32 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public void GetData<T>(ID3D12GraphicsCommandList5 NativeCopyList, T[] Data) where T : struct
+        public void GetData<T>(ID3D12GraphicsCommandList5 d3d12CmdList, T[] data) where T : struct
         {
             if (useFlag == EUseFlag.CPURead || useFlag == EUseFlag.CPURW)
             {
-                NativeCopyList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                NativeCopyList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
-                NativeCopyList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                d3d12CmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
+                d3d12CmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, (ulong)data.Length * (ulong)Unsafe.SizeOf<T>());
+                d3d12CmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
 
                 //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
                 IntPtr readbackResourcePtr = readbackResource.Map(0);
-                readbackResourcePtr.CopyTo(Data.AsSpan());
+                readbackResourcePtr.CopyTo(data.AsSpan());
                 readbackResource.Unmap(0);
             }
         }
 
-        public void SetData<T>(ID3D12GraphicsCommandList5 NativeCopyList, params T[] Data) where T : struct
+        public void SetData<T>(ID3D12GraphicsCommandList5 d3d12CmdList, params T[] data) where T : struct
         {
             if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW) 
             {
                 IntPtr uploadResourcePtr = uploadResource.Map(0);
-                Data.AsSpan().CopyTo(uploadResourcePtr);
+                data.AsSpan().CopyTo(uploadResourcePtr);
                 uploadResource.Unmap(0);
 
-                NativeCopyList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                NativeCopyList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, (ulong)Data.Length * (ulong)Unsafe.SizeOf<T>());
-                NativeCopyList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+                d3d12CmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+                d3d12CmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, (ulong)data.Length * (ulong)Unsafe.SizeOf<T>());
+                d3d12CmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 

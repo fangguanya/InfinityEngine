@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InfinityEngine.Renderer.TerrainPipeline
+namespace InfinityEngine.Rendering.TerrainPipeline
 {
     /*public static class HeightmapLoader
     {

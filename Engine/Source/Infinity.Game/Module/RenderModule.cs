@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
-using InfinityEngine.Renderer.RenderPipeline;
+using InfinityEngine.Rendering.RenderPipeline;
 
 namespace InfinityEngine.Game.Module
 {

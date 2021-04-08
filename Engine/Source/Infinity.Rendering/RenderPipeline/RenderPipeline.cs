@@ -2,7 +2,7 @@
 using InfinityEngine.Graphics.RDG;
 using InfinityEngine.Graphics.RHI;
 
-namespace InfinityEngine.Renderer.RenderPipeline
+namespace InfinityEngine.Rendering.RenderPipeline
 {
     public abstract class FRenderPipeline : UObject
     {

@@ -2,7 +2,7 @@
 using InfinityEngine.Core.Mathmatics;
 using InfinityEngine.Core.Mathematics.Geometry;
 
-namespace InfinityEngine.Renderer.TerrainPipeline
+namespace InfinityEngine.Rendering.TerrainPipeline
 {
     [Serializable]
     public struct FSectionLODData

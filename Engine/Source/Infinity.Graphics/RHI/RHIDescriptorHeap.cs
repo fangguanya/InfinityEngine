@@ -21,11 +21,11 @@ namespace InfinityEngine.Graphics.RHI
 
             descriptorSize = d3D12Device.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
 
-            DescriptorHeapDescription CPUDescriptorHeapDescription = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.ShaderVisible);
-            d3D12CPUDescriptorHeap = d3D12Device.CreateDescriptorHeap<ID3D12DescriptorHeap>(CPUDescriptorHeapDescription);
+            DescriptorHeapDescription descriptionCPU = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.ShaderVisible);
+            d3D12CPUDescriptorHeap = d3D12Device.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionCPU);
 
-            DescriptorHeapDescription GPUDescriptorHeapDescription = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.None);
-            d3D12GPUDescriptorHeap = d3D12Device.CreateDescriptorHeap<ID3D12DescriptorHeap>(GPUDescriptorHeapDescription);
+            DescriptorHeapDescription descriptionGPU = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.None);
+            d3D12GPUDescriptorHeap = d3D12Device.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionGPU);
         }
 
         protected static DescriptorHeapType GetDescriptorType(in EDescriptorType DescriptorType)
@@ -50,7 +50,7 @@ namespace InfinityEngine.Graphics.RHI
             return OutType;
         }
 
-        internal int Allocator(in int Count)
+        internal int Allocator(in int count)
         {
             return 1;
         }
