@@ -3,17 +3,7 @@ using System.Collections.Generic;
 
 namespace InfinityEngine.Graphics.RDG
 {
-    internal interface IRDGPass
-    {
-        public void Step(ref FRDGPassBuilder passBuilder);
-        public void Execute(FRDGGraphContext graphContext);
-        public void Release();
-    }
-
-    public delegate void FRDGStepFunc<T>(ref T passData, ref FRDGPassBuilder passBuilder) where T : struct;
-    public delegate void FRDGExecuteFunc<T>(ref T passData, FRDGGraphContext graphContext) where T : struct;
-
-    internal sealed class FRDGBasePass<T> : IRDGPass where T : struct
+    internal abstract class IRDGPass
     {
         internal int index;
         internal string name;
@@ -25,16 +15,12 @@ namespace InfinityEngine.Graphics.RDG
         public FRDGTextureRef depthBuffer;
         public FRDGTextureRef[] colorBuffers;
 
-        internal T passData;
-        internal FRDGStepFunc<T> stepFunc;
-        internal FRDGExecuteFunc<T> executeFunc;
-
         public List<FRDGResourceRef>[] resourceReadLists = new List<FRDGResourceRef>[2];
         public List<FRDGResourceRef>[] resourceWriteLists = new List<FRDGResourceRef>[2];
         public List<FRDGResourceRef>[] temporalResourceList = new List<FRDGResourceRef>[2];
 
 
-        public FRDGBasePass()
+        public IRDGPass()
         {
             colorBuffers = new FRDGTextureRef[8];
             colorBufferMaxIndex = -1;
@@ -47,20 +33,9 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        public void Step(ref FRDGPassBuilder passBuilder)
-        {
-            stepFunc(ref passData, ref passBuilder);
-        }
-
-        public void Execute(FRDGGraphContext graphContext)
-        {
-            executeFunc(ref passData, graphContext);
-        }
-
-        public void Release()
-        {
-
-        }
+        public abstract void Step(ref FRDGPassBuilder passBuilder);
+        public abstract void Execute(ref FRDGContext graphContext);
+        public abstract void Release(FRDGObjectPool objectPool);
 
         public void AddResourceWrite(in FRDGResourceRef res)
         {
@@ -126,6 +101,34 @@ namespace InfinityEngine.Graphics.RDG
             {
                 colorBuffers[i] = new FRDGTextureRef();
             }
+        }
+    }
+
+    public delegate void FRDGStepFunc<T>(ref T passData, ref FRDGPassBuilder passBuilder) where T : struct;
+    public delegate void FRDGExecuteFunc<T>(ref T passData, ref FRDGContext graphContext) where T : struct;
+
+    internal sealed class FRDGBasePass<T> : IRDGPass where T : struct
+    {
+        internal T passData;
+        internal FRDGStepFunc<T> stepFunc;
+        internal FRDGExecuteFunc<T> executeFunc;
+
+
+        public override void Step(ref FRDGPassBuilder passBuilder)
+        {
+            stepFunc(ref passData, ref passBuilder);
+        }
+
+        public override void Execute(ref FRDGContext graphContext)
+        {
+            executeFunc(ref passData, ref graphContext);
+        }
+
+        public override void Release(FRDGObjectPool graphObjectPool)
+        {
+            Clear();
+            executeFunc = null;
+            graphObjectPool.Release(this);
         }
     }
 }

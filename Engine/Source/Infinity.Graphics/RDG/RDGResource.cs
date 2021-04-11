@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using InfinityEngine.Graphics.RHI;
-using InfinityEngine.Core.Mathmatics;
+﻿using InfinityEngine.Graphics.RHI;
 
 namespace InfinityEngine.Graphics.RDG
 {
@@ -19,6 +16,7 @@ namespace InfinityEngine.Graphics.RDG
         public EResourceType type { get; private set; }
         public int iType { get { return (int)type; } }
 
+
         internal FRDGResourceRef(int value, EResourceType type)
         {
             this.index = value;
@@ -26,8 +24,8 @@ namespace InfinityEngine.Graphics.RDG
             this.m_IsValid = true;
         }
 
-
         public static implicit operator int(FRDGResourceRef handle) => handle.index;
+
         public bool IsValid() => m_IsValid;
     }
 
@@ -41,9 +39,9 @@ namespace InfinityEngine.Graphics.RDG
             this.handle = new FRDGResourceRef(handle, EResourceType.Buffer); 
         }
 
-        //public static implicit operator ComputeBuffer(RDGBufferRef bufferHandle) => bufferHandle.IsValid() ? RDGResourceFactory.current.GetBuffer(bufferHandle) : null;
-        
         public bool IsValid() => handle.IsValid();
+
+        public static implicit operator FRHIBuffer(FRDGBufferRef bufferRef) => bufferRef.IsValid() ? FRDGResourceFactory.current.GetBuffer(bufferRef) : null;
     }
 
     public struct FRDGTextureRef
@@ -56,9 +54,9 @@ namespace InfinityEngine.Graphics.RDG
             this.handle = new FRDGResourceRef(handle, EResourceType.Texture); 
         }
 
-        //public static implicit operator RenderTexture(RDGTextureRef texture) => texture.IsValid() ? RDGResourceFactory.current.GetTexture(texture) : null;
-        
         public bool IsValid() => handle.IsValid();
+
+        public static implicit operator FRHITexture(FRDGTextureRef textureRef) => textureRef.IsValid() ? FRDGResourceFactory.current.GetTexture(textureRef) : null;
     }
 
     internal class IRDGResource
@@ -68,6 +66,7 @@ namespace InfinityEngine.Graphics.RDG
         public int shaderProperty;
         public int temporalPassIndex;
         public bool wasReleased;
+
 
         public virtual void Reset()
         {
@@ -88,6 +87,7 @@ namespace InfinityEngine.Graphics.RDG
     {
         public DescType desc;
         public ResType resource;
+
 
         protected FRDGResource()
         {

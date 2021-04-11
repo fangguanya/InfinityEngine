@@ -34,7 +34,7 @@ namespace InfinityEngine.Graphics.RHI
             list.Add(resource);
         }
 
-        public void Disposed()
+        public void Cleanup()
         {
             foreach (var kvp in m_ResourcePool)
             {
