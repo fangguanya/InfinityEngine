@@ -6,8 +6,8 @@ namespace InfinityEngine.Graphics.RDG
     public struct FRDGContext
     {
         public FRDGObjectPool objectPool;
-        public FRHICommandList rhiCmdList;
-        public FRHIGraphicsContext rhiGraphicsContext;
+        public FRHICommandList commandList;
+        public FRHIGraphicsContext graphicsContext;
     }
 
     public class FRDGGraphBuilder : UObject
