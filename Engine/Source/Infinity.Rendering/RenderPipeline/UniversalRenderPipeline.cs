@@ -5,7 +5,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
     public class FUniversalRenderPipeline : FRenderPipeline
     {
         FRHIBuffer buffer;
-        FRHICommandList rhiCmdList;
+        FRHICommandList commandList;
 
         public FUniversalRenderPipeline(string pipelineName) : base(pipelineName)
         {
@@ -15,15 +15,15 @@ namespace InfinityEngine.Rendering.RenderPipeline
         public override void Init(FRHIGraphicsContext graphicsContext)
         {
             buffer = graphicsContext.CreateBuffer(5, 4, EUseFlag.CPUWrite, EBufferType.Structured);
-            rhiCmdList = graphicsContext.CreateCmdList("DefaultCmdList", Vortice.Direct3D12.CommandListType.Copy);
+            commandList = graphicsContext.CreateCmdList("DefaultCmdList", Vortice.Direct3D12.CommandListType.Copy);
         }
 
         public override void Render(FRHIGraphicsContext graphicsContext)
         {
-            rhiCmdList.Clear();
-            buffer.SetData<int>(rhiCmdList, 1, 2, 3, 4, 5);
+            commandList.Clear();
+            buffer.SetData<int>(commandList, 1, 2, 3, 4, 5);
 
-            graphicsContext.ExecuteCmdList(EContextType.Copy, rhiCmdList);
+            graphicsContext.ExecuteCmdList(EContextType.Copy, commandList);
             graphicsContext.Submit();
 
 
@@ -44,28 +44,28 @@ namespace InfinityEngine.Rendering.RenderPipeline
             FRHIFence graphicsFence = graphicsContext.CreateFence();
 
             //Pass-A in GraphicsQueue
-            rhiCmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-            graphicsContext.ExecuteCmdList(EContextType.Graphics, rhiCmdList);
+            commandList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
+            graphicsContext.ExecuteCmdList(EContextType.Graphics, commandList);
             graphicsContext.WritFence(EContextType.Graphics, graphicsFence);
 
             //Pass-B in GraphicsQueue
-            rhiCmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-            graphicsContext.ExecuteCmdList(EContextType.Graphics, rhiCmdList);
+            commandList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
+            graphicsContext.ExecuteCmdList(EContextType.Graphics, commandList);
 
             //Pass-C in ComputeQueue and Wait Pass-A
             graphicsContext.WaitFence(EContextType.Compute, graphicsFence);
-            rhiCmdList.DispatchCompute(null, 16, 16, 1);
-            graphicsContext.ExecuteCmdList(EContextType.Compute, rhiCmdList);
+            commandList.DispatchCompute(null, 16, 16, 1);
+            graphicsContext.ExecuteCmdList(EContextType.Compute, commandList);
             graphicsContext.WritFence(EContextType.Compute, computeFence);
 
             //Pass-D in ComputeQueue
-            rhiCmdList.DispatchCompute(null, 16, 16, 1);
-            graphicsContext.ExecuteCmdList(EContextType.Compute, rhiCmdList);
+            commandList.DispatchCompute(null, 16, 16, 1);
+            graphicsContext.ExecuteCmdList(EContextType.Compute, commandList);
 
             //Pass-E in GraphicsQueue and Wait Pass-C
             graphicsContext.WaitFence(EContextType.Graphics, computeFence);
-            rhiCmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
-            graphicsContext.ExecuteCmdList(EContextType.Graphics, rhiCmdList);*/
+            commandList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
+            graphicsContext.ExecuteCmdList(EContextType.Graphics, commandList);*/
         }
 
         protected override void Disposed()
@@ -73,7 +73,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
             base.Disposed();
 
             buffer?.Dispose();
-            rhiCmdList?.Dispose();
+            commandList?.Dispose();
         }
     }
 }

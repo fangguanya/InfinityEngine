@@ -12,21 +12,20 @@ namespace InfinityEngine.Game.Application
     {
         internal static readonly string WndClassName = "InfinityApp";
 
-        internal WNDPROC _wndProc;
+        internal WNDPROC wndProc;
         internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
+        internal FWindow mainWindow { get; private set; }
 
-        internal FGameModule GameModule;
-        internal FRenderModule RenderModule;
-        internal FPhyscisModule PhyscisModule;
-        internal FWindow MainWindow { get; private set; }
+        internal FGameModule gameModule;
+        internal FPhyscisModule physcisModule;
+        internal FGraphicsModule graphicsModule;
 
 
         public FBaseApplication(string Name, int Width, int Height)
         {
-            GameModule = new FGameModule(Play, Tick, End);
-            RenderModule = new FRenderModule();
-            PhyscisModule = new FPhyscisModule();
-
+            gameModule = new FGameModule(Play, Tick, End);
+            physcisModule = new FPhyscisModule();
+            graphicsModule = new FGraphicsModule();
             CreateWindow(Name, Width, Height);
         }
 
@@ -53,19 +52,19 @@ namespace InfinityEngine.Game.Application
 
         protected override void Disposed()
         {
-            GameModule?.Dispose();
-            RenderModule?.Dispose();
-            PhyscisModule?.Dispose();
+            gameModule?.Dispose();
+            physcisModule?.Dispose();
+            graphicsModule?.Dispose();
         }
 
-        private void CreateWindow(string Name, int Width, int Height)
+        private void CreateWindow(string name, int width, int height)
         {
-            _wndProc = ProcessWindowMessage;
+            wndProc = ProcessWindowMessage;
             var wndClassEx = new WNDCLASSEX
             {
                 Size = Unsafe.SizeOf<WNDCLASSEX>(),
                 Styles = WindowClassStyles.CS_HREDRAW | WindowClassStyles.CS_VREDRAW | WindowClassStyles.CS_OWNDC,
-                WindowProc = _wndProc,
+                WindowProc = wndProc,
                 InstanceHandle = HInstance,
                 CursorHandle = User32.LoadCursor(IntPtr.Zero, SystemCursor.IDC_ARROW),
                 BackgroundBrushHandle = IntPtr.Zero,
@@ -78,24 +77,23 @@ namespace InfinityEngine.Game.Application
                 throw new InvalidOperationException($"Failed to register window class. Error: {Marshal.GetLastWin32Error()}");
             }
 
-            // Create main window.
-            MainWindow = new FWindow(Name, Width, Height);
+            mainWindow = new FWindow(name, width, height);
         }
 
         private void PlatformRun()
         {
-            PhyscisModule.Start();
-            RenderModule.Start();
-            GameModule.Start();
+            physcisModule.Start();
+            graphicsModule.Start();
+            gameModule.Start();
         }
 
         private void PlatformExit()
         {
-            GameModule.Exit();
-            RenderModule.Exit();
-            RenderModule.Sync();
-            PhyscisModule.Exit();
-            PhyscisModule.Sync();
+            gameModule.Exit();
+            physcisModule.Exit();
+            physcisModule.Sync();
+            graphicsModule.Exit();
+            graphicsModule.Sync();
         }
 
         private IntPtr ProcessWindowMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)

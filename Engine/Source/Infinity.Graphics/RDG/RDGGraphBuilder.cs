@@ -14,9 +14,10 @@ namespace InfinityEngine.Graphics.RDG
     {
         public string name;
 
-        public FRDGGraphBuilder(string Name)
+
+        public FRDGGraphBuilder(string name)
         {
-            name = Name;
+            this.name = name;
         }
 
         protected override void Disposed()
