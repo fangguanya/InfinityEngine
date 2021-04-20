@@ -14,8 +14,10 @@ namespace InfinityEngine.Graphics.RHI
         {
             if (m_ResourcePool.TryGetValue(hashCode, out var list) && list.Count > 0)
             {
-                resource = list[list.Count - 1];
-                list.RemoveAt(list.Count - 1);
+                resource = list[0];
+                list.RemoveAt(0);
+                //resource = list[list.Count - 1];
+                //list.RemoveAt(list.Count - 1);
                 return true;
             }
 
