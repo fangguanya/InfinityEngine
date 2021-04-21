@@ -6,10 +6,6 @@ namespace InfinityEngine.Core.TaskSystem
     {
         public abstract void Execute();
 
-        internal void Run()
-        {
-            Execute();
-        }
 
         internal void Execute(Task dependsTask)
         {
@@ -24,22 +20,22 @@ namespace InfinityEngine.Core.TaskSystem
 
     public static class ITaskExtension
     {
-        public static void Run<T>(this T jobData) where T : struct, ITask
+        public static void Run<T>(this T taskData) where T : struct, ITask
         {
-            jobData.Execute();
+            taskData.Execute();
         }
 
-        public static FTaskHandle Schedule<T>(this T jobData) where T : struct, ITask
+        public static FTaskHandle Schedule<T>(this T taskData) where T : struct, ITask
         {
-            return new FTaskHandle(Task.Factory.StartNew(jobData.Execute));
+            return new FTaskHandle(Task.Factory.StartNew(taskData.Execute));
         }
 
-        public static FTaskHandle Schedule<T>(this T jobData, FTaskHandle dependsHandle) where T : struct, ITask
+        public static FTaskHandle Schedule<T>(this T taskData, FTaskHandle dependsHandle) where T : struct, ITask
         {
-            return new FTaskHandle(dependsHandle.TaskRef.ContinueWith(jobData.Execute));
+            return new FTaskHandle(dependsHandle.TaskRef.ContinueWith(taskData.Execute));
         }
 
-        public static FTaskHandle Schedule<T>(this T jobData, params FTaskHandle[] dependsHandle) where T : struct, ITask
+        public static FTaskHandle Schedule<T>(this T taskData, params FTaskHandle[] dependsHandle) where T : struct, ITask
         {
             Task[] dependsTask = new Task[dependsHandle.Length];
             for (int i = 0; i < dependsHandle.Length; i++)
@@ -47,7 +43,7 @@ namespace InfinityEngine.Core.TaskSystem
                 dependsTask[i] = dependsHandle[i].TaskRef;
             }
 
-            return new FTaskHandle(Task.Factory.ContinueWhenAll(dependsTask, jobData.Execute));
+            return new FTaskHandle(Task.Factory.ContinueWhenAll(dependsTask, taskData.Execute));
         }
     }
 }

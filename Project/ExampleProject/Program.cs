@@ -5,6 +5,21 @@ using InfinityEngine.Core.TaskSystem;
 
 namespace ExampleProject
 {
+    public struct FAsyncTask : ITaskASync
+    {
+        public void Execute()
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine("yes i can!");
+
+            /*for (int i = 0; i < 10; i++)
+            {
+                TArray[i] = i;
+                Console.WriteLine(TArray[i]);
+            }*/
+        }
+    }
+
     public struct FTestTask : ITask
     {
         public string PrintData;

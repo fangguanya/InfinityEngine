@@ -13,10 +13,10 @@ namespace InfinityEngine.Graphics.RHI
 
     internal struct FExecuteInfo
     {
-        internal FRHIFence gpuFence;
-        internal EExecuteType executeType;
-        internal FRHICommandList cmdList;
-        internal FRHICommandContext cmdContext;
+        public FRHIFence fence;
+        public EExecuteType executeType;
+        public FRHICommandList cmdList;
+        public FRHICommandContext cmdContext;
     }
 
     public class FRHICommandList : UObject
@@ -25,12 +25,12 @@ namespace InfinityEngine.Graphics.RHI
         internal ID3D12GraphicsCommandList5 d3D12CmdList;
         internal ID3D12CommandAllocator d3D12CmdAllocator;
 
-        public FRHICommandList(string Name, ID3D12Device6 NativeDevice, CommandListType CommandBufferType)
+        public FRHICommandList(string name, ID3D12Device6 d3d12Device, EContextType cmdListType)
         {
-            name = Name;
-            d3D12CmdAllocator = NativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>(CommandBufferType);
-            d3D12CmdList = NativeDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, CommandBufferType, d3D12CmdAllocator, null);
-            d3D12CmdList.QueryInterface<ID3D12GraphicsCommandList5>();
+            this.name = name;
+            this.d3D12CmdAllocator = d3d12Device.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)cmdListType);
+            this.d3D12CmdList = d3d12Device.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)cmdListType, d3D12CmdAllocator, null);
+            this.d3D12CmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
         public void Clear()

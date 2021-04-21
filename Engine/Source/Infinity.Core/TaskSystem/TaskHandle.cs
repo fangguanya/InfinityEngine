@@ -15,7 +15,7 @@ namespace InfinityEngine.Core.TaskSystem
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Complete()
         {
-            return TaskRef.IsCompleted;
+            return TaskRef == null ? true : TaskRef.IsCompleted;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

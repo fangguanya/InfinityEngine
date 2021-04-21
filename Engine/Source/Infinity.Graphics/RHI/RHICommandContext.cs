@@ -6,14 +6,13 @@ namespace InfinityEngine.Graphics.RHI
 {
     public class FRHICommandContext : UObject
     {
-        public FRHIFence rhiFence;
+        public FRHIFence fence;
         public ManualResetEvent fenceEvent;
         public ID3D12CommandQueue d3D12CmdQueue;
 
-
         public FRHICommandContext(ID3D12Device6 d3D12Device, CommandListType cmdListType) : base()
         {
-            rhiFence = new FRHIFence(d3D12Device);
+            fence = new FRHIFence(d3D12Device);
             fenceEvent = new ManualResetEvent(false);
 
             CommandQueueDescription CmdQueueDescription = new CommandQueueDescription();
@@ -24,14 +23,14 @@ namespace InfinityEngine.Graphics.RHI
 
         public static implicit operator ID3D12CommandQueue(FRHICommandContext RHICmdContext) { return RHICmdContext.d3D12CmdQueue; }
 
-        public void SignalQueue(FRHIFence rhiFence)
+        public void SignalQueue(FRHIFence fence)
         {
-            rhiFence.Signal(d3D12CmdQueue);
+            fence.Signal(d3D12CmdQueue);
         }
 
-        public void WaitQueue(FRHIFence rhiFence)
+        public void WaitQueue(FRHIFence fence)
         {
-            rhiFence.WaitOnGPU(d3D12CmdQueue);
+            fence.WaitOnGPU(d3D12CmdQueue);
         }
 
         public void ExecuteQueue(FRHICommandList rhiCmdList)
@@ -42,13 +41,13 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Flush()
         {
-            rhiFence.Signal(d3D12CmdQueue);
-            rhiFence.WaitOnCPU(fenceEvent);
+            fence.Signal(d3D12CmdQueue);
+            fence.WaitOnCPU(fenceEvent);
         }
 
         protected override void Disposed()
         {
-            rhiFence?.Dispose();
+            fence?.Dispose();
             fenceEvent?.Dispose();
             d3D12CmdQueue?.Dispose();
         }

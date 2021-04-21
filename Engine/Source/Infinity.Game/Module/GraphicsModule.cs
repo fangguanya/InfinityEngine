@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
@@ -14,24 +12,23 @@ namespace InfinityEngine.Game.Module
     {
         private bool b_CopyLoopExit;
         private bool b_RenderLoopExit;
-        internal Thread graphicsCopyThread;
-        internal Thread graphicsRenderThread;
+        internal Thread copyThread;
+        internal Thread renderThread;
         internal FRenderPipeline renderPipeline;
         internal FRHIGraphicsContext graphicsContext;
 
         internal static Queue<FGraphicsTask> GraphicsCopyTasks;
         internal static Queue<FGraphicsTask> GraphicsRenderTasks;
 
-
         internal FGraphicsModule()
         {
             b_CopyLoopExit = false;
             b_RenderLoopExit = false;
 
-            graphicsCopyThread = new Thread(GraphicsCopyFunc);
-            graphicsCopyThread.Name = "GraphicsCopyThread";
-            graphicsRenderThread = new Thread(GraphicsRenderFunc);
-            graphicsRenderThread.Name = "GraphicsRenderThread";
+            copyThread = new Thread(GraphicsCopyFunc);
+            copyThread.Name = "CopyThread";
+            renderThread = new Thread(GraphicsRenderFunc);
+            renderThread.Name = "RenderThread";
 
             graphicsContext = new FRHIGraphicsContext();
             renderPipeline = new FUniversalRenderPipeline("UniversalRP");
@@ -42,14 +39,14 @@ namespace InfinityEngine.Game.Module
 
         internal void Start()
         {
-            graphicsCopyThread.Start();
-            graphicsRenderThread.Start();
+            copyThread.Start();
+            renderThread.Start();
         }
 
         internal void Sync()
         {
-            graphicsCopyThread.Join();
-            graphicsRenderThread.Join();
+            copyThread.Join();
+            renderThread.Join();
         }
 
         #region GraphicsCopy

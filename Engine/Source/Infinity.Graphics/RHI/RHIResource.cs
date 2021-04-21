@@ -172,7 +172,6 @@ namespace InfinityEngine.Graphics.RHI
         RGBA_BC7_UNorm = 109,
     }
 
-
     public class FRHIResource : UObject
     {
         public string name;
@@ -182,7 +181,6 @@ namespace InfinityEngine.Graphics.RHI
         internal ID3D12Resource uploadResource;
         internal ID3D12Resource defaultResource;
         internal ID3D12Resource readbackResource;
-
 
         public FRHIResource(in EUseFlag useFlag) : base()
         {
@@ -234,7 +232,6 @@ namespace InfinityEngine.Graphics.RHI
         internal ulong count;
         internal ulong stride;
         internal EBufferType bufferType;
-
 
         internal FRHIBuffer(ID3D12Device6 d3D12Device, in EUseFlag useFlag, in EBufferType bufferType, in ulong count, in ulong stride) : base(useFlag)
         {
@@ -390,7 +387,6 @@ namespace InfinityEngine.Graphics.RHI
         public EMSAASamples msaaSamples;
         public bool clearBuffer;
         public float4 clearColor;
-
 
         public FRHITextureDescription(int Width, int Height) : this()
         {

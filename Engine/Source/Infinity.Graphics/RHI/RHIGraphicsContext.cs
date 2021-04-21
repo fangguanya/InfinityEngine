@@ -7,22 +7,19 @@ namespace InfinityEngine.Graphics.RHI
 {
     public enum EContextType
     {
-        Copy = 0,
-        Compute = 1,
-        Graphics = 2
+        Copy = 3,
+        Compute = 2,
+        Graphics = 0
     }
 
     public class FRHIGraphicsContext : UObject
     {
         internal FRHIDevice device;
-
+        internal List<FExecuteInfo> executeInfos;
         internal FRHICommandContext copyContext;
         internal FRHICommandContext computeContext;
         internal FRHICommandContext graphicsContext;
-
-        internal List<FExecuteInfo> executeInfos;
         internal FRHIDescriptorHeapFactory cbvSrvUavDescriptorFactory;
-
 
         public FRHIGraphicsContext() : base()
         {
@@ -57,27 +54,27 @@ namespace InfinityEngine.Graphics.RHI
         public void ExecuteCmdList(in EContextType contextType, FRHICommandList cmdList)
         {
             FExecuteInfo executeInfo;
-            executeInfo.gpuFence = null;
+            executeInfo.fence = null;
             executeInfo.cmdList = cmdList;
             executeInfo.executeType = EExecuteType.Execute;
             executeInfo.cmdContext = SelectContext(contextType);
             executeInfos.Add(executeInfo);
         }
 
-        public void WritFence(in EContextType contextType, FRHIFence gpuFence)
+        public void WritFence(in EContextType contextType, FRHIFence fence)
         {
             FExecuteInfo executeInfo;
-            executeInfo.gpuFence = gpuFence;
+            executeInfo.fence = fence;
             executeInfo.cmdList = null;
             executeInfo.executeType = EExecuteType.Signal;
             executeInfo.cmdContext = SelectContext(contextType);
             executeInfos.Add(executeInfo);
         }
 
-        public void WaitFence(in EContextType contextType, FRHIFence gpuFence)
+        public void WaitFence(in EContextType contextType, FRHIFence fence)
         {
             FExecuteInfo executeInfo;
-            executeInfo.gpuFence = gpuFence;
+            executeInfo.fence = fence;
             executeInfo.cmdList = null;
             executeInfo.executeType = EExecuteType.Wait;
             executeInfo.cmdContext = SelectContext(contextType);
@@ -92,11 +89,11 @@ namespace InfinityEngine.Graphics.RHI
                 switch (executeInfo.executeType)
                 {
                     case EExecuteType.Signal:
-                        executeInfo.cmdContext.SignalQueue(executeInfo.gpuFence);
+                        executeInfo.cmdContext.SignalQueue(executeInfo.fence);
                         break;
 
                     case EExecuteType.Wait:
-                        executeInfo.cmdContext.WaitQueue(executeInfo.gpuFence);
+                        executeInfo.cmdContext.WaitQueue(executeInfo.fence);
                         break;
 
                     case EExecuteType.Execute:
@@ -111,11 +108,11 @@ namespace InfinityEngine.Graphics.RHI
             graphicsContext.Flush();
         }
 
-        public FRHICommandList CreateCmdList(string name, CommandListType cmdListType)
+        public FRHICommandList CreateCmdList(string name, EContextType cmdListType)
         {
-            FRHICommandList rhiCmdList = new FRHICommandList(name, device, cmdListType);
-            rhiCmdList.Close();
-            return rhiCmdList;
+            FRHICommandList cmdList = new FRHICommandList(name, device, cmdListType);
+            cmdList.Close();
+            return cmdList;
         }
 
         public void CreateViewport()

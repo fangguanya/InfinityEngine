@@ -1,8 +1,11 @@
 ﻿using System;
 using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
+using InfinityEngine.Core.TaskSystem;
 using InfinityEngine.Game.ActorSystem;
 using InfinityEngine.Game.Application;
+using System.Threading;
+using Timer = InfinityEngine.Core.Profiler.Timer;
 
 namespace ExampleProject
 {
@@ -89,25 +92,26 @@ namespace ExampleProject
     [Serializable]
     public class TestActor : AActor
     {
-        private TestComponent Component;
+        FTaskHandle m_AsynTaskRef;
+        private TestComponent m_Component;
 
         
         public TestActor() : base()
         {
-            Component = new TestComponent();
-            AddComponent(Component);
+            m_Component = new TestComponent();
+            AddComponent(m_Component);
         }
 
         public TestActor(string InName) : base(InName)
         {
-            Component = new TestComponent();
-            AddComponent(Component);
+            m_Component = new TestComponent();
+            AddComponent(m_Component);
         }
 
         public TestActor(string InName, AActor InParent) : base(InName, InParent)
         {
-            Component = new TestComponent();
-            AddComponent(Component);
+            m_Component = new TestComponent();
+            AddComponent(m_Component);
         }
 
         public override void OnEnable()
@@ -120,38 +124,48 @@ namespace ExampleProject
         {
             base.OnUpdate();
             //Console.WriteLine("Update Actor");
+
+            //Async Task
+            /*Thread.Sleep(100);
+            bool isReady = m_AsynTaskRef.Complete();
+            if (isReady)
+            {
+                FAsyncTask asynTask;
+                asynTask.Run(ref m_AsynTaskRef);
+            }
+            Console.WriteLine("Can you hear me?");*/
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
-            Console.WriteLine("Disable Actor");
+            //Console.WriteLine("Disable Actor");
         }
     }
 
     public class TestApplication : FApplication
     {
-        private TestActor Actor;
+        private TestActor m_Actor;
 
         
         public TestApplication(string Name, int Width, int Height) : base(Name, Width, Height)
         {
-            Actor = new TestActor("TestActor");
+            m_Actor = new TestActor("TestActor");
         }
 
         protected override void Play()
         {
-            Actor.OnEnable();
+            m_Actor.OnEnable();
         }
 
         protected override void Tick()
         {
-            Actor.OnUpdate();
+            m_Actor.OnUpdate();
         }
 
         protected override void End()
         {
-            Actor.OnDisable();
+            m_Actor.OnDisable();
         }
     }
 }
