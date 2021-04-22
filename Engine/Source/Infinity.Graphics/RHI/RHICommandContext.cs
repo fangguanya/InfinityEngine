@@ -7,13 +7,13 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHICommandContext : UObject
     {
         public FRHIFence fence;
-        public ManualResetEvent fenceEvent;
+        public AutoResetEvent fenceEvent;
         public ID3D12CommandQueue d3D12CmdQueue;
 
         public FRHICommandContext(ID3D12Device6 d3D12Device, CommandListType cmdListType) : base()
         {
             fence = new FRHIFence(d3D12Device);
-            fenceEvent = new ManualResetEvent(false);
+            fenceEvent = new AutoResetEvent(false);
 
             CommandQueueDescription CmdQueueDescription = new CommandQueueDescription();
             CmdQueueDescription.Type = cmdListType;

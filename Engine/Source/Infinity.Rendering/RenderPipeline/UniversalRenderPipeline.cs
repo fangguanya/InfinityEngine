@@ -14,7 +14,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         public override void Init(FRHIGraphicsContext graphicsContext)
         {
-            buffer = graphicsContext.CreateBuffer(5, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+            buffer = graphicsContext.CreateBuffer(5, 4, EUseFlag.CPURW, EBufferType.Structured);
             cmdList = graphicsContext.CreateCmdList("DefaultCmdList", EContextType.Copy);
         }
 

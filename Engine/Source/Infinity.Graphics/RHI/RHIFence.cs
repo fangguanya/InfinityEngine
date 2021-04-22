@@ -30,13 +30,13 @@ namespace InfinityEngine.Graphics.RHI
             return true;
         }
 
-        public void WaitOnCPU(ManualResetEvent FenceEvent)
+        public void WaitOnCPU(AutoResetEvent fenceEvent)
         {
             if (!Completed())
             {
                 //ManualResetEvent FenceEvent = new ManualResetEvent(false);
-                d3D12Fence.SetEventOnCompletion(fenceValue, FenceEvent);
-                FenceEvent.WaitOne();
+                d3D12Fence.SetEventOnCompletion(fenceValue, fenceEvent);
+                fenceEvent.WaitOne();
             }
         }
 
