@@ -5,20 +5,20 @@ using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 
-namespace InfinityEngine.Game.Module
+namespace InfinityEngine.Game.System
 {
     internal delegate void FGamePlay();
     internal delegate void FGameTick();
     internal delegate void FGameEnd();
 
-    internal class FGameModule : UObject
+    internal class FGameSystem : UObject
     {
         private bool m_LoopExit;
         private FGamePlay GamePlay;
         private FGameTick GameTick;
         private FGameEnd GameEnd;
 
-        internal FGameModule(FGamePlay InGamePlay, FGameTick InGameTick, FGameEnd InGameEnd)
+        internal FGameSystem(FGamePlay InGamePlay, FGameTick InGameTick, FGameEnd InGameEnd)
         {
             GamePlay = InGamePlay;
             GameTick = InGameTick;

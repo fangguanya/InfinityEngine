@@ -1,7 +1,7 @@
 ﻿using System;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
-using InfinityEngine.Game.Module;
+using InfinityEngine.Game.System;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
@@ -16,16 +16,16 @@ namespace InfinityEngine.Game.Application
         internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
         internal FWindow mainWindow { get; private set; }
 
-        internal FGameModule gameModule;
-        internal FPhyscisModule physcisModule;
-        internal FGraphicsModule graphicsModule;
+        internal FGameSystem gameSystem;
+        internal FPhyscisSystem physcisSystem;
+        internal FGraphicsSystem graphicsSystem;
 
 
         public FBaseApplication(string Name, int Width, int Height)
         {
-            gameModule = new FGameModule(Play, Tick, End);
-            physcisModule = new FPhyscisModule();
-            graphicsModule = new FGraphicsModule();
+            gameSystem = new FGameSystem(Play, Tick, End);
+            physcisSystem = new FPhyscisSystem();
+            graphicsSystem = new FGraphicsSystem();
             CreateWindow(Name, Width, Height);
         }
 
@@ -52,9 +52,9 @@ namespace InfinityEngine.Game.Application
 
         protected override void Disposed()
         {
-            gameModule?.Dispose();
-            physcisModule?.Dispose();
-            graphicsModule?.Dispose();
+            gameSystem?.Dispose();
+            physcisSystem?.Dispose();
+            graphicsSystem?.Dispose();
         }
 
         private void CreateWindow(string name, int width, int height)
@@ -82,18 +82,18 @@ namespace InfinityEngine.Game.Application
 
         private void PlatformRun()
         {
-            physcisModule.Start();
-            graphicsModule.Start();
-            gameModule.Start();
+            physcisSystem.Start();
+            graphicsSystem.Start();
+            gameSystem.Start();
         }
 
         private void PlatformExit()
         {
-            gameModule.Exit();
-            physcisModule.Exit();
-            physcisModule.Sync();
-            graphicsModule.Exit();
-            graphicsModule.Sync();
+            gameSystem.Exit();
+            physcisSystem.Exit();
+            physcisSystem.Sync();
+            graphicsSystem.Exit();
+            graphicsSystem.Sync();
         }
 
         private IntPtr ProcessWindowMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)

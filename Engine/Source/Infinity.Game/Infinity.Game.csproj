@@ -29,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Vortice.Mathematics" Version="1.3.20" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Infinity.Core\Infinity.Core.csproj" />
     <ProjectReference Include="..\Infinity.Graphics\Infinity.Graphics.csproj" />
     <ProjectReference Include="..\Infinity.Physcis\Infinity.Physcis.csproj" />

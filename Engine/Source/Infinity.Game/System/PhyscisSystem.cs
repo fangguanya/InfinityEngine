@@ -1,17 +1,14 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using System.Threading;
 using InfinityEngine.Core.Object;
 
-namespace InfinityEngine.Game.Module
+namespace InfinityEngine.Game.System
 {
-    internal class FPhyscisModule : UObject
+    internal class FPhyscisSystem : UObject
     {
         private bool m_LoopExit;
         internal Thread PhyscisThread;
 
-        internal FPhyscisModule()
+        internal FPhyscisSystem()
         {
             m_LoopExit = false;
 

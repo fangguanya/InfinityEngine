@@ -1,9 +1,4 @@
-﻿// Copyright (c) Amer Koleci and contributors.
-// Distributed under the MIT license. See the LICENSE file in the project root for more information.
-
-using System;
-using System.Drawing;
-using Vortice.Mathematics;
+﻿using System;
 using System.Runtime.InteropServices;
 
 namespace InfinityEngine.Game.Window
@@ -367,7 +362,6 @@ namespace InfinityEngine.Game.Window
         public IntPtr WParam;
         public IntPtr LParam;
         public uint Time;
-        public System.Drawing.Point Point;
     }
 
     public delegate IntPtr WNDPROC(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);

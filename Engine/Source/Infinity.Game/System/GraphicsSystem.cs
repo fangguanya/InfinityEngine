@@ -4,11 +4,11 @@ using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Rendering.RenderPipeline;
 
-namespace InfinityEngine.Game.Module
+namespace InfinityEngine.Game.System
 {
     public delegate void FGraphicsTask(FRHIGraphicsContext RHIGraphicsContext);
 
-    public class FGraphicsModule : UObject
+    public class FGraphicsSystem : UObject
     {
         private bool b_CopyLoopExit;
         private bool b_RenderLoopExit;
@@ -20,7 +20,7 @@ namespace InfinityEngine.Game.Module
         internal static Queue<FGraphicsTask> GraphicsCopyTasks;
         internal static Queue<FGraphicsTask> GraphicsRenderTasks;
 
-        internal FGraphicsModule()
+        internal FGraphicsSystem()
         {
             b_CopyLoopExit = false;
             b_RenderLoopExit = false;
