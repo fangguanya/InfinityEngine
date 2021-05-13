@@ -187,7 +187,7 @@ namespace InfinityEngine.Rendering.TerrainPipeline
 
         public static bool IntersectAABBFrustum(FPlane[] plane, in FAABB bound)
         {
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 6; ++i)
             {
                 float3 normal = plane[i].normal;
                 float distance = plane[i].distance;

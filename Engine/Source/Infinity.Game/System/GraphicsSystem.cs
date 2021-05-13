@@ -59,7 +59,7 @@ namespace InfinityEngine.Game.System
         {
             if (GraphicsCopyTasks.Count == 0) { return; }
 
-            for (int i = 0; i < GraphicsCopyTasks.Count; i++)
+            for (int i = 0; i < GraphicsCopyTasks.Count; ++i)
             {
                 FGraphicsTask graphicsCopyTask = GraphicsCopyTasks.Dequeue();
                 graphicsCopyTask(graphicsContext);
@@ -85,7 +85,7 @@ namespace InfinityEngine.Game.System
         {
             if(GraphicsRenderTasks.Count == 0) { return; }
 
-            for(int i = 0; i < GraphicsRenderTasks.Count; i++)
+            for(int i = 0; i < GraphicsRenderTasks.Count; ++i)
             {
                 FGraphicsTask graphicsRenderTask = GraphicsRenderTasks.Dequeue();
                 graphicsRenderTask(graphicsContext);

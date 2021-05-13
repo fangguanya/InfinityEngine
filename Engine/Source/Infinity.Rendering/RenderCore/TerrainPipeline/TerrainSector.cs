@@ -62,7 +62,7 @@ namespace InfinityEngine.Rendering.TerrainPipeline
         {
             if (NativeSections.IsCreated == true)
             {
-                for (int i = 0; i < Sections.Length; i++)
+                for (int i = 0; i < Sections.Length; ++i)
                 {
                     NativeSections[i] = Sections[i];
                 }
@@ -71,7 +71,7 @@ namespace InfinityEngine.Rendering.TerrainPipeline
 
         private void InitializLOD(in int MaxLOD)
         {
-            for (int i = 0; i < MaxLODs.Length; i++)
+            for (int i = 0; i < MaxLODs.Length; ++i)
             {
                 MaxLODs[i] = MaxLOD;
             }
@@ -79,7 +79,7 @@ namespace InfinityEngine.Rendering.TerrainPipeline
 
         public void BuildLODData(in float LOD0ScreenSize, in float LOD0Distribution, in float LODDistribution)
         {
-            for (int i = 0; i < Sections.Length; i++)
+            for (int i = 0; i < Sections.Length; ++i)
             {
                 ref int MaxLOD = ref MaxLODs[i];
                 ref FSectionLODData LODSetting = ref Sections[i].LODSetting;

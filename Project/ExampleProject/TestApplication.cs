@@ -25,13 +25,13 @@ namespace ExampleProject
 
         public override void OnEnable()
         {
-            //Console.WriteLine("Enable Component");
+            Console.WriteLine("Enable Component");
 
-            timer = new Timer();
+            /*timer = new Timer();
             cpuTimer = new CPUTimer();
 
             IntArray = new int[32768];
-            MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
+            MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);*/
 
             //Console.WriteLine((0 >> 16) + (3 << 16 | 1));
             //Console.WriteLine((1 >> 16) + (3 << 16 | 0));
@@ -53,10 +53,10 @@ namespace ExampleProject
 
         public override void OnDisable()
         {
-            //Console.WriteLine("Disable Component");
+            Console.WriteLine("Disable Component");
 
-            cpuTimer?.Dispose();
-            Marshal.FreeHGlobal((IntPtr)MyData);
+            /*cpuTimer?.Dispose();
+            Marshal.FreeHGlobal((IntPtr)MyData);*/
         }
 
         private void RunNative(in int Count, in int Length)
@@ -66,7 +66,7 @@ namespace ExampleProject
 
         private void RunUnsafe(in int Count, in int Length)
         {
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < Count; ++i)
             {
                 for (int j = 0; j < Length; j++)
                 {
@@ -78,7 +78,7 @@ namespace ExampleProject
 
         private void RunManaged(in int Count, in int Length)
         {
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < Count; ++i)
             {
                 for (int j = 0; j < Length; j++)
                 {
@@ -92,32 +92,32 @@ namespace ExampleProject
     [Serializable]
     public class TestActor : AActor
     {
-        FTaskHandle m_AsynTaskRef;
+        //FTaskHandle m_AsynTaskRef;
         private TestComponent m_Component;
 
         
         public TestActor() : base()
         {
             m_Component = new TestComponent();
-            AddComponent(m_Component);
+            //AddComponent(m_Component);
         }
 
         public TestActor(string InName) : base(InName)
         {
             m_Component = new TestComponent();
-            AddComponent(m_Component);
+            //AddComponent(m_Component);
         }
 
         public TestActor(string InName, AActor InParent) : base(InName, InParent)
         {
             m_Component = new TestComponent();
-            AddComponent(m_Component);
+            //AddComponent(m_Component);
         }
 
         public override void OnEnable()
         {
             base.OnEnable();
-            //AddComponent(Component);
+            AddComponent(m_Component);
         }
 
         public override void OnUpdate()

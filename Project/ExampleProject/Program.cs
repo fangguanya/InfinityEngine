@@ -12,7 +12,7 @@ namespace ExampleProject
             Thread.Sleep(1000);
             Console.WriteLine("yes i can!");
 
-            /*for (int i = 0; i < 10; i++)
+            /*for (int i = 0; i < 10; ++i)
             {
                 TArray[i] = i;
                 Console.WriteLine(TArray[i]);
@@ -31,7 +31,7 @@ namespace ExampleProject
             Thread.Sleep(SleepTime);
             Console.WriteLine(PrintData);
 
-            /*for (int i = 0; i < 10; i++)
+            /*for (int i = 0; i < 10; ++i)
             {
                 TArray[i] = i;
                 Console.WriteLine(TArray[i]);
@@ -46,7 +46,7 @@ namespace ExampleProject
         public void Execute()
         {
             Console.WriteLine("FatherTask");
-            /*for (int i = 0; i < 10; i++)
+            /*for (int i = 0; i < 10; ++i)
             {
                 TArray[i] = TArray[i] + 5;
                 Console.WriteLine(TArray[i]);

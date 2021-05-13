@@ -38,7 +38,7 @@ namespace InfinityEngine.Core.TaskSystem
         public static FTaskHandle Schedule<T>(this T taskData, params FTaskHandle[] dependsHandle) where T : struct, ITask
         {
             Task[] dependsTask = new Task[dependsHandle.Length];
-            for (int i = 0; i < dependsHandle.Length; i++)
+            for (int i = 0; i < dependsHandle.Length; ++i)
             {
                 dependsTask[i] = dependsHandle[i].TaskRef;
             }

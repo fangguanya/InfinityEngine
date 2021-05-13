@@ -6,20 +6,19 @@ namespace InfinityEngine.Game.ActorSystem
     [Serializable]
     public class UComponent : UObject
     {
-        public string Name;
-        public AActor Owner;
-        internal bool bSpawnFlush;
+        public AActor owner;
+        internal bool isConstruct;
 
         public UComponent()
         {
-            Name = "";
-            bSpawnFlush = true;
+            owner = null;
+            isConstruct = true;
         }
 
-        public UComponent(string InName)
+        public UComponent(string name) : base(name)
         {
-            Name = InName;
-            Owner = null;
+            owner = null;
+            isConstruct = true;
         }
 
         public virtual void OnEnable() { }

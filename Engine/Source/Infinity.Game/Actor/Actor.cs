@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using InfinityEngine.Core.Mathmatics;
 using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Game.ActorSystem
@@ -7,149 +8,157 @@ namespace InfinityEngine.Game.ActorSystem
     [Serializable]
     public class AActor : UObject, IComparable<AActor>, IEquatable<AActor>
     {
-        public string Name;
-        public AActor Parent;
-        internal List<AActor> Childs;
-        internal List<UComponent> Components;
+        public AActor parent;
+        public FTransform transform;
+
+        private FTransform m_LastTransform;
+
+        internal List<AActor> childs;
+        internal List<UComponent> components;
 
         public AActor()
         {
-            Name = "";
-            Parent = null;
-            Childs = new List<AActor>(32);
-            Components = new List<UComponent>(8);
+            this.parent = null;
+            this.childs = new List<AActor>(8);
+            this.components = new List<UComponent>(8);
         }
 
-        public AActor(string InName)
+        public AActor(string name) : base(name)
         {
-            Name = InName;
-            Parent = null;
-            Childs = new List<AActor>(32);
-            Components = new List<UComponent>(8);
+            this.parent = null;
+            this.childs = new List<AActor>(8);
+            this.components = new List<UComponent>(8);
         }
 
-        public AActor(string InName, AActor InParent)
+        public AActor(string name, AActor parent) : base(name)
         {
-            Name = InName;
-            Parent = InParent;
-            Childs = new List<AActor>(32);
-            Components = new List<UComponent>(8);
+            this.parent = parent;
+            this.childs = new List<AActor>(8);
+            this.components = new List<UComponent>(8);
         }
 
         public virtual void OnEnable()
         {
-            for (int i = 0; i < Components.Count; i++)
+            for (int i = 0; i < components.Count; ++i)
             {
-                if (!Components[i].bSpawnFlush)
-                {
-                    Components[i].OnEnable();
-                    Components[i].bSpawnFlush = false;
-                }
+                components[i].OnEnable();
+                components[i].isConstruct = false;
             }
         }
 
-        public virtual void OnTransform() { }
+        public virtual void OnTransform()
+        {
+            for (int i = 0; i < components.Count; ++i)
+            {
+                components[i].OnTransform();
+            }
+        }
 
         public virtual void OnUpdate()
         {
-            for (int i = 0; i < Components.Count; i++)
+            if(!transform.Equals(m_LastTransform)) 
             {
-                if (Components[i].bSpawnFlush)
+                OnTransform();
+            }
+
+            for (int i = 0; i < components.Count; ++i)
+            {
+                if (components[i].isConstruct)
                 {
-                    Components[i].OnEnable();
-                    Components[i].bSpawnFlush = false;
+                    components[i].OnEnable();
+                    components[i].isConstruct = false;
                 }
 
-                Components[i].OnUpdate();
+                components[i].OnUpdate();
             }
         }
 
         public virtual void OnDisable() 
         {
-            for (int i = 0; i < Components.Count; i++)
+            for (int i = 0; i < components.Count; ++i)
             {
-                Components[i].OnDisable();
+                components[i].OnDisable();
             }
         }
 
-        public bool Equals(AActor other)
+        public bool Equals(AActor target)
         {
-            return Name.Equals(other.Name) && Parent.Equals(other.Parent) && Childs.Equals(other.Childs) && Components.Equals(other.Components);
+            return name.Equals(target.name) && parent.Equals(target.parent) && childs.Equals(target.childs) && components.Equals(target.components) && transform.Equals(target.transform);
         }
 
-        public int CompareTo(AActor other)
+        public int CompareTo(AActor target)
         {
             return 0;
         }
 
-        public void SetParent(AActor InParent)
+        public void SetParent(AActor parent)
         {
-            Parent = InParent;
+            this.parent = parent;
         }
 
-        public void AddChildActor<T>(T InChild) where T : AActor
+        public void AddComponent<T>(T component) where T : UComponent
         {
-            InChild.Parent = this;
-            Childs.Add(InChild);
-        }
-
-        public T FindChildActor<T>() where T : AActor
-        {
-            for (int i = 0; i < Childs.Count; i++)
-            {
-                if (Childs[i].GetType() == typeof(T))
-                {
-                    return (T)Childs[i];
-                }
-            }
-
-            return null;
-        }
-
-        public void RemoveChildActor<T>(T InChild) where T : AActor
-        {
-            for (int i = 0; i < Childs.Count; i++)
-            {
-                if (Childs[i] == InChild)
-                {
-                    Childs.RemoveAt(i);
-                }
-            }
-        }
-
-        public void AddComponent<T>(T InComponent) where T : UComponent
-        {
-            InComponent.Owner = this;
-            Components.Add(InComponent);
+            component.owner = this;
+            components.Add(component);
         }
 
         public T FindComponent<T>() where T : UComponent
         {
-            for (int i = 0; i < Components.Count; i++)
+            for (int i = 0; i < components.Count; ++i)
             {
-                if (Components[i].GetType() == typeof(T))
+                if (components[i].GetType() == typeof(T))
                 {
-                    return (T)Components[i];
+                    return (T)components[i];
                 }
             }
 
             return null;
         }
 
-        public void RemoveComponent<T>(T InComponent) where T : UComponent
+        public void RemoveComponent<T>(T component) where T : UComponent
         {
-            for (int i = 0; i < Components.Count; i++)
+            for (int i = 0; i < components.Count; ++i)
             {
-                if (Components[i] == InComponent)
+                if (components[i] == component)
                 {
-                    Components.RemoveAt(i);
+                    components.RemoveAt(i);
                 }
             }
         }
 
-        protected override void Disposed()
+        public void AddChildActor<T>(T child) where T : AActor
         {
+            child.parent = this;
+            childs.Add(child);
+        }
 
+        public T FindChildActor<T>() where T : AActor
+        {
+            for (int i = 0; i < childs.Count; ++i)
+            {
+                if (childs[i].GetType() == typeof(T))
+                {
+                    return (T)childs[i];
+                }
+            }
+
+            return null;
+        }
+
+        public void RemoveChildActor<T>(T child) where T : AActor
+        {
+            for (int i = 0; i < childs.Count; ++i)
+            {
+                if (childs[i] == child)
+                {
+                    childs.RemoveAt(i);
+                }
+            }
+        }
+    
+        public void SetActorPosition(in float3 position)
+        {
+            transform.position = position;
         }
     }
 }
