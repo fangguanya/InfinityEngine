@@ -4,7 +4,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHICommandContext : UObject
+    public class FRHICommandContext : FDisposer
     {
         public FRHIFence fence;
         public AutoResetEvent fenceEvent;

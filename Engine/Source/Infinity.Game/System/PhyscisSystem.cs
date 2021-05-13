@@ -3,7 +3,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Game.System
 {
-    internal class FPhyscisSystem : UObject
+    internal class FPhyscisSystem : FDisposer
     {
         private bool m_LoopExit;
         internal Thread PhyscisThread;

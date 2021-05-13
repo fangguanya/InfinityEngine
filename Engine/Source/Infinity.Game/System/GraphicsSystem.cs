@@ -8,7 +8,7 @@ namespace InfinityEngine.Game.System
 {
     public delegate void FGraphicsTask(FRHIGraphicsContext RHIGraphicsContext);
 
-    public class FGraphicsSystem : UObject
+    public class FGraphicsSystem : FDisposer
     {
         private bool b_CopyLoopExit;
         private bool b_RenderLoopExit;

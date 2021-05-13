@@ -7,7 +7,7 @@ using InfinityEngine.Core.Native.Utility;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal class FRHIDescriptorHeapFactory : UObject
+    internal class FRHIDescriptorHeapFactory : FDisposer
     {
         protected int descriptorSize;
         protected ID3D12Device6 d3D12Device;

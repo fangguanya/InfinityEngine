@@ -11,7 +11,7 @@ namespace InfinityEngine.Game.System
     internal delegate void FGameTick();
     internal delegate void FGameEnd();
 
-    internal class FGameSystem : UObject
+    internal class FGameSystem : FDisposer
     {
         private bool m_LoopExit;
         private FGamePlay GamePlay;

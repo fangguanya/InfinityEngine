@@ -19,7 +19,7 @@ namespace InfinityEngine.Graphics.RHI
         public FRHICommandContext cmdContext;
     }
 
-    public class FRHICommandList : UObject
+    public class FRHICommandList : FDisposer
     {
         public string name;
         internal ID3D12GraphicsCommandList5 d3D12CmdList;

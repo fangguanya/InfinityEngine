@@ -115,7 +115,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIResourceViewRange : UObject
+    public class FRHIResourceViewRange : FDisposer
     {
         protected int rangeSize;
         protected int descriptorIndex;

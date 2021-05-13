@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace InfinityEngine.Game.Application
 {
     [Serializable]
-    public abstract partial class FBaseApplication : UObject
+    public abstract partial class FBaseApplication : FDisposer
     {
         internal static readonly string WndClassName = "InfinityApp";
 

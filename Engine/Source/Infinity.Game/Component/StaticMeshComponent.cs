@@ -3,7 +3,7 @@ using InfinityEngine.Game.ActorSystem;
 
 namespace InfinityEngine.Game.Component
 {
-    public class FStaicMeshProxy : UObject
+    public class FStaicMeshProxy : FDisposer
     {
         protected override void Disposed()
         {
