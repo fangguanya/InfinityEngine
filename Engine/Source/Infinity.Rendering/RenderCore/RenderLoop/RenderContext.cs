@@ -1,8 +1,8 @@
 ﻿using InfinityEngine.Core.Object;
 
-namespace InfinityEngine.Renderer.RenderLoop
+namespace InfinityEngine.Rendering.RenderLoop
 {
-    internal sealed class FRenderContext : FDisposer
+    public sealed class FRenderContext : FDisposer
     {
         public FRenderContext()
         {

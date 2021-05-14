@@ -2,6 +2,7 @@
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
+using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
@@ -16,6 +17,8 @@ namespace InfinityEngine.Game.Application
         internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
         internal FWindow mainWindow { get; private set; }
 
+        internal FTimeProfiler timeProfiler;
+
         internal FGameSystem gameSystem;
         internal FPhyscisSystem physcisSystem;
         internal FGraphicsSystem graphicsSystem;
@@ -23,6 +26,7 @@ namespace InfinityEngine.Game.Application
 
         public FBaseApplication(string Name, int Width, int Height)
         {
+            timeProfiler = new FTimeProfiler();
             gameSystem = new FGameSystem(Play, Tick, End);
             physcisSystem = new FPhyscisSystem();
             graphicsSystem = new FGraphicsSystem();
@@ -82,6 +86,9 @@ namespace InfinityEngine.Game.Application
 
         private void PlatformRun()
         {
+            timeProfiler.Reset();
+            timeProfiler.Start();
+
             physcisSystem.Start();
             graphicsSystem.Start();
             gameSystem.Start();
@@ -94,6 +101,8 @@ namespace InfinityEngine.Game.Application
             physcisSystem.Sync();
             graphicsSystem.Exit();
             graphicsSystem.Sync();
+
+            mainWindow.Destroy();
         }
 
         private IntPtr ProcessWindowMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)

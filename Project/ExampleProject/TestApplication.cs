@@ -1,18 +1,20 @@
 ﻿using System;
+using InfinityEngine.Game.System;
+using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
 using InfinityEngine.Core.TaskSystem;
 using InfinityEngine.Game.ActorSystem;
 using InfinityEngine.Game.Application;
-using System.Threading;
-using Timer = InfinityEngine.Core.Profiler.Timer;
+using InfinityEngine.Rendering.RenderLoop;
+using FTimeProfiler = InfinityEngine.Core.Profiler.FTimeProfiler;
 
 namespace ExampleProject
 {
     [Serializable]
     public unsafe class TestComponent : UComponent
     {
-        private Timer timer;
+        private FTimeProfiler timer;
         private CPUTimer cpuTimer;
 
         private int* MyData;
@@ -27,6 +29,12 @@ namespace ExampleProject
         {
             Console.WriteLine("Enable Component");
 
+            FGraphicsSystem.EnqueueRenderTask(
+            (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
+            {
+                Console.WriteLine("RenderTaskEnable");
+            });
+
             /*timer = new Timer();
             cpuTimer = new CPUTimer();
 
@@ -39,6 +47,12 @@ namespace ExampleProject
 
         public override void OnUpdate()
         {
+            /*FGraphicsSystem.EnqueueRenderTask(
+            (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
+            {
+                Console.WriteLine("RenderTick");
+            });*/
+
             //cpuTimer.Begin();
             //timer.Restart();
             //RunNative(4000, 32768);

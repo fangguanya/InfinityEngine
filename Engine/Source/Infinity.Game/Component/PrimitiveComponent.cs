@@ -1,5 +1,9 @@
-﻿using InfinityEngine.Core.Object;
+﻿using System;
+using InfinityEngine.Core.Object;
+using InfinityEngine.Game.System;
+using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Game.ActorSystem;
+using InfinityEngine.Rendering.RenderLoop;
 
 namespace InfinityEngine.Game.Component
 {
@@ -22,6 +26,12 @@ namespace InfinityEngine.Game.Component
         {
             OnRegister();
             CreateRender();
+
+            FGraphicsSystem.EnqueueRenderTask(
+            (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
+            {
+                Console.WriteLine("RenderTask");
+            });
         }
 
         public override void OnUpdate()

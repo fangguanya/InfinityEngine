@@ -14,22 +14,21 @@ namespace InfinityEngine.Game.System
     internal class FGameSystem : FDisposer
     {
         private bool m_LoopExit;
-        private FGamePlay GamePlay;
-        private FGameTick GameTick;
-        private FGameEnd GameEnd;
+        private FGamePlay gamePlayFunc;
+        private FGameTick gameTickFunc;
+        private FGameEnd gameEndFunc;
 
-        internal FGameSystem(FGamePlay InGamePlay, FGameTick InGameTick, FGameEnd InGameEnd)
+        internal FGameSystem(FGamePlay gamePlayFunc, FGameTick gameTickFunc, FGameEnd gameEndFunc)
         {
-            GamePlay = InGamePlay;
-            GameTick = InGameTick;
-            GameEnd = InGameEnd;
-
+            this.gamePlayFunc = gamePlayFunc;
+            this.gameTickFunc = gameTickFunc;
+            this.gameEndFunc = gameEndFunc;
             Thread.CurrentThread.Name = "GameThread";
         }
 
         internal void Start()
         {
-            GamePlay();
+            gamePlayFunc();
             GameLoop();
         }
 
@@ -49,13 +48,13 @@ namespace InfinityEngine.Game.System
                     }
                 }
 
-                GameTick();
+                gameTickFunc();
             }
         }
 
         internal void Exit()
         {
-            GameEnd();
+            gameEndFunc();
         }
 
         protected override void Disposed()

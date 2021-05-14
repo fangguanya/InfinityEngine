@@ -2,14 +2,33 @@
 
 namespace InfinityEngine.Core.Profiler
 {
-    public class Timer
+    public class FTime
+    {
+        static float delta;
+        public static float DeltaTime { get { return delta; } }
+
+        static float elapsed = 0;
+        public static float ElapsedTime { get { return elapsed; } }
+
+        static int frameIndex = 0;
+        public static int FrameIndex { get { return frameIndex; } }
+
+        public static void Tick(float timeStep)
+        {
+            frameIndex += 1;
+            delta = timeStep;
+            elapsed += delta;
+        }
+    }
+
+    public class FTimeProfiler
     {
         public static double SecondsPerTick { get; }
         public static double MilliSecsPerTick { get; }
         public static double MicroSecsPerTick { get; }
 
         private Stopwatch stopwatch;
-        static Timer()
+        static FTimeProfiler()
         {
             SecondsPerTick = 0.0;
             long countsPerSec = Stopwatch.Frequency;
@@ -18,39 +37,20 @@ namespace InfinityEngine.Core.Profiler
             MicroSecsPerTick = 1000000.0f / countsPerSec;
         }
 
-        public Timer()
+        public FTimeProfiler()
         {
             Debug.Assert(Stopwatch.IsHighResolution,
                 "System does not support high-resolution performance counter.");
             stopwatch = new Stopwatch();
         }
 
-        public long ElapsedMicroseconds => (long)(stopwatch.ElapsedTicks * MicroSecsPerTick);
-        public long ElapsedMilliseconds => stopwatch.ElapsedMilliseconds;
-        public float ElapsedSeconds => stopwatch.ElapsedMilliseconds / 1000.0f;
+        public long microseconds { get { return (long)(stopwatch.ElapsedTicks * MicroSecsPerTick); } }
+        public long milliseconds {get { return stopwatch.ElapsedMilliseconds; } }
+        public float seconds {get { return stopwatch.ElapsedMilliseconds / 1000.0f; } }
         public void Reset() => stopwatch.Reset();
         public void Start() => stopwatch.Start();
         public void Restart() => stopwatch.Restart();
         public void Stop() => stopwatch.Stop();
 
-    }
-
-    public class Time
-    {
-        static float delta;
-        public static float Delta => delta;
-
-        static float elapsed = 0;
-        public static float Elapsed => elapsed;
-
-        static int frameNum = 0;
-        public static int FrameNum => frameNum;
-
-        public static void Tick(float timeStep)
-        {
-            frameNum += 1;
-            delta = timeStep;
-            elapsed += delta;
-        }
     }
 }

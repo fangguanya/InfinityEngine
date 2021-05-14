@@ -2,39 +2,44 @@
 using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
+using InfinityEngine.Rendering.RenderLoop;
 using InfinityEngine.Rendering.RenderPipeline;
 
 namespace InfinityEngine.Game.System
 {
-    public delegate void FGraphicsTask(FRHIGraphicsContext RHIGraphicsContext);
+    public delegate void FGraphicsTask(FRHIGraphicsContext graphicsContext, FRenderContext renderContext);
 
     public class FGraphicsSystem : FDisposer
     {
-        private bool b_CopyLoopExit;
-        private bool b_RenderLoopExit;
+        private bool m_CopyLoopExit;
+        private bool m_RenderLoopExit;
+
         internal Thread copyThread;
         internal Thread renderThread;
+
+        internal FRenderContext renderContext;
         internal FRenderPipeline renderPipeline;
         internal FRHIGraphicsContext graphicsContext;
 
-        internal static Queue<FGraphicsTask> GraphicsCopyTasks;
-        internal static Queue<FGraphicsTask> GraphicsRenderTasks;
+        private static Queue<FGraphicsTask> CopyTasks;
+        private static Queue<FGraphicsTask> RenderTasks;
 
         internal FGraphicsSystem()
         {
-            b_CopyLoopExit = false;
-            b_RenderLoopExit = false;
+            m_CopyLoopExit = false;
+            m_RenderLoopExit = false;
 
             copyThread = new Thread(GraphicsCopyFunc);
             copyThread.Name = "CopyThread";
             renderThread = new Thread(GraphicsRenderFunc);
             renderThread.Name = "RenderThread";
 
+            renderContext = new FRenderContext();
             graphicsContext = new FRHIGraphicsContext();
             renderPipeline = new FUniversalRenderPipeline("UniversalRP");
 
-            GraphicsCopyTasks = new Queue<FGraphicsTask>(512);
-            GraphicsRenderTasks = new Queue<FGraphicsTask>(512);
+            CopyTasks = new Queue<FGraphicsTask>(512);
+            RenderTasks = new Queue<FGraphicsTask>(512);
         }
 
         internal void Start()
@@ -50,45 +55,45 @@ namespace InfinityEngine.Game.System
         }
 
         #region GraphicsCopy
-        public static void EnqueueGraphicsCopyTask(FGraphicsTask graphicsCopyTask)
+        public static void EnqueueCopyTask(FGraphicsTask copyTask)
         {
-            GraphicsCopyTasks.Enqueue(graphicsCopyTask);
+            CopyTasks.Enqueue(copyTask);
         }
 
-        private void ProcessGraphicsCopyTask()
+        private void ProcessCopyTask()
         {
-            if (GraphicsCopyTasks.Count == 0) { return; }
+            if (CopyTasks.Count == 0) { return; }
 
-            for (int i = 0; i < GraphicsCopyTasks.Count; ++i)
+            for (int i = 0; i < CopyTasks.Count; ++i)
             {
-                FGraphicsTask graphicsCopyTask = GraphicsCopyTasks.Dequeue();
-                graphicsCopyTask(graphicsContext);
+                FGraphicsTask graphicsCopyTask = CopyTasks.Dequeue();
+                graphicsCopyTask(graphicsContext, renderContext);
             }
         }
 
         private void GraphicsCopyFunc()
         {
-            while (!b_CopyLoopExit)
+            while (!m_CopyLoopExit)
             {
-                ProcessGraphicsCopyTask();
+                ProcessCopyTask();
             }
         }
         #endregion //GraphicsCopy
 
         #region GraphicsRender
-        public static void EnqueueGraphicsRenderTask(FGraphicsTask graphicsRenderTask)
+        public static void EnqueueRenderTask(FGraphicsTask renderTask)
         {
-            GraphicsRenderTasks.Enqueue(graphicsRenderTask);
+            RenderTasks.Enqueue(renderTask);
         }
 
-        private void ProcessGraphicsRenderTask()
+        private void ProcessRenderTask()
         {
-            if(GraphicsRenderTasks.Count == 0) { return; }
+            if(RenderTasks.Count == 0) { return; }
 
-            for(int i = 0; i < GraphicsRenderTasks.Count; ++i)
+            for(int i = 0; i < RenderTasks.Count; ++i)
             {
-                FGraphicsTask graphicsRenderTask = GraphicsRenderTasks.Dequeue();
-                graphicsRenderTask(graphicsContext);
+                FGraphicsTask graphicsRenderTask = RenderTasks.Dequeue();
+                graphicsRenderTask(graphicsContext, renderContext);
             }
         }
 
@@ -96,9 +101,9 @@ namespace InfinityEngine.Game.System
         {
             renderPipeline.Init(graphicsContext);
 
-            while (!b_RenderLoopExit)
+            while (!m_RenderLoopExit)
             {
-                ProcessGraphicsRenderTask();
+                ProcessRenderTask();
                 renderPipeline.Render(graphicsContext);
             }
         }
@@ -106,8 +111,9 @@ namespace InfinityEngine.Game.System
 
         internal void Exit()
         {
-            b_CopyLoopExit = true;
-            b_RenderLoopExit = true;
+            m_CopyLoopExit = true;
+            m_RenderLoopExit = true;
+            renderContext?.Dispose();
             renderPipeline?.Dispose();
             graphicsContext?.Dispose();
         }

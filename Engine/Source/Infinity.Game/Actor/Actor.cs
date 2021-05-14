@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using InfinityEngine.Core.Mathmatics;
 using InfinityEngine.Core.Object;
+using InfinityEngine.Core.Mathmatics;
 
 namespace InfinityEngine.Game.ActorSystem
 {
