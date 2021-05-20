@@ -14,7 +14,6 @@ namespace InfinityEngine.Graphics.RHI
         protected ID3D12DescriptorHeap d3D12CPUDescriptorHeap;
         protected ID3D12DescriptorHeap d3D12GPUDescriptorHeap;
 
-
         internal FRHIDescriptorHeapFactory(ID3D12Device6 d3D12Device, in DescriptorHeapType descriptorType, in int descriptorCount) : base()
         {
             this.d3D12Device = d3D12Device;

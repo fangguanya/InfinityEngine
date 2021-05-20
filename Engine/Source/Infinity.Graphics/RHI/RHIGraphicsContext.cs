@@ -16,18 +16,18 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal FRHIDevice device;
         internal List<FExecuteInfo> executeInfos;
-        internal FRHICommandContext copyContext;
-        internal FRHICommandContext computeContext;
-        internal FRHICommandContext graphicsContext;
+        internal FRHICommandContext copyCmdContext;
+        internal FRHICommandContext computeCmdContext;
+        internal FRHICommandContext graphicsCmdContext;
         internal FRHIDescriptorHeapFactory cbvSrvUavDescriptorFactory;
 
         public FRHIGraphicsContext() : base()
         {
             device = new FRHIDevice();
 
-            copyContext = new FRHICommandContext(device, CommandListType.Copy);
-            computeContext = new FRHICommandContext(device, CommandListType.Compute);
-            graphicsContext = new FRHICommandContext(device, CommandListType.Direct);
+            copyCmdContext = new FRHICommandContext(device, CommandListType.Copy);
+            computeCmdContext = new FRHICommandContext(device, CommandListType.Compute);
+            graphicsCmdContext = new FRHICommandContext(device, CommandListType.Direct);
 
             executeInfos = new List<FExecuteInfo>(64);
             cbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
@@ -35,16 +35,16 @@ namespace InfinityEngine.Graphics.RHI
 
         private FRHICommandContext SelectContext(in EContextType contextType)
         {
-            FRHICommandContext outContext = graphicsContext;
+            FRHICommandContext outContext = graphicsCmdContext;
 
             switch (contextType)
             {
                 case EContextType.Copy:
-                    outContext = copyContext;
+                    outContext = copyCmdContext;
                     break;
 
                 case EContextType.Compute:
-                    outContext = computeContext;
+                    outContext = computeCmdContext;
                     break;
             }
 
@@ -103,9 +103,9 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             executeInfos.Clear();
-            copyContext.Flush();
-            computeContext.Flush();
-            graphicsContext.Flush();
+            copyCmdContext.Flush();
+            computeCmdContext.Flush();
+            graphicsCmdContext.Flush();
         }
 
         public FRHICommandList CreateCmdList(string name, EContextType cmdListType)
@@ -214,18 +214,18 @@ namespace InfinityEngine.Graphics.RHI
 
         public FRHIShaderResourceView CreateShaderResourceView(FRHIBuffer buffer)
         {
-            ShaderResourceViewDescription SRVDescriptor = new ShaderResourceViewDescription
+            ShaderResourceViewDescription srvDescriptor = new ShaderResourceViewDescription
             {
                 Format = Format.Unknown,
                 ViewDimension = ShaderResourceViewDimension.Buffer,
                 Shader4ComponentMapping = 256,
                 Buffer = new BufferShaderResourceView { FirstElement = 0, NumElements = (int)buffer.count, StructureByteStride = (int)buffer.stride }
             };
-            int DescriptorIndex = cbvSrvUavDescriptorFactory.Allocator(1);
-            CpuDescriptorHandle DescriptorHandle = cbvSrvUavDescriptorFactory.GetCPUHandleStart() + cbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
-            device.d3D12Device.CreateShaderResourceView(buffer.defaultResource, SRVDescriptor, DescriptorHandle);
+            int descriptorIndex = cbvSrvUavDescriptorFactory.Allocator(1);
+            CpuDescriptorHandle descriptorHandle = cbvSrvUavDescriptorFactory.GetCPUHandleStart() + cbvSrvUavDescriptorFactory.GetDescriptorSize() * descriptorIndex;
+            device.d3D12Device.CreateShaderResourceView(buffer.defaultResource, srvDescriptor, descriptorHandle);
 
-            return new FRHIShaderResourceView(cbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
+            return new FRHIShaderResourceView(cbvSrvUavDescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);
         }
 
         public FRHIShaderResourceView CreateShaderResourceView(FRHITexture texture)
@@ -236,17 +236,17 @@ namespace InfinityEngine.Graphics.RHI
 
         public FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer buffer)
         {
-            UnorderedAccessViewDescription UAVDescriptor = new UnorderedAccessViewDescription
+            UnorderedAccessViewDescription uavDescriptor = new UnorderedAccessViewDescription
             {
                 Format = Format.Unknown,
                 ViewDimension = UnorderedAccessViewDimension.Buffer,
                 Buffer = new BufferUnorderedAccessView { NumElements = (int)buffer.count, StructureByteStride = (int)buffer.stride }
             };
-            int DescriptorIndex = cbvSrvUavDescriptorFactory.Allocator(1);
-            CpuDescriptorHandle DescriptorHandle = cbvSrvUavDescriptorFactory.GetCPUHandleStart() + cbvSrvUavDescriptorFactory.GetDescriptorSize() * DescriptorIndex;
-            device.d3D12Device.CreateUnorderedAccessView(buffer.defaultResource, null, UAVDescriptor, DescriptorHandle);
+            int descriptorIndex = cbvSrvUavDescriptorFactory.Allocator(1);
+            CpuDescriptorHandle descriptorHandle = cbvSrvUavDescriptorFactory.GetCPUHandleStart() + cbvSrvUavDescriptorFactory.GetDescriptorSize() * descriptorIndex;
+            device.d3D12Device.CreateUnorderedAccessView(buffer.defaultResource, null, uavDescriptor, descriptorHandle);
 
-            return new FRHIUnorderedAccessView(cbvSrvUavDescriptorFactory.GetDescriptorSize(), DescriptorIndex, DescriptorHandle);
+            return new FRHIUnorderedAccessView(cbvSrvUavDescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);
         }
 
         public FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture)
@@ -263,9 +263,9 @@ namespace InfinityEngine.Graphics.RHI
         protected override void Disposed()
         {
             device?.Dispose();
-            copyContext?.Dispose();
-            computeContext?.Dispose();
-            graphicsContext?.Dispose();
+            copyCmdContext?.Dispose();
+            computeCmdContext?.Dispose();
+            graphicsCmdContext?.Dispose();
             cbvSrvUavDescriptorFactory?.Dispose();
         }
     }

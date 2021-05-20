@@ -115,24 +115,22 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIResourceViewRange : FDisposer
+    public sealed class FRHIResourceViewRange : FDisposer
     {
-        protected int rangeSize;
-        protected int descriptorIndex;
+        internal int length;
+        internal int descriptorIndex;
+        internal ID3D12Device6 d3D12Device;
+        internal CpuDescriptorHandle descriptorHandle;
 
-        protected ID3D12Device6 d3D12Device;
-        protected CpuDescriptorHandle descriptorHandle;
-
-
-        internal FRHIResourceViewRange(ID3D12Device6 d3D12Device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int descriptorLength) : base()
+        internal FRHIResourceViewRange(ID3D12Device6 d3D12Device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length) : base()
         {
-            this.rangeSize = descriptorLength;
+            this.length = length;
             this.d3D12Device = d3D12Device;
-            this.descriptorIndex = descriptorHeapFactory.Allocator(descriptorLength);
+            this.descriptorIndex = descriptorHeapFactory.Allocator(length);
             this.descriptorHandle = descriptorHeapFactory.GetCPUHandleStart();
         }
 
-        protected CpuDescriptorHandle GetDescriptorHandle(in int offset)
+        private CpuDescriptorHandle GetDescriptorHandle(in int offset)
         {
             return descriptorHandle + d3D12Device.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
         }
