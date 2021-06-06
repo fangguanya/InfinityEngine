@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace InfinityEngine.Game.Window
@@ -476,11 +477,11 @@ namespace InfinityEngine.Game.Window
 
         [return: MarshalAs(UnmanagedType.U1)]
         [DllImport(LibraryName, ExactSpelling = true)]
-        public static extern bool AdjustWindowRect([In] [Out] ref Vortice.Mathematics.Rectangle lpRect, WindowStyles dwStyle, bool hasMenu);
+        public static extern bool AdjustWindowRect([In] [Out] ref Rectangle lpRect, WindowStyles dwStyle, bool hasMenu);
 
         [return: MarshalAs(UnmanagedType.U1)]
         [DllImport(LibraryName, ExactSpelling = true)]
-        public static extern bool AdjustWindowRectEx([In] [Out] ref Vortice.Mathematics.Rectangle lpRect, WindowStyles dwStyle, bool bMenu, WindowExStyles exStyle);
+        public static extern bool AdjustWindowRectEx([In] [Out] ref Rectangle lpRect, WindowStyles dwStyle, bool bMenu, WindowExStyles exStyle);
 
         [DllImport(LibraryName, CharSet = CharSet.Unicode)]
         public static extern IntPtr CreateWindowEx(

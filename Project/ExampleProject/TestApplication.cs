@@ -14,11 +14,9 @@ namespace ExampleProject
     [Serializable]
     public unsafe class TestComponent : UComponent
     {
-        private FTimeProfiler timer;
-        private CPUTimer cpuTimer;
-
-        private int* MyData;
-        private int[] IntArray;
+        private int* m_UnsafeDatas;
+        private int[] m_ManageDatas;
+        private FTimeProfiler m_TimeProfiler;
 
         public TestComponent()
         {
@@ -35,11 +33,10 @@ namespace ExampleProject
                 Console.WriteLine("RenderTaskEnable");
             });
 
-            /*timer = new Timer();
-            cpuTimer = new CPUTimer();
+            m_TimeProfiler = new FTimeProfiler();
 
-            IntArray = new int[32768];
-            MyData = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);*/
+            m_ManageDatas = new int[32768];
+            m_UnsafeDatas = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
 
             //Console.WriteLine((0 >> 16) + (3 << 16 | 1));
             //Console.WriteLine((1 >> 16) + (3 << 16 | 0));
@@ -53,51 +50,47 @@ namespace ExampleProject
                 Console.WriteLine("RenderTick");
             });*/
 
-            //cpuTimer.Begin();
-            //timer.Restart();
-            //RunNative(4000, 32768);
-            //RunUnsafe(4000, 32768);
-            //RunManaged(4000, 32768);
-            //timer.Stop();
-            //cpuTimer.End();
+            m_TimeProfiler.Restart();
+            RunNative(500, 32768);
+            //RunUnsafe(500, 32768);
+            //RunManaged(500, 32768);
+            m_TimeProfiler.Stop();
 
             //Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
-            //Console.WriteLine(timer.ElapsedMilliseconds + "ms");
+            Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
         }
 
         public override void OnDisable()
         {
             Console.WriteLine("Disable Component");
-
-            /*cpuTimer?.Dispose();
-            Marshal.FreeHGlobal((IntPtr)MyData);*/
+            Marshal.FreeHGlobal((IntPtr)m_UnsafeDatas);
         }
 
-        private void RunNative(in int Count, in int Length)
+        private void RunNative(in int count, in int length)
         {
-            CPUTimer.DoTask(MyData, Count, Length);
+            CPUTimer.DoTask(m_UnsafeDatas, count, length);
         }
 
-        private void RunUnsafe(in int Count, in int Length)
+        private void RunUnsafe(in int count, in int length)
         {
-            for (int i = 0; i < Count; ++i)
+            for (int i = 0; i < count; ++i)
             {
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < length; ++j)
                 {
-                    ref int Value = ref MyData[j];
-                    Value = i + j;
+                    ref int unsafeData = ref m_UnsafeDatas[j];
+                    unsafeData = i + j;
                 }
             }
         }
 
-        private void RunManaged(in int Count, in int Length)
+        private void RunManaged(in int count, in int length)
         {
-            for (int i = 0; i < Count; ++i)
+            for (int i = 0; i < count; ++i)
             {
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < length; ++j)
                 {
-                    ref int Value = ref MyData[j];
-                    Value = i + j;
+                    ref int manageData = ref m_ManageDatas[j];
+                    manageData = i + j;
                 }
             }
         }

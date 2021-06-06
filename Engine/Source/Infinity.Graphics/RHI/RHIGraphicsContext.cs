@@ -182,31 +182,19 @@ namespace InfinityEngine.Graphics.RHI
             return texture;
         }
 
-        public FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture)
-        {
-            FRHIDeptnStencilView dsv = new FRHIDeptnStencilView();
-            return dsv;
-        }
-
-        public FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture)
-        {
-            FRHIRenderTargetView rtv = new FRHIRenderTargetView();
-            return rtv;
-        }
-
-        public FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer indexBuffer)
+        public FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer buffer)
         {
             FRHIIndexBufferView ibv = new FRHIIndexBufferView();
             return ibv;
         }
 
-        public FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer vertexBuffer)
+        public FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer buffer)
         {
             FRHIVertexBufferView vbo = new FRHIVertexBufferView();
             return vbo;
         }
 
-        public FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer constantBuffer)
+        public FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer buffer)
         {
             FRHIConstantBufferView cbv = new FRHIConstantBufferView();
             return cbv;
@@ -253,6 +241,18 @@ namespace InfinityEngine.Graphics.RHI
         {
             FRHIUnorderedAccessView uav = new FRHIUnorderedAccessView();
             return uav;
+        }
+
+        public FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture)
+        {
+            FRHIDeptnStencilView dsv = new FRHIDeptnStencilView();
+            return dsv;
+        }
+
+        public FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture)
+        {
+            FRHIRenderTargetView rtv = new FRHIRenderTargetView();
+            return rtv;
         }
 
         public FRHIResourceViewRange CreateResourceViewRange(in int count)

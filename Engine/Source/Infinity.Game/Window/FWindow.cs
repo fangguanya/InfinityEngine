@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using InfinityEngine.Game.Application;
 
 namespace InfinityEngine.Game.Window
@@ -55,7 +56,7 @@ namespace InfinityEngine.Game.Window
 
             if (Width > 0 && Height > 0)
             {
-                var rect = new Vortice.Mathematics.Rectangle(0, 0, Width, Height);
+                var rect = new Rectangle(0, 0, Width, Height);
 
                 // Adjust according to window styles
                 User32.AdjustWindowRectEx(
