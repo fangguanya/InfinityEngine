@@ -16,18 +16,18 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal FRHIDevice device;
         internal List<FExecuteInfo> executeInfos;
-        internal FRHICommandContext copyCmdContext;
-        internal FRHICommandContext computeCmdContext;
-        internal FRHICommandContext graphicsCmdContext;
+        internal FRHICommandContext copyCommands;
+        internal FRHICommandContext computeCommands;
+        internal FRHICommandContext graphicsCommands;
         internal FRHIDescriptorHeapFactory cbvSrvUavDescriptorFactory;
 
         public FRHIGraphicsContext() : base()
         {
             device = new FRHIDevice();
 
-            copyCmdContext = new FRHICommandContext(device, CommandListType.Copy);
-            computeCmdContext = new FRHICommandContext(device, CommandListType.Compute);
-            graphicsCmdContext = new FRHICommandContext(device, CommandListType.Direct);
+            copyCommands = new FRHICommandContext(device, CommandListType.Copy);
+            computeCommands = new FRHICommandContext(device, CommandListType.Compute);
+            graphicsCommands = new FRHICommandContext(device, CommandListType.Direct);
 
             executeInfos = new List<FExecuteInfo>(64);
             cbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
@@ -35,20 +35,20 @@ namespace InfinityEngine.Graphics.RHI
 
         private FRHICommandContext SelectContext(in EContextType contextType)
         {
-            FRHICommandContext outContext = graphicsCmdContext;
+            FRHICommandContext commands = graphicsCommands;
 
             switch (contextType)
             {
                 case EContextType.Copy:
-                    outContext = copyCmdContext;
+                    commands = copyCommands;
                     break;
 
                 case EContextType.Compute:
-                    outContext = computeCmdContext;
+                    commands = computeCommands;
                     break;
             }
 
-            return outContext;
+            return commands;
         }
 
         public void ExecuteCmdList(in EContextType contextType, FRHICommandList cmdList)
@@ -103,14 +103,14 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             executeInfos.Clear();
-            copyCmdContext.Flush();
-            computeCmdContext.Flush();
-            graphicsCmdContext.Flush();
+            copyCommands.Flush();
+            computeCommands.Flush();
+            graphicsCommands.Flush();
         }
 
-        public FRHICommandList CreateCmdList(string name, EContextType cmdListType)
+        public FRHICommandList CreateCmdList(string name, EContextType contextType)
         {
-            FRHICommandList cmdList = new FRHICommandList(name, device, cmdListType);
+            FRHICommandList cmdList = new FRHICommandList(name, device, contextType);
             cmdList.Close();
             return cmdList;
         }
@@ -263,9 +263,9 @@ namespace InfinityEngine.Graphics.RHI
         protected override void Disposed()
         {
             device?.Dispose();
-            copyCmdContext?.Dispose();
-            computeCmdContext?.Dispose();
-            graphicsCmdContext?.Dispose();
+            copyCommands?.Dispose();
+            computeCommands?.Dispose();
+            graphicsCommands?.Dispose();
             cbvSrvUavDescriptorFactory?.Dispose();
         }
     }

@@ -25,11 +25,11 @@ namespace InfinityEngine.Graphics.RHI
         internal ID3D12GraphicsCommandList5 d3D12CmdList;
         internal ID3D12CommandAllocator d3D12CmdAllocator;
 
-        public FRHICommandList(string name, ID3D12Device6 d3d12Device, EContextType cmdListType)
+        public FRHICommandList(string name, ID3D12Device6 d3d12Device, EContextType contextType)
         {
             this.name = name;
-            this.d3D12CmdAllocator = d3d12Device.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)cmdListType);
-            this.d3D12CmdList = d3d12Device.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)cmdListType, d3D12CmdAllocator, null);
+            this.d3D12CmdAllocator = d3d12Device.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
+            this.d3D12CmdList = d3d12Device.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3D12CmdAllocator, null);
             this.d3D12CmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
