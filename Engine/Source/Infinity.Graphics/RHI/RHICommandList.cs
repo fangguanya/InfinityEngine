@@ -84,32 +84,37 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void BeginTimeQuery(FRHITimeQuery timeQuery)
+        public void BeginQuery(FRHITimeQuery timeQuery)
         {
             timeQuery.Begin(d3D12CmdList);
         }
 
-        public void EndTimeQuery(FRHITimeQuery timeQuery)
+        public void EndQuery(FRHITimeQuery timeQuery)
         {
             timeQuery.End(d3D12CmdList);
         }
 
-        public void SetComputePipelineState(FRHIComputeShader computeShader, FRHIComputePipelineState computeState)
+        public void BeginQuery(FRHIOcclusionQuery occlusionQuery)
+        {
+            occlusionQuery.Begin(d3D12CmdList);
+        }
+
+        public void EndQuery(FRHIOcclusionQuery occlusionQuery)
+        {
+            occlusionQuery.End(d3D12CmdList);
+        }
+
+        public void BeginQuery(FRHIStatisticsQuery statisticsQuery)
         {
 
         }
 
-        public void SetComputeSamplerState(FRHIComputeShader computeShader)
+        public void EndQuery(FRHIStatisticsQuery statisticsQuery)
         {
 
         }
 
-        public void SetComputeBuffer(FRHIComputeShader computeShader, FRHIBuffer buffer)
-        {
-
-        }
-
-        public void SetComputeTexture(FRHIComputeShader computeShader, FRHITexture texture)
+        public void SetComputePipelineState(FRHIComputePipelineState computeState)
         {
 
         }
@@ -124,37 +129,17 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
+        public void SetRayTracePipelineState(FRHIRayGenShader rayGenShader, FRHIRayTracePipelineState rayTraceState)
+        {
+
+        }
+
         public void BuildAccelerationStructure()
         {
 
         }
 
         public void CopyAccelerationStructure()
-        {
-
-        }
-
-        public void SetAccelerationStructure(FRHIRayGenShader rayGenShader)
-        {
-
-        }
-
-        public void SetRayTracePipelineState(FRHIRayGenShader rayGenShader, FRHIRayTracePipelineState rayTraceState)
-        {
-
-        }
-
-        public void SetRayTraceSamplerState(FRHIRayGenShader rayGenShader)
-        {
-
-        }
-
-        public void SetRayTraceBuffer(FRHIRayGenShader rayGenShader, FRHIBuffer buffer)
-        {
-
-        }
-
-        public void SetRayTraceTexture(FRHIRayGenShader rayGenShader, FRHITexture texture)
         {
 
         }
@@ -169,42 +154,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void BeginOcclusionQuery(FRHIOcclusionQuery occlusionQuery)
-        {
-            occlusionQuery.Begin(d3D12CmdList);
-        }
-
-        public void EndOcclusionQuery(FRHIOcclusionQuery occlusionQuery)
-        {
-            occlusionQuery.End(d3D12CmdList);
-        }
-
-        public void BeginStatisticsQuery(FRHIStatisticsQuery statisticsQuery)
-        {
-
-        }
-
-        public void EndStatisticsQuery(FRHIStatisticsQuery statisticsQuery)
-        {
-
-        }
-
         public void SetViewport()
         {
 
         }
 
         public void SetScissorRect()
-        {
-
-        }
-
-        public void BeginFrame()
-        {
-
-        }
-
-        public void EndFrame()
         {
 
         }
@@ -259,22 +214,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetGraphicsSamplerState(FRHIGraphicsShader graphicsShader, string propertyName)
-        {
-
-        }
-
-        public void SetGraphicsBuffer(FRHIGraphicsShader graphicsShader, string propertyName, FRHIBuffer buffer)
-        {
-
-        }
-
-        public void SetGraphicsTexture(FRHIGraphicsShader graphicsShader, string propertyName, FRHITexture texture)
-        {
-
-        }
-
-        public void DrawPrimitiveInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
+        public void DrawInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
         {
             d3D12CmdList.IASetPrimitiveTopology(topologyType);
             d3D12CmdList.IASetIndexBuffer(indexBufferView.d3DIBV);
@@ -282,17 +222,17 @@ namespace InfinityEngine.Graphics.RHI
             d3D12CmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
         }
 
-        public void DrawPrimitiveInstanceIndirect(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
+        public void DrawInstanceIndirect(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
         {
 
         }
 
-        public void DrawMultiPrimitiveInstance(FRHIBuffer cmdsBuffer, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
+        public void DrawMultiInstance(FRHIBuffer cmdsBuffer, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
         {
 
         }
 
-        public void DrawMultiPrimitiveInstanceIndirect()
+        public void DrawMultiInstanceIndirect()
         {
 
         }
