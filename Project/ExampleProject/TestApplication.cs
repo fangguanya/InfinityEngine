@@ -20,7 +20,7 @@ namespace ExampleProject
 
         public TestComponent()
         {
-
+            //
         }
 
         public override void OnEnable()
