@@ -5,9 +5,6 @@ namespace InfinityEngine.Core.Container
     public class TArray<T>
     {
         public int length;
-        private T[] m_Array;
-        
-
         public ref T this[int index]
         {
             get
@@ -15,7 +12,9 @@ namespace InfinityEngine.Core.Container
                 return ref m_Array[index];
             }
         }
-        
+
+        private T[] m_Array;
+
         public TArray()
         {
             length = 0;
@@ -43,7 +42,7 @@ namespace InfinityEngine.Core.Container
             }
 
             m_Array[length] = value;
-            length++;
+            ++length;
 
             return length;
         }
@@ -77,8 +76,6 @@ namespace InfinityEngine.Core.Container
         public void RemoveAtIndex(in int index)
         {
             int lastIndex = length - 1;
-            if (index > lastIndex) { return; }
-
             Array.Copy(m_Array, index + 1, m_Array, index, lastIndex - index);
 
             m_Array[lastIndex] = default(T);
@@ -99,23 +96,24 @@ namespace InfinityEngine.Core.Container
         
         public void RemoveSwapAtIndex(in int index)
         {
-            m_Array[index] = m_Array[length - 1];
+            if(index != length - 1)
+            {
+                m_Array[index] = m_Array[length - 1];
+            }
+            
             m_Array[length - 1] = default(T);
             length--;
         }
 
-        public void Resize(int newLength, bool keepContent = true)
+        public void Resize(int newLength, bool keepData = true)
         {
-            if (newLength > m_Array.Length)
+            if (keepData)
             {
-                if (keepContent)
-                {
-                    var newArray = new T[newLength];
-                    Array.Copy(m_Array, newArray, m_Array.Length);
-                    m_Array = newArray;
-                } else {
-                    m_Array = new T[newLength];
-                }
+                var newArray = new T[newLength];
+                Array.Copy(m_Array, newArray, m_Array.Length);
+                m_Array = newArray;
+            } else {
+                m_Array = new T[newLength];
             }
 
             length = newLength;

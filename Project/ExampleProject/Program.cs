@@ -122,10 +122,29 @@ namespace ExampleProject
 
             MyArray.Remove(0.6f);
 
-            ref float value = ref MyArray[1];
+            ref float value = ref MyArray[5];
             value += 0.5f;
+
+            MyArray.RemoveAtIndex(5);
             Console.ReadKey();*/
 
+            //TSparseArray Test
+            /*TSparseArray<float> MyArray = new TSparseArray<float>(3);
+            MyArray.Add(0.1f);
+            MyArray.Add(0.2f);
+            MyArray.Add(0.3f);
+            MyArray.Add(0.4f);
+            MyArray.Add(0.5f);
+            MyArray.Add(0.6f);
+
+            MyArray.Remove(3);
+            MyArray.Add(0.5f);
+
+            ref float value = ref MyArray[5];
+            value += 0.5f;
+
+            MyArray.Remove(5);
+            Console.ReadKey();*/
 
             /*string shaderSource = @"
             struct PSInput 
