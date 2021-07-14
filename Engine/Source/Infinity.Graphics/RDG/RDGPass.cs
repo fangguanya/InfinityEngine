@@ -33,7 +33,6 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        public abstract void Step(ref FRDGPassBuilder passBuilder);
         public abstract void Execute(ref FRDGContext graphContext);
         public abstract void Release(FRDGObjectPool objectPool);
 
@@ -104,30 +103,22 @@ namespace InfinityEngine.Graphics.RDG
         }
     }
 
-    public delegate void FRDGStepFunc<T>(ref T passData, ref FRDGPassBuilder passBuilder) where T : struct;
     public delegate void FRDGExecuteFunc<T>(ref T passData, ref FRDGContext graphContext) where T : struct;
 
     internal sealed class FRDGBasePass<T> : IRDGPass where T : struct
     {
         internal T passData;
-        internal FRDGStepFunc<T> stepFunc;
-        internal FRDGExecuteFunc<T> executeFunc;
-
-
-        public override void Step(ref FRDGPassBuilder passBuilder)
-        {
-            stepFunc(ref passData, ref passBuilder);
-        }
+        internal FRDGExecuteFunc<T> RenderFunc;
 
         public override void Execute(ref FRDGContext graphContext)
         {
-            executeFunc(ref passData, ref graphContext);
+            RenderFunc(ref passData, ref graphContext);
         }
 
         public override void Release(FRDGObjectPool graphObjectPool)
         {
             Clear();
-            executeFunc = null;
+            RenderFunc = null;
             graphObjectPool.Release(this);
         }
     }

@@ -78,6 +78,11 @@ namespace InfinityEngine.Graphics.RDG
             return input;
         }
 
+        public void SetRenderFunc<T>(FRDGExecuteFunc<T> RenderFunc) where T : struct
+        {
+            ((FRDGBasePass<T>)m_RenderPass).RenderFunc = RenderFunc;
+        }
+
         void Dispose(bool disposing)
         {
             if (bDisposed)

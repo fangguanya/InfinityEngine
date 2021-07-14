@@ -33,10 +33,10 @@ namespace InfinityEngine.Graphics.RHI
             fence.WaitOnGPU(d3D12CmdQueue);
         }
 
-        public void ExecuteQueue(FRHICommandList rhiCmdList)
+        public void ExecuteQueue(FRHICommandList cmdList)
         {
-            rhiCmdList.Close();
-            d3D12CmdQueue.ExecuteCommandList(rhiCmdList);
+            cmdList.Close();
+            d3D12CmdQueue.ExecuteCommandList(cmdList);
         }
 
         public void Flush()
