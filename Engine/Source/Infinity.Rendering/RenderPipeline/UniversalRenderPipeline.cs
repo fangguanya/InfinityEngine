@@ -4,8 +4,11 @@ namespace InfinityEngine.Rendering.RenderPipeline
 {
     public class FUniversalRenderPipeline : FRenderPipeline
     {
+        FRHIFence fence;
         FRHIBuffer buffer;
         FRHICommandList cmdList;
+
+        int[] readbackData;
 
         public FUniversalRenderPipeline(string pipelineName) : base(pipelineName)
         {
@@ -14,19 +17,33 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         public override void Init(FRHIGraphicsContext graphicsContext)
         {
-            buffer = graphicsContext.CreateBuffer(5, 4, EUseFlag.CPURW, EBufferType.Structured);
+            fence = graphicsContext.CreateFence();
+            buffer = graphicsContext.CreateBuffer(32768, 4, EUseFlag.CPURW, EBufferType.Structured);
             cmdList = graphicsContext.CreateCmdList("DefaultCmdList", EContextType.Copy);
+
+            int[] data = new int[512];
+            readbackData = new int[512];
+
+            for (int i = 0; i < 512; ++i)
+            {
+                data[i] = 512 - i;
+            }
+
+            cmdList.Clear();
+            buffer.SetData<int>(cmdList, data);
+            graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
+            graphicsContext.Submit();
         }
 
         public override void Render(FRHIGraphicsContext graphicsContext)
         {
             cmdList.Clear();
-            buffer.SetData<int>(cmdList, 5, 4, 3, 2, 1);
 
-            int[] data = new int[5];
-            buffer.GetData<int>(cmdList, data);
+            buffer.GetData<int>(cmdList, readbackData);
 
             graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
+            graphicsContext.WaitFence(EContextType.Copy, fence);
+            graphicsContext.WaitFence(EContextType.Graphics, fence);
             graphicsContext.Submit();
 
 

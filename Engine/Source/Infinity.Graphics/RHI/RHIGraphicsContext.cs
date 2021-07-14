@@ -103,8 +103,8 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             executeInfos.Clear();
-            copyCommands.Flush();
-            computeCommands.Flush();
+            //copyCommands.Flush();
+            //computeCommands.Flush();
             graphicsCommands.Flush();
         }
 
