@@ -21,12 +21,12 @@ namespace InfinityEngine.Rendering.RenderPipeline
             buffer = graphicsContext.CreateBuffer(32768, 4, EUseFlag.CPURW, EBufferType.Structured);
             cmdList = graphicsContext.CreateCmdList("DefaultCmdList", EContextType.Copy);
 
-            int[] data = new int[512];
-            readbackData = new int[512];
+            int[] data = new int[32768];
+            readbackData = new int[32768];
 
-            for (int i = 0; i < 512; ++i)
+            for (int i = 0; i < 32768; ++i)
             {
-                data[i] = 512 - i;
+                data[i] = 32768 - i;
             }
 
             cmdList.Clear();
@@ -42,7 +42,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
             buffer.GetData<int>(cmdList, readbackData);
 
             graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
-            graphicsContext.WaitFence(EContextType.Copy, fence);
+            graphicsContext.WritFence(EContextType.Copy, fence);
             graphicsContext.WaitFence(EContextType.Graphics, fence);
             graphicsContext.Submit();
 
