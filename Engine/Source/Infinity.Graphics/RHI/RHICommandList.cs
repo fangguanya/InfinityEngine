@@ -22,26 +22,26 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHICommandList : FDisposer
     {
         public string name;
-        internal ID3D12GraphicsCommandList5 d3D12CmdList;
-        internal ID3D12CommandAllocator d3D12CmdAllocator;
+        internal ID3D12GraphicsCommandList5 d3dCmdList;
+        internal ID3D12CommandAllocator d3dCmdAllocator;
 
         public FRHICommandList(string name, ID3D12Device6 d3d12Device, EContextType contextType)
         {
             this.name = name;
-            this.d3D12CmdAllocator = d3d12Device.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
-            this.d3D12CmdList = d3d12Device.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3D12CmdAllocator, null);
-            this.d3D12CmdList.QueryInterface<ID3D12GraphicsCommandList5>();
+            this.d3dCmdAllocator = d3d12Device.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
+            this.d3dCmdList = d3d12Device.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3dCmdAllocator, null);
+            this.d3dCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
         public void Clear()
         {
-            d3D12CmdAllocator.Reset();
-            d3D12CmdList.Reset(d3D12CmdAllocator, null);
+            d3dCmdAllocator.Reset();
+            d3dCmdList.Reset(d3dCmdAllocator, null);
         }
 
         internal void Close()
         {
-            d3D12CmdList.Close();
+            d3dCmdList.Close();
         }
 
         public void ClearBuffer(FRHIBuffer buffer)
@@ -86,22 +86,22 @@ namespace InfinityEngine.Graphics.RHI
 
         public void BeginQuery(FRHITimeQuery timeQuery)
         {
-            timeQuery.Begin(d3D12CmdList);
+            timeQuery.Begin(d3dCmdList);
         }
 
         public void EndQuery(FRHITimeQuery timeQuery)
         {
-            timeQuery.End(d3D12CmdList);
+            timeQuery.End(d3dCmdList);
         }
 
         public void BeginQuery(FRHIOcclusionQuery occlusionQuery)
         {
-            occlusionQuery.Begin(d3D12CmdList);
+            occlusionQuery.Begin(d3dCmdList);
         }
 
         public void EndQuery(FRHIOcclusionQuery occlusionQuery)
         {
-            occlusionQuery.End(d3D12CmdList);
+            occlusionQuery.End(d3dCmdList);
         }
 
         public void BeginQuery(FRHIStatisticsQuery statisticsQuery)
@@ -181,7 +181,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void EndRenderPass()
         {
-            d3D12CmdList.EndRenderPass();
+            d3dCmdList.EndRenderPass();
         }
 
         public void SetStencilRef()
@@ -201,12 +201,12 @@ namespace InfinityEngine.Graphics.RHI
 
         public void SetShadingRate(ShadingRate shadingRate, ShadingRateCombiner[] combineMathdo)
         {
-            d3D12CmdList.RSSetShadingRate(shadingRate, combineMathdo);
+            d3dCmdList.RSSetShadingRate(shadingRate, combineMathdo);
         }
 
         public void SetShadingRateIndirect(FRHITexture indirectTexture)
         {
-            d3D12CmdList.RSSetShadingRateImage(indirectTexture.defaultResource);
+            d3dCmdList.RSSetShadingRateImage(indirectTexture.defaultResource);
         }
 
         public void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisState)
@@ -216,10 +216,10 @@ namespace InfinityEngine.Graphics.RHI
 
         public void DrawInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
         {
-            d3D12CmdList.IASetPrimitiveTopology(topologyType);
-            d3D12CmdList.IASetIndexBuffer(indexBufferView.d3DIBV);
-            d3D12CmdList.IASetVertexBuffers(0, vertexBufferView.d3DVBO);
-            d3D12CmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
+            d3dCmdList.IASetPrimitiveTopology(topologyType);
+            d3dCmdList.IASetIndexBuffer(indexBufferView.d3DIBV);
+            d3dCmdList.IASetVertexBuffers(0, vertexBufferView.d3DVBO);
+            d3dCmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
         }
 
         public void DrawInstanceIndirect(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
@@ -239,10 +239,10 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            d3D12CmdList?.Dispose();
-            d3D12CmdAllocator?.Dispose();
+            d3dCmdList?.Dispose();
+            d3dCmdAllocator?.Dispose();
         }
 
-        public static implicit operator ID3D12GraphicsCommandList5(FRHICommandList rhiCmdList) { return rhiCmdList.d3D12CmdList; }
+        public static implicit operator ID3D12GraphicsCommandList5(FRHICommandList cmdList) { return cmdList.d3dCmdList; }
     }
 }

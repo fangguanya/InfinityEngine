@@ -7,26 +7,26 @@ namespace InfinityEngine.Graphics.RHI
 {
     internal class FRHIDevice : FDisposer
     {
-        internal ID3D12Device6 d3D12Device;
-        internal IDXGIAdapter1 d3D12Adapter;
-        internal IDXGIFactory7 d3D12Factory;
+        internal ID3D12Device6 d3dDevice;
+        internal IDXGIAdapter1 d3dAdapter;
+        internal IDXGIFactory7 d3dFactory;
 
         public FRHIDevice() : base()
         {
-            DXGI.CreateDXGIFactory2<IDXGIFactory7>(true, out d3D12Factory);
-            d3D12Factory.EnumAdapters1(0, out d3D12Adapter);
+            DXGI.CreateDXGIFactory2<IDXGIFactory7>(true, out d3dFactory);
+            d3dFactory.EnumAdapters1(0, out d3dAdapter);
 
-            D3D12.D3D12CreateDevice<ID3D12Device6>(d3D12Adapter, FeatureLevel.Level_12_1, out d3D12Device);
-            d3D12Device.QueryInterface<ID3D12Device6>();
+            D3D12.D3D12CreateDevice<ID3D12Device6>(d3dAdapter, FeatureLevel.Level_12_1, out d3dDevice);
+            d3dDevice.QueryInterface<ID3D12Device6>();
         }
 
         protected override void Disposed()
         {
-            d3D12Device?.Dispose();
-            d3D12Adapter?.Dispose();
-            d3D12Factory?.Dispose();
+            d3dDevice?.Dispose();
+            d3dAdapter?.Dispose();
+            d3dFactory?.Dispose();
         }
 
-        public static implicit operator ID3D12Device6(FRHIDevice RHIDevice) { return RHIDevice.d3D12Device; }
+        public static implicit operator ID3D12Device6(FRHIDevice device) { return device.d3dDevice; }
     }
 }

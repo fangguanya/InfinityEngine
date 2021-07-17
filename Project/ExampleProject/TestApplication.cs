@@ -3,7 +3,6 @@ using InfinityEngine.Game.System;
 using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
-using InfinityEngine.Core.TaskSystem;
 using InfinityEngine.Game.ActorSystem;
 using InfinityEngine.Game.Application;
 using InfinityEngine.Rendering.RenderLoop;
@@ -20,7 +19,7 @@ namespace ExampleProject
 
         public TestComponent()
         {
-            //
+
         }
 
         public override void OnEnable()
@@ -30,7 +29,7 @@ namespace ExampleProject
             FGraphicsSystem.EnqueueRenderTask(
             (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
             {
-                Console.WriteLine("RenderTaskEnable");
+                Console.WriteLine("RenderTask");
             });
 
             m_TimeProfiler = new FTimeProfiler();
@@ -50,14 +49,14 @@ namespace ExampleProject
                 Console.WriteLine("RenderTick");
             });*/
 
-            m_TimeProfiler.Restart();
-            RunNative(500, 32768);
+            //m_TimeProfiler.Restart();
+            //RunNative(500, 32768);
             //RunUnsafe(500, 32768);
             //RunManaged(500, 32768);
-            m_TimeProfiler.Stop();
+            //m_TimeProfiler.Stop();
 
             //Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
-            Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
+            //Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
         }
 
         public override void OnDisable()

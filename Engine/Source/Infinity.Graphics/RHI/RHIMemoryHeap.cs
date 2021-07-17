@@ -9,7 +9,7 @@ namespace InfinityEngine.Graphics.RHI
 {
     internal sealed class FRHIMemoryHeapFactory : FDisposer
     {
-        internal FRHIMemoryHeapFactory(ID3D12Device6 d3D12Device, in int heapCount) : base()
+        internal FRHIMemoryHeapFactory(ID3D12Device6 d3dDevice, in int heapCount) : base()
         {
 
         }

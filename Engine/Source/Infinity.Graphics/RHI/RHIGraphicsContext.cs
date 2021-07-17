@@ -103,8 +103,6 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             executeInfos.Clear();
-            //copyCommands.Flush();
-            //computeCommands.Flush();
             graphicsCommands.Flush();
         }
 
@@ -223,7 +221,7 @@ namespace InfinityEngine.Graphics.RHI
             };
             int descriptorIndex = cbvSrvUavDescriptorFactory.Allocator(1);
             CpuDescriptorHandle descriptorHandle = cbvSrvUavDescriptorFactory.GetCPUHandleStart() + cbvSrvUavDescriptorFactory.GetDescriptorSize() * descriptorIndex;
-            device.d3D12Device.CreateShaderResourceView(buffer.defaultResource, srvDescriptor, descriptorHandle);
+            device.d3dDevice.CreateShaderResourceView(buffer.defaultResource, srvDescriptor, descriptorHandle);
 
             return new FRHIShaderResourceView(cbvSrvUavDescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);
         }
@@ -244,7 +242,7 @@ namespace InfinityEngine.Graphics.RHI
             };
             int descriptorIndex = cbvSrvUavDescriptorFactory.Allocator(1);
             CpuDescriptorHandle descriptorHandle = cbvSrvUavDescriptorFactory.GetCPUHandleStart() + cbvSrvUavDescriptorFactory.GetDescriptorSize() * descriptorIndex;
-            device.d3D12Device.CreateUnorderedAccessView(buffer.defaultResource, null, uavDescriptor, descriptorHandle);
+            device.d3dDevice.CreateUnorderedAccessView(buffer.defaultResource, null, uavDescriptor, descriptorHandle);
 
             return new FRHIUnorderedAccessView(cbvSrvUavDescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);
         }

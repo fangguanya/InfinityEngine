@@ -8,22 +8,22 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHIFence : FDisposer
     {
         private ulong fenceValue;
-        private ID3D12Fence d3D12Fence;
+        private ID3D12Fence d3dFence;
 
-        public FRHIFence(ID3D12Device6 d3D12Device) : base()
+        public FRHIFence(ID3D12Device6 d3dDevice) : base()
         {
-            d3D12Fence = d3D12Device.CreateFence<ID3D12Fence>(0, FenceFlags.None);
+            d3dFence = d3dDevice.CreateFence<ID3D12Fence>(0, FenceFlags.None);
         }
 
         public void Signal(ID3D12CommandQueue d3D12CmdQueue)
         {
-            fenceValue++;
-            d3D12CmdQueue.Signal(d3D12Fence, fenceValue);
+            ++fenceValue;
+            d3D12CmdQueue.Signal(d3dFence, fenceValue);
         }
 
         public bool Completed()
         {
-            if (d3D12Fence.CompletedValue < fenceValue)
+            if (d3dFence.CompletedValue < fenceValue)
             {
                 return false;
             }
@@ -35,20 +35,20 @@ namespace InfinityEngine.Graphics.RHI
             if (!Completed())
             {
                 //ManualResetEvent FenceEvent = new ManualResetEvent(false);
-                d3D12Fence.SetEventOnCompletion(fenceValue, fenceEvent);
+                d3dFence.SetEventOnCompletion(fenceValue, fenceEvent);
                 fenceEvent.WaitOne();
             }
         }
 
         public void WaitOnGPU(ID3D12CommandQueue d3D12CmdQueue)
         {
-            d3D12CmdQueue.Wait(d3D12Fence, fenceValue);
+            d3D12CmdQueue.Wait(d3dFence, fenceValue);
         }
 
         protected override void Disposed()
         {
             //NativeFence.Release();
-            d3D12Fence?.Dispose();
+            d3dFence?.Dispose();
         }
     }
 }
