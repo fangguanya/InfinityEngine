@@ -56,6 +56,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
                 buffer.RequestReadback<int>(cmdList);
                 graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
                 graphicsContext.WritFence(EContextType.Copy, fence);
+                //graphicsContext.WaitFence(EContextType.Graphics, fence);
             }
 
             dataReady = fence.Completed();
