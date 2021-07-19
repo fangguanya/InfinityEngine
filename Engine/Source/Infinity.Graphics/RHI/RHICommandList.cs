@@ -217,8 +217,8 @@ namespace InfinityEngine.Graphics.RHI
         public void DrawInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
         {
             d3dCmdList.IASetPrimitiveTopology(topologyType);
-            d3dCmdList.IASetIndexBuffer(indexBufferView.d3DIBV);
-            d3dCmdList.IASetVertexBuffers(0, vertexBufferView.d3DVBO);
+            d3dCmdList.IASetIndexBuffer(indexBufferView.d3dView);
+            d3dCmdList.IASetVertexBuffers(0, vertexBufferView.d3dView);
             d3dCmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
         }
 

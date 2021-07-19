@@ -17,13 +17,13 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHIIndexBufferView
     {
-        internal IndexBufferView d3DIBV;
+        internal IndexBufferView d3dView;
         internal ulong virtualAddressGPU;
     }
 
     public struct FRHIVertexBufferView
     {
-        internal VertexBufferView d3DVBO;
+        internal VertexBufferView d3dView;
         internal ulong virtualAddressGPU;
     }
 
