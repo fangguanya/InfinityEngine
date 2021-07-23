@@ -34,7 +34,6 @@ namespace InfinityEngine.Graphics.RHI
         {
             if (!Completed())
             {
-                //ManualResetEvent FenceEvent = new ManualResetEvent(false);
                 d3dFence.SetEventOnCompletion(fenceValue, fenceEvent);
                 fenceEvent.WaitOne();
             }
@@ -47,8 +46,7 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            //NativeFence.Release();
-            d3dFence?.Dispose();
+            d3dFence?.Release();
         }
     }
 }

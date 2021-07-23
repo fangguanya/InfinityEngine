@@ -71,8 +71,8 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            d3D12CPUDescriptorHeap?.Dispose();
-            d3D12GPUDescriptorHeap?.Dispose();
+            d3D12CPUDescriptorHeap?.Release();
+            d3D12GPUDescriptorHeap?.Release();
         }
     }
 }

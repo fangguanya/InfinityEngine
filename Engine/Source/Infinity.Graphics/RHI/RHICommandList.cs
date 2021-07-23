@@ -239,8 +239,8 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            d3dCmdList?.Dispose();
-            d3dCmdAllocator?.Dispose();
+            d3dCmdList?.Release();
+            d3dCmdAllocator?.Release();
         }
 
         public static implicit operator ID3D12GraphicsCommandList5(FRHICommandList cmdList) { return cmdList.d3dCmdList; }

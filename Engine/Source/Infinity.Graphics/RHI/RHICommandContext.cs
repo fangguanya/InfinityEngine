@@ -49,7 +49,7 @@ namespace InfinityEngine.Graphics.RHI
         {
             fence?.Dispose();
             fenceEvent?.Dispose();
-            d3dCmdQueue?.Dispose();
+            d3dCmdQueue?.Release();
         }
     }
 }

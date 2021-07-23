@@ -189,9 +189,9 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            uploadResource?.Dispose();
-            defaultResource?.Dispose();
-            readbackResource?.Dispose();
+            uploadResource?.Release();
+            defaultResource?.Release();
+            readbackResource?.Release();
         }
     }
 

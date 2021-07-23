@@ -69,8 +69,8 @@ namespace InfinityEngine.Graphics.RHI
 
 		protected override void Disposed()
 		{
-			timestamp_Heap?.Dispose();
-            timestamp_Result?.Dispose();
+			timestamp_Heap?.Release();
+            timestamp_Result?.Release();
         }
 	}
 
@@ -150,8 +150,8 @@ namespace InfinityEngine.Graphics.RHI
 
 		protected override void Disposed()
 		{
-			occlusion_Heap?.Dispose();
-			occlusion_Result?.Dispose();
+			occlusion_Heap?.Release();
+			occlusion_Result?.Release();
         }
 	}
 }

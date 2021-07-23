@@ -22,9 +22,9 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Disposed()
         {
-            d3dDevice?.Dispose();
-            d3dAdapter?.Dispose();
-            d3dFactory?.Dispose();
+            d3dDevice?.Release();
+            d3dAdapter?.Release();
+            d3dFactory?.Release();
         }
 
         public static implicit operator ID3D12Device6(FRHIDevice device) { return device.d3dDevice; }
