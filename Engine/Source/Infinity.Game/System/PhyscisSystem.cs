@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Game.System
@@ -26,8 +27,9 @@ namespace InfinityEngine.Game.System
             PhyscisThread.Start();
         }
 
-        internal void Sync()
+        internal void Wiat()
         {
+            m_LoopExit = true;
             PhyscisThread.Join();
         }
 

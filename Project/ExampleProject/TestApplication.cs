@@ -26,7 +26,7 @@ namespace ExampleProject
         {
             Console.WriteLine("Enable Component");
 
-            FGraphicsSystem.EnqueueRenderTask(
+            FGraphicsSystem.EnqueueTask(
             (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
             {
                 Console.WriteLine("RenderTask");
@@ -145,7 +145,7 @@ namespace ExampleProject
         public override void OnDisable()
         {
             base.OnDisable();
-            //Console.WriteLine("Disable Actor");
+            Console.WriteLine("Disable Actor");
         }
     }
 

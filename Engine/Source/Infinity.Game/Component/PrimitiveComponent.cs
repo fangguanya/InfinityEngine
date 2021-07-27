@@ -27,7 +27,7 @@ namespace InfinityEngine.Game.Component
             OnRegister();
             CreateRender();
 
-            FGraphicsSystem.EnqueueRenderTask(
+            FGraphicsSystem.EnqueueTask(
             (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
             {
                 Console.WriteLine("RenderTask");
