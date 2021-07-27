@@ -6,19 +6,19 @@ namespace InfinityEngine.Graphics.RHI
 {
     public class FRHICommandContext : FDisposer
     {
-        public FRHIFence fence;
-        public AutoResetEvent fenceEvent;
-        public ID3D12CommandQueue d3dCmdQueue;
+        private FRHIFence m_Fence;
+        private AutoResetEvent m_FenceEvent;
+        internal ID3D12CommandQueue d3dCmdQueue;
 
-        public FRHICommandContext(ID3D12Device6 d3D12Device, CommandListType cmdListType) : base()
+        public FRHICommandContext(ID3D12Device6 d3d12Device, CommandListType cmdListType) : base()
         {
-            fence = new FRHIFence(d3D12Device);
-            fenceEvent = new AutoResetEvent(false);
+            m_Fence = new FRHIFence(d3d12Device);
+            m_FenceEvent = new AutoResetEvent(false);
 
             CommandQueueDescription CmdQueueDescription = new CommandQueueDescription();
             CmdQueueDescription.Type = cmdListType;
             CmdQueueDescription.Flags = CommandQueueFlags.None;
-            d3dCmdQueue = d3D12Device.CreateCommandQueue<ID3D12CommandQueue>(CmdQueueDescription);
+            d3dCmdQueue = d3d12Device.CreateCommandQueue<ID3D12CommandQueue>(CmdQueueDescription);
         }
 
         public static implicit operator ID3D12CommandQueue(FRHICommandContext cmdContext) { return cmdContext.d3dCmdQueue; }
@@ -41,15 +41,15 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Flush()
         {
-            fence.Signal(d3dCmdQueue);
-            fence.WaitOnCPU(fenceEvent);
+            m_Fence.Signal(d3dCmdQueue);
+            m_Fence.WaitOnCPU(m_FenceEvent);
         }
 
         protected override void Disposed()
         {
-            fence?.Dispose();
-            fenceEvent?.Dispose();
+            m_Fence?.Dispose();
             d3dCmdQueue?.Release();
+            m_FenceEvent?.Dispose();
         }
     }
 }

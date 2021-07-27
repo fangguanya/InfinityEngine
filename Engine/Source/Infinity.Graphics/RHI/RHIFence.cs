@@ -15,10 +15,10 @@ namespace InfinityEngine.Graphics.RHI
             d3dFence = d3dDevice.CreateFence<ID3D12Fence>(0, FenceFlags.None);
         }
 
-        public void Signal(ID3D12CommandQueue d3D12CmdQueue)
+        public void Signal(ID3D12CommandQueue d3d12CmdQueue)
         {
             ++fenceValue;
-            d3D12CmdQueue.Signal(d3dFence, fenceValue);
+            d3d12CmdQueue.Signal(d3dFence, fenceValue);
         }
 
         public bool Completed()
@@ -39,9 +39,9 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public void WaitOnGPU(ID3D12CommandQueue d3D12CmdQueue)
+        public void WaitOnGPU(ID3D12CommandQueue d3d12CmdQueue)
         {
-            d3D12CmdQueue.Wait(d3dFence, fenceValue);
+            d3d12CmdQueue.Wait(d3dFence, fenceValue);
         }
 
         protected override void Disposed()

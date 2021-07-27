@@ -121,10 +121,5 @@ namespace InfinityEngine.Game.Application
 
             return User32.DefWindowProc(hWnd, msg, wParam, lParam);
         }
-
-        private static int IntPtrToInt32(IntPtr intPtr)
-        {
-            return (int)intPtr.ToInt64();
-        }
     }
 }

@@ -11,8 +11,8 @@ namespace InfinityEngine.Graphics.RHI
     {
         protected int descriptorSize;
         protected ID3D12Device6 d3dDevice;
-        protected ID3D12DescriptorHeap d3D12CPUDescriptorHeap;
-        protected ID3D12DescriptorHeap d3D12GPUDescriptorHeap;
+        protected ID3D12DescriptorHeap d3d12CPUDescriptorHeap;
+        protected ID3D12DescriptorHeap d3d12GPUDescriptorHeap;
 
         internal FRHIDescriptorHeapFactory(ID3D12Device6 d3dDevice, in DescriptorHeapType descriptorType, in int descriptorCount) : base()
         {
@@ -21,10 +21,10 @@ namespace InfinityEngine.Graphics.RHI
             this.descriptorSize = d3dDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
 
             DescriptorHeapDescription descriptionCPU = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.ShaderVisible);
-            this.d3D12CPUDescriptorHeap = d3dDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionCPU);
+            this.d3d12CPUDescriptorHeap = d3dDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionCPU);
 
             DescriptorHeapDescription descriptionGPU = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.None);
-            this.d3D12GPUDescriptorHeap = d3dDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionGPU);
+            this.d3d12GPUDescriptorHeap = d3dDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionGPU);
         }
 
         protected static DescriptorHeapType GetDescriptorType(in EDescriptorType DescriptorType)
@@ -61,18 +61,18 @@ namespace InfinityEngine.Graphics.RHI
 
         internal CpuDescriptorHandle GetCPUHandleStart()
         {
-            return d3D12CPUDescriptorHeap.GetCPUDescriptorHandleForHeapStart();
+            return d3d12CPUDescriptorHeap.GetCPUDescriptorHandleForHeapStart();
         }
 
         internal GpuDescriptorHandle GetGPUHandleStart()
         {
-            return d3D12GPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
+            return d3d12GPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
         }
 
         protected override void Disposed()
         {
-            d3D12CPUDescriptorHeap?.Release();
-            d3D12GPUDescriptorHeap?.Release();
+            d3d12CPUDescriptorHeap?.Release();
+            d3d12GPUDescriptorHeap?.Release();
         }
     }
 }
