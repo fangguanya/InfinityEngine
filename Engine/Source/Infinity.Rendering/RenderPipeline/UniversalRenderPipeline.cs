@@ -44,13 +44,6 @@ namespace InfinityEngine.Rendering.RenderPipeline
         public override void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
             m_TimeProfiler.Restart();
-
-            /*cmdList.Clear();
-            buffer.GetData<int>(cmdList, readbackData);
-            graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
-            graphicsContext.WritFence(EContextType.Copy, fence);
-            graphicsContext.WaitFence(EContextType.Graphics, fence);*/
-
             if (dataReady)
             {
                 cmdList.Clear();
@@ -80,7 +73,12 @@ namespace InfinityEngine.Rendering.RenderPipeline
     }
 }
 
-//Console.WriteLine("Rendering");
+/*cmdList.Clear();
+buffer.GetData<int>(cmdList, readbackData);
+graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
+graphicsContext.WritFence(EContextType.Copy, fence);
+graphicsContext.WaitFence(EContextType.Graphics, fence);*/
+
 //ResourceBind Example
 /*FRHIBuffer Buffer = graphicsContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
 
