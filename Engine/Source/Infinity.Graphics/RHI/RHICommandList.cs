@@ -22,12 +22,14 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHICommandList : FDisposer
     {
         public string name;
+        internal bool bClose;
         internal ID3D12GraphicsCommandList5 d3dCmdList;
         internal ID3D12CommandAllocator d3dCmdAllocator;
 
         public FRHICommandList(string name, ID3D12Device6 d3d12Device, EContextType contextType)
         {
             this.name = name;
+            this.bClose = false;
             this.d3dCmdAllocator = d3d12Device.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
             this.d3dCmdList = d3d12Device.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3dCmdAllocator, null);
             this.d3dCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
@@ -35,12 +37,16 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Clear()
         {
+            if(!bClose) { return; }
+
+            bClose = false;
             d3dCmdAllocator.Reset();
             d3dCmdList.Reset(d3dCmdAllocator, null);
         }
 
         internal void Close()
         {
+            bClose = true;
             d3dCmdList.Close();
         }
 

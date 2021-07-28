@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
 
@@ -10,7 +9,7 @@ namespace InfinityEngine.Graphics.RHI
         private ulong fenceValue;
         private ID3D12Fence d3dFence;
 
-        public FRHIFence(ID3D12Device6 d3dDevice) : base()
+        internal FRHIFence(ID3D12Device6 d3dDevice) : base()
         {
             d3dFence = d3dDevice.CreateFence<ID3D12Fence>(0, FenceFlags.None);
         }

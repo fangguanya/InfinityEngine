@@ -43,10 +43,11 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         public override void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
+            cmdList.Clear();
             m_TimeProfiler.Restart();
+
             if (dataReady)
             {
-                cmdList.Clear();
                 buffer.RequestReadback<int>(cmdList);
                 graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
                 graphicsContext.WritFence(EContextType.Copy, fence);
@@ -67,14 +68,33 @@ namespace InfinityEngine.Rendering.RenderPipeline
         protected override void Disposed()
         {
             base.Disposed();
+            fence?.Dispose();
             buffer?.Dispose();
             cmdList?.Dispose();
         }
     }
 }
 
-/*cmdList.Clear();
-buffer.GetData<int>(cmdList, readbackData);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*buffer.GetData<int>(cmdList, readbackData);
 graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
 graphicsContext.WritFence(EContextType.Copy, fence);
 graphicsContext.WaitFence(EContextType.Graphics, fence);*/
