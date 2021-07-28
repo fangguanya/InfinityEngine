@@ -1,6 +1,7 @@
 ﻿using System;
 using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Core.Profiler;
+using InfinityEngine.Rendering.RenderLoop;
 
 namespace InfinityEngine.Rendering.RenderPipeline
 {
@@ -19,7 +20,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         }
 
-        public override void Init(FRHIGraphicsContext graphicsContext)
+        public override void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
             m_TimeProfiler = new FTimeProfiler();
             fence = graphicsContext.CreateFence();
@@ -40,7 +41,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
             graphicsContext.Submit();
         }
 
-        public override void Render(FRHIGraphicsContext graphicsContext)
+        public override void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
             m_TimeProfiler.Restart();
 

@@ -1,6 +1,7 @@
 ﻿using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RDG;
 using InfinityEngine.Graphics.RHI;
+using InfinityEngine.Rendering.RenderLoop;
 
 namespace InfinityEngine.Rendering.RenderPipeline
 {
@@ -15,9 +16,9 @@ namespace InfinityEngine.Rendering.RenderPipeline
             this.graphBuilder = new FRDGGraphBuilder("UniversalGraphBuilder");
         }
 
-        public abstract void Init(FRHIGraphicsContext graphicsContext);
+        public abstract void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 
-        public abstract void Render(FRHIGraphicsContext graphicsContext);
+        public abstract void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 
         protected override void Disposed()
         {

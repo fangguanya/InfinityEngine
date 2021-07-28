@@ -22,7 +22,7 @@ namespace ExampleProject
             Console.WriteLine("Enable Component");
 
             FGraphicsSystem.EnqueueTask(
-            (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
+            (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 Console.WriteLine("RenderTask");
             });
@@ -148,7 +148,6 @@ namespace ExampleProject
     {
         private TestActor m_Actor;
 
-        
         public TestApplication(string Name, int Width, int Height) : base(Name, Width, Height)
         {
             m_Actor = new TestActor("TestActor");

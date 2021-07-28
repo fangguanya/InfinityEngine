@@ -8,7 +8,7 @@ using InfinityEngine.Rendering.RenderPipeline;
 
 namespace InfinityEngine.Game.System
 {
-    public delegate void FGraphicsTask(FRHIGraphicsContext graphicsContext, FRenderContext renderContext);
+    public delegate void FGraphicsTask(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 
     public class FGraphicsSystem : FDisposer
     {
@@ -52,25 +52,25 @@ namespace InfinityEngine.Game.System
             GraphicsTasks.Enqueue(graphicsTask);
         }
 
-        private void ProcessTasks()
+        private void ProcessGraphicsTasks()
         {
             if(GraphicsTasks.Count == 0) { return; }
 
             for(int i = 0; i < GraphicsTasks.Count; ++i)
             {
                 FGraphicsTask graphicsTask = GraphicsTasks.Dequeue();
-                graphicsTask(graphicsContext, renderContext);
+                graphicsTask(renderContext, graphicsContext);
             }
         }
 
         private void GraphicsFunc()
         {
-            renderPipeline.Init(graphicsContext);
+            renderPipeline.Init(renderContext, graphicsContext);
 
             while (!m_LoopExit)
             {
-                ProcessTasks();
-                renderPipeline.Render(graphicsContext);
+                ProcessGraphicsTasks();
+                renderPipeline.Render(renderContext, graphicsContext);
             }
         }
 

@@ -26,12 +26,6 @@ namespace InfinityEngine.Game.Component
         {
             OnRegister();
             CreateRender();
-
-            FGraphicsSystem.EnqueueTask(
-            (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
-            {
-                Console.WriteLine("RenderTask");
-            });
         }
 
         public override void OnUpdate()
