@@ -10,30 +10,25 @@ namespace InfinityEngine.Rendering.RenderPipeline
         FRHIFence fence;
         FRHIBuffer buffer;
         FRHICommandList cmdList;
-        FTimeProfiler m_TimeProfiler;
 
-        bool dataReady = true;
+        bool dataReady;
         int[] readbackData;
+        FTimeProfiler timeProfiler;
 
-        public FUniversalRenderPipeline(string pipelineName) : base(pipelineName)
-        {
-
-        }
+        public FUniversalRenderPipeline(string pipelineName) : base(pipelineName) { }
 
         public override void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
-            m_TimeProfiler = new FTimeProfiler();
-            fence = graphicsContext.CreateFence();
-            buffer = graphicsContext.CreateBuffer(10000000, 4, EUseFlag.CPURW, EBufferType.Structured);
-            cmdList = graphicsContext.CreateCmdList("CmdList", EContextType.Copy);
+            dataReady = true;
+            timeProfiler = new FTimeProfiler();
 
             int[] data = new int[10000000];
             readbackData = new int[10000000];
+            for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
 
-            for (int i = 0; i < 10000000; ++i)
-            {
-                data[i] = 10000000 - i;
-            }
+            fence = graphicsContext.CreateFence();
+            buffer = graphicsContext.CreateBuffer(10000000, 4, EUseFlag.CPURW, EBufferType.Structured);
+            cmdList = graphicsContext.CreateCmdList("CmdList", EContextType.Copy);
 
             cmdList.Clear();
             buffer.SetData<int>(cmdList, data);
@@ -44,7 +39,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
         public override void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
             cmdList.Clear();
-            m_TimeProfiler.Restart();
+            timeProfiler.Restart();
 
             if (dataReady)
             {
@@ -61,8 +56,8 @@ namespace InfinityEngine.Rendering.RenderPipeline
             }
 
             graphicsContext.Submit();
-            m_TimeProfiler.Stop();
-            Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
+            timeProfiler.Stop();
+            Console.WriteLine(timeProfiler.milliseconds + "ms");
         }
 
         protected override void Disposed()
