@@ -17,11 +17,6 @@ namespace ExampleProject
         private int[] m_ManageDatas;
         private FTimeProfiler m_TimeProfiler;
 
-        public TestComponent()
-        {
-
-        }
-
         public override void OnEnable()
         {
             Console.WriteLine("Enable Component");
