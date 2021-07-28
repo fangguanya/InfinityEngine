@@ -13,7 +13,7 @@ namespace InfinityEngine.Game.System
 
     internal class FGameSystem : FDisposer
     {
-        private bool m_LoopExit;
+        private bool bLoopExit;
         private FGamePlay gamePlayFunc;
         private FGameTick gameTickFunc;
         private FGameEnd gameEndFunc;
@@ -34,7 +34,7 @@ namespace InfinityEngine.Game.System
 
         private void GameLoop()
         {
-            while (!m_LoopExit)
+            while (!bLoopExit)
             {
                 if (User32.PeekMessage(out var msg, IntPtr.Zero, 0, 0, 1))
                 {
@@ -43,7 +43,7 @@ namespace InfinityEngine.Game.System
 
                     if (msg.Value == (uint)WindowMessage.Quit)
                     {
-                        m_LoopExit = true;
+                        bLoopExit = true;
                         break;
                     }
                 }

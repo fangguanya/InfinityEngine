@@ -11,7 +11,7 @@ namespace InfinityEngine.Graphics.RDG
 
     internal struct FRDGResourceRef
     {
-        bool m_IsValid;
+        bool bValid;
         public int index { get; private set; }
         public EResourceType type { get; private set; }
         public int iType { get { return (int)type; } }
@@ -19,14 +19,14 @@ namespace InfinityEngine.Graphics.RDG
 
         internal FRDGResourceRef(int value, EResourceType type)
         {
-            this.index = value;
             this.type = type;
-            this.m_IsValid = true;
+            this.index = value;
+            this.bValid = true;
         }
 
         public static implicit operator int(FRDGResourceRef handle) => handle.index;
 
-        public bool IsValid() => m_IsValid;
+        public bool IsValid() => bValid;
     }
 
     public struct FRDGBufferRef

@@ -5,7 +5,7 @@ namespace InfinityEngine.Core.Object
 {
     public class FDisposer : IDisposable
     {
-        private bool m_IsDisposed = false;
+        private bool bDisposed = false;
 
         public FDisposer()
         {
@@ -21,12 +21,12 @@ namespace InfinityEngine.Core.Object
 
         private void Finalizer()
         {
-            if (!m_IsDisposed)
+            if (!bDisposed)
             {
                 Disposed();
             }
 
-            m_IsDisposed = true;
+            bDisposed = true;
         }
 
         public void Dispose()

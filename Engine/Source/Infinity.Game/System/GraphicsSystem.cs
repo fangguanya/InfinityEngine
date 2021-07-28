@@ -12,7 +12,7 @@ namespace InfinityEngine.Game.System
 
     public class FGraphicsSystem : FDisposer
     {
-        private bool m_LoopExit;
+        private bool bLoopExit;
 
         internal Thread renderThread;
 
@@ -24,7 +24,7 @@ namespace InfinityEngine.Game.System
 
         internal FGraphicsSystem()
         {
-            m_LoopExit = false;
+            bLoopExit = false;
 
             renderThread = new Thread(GraphicsFunc);
             renderThread.Name = "RenderThread";
@@ -43,7 +43,7 @@ namespace InfinityEngine.Game.System
 
         internal void Wiat()
         {
-            m_LoopExit = true;
+            bLoopExit = true;
             renderThread.Join();
         }
 
@@ -67,7 +67,7 @@ namespace InfinityEngine.Game.System
         {
             renderPipeline.Init(renderContext, graphicsContext);
 
-            while (!m_LoopExit)
+            while (!bLoopExit)
             {
                 ProcessGraphicsTasks();
                 renderPipeline.Render(renderContext, graphicsContext);

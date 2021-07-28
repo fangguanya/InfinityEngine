@@ -6,12 +6,12 @@ namespace InfinityEngine.Game.System
 {
     internal class FPhyscisSystem : FDisposer
     {
-        private bool m_LoopExit;
+        private bool bLoopExit;
         internal Thread PhyscisThread;
 
         internal FPhyscisSystem()
         {
-            m_LoopExit = false;
+            bLoopExit = false;
 
             PhyscisThread = new Thread(PhyscisFunc);
             PhyscisThread.Name = "PhyscisThread";
@@ -29,13 +29,13 @@ namespace InfinityEngine.Game.System
 
         internal void Wiat()
         {
-            m_LoopExit = true;
+            bLoopExit = true;
             PhyscisThread.Join();
         }
 
         private void PhyscisLoop()
         {
-            while (!m_LoopExit)
+            while (!bLoopExit)
             {
 
             }
@@ -43,7 +43,7 @@ namespace InfinityEngine.Game.System
 
         internal void Exit()
         {
-            m_LoopExit = true;
+            bLoopExit = true;
         }
 
         protected override void Disposed()
