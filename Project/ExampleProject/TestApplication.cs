@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using InfinityEngine.Game.ActorSystem;
 using InfinityEngine.Game.Application;
 using InfinityEngine.Rendering.RenderLoop;
-using FTimeProfiler = InfinityEngine.Core.Profiler.FTimeProfiler;
 
 namespace ExampleProject
 {
