@@ -54,7 +54,6 @@ namespace ExampleProject
             FGraphicsSystem.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                //Console.WriteLine("DoTask");
                 cmdList.Clear();
                 m_TimeProfiler.Restart();
 
@@ -72,8 +71,8 @@ namespace ExampleProject
                     buffer.GetData<int>(readData);
                 }
 
-                graphicsContext.Submit();
                 m_TimeProfiler.Stop();
+                graphicsContext.Submit();
                 Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
             });
 
