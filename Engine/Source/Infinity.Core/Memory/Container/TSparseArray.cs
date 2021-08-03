@@ -11,6 +11,7 @@ namespace InfinityEngine.Core.Container
                 return m_Array.length;
             }
         }
+        
         public ref T this[int index]
         {
             get

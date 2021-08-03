@@ -5,7 +5,10 @@
 
 # Binary Files
 Binaries/*
+Intermediate/*
 
 # compiled files
 obj
 bin
+Binaries
+Intermediate
