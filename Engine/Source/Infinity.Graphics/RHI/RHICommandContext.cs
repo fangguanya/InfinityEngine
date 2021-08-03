@@ -48,7 +48,7 @@ namespace InfinityEngine.Graphics.RHI
         protected override void Disposed()
         {
             m_Fence?.Dispose();
-            d3dCmdQueue?.Release();
+            d3dCmdQueue?.Dispose();
             m_FenceEvent?.Dispose();
         }
     }

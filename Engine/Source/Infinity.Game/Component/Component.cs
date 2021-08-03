@@ -7,18 +7,18 @@ namespace InfinityEngine.Game.ActorSystem
     public class UComponent : UObject
     {
         public AActor owner;
-        internal bool isConstruct;
+        internal bool bConstruct;
 
         public UComponent()
         {
             owner = null;
-            isConstruct = true;
+            bConstruct = true;
         }
 
         public UComponent(string name) : base(name)
         {
             owner = null;
-            isConstruct = true;
+            bConstruct = true;
         }
 
         public virtual void OnEnable() { }

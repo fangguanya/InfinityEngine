@@ -7,23 +7,23 @@ namespace InfinityEngine.Rendering.RenderPipeline
 {
     public class FUniversalRenderPipeline : FRenderPipeline
     {
-        FRHIFence fence;
-        FRHIBuffer buffer;
-        FRHICommandList cmdList;
+        //FRHIFence fence;
+        //FRHIBuffer buffer;
+        //FRHICommandList cmdList;
 
-        bool dataReady;
-        int[] readbackData;
-        FTimeProfiler timeProfiler;
+        //bool dataReady;
+        //int[] readData;
+        //FTimeProfiler timeProfiler;
 
         public FUniversalRenderPipeline(string pipelineName) : base(pipelineName) { }
 
         public override void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
-            dataReady = true;
+            /*dataReady = true;
             timeProfiler = new FTimeProfiler();
 
+            readData = new int[10000000];
             int[] data = new int[10000000];
-            readbackData = new int[10000000];
             for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
 
             fence = graphicsContext.CreateFence();
@@ -33,12 +33,12 @@ namespace InfinityEngine.Rendering.RenderPipeline
             cmdList.Clear();
             buffer.SetData<int>(cmdList, data);
             graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
-            graphicsContext.Submit();
+            graphicsContext.Submit();*/
         }
 
         public override void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
-            cmdList.Clear();
+            /*cmdList.Clear();
             timeProfiler.Restart();
 
             if (dataReady)
@@ -52,20 +52,20 @@ namespace InfinityEngine.Rendering.RenderPipeline
             dataReady = fence.Completed();
             if (dataReady)
             {
-                buffer.GetData<int>(readbackData);
+                buffer.GetData<int>(readData);
             }
 
             graphicsContext.Submit();
             timeProfiler.Stop();
-            Console.WriteLine(timeProfiler.milliseconds + "ms");
+            Console.WriteLine(timeProfiler.milliseconds + "ms");*/
         }
 
         protected override void Disposed()
         {
             base.Disposed();
-            fence?.Dispose();
-            buffer?.Dispose();
-            cmdList?.Dispose();
+            //fence?.Dispose();
+            //buffer?.Dispose();
+            //cmdList?.Dispose();
         }
     }
 }

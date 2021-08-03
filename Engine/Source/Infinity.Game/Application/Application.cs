@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
@@ -23,12 +24,15 @@ namespace InfinityEngine.Game.Application
         internal FPhyscisSystem physcisSystem;
         internal FGraphicsSystem graphicsSystem;
 
+        private AutoResetEvent renderEvent;
+
         public FApplication(string Name, int Width, int Height)
         {
+            renderEvent = new AutoResetEvent(false);
             timeProfiler = new FTimeProfiler();
-            gameSystem = new FGameSystem(Play, Tick, End);
+            gameSystem = new FGameSystem(End, Play, Tick, renderEvent);
             physcisSystem = new FPhyscisSystem();
-            graphicsSystem = new FGraphicsSystem();
+            graphicsSystem = new FGraphicsSystem(renderEvent);
             CreateWindow(Name, Width, Height);
         }
 
@@ -49,9 +53,10 @@ namespace InfinityEngine.Game.Application
             timeProfiler.Reset();
             timeProfiler.Start();
 
+            gameSystem.Start();
             physcisSystem.Start();
             graphicsSystem.Start();
-            gameSystem.Start();
+            gameSystem.GameLoop();
         }
 
         private void PlatformExit()

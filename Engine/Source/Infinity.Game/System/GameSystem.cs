@@ -7,32 +7,33 @@ using InfinityEngine.Game.Window;
 
 namespace InfinityEngine.Game.System
 {
-    internal delegate void FGamePlay();
-    internal delegate void FGameTick();
-    internal delegate void FGameEnd();
+    internal delegate void FGamePlayFunc();
+    internal delegate void FGameTickFunc();
+    internal delegate void FGameEndFunc();
 
     internal class FGameSystem : FDisposable
     {
         private bool bLoopExit;
-        private FGamePlay gamePlayFunc;
-        private FGameTick gameTickFunc;
-        private FGameEnd gameEndFunc;
+        private FGameEndFunc gameEndFunc;
+        private FGamePlayFunc gamePlayFunc;
+        private FGameTickFunc gameTickFunc;
+        private AutoResetEvent autoEvent;
 
-        internal FGameSystem(FGamePlay gamePlayFunc, FGameTick gameTickFunc, FGameEnd gameEndFunc)
+        internal FGameSystem(FGameEndFunc gameEndFunc, FGamePlayFunc gamePlayFunc, FGameTickFunc gameTickFunc, AutoResetEvent autoEvent)
         {
+            this.autoEvent = autoEvent;
+            this.gameEndFunc = gameEndFunc;
             this.gamePlayFunc = gamePlayFunc;
             this.gameTickFunc = gameTickFunc;
-            this.gameEndFunc = gameEndFunc;
             Thread.CurrentThread.Name = "GameThread";
         }
 
         internal void Start()
         {
             gamePlayFunc();
-            GameLoop();
         }
 
-        private void GameLoop()
+        internal void GameLoop()
         {
             while (!bLoopExit)
             {
@@ -49,6 +50,7 @@ namespace InfinityEngine.Game.System
                 }
 
                 gameTickFunc();
+                autoEvent.WaitOne();
             }
         }
 

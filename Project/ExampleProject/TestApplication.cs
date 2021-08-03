@@ -13,6 +13,12 @@ namespace ExampleProject
     [Serializable]
     public unsafe class TestComponent : UComponent
     {
+        bool dataReady;
+        int[] readData;
+        FRHIFence fence;
+        FRHIBuffer buffer;
+        FRHICommandList cmdList;
+
         private int* m_UnsafeDatas;
         private int[] m_ManageDatas;
         private FTimeProfiler m_TimeProfiler;
@@ -20,29 +26,57 @@ namespace ExampleProject
         public override void OnEnable()
         {
             Console.WriteLine("Enable Component");
+            m_TimeProfiler = new FTimeProfiler();
+
+            dataReady = true;
+            readData = new int[10000000];
+            int[] data = new int[10000000];
+            for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
 
             FGraphicsSystem.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                Console.WriteLine("RenderTask");
-            });
+                fence = graphicsContext.CreateFence();
+                buffer = graphicsContext.CreateBuffer(10000000, 4, EUseFlag.CPURW, EBufferType.Structured);
+                cmdList = graphicsContext.CreateCmdList("CmdList", EContextType.Copy);
 
-            m_TimeProfiler = new FTimeProfiler();
+                cmdList.Clear();
+                buffer.SetData<int>(cmdList, data);
+                graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
+                graphicsContext.Submit();
+            });
 
             m_ManageDatas = new int[32768];
             m_UnsafeDatas = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
-
-            //Console.WriteLine((0 >> 16) + (3 << 16 | 1));
-            //Console.WriteLine((1 >> 16) + (3 << 16 | 0));
         }
 
         public override void OnUpdate()
         {
-            /*FGraphicsSystem.EnqueueRenderTask(
-            (FRHIGraphicsContext graphicsContext, FRenderContext renderContext) =>
+            FGraphicsSystem.EnqueueTask(
+            (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                Console.WriteLine("RenderTick");
-            });*/
+                //Console.WriteLine("DoTask");
+                cmdList.Clear();
+                m_TimeProfiler.Restart();
+
+                if (dataReady)
+                {
+                    buffer.RequestReadback<int>(cmdList);
+                    graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
+                    graphicsContext.WritFence(EContextType.Copy, fence);
+                    //graphicsContext.WaitFence(EContextType.Graphics, fence);
+                }
+
+                dataReady = fence.Completed();
+                if (dataReady)
+                {
+                    buffer.GetData<int>(readData);
+                }
+
+                graphicsContext.Submit();
+                m_TimeProfiler.Stop();
+                Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
+            });
 
             //m_TimeProfiler.Restart();
             //RunNative(500, 32768);
@@ -56,6 +90,15 @@ namespace ExampleProject
 
         public override void OnDisable()
         {
+            FGraphicsSystem.EnqueueTask(
+            (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
+            {
+                fence?.Dispose();
+                buffer?.Dispose();
+                cmdList?.Dispose();
+                Console.WriteLine("Release RHI");
+            });
+
             Console.WriteLine("Disable Component");
             Marshal.FreeHGlobal((IntPtr)m_UnsafeDatas);
         }

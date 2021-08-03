@@ -42,7 +42,7 @@ namespace InfinityEngine.Game.ActorSystem
             for (int i = 0; i < components.Count; ++i)
             {
                 components[i].OnEnable();
-                components[i].isConstruct = false;
+                components[i].bConstruct = false;
             }
         }
 
@@ -59,14 +59,15 @@ namespace InfinityEngine.Game.ActorSystem
             if(!transform.Equals(m_LastTransform)) 
             {
                 OnTransform();
+                m_LastTransform = transform;
             }
 
             for (int i = 0; i < components.Count; ++i)
             {
-                if (components[i].isConstruct)
+                if (components[i].bConstruct)
                 {
                     components[i].OnEnable();
-                    components[i].isConstruct = false;
+                    components[i].bConstruct = false;
                 }
 
                 components[i].OnUpdate();

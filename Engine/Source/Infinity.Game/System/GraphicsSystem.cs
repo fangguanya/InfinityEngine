@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System.Threading;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
+using System.Collections.Concurrent;
 using InfinityEngine.Rendering.RenderLoop;
 using InfinityEngine.Rendering.RenderPipeline;
 
@@ -15,17 +14,17 @@ namespace InfinityEngine.Game.System
         private bool bLoopExit;
 
         internal Thread renderThread;
-
+        private AutoResetEvent autoEvent;
         internal FRenderContext renderContext;
         internal FRenderPipeline renderPipeline;
         internal FRHIGraphicsContext graphicsContext;
 
-        private static Queue<FGraphicsTask> GraphicsTasks;
+        private static ConcurrentQueue<FGraphicsTask> GraphicsTasks;
 
-        internal FGraphicsSystem()
+        internal FGraphicsSystem(AutoResetEvent autoEvent)
         {
             bLoopExit = false;
-
+            this.autoEvent = autoEvent;
             renderThread = new Thread(GraphicsFunc);
             renderThread.Name = "RenderThread";
 
@@ -33,7 +32,7 @@ namespace InfinityEngine.Game.System
             graphicsContext = new FRHIGraphicsContext();
             renderPipeline = new FUniversalRenderPipeline("UniversalRP");
 
-            GraphicsTasks = new Queue<FGraphicsTask>(512);
+            GraphicsTasks = new ConcurrentQueue<FGraphicsTask>();
         }
 
         internal void Start()
@@ -56,9 +55,9 @@ namespace InfinityEngine.Game.System
         {
             if(GraphicsTasks.Count == 0) { return; }
 
-            for(int i = 0; i < GraphicsTasks.Count; ++i)
+            for (int i = 0; i < GraphicsTasks.Count; ++i)
             {
-                FGraphicsTask graphicsTask = GraphicsTasks.Dequeue();
+                GraphicsTasks.TryDequeue(out FGraphicsTask graphicsTask);
                 graphicsTask(renderContext, graphicsContext);
             }
         }
@@ -71,6 +70,8 @@ namespace InfinityEngine.Game.System
             {
                 ProcessGraphicsTasks();
                 renderPipeline.Render(renderContext, graphicsContext);
+
+                autoEvent.Set();
             }
         }
 
@@ -79,7 +80,6 @@ namespace InfinityEngine.Game.System
             renderContext?.Dispose();
             renderPipeline?.Dispose();
             graphicsContext?.Dispose();
-            Console.WriteLine("Release Graphics");
         }
 
         protected override void Disposed()
