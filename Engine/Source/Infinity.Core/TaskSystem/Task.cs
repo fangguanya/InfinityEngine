@@ -6,7 +6,6 @@ namespace InfinityEngine.Core.TaskSystem
     {
         public abstract void Execute();
 
-
         internal void Execute(Task dependsTask)
         {
             Execute();
@@ -25,25 +24,21 @@ namespace InfinityEngine.Core.TaskSystem
             taskData.Execute();
         }
 
-        public static FTaskHandle Schedule<T>(this T taskData) where T : struct, ITask
+        public static FTaskRef Schedule<T>(this T taskData) where T : struct, ITask
         {
-            return new FTaskHandle(Task.Factory.StartNew(taskData.Execute));
+            return new FTaskRef(Task.Factory.StartNew(taskData.Execute));
         }
 
-        public static FTaskHandle Schedule<T>(this T taskData, FTaskHandle dependsHandle) where T : struct, ITask
+        public static FTaskRef Schedule<T>(this T taskData, in FTaskRef depend) where T : struct, ITask
         {
-            return new FTaskHandle(dependsHandle.TaskRef.ContinueWith(taskData.Execute));
+            return new FTaskRef(depend.task.ContinueWith(taskData.Execute));
         }
 
-        public static FTaskHandle Schedule<T>(this T taskData, params FTaskHandle[] dependsHandle) where T : struct, ITask
+        public static FTaskRef Schedule<T>(this T taskData, params FTaskRef[] depends) where T : struct, ITask
         {
-            Task[] dependsTask = new Task[dependsHandle.Length];
-            for (int i = 0; i < dependsHandle.Length; ++i)
-            {
-                dependsTask[i] = dependsHandle[i].TaskRef;
-            }
-
-            return new FTaskHandle(Task.Factory.ContinueWhenAll(dependsTask, taskData.Execute));
+            Task[] dependsTask = new Task[depends.Length];
+            for (int i = 0; i < depends.Length; ++i) { dependsTask[i] = depends[i].task; }
+            return new FTaskRef(Task.Factory.ContinueWhenAll(dependsTask, taskData.Execute));
         }
     }
 }

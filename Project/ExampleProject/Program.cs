@@ -5,7 +5,7 @@ using InfinityEngine.Core.TaskSystem;
 
 namespace ExampleProject
 {
-    public struct FAsyncTask : ITaskASync
+    public struct FAsyncTask : ITaskAsync
     {
         public void Execute()
         {

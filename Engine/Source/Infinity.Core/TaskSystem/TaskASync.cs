@@ -2,21 +2,21 @@
 
 namespace InfinityEngine.Core.TaskSystem
 {
-    public interface ITaskASync
+    public interface ITaskAsync
     {
         public abstract void Execute();
     }
 
-    public static class ITaskASyncExtension
+    public static class ITaskAsyncExtension
     {
-        public static FTaskHandle Run<T>(this T taskData) where T : struct, ITaskASync
+        public static FTaskRef Run<T>(this T taskData) where T : struct, ITaskAsync
         {
-            return new FTaskHandle(Task.Factory.StartNew(taskData.Execute));
+            return new FTaskRef(Task.Factory.StartNew(taskData.Execute));
         }
 
-        public static void Run<T>(this T taskData, ref FTaskHandle taskHandle) where T : struct, ITaskASync
+        public static void Run<T>(this T taskData, ref FTaskRef taskRef) where T : struct, ITaskAsync
         {
-            taskHandle = new FTaskHandle(Task.Factory.StartNew(taskData.Execute));
+            taskRef = new FTaskRef(Task.Factory.StartNew(taskData.Execute));
         }
     }
 }

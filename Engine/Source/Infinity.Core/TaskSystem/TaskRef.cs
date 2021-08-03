@@ -3,25 +3,25 @@ using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Core.TaskSystem
 {
-    public struct FTaskHandle
+    public struct FTaskRef
     {
-        internal Task TaskRef;
+        internal Task task;
 
-        public FTaskHandle(Task InTask)
+        public FTaskRef(Task task)
         {
-            TaskRef = InTask;
+            this.task = task;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Complete()
         {
-            return TaskRef == null ? true : TaskRef.IsCompleted;
+            return task == null ? true : task.IsCompleted;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Wait()
         {
-            TaskRef.Wait();
+            task.Wait();
         }
     }
 }
