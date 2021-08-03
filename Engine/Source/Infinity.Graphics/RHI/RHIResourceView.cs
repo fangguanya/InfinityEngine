@@ -115,7 +115,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public sealed class FRHIResourceViewRange : FDisposer
+    public sealed class FRHIResourceViewRange : FDisposable
     {
         internal int length;
         internal int descriptorIndex;

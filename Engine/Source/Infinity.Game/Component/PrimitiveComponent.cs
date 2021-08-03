@@ -7,7 +7,7 @@ using InfinityEngine.Rendering.RenderLoop;
 
 namespace InfinityEngine.Game.Component
 {
-    public class FPrimitiveProxy : FDisposer
+    public class FPrimitiveProxy : FDisposable
     {
         protected override void Disposed()
         {

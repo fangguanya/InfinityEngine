@@ -4,7 +4,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHIFence : FDisposer
+    public class FRHIFence : FDisposable
     {
         private ulong fenceValue;
         private ID3D12Fence d3dFence;

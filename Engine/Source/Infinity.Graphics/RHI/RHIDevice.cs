@@ -5,7 +5,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal class FRHIDevice : FDisposer
+    internal class FRHIDevice : FDisposable
     {
         internal ID3D12Device6 d3dDevice;
         internal IDXGIAdapter1 d3dAdapter;

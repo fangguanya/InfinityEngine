@@ -10,7 +10,7 @@ namespace InfinityEngine.Game.System
 {
     public delegate void FGraphicsTask(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 
-    public class FGraphicsSystem : FDisposer
+    public class FGraphicsSystem : FDisposable
     {
         private bool bLoopExit;
 

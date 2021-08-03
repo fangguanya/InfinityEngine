@@ -19,7 +19,7 @@ namespace InfinityEngine.Graphics.RHI
         public FRHICommandContext cmdContext;
     }
 
-    public class FRHICommandList : FDisposer
+    public class FRHICommandList : FDisposable
     {
         public string name;
         internal bool bClose;

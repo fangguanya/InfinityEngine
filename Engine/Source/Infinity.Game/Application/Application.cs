@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 namespace InfinityEngine.Game.Application
 {
     [Serializable]
-    public abstract partial class FApplication : FDisposer
+    public abstract partial class FApplication : FDisposable
     {
         internal static readonly string WndClassName = "InfinityApp";
 

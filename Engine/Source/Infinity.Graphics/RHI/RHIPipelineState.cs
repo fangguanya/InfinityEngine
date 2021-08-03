@@ -2,7 +2,7 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHIComputePipelineState : FDisposer
+    public class FRHIComputePipelineState : FDisposable
     {
         protected override void Disposed()
         {
@@ -10,7 +10,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIRayTracePipelineState : FDisposer
+    public class FRHIRayTracePipelineState : FDisposable
     {
         protected override void Disposed()
         {
@@ -18,7 +18,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIGraphicsPipelineState : FDisposer
+    public class FRHIGraphicsPipelineState : FDisposable
     {
         protected override void Disposed()
         {

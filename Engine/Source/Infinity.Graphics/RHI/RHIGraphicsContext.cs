@@ -12,7 +12,7 @@ namespace InfinityEngine.Graphics.RHI
         Graphics = 0
     }
 
-    public class FRHIGraphicsContext : FDisposer
+    public class FRHIGraphicsContext : FDisposable
     {
         internal FRHIDevice device;
         internal List<FExecuteInfo> executeInfos;

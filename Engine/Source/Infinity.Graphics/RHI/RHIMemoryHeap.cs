@@ -7,7 +7,7 @@ using InfinityEngine.Core.Native.Utility;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal sealed class FRHIMemoryHeapFactory : FDisposer
+    internal sealed class FRHIMemoryHeapFactory : FDisposable
     {
         internal FRHIMemoryHeapFactory(ID3D12Device6 d3dDevice, in int heapCount) : base()
         {

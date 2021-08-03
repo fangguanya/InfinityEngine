@@ -3,7 +3,7 @@
 namespace InfinityEngine.Core.Object
 {
     [Serializable]
-    public class UObject : FDisposer
+    public class UObject : FDisposable
     {
         public string name;
 

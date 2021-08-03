@@ -10,7 +10,7 @@ namespace InfinityEngine.Graphics.RDG
         public FRHIGraphicsContext graphicsContext;
     }
 
-    public class FRDGGraphBuilder : FDisposer
+    public class FRDGGraphBuilder : FDisposable
     {
         public string name;
 

@@ -172,7 +172,7 @@ namespace InfinityEngine.Graphics.RHI
         RGBA_BC7_UNorm = 109,
     }
 
-    public class FRHIResource : FDisposer
+    public class FRHIResource : FDisposable
     {
         public string name;
         protected EUseFlag useFlag;

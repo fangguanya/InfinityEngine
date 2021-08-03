@@ -3,7 +3,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHIMemoryReadback : FDisposer
+    public class FRHIMemoryReadback : FDisposable
     {
         public bool bReady { get { return m_Fence.Completed(); } }
 

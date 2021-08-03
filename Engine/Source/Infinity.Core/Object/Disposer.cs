@@ -3,16 +3,16 @@ using System.Runtime.Serialization;
 
 namespace InfinityEngine.Core.Object
 {
-    public class FDisposer : IDisposable
+    public class FDisposable : IDisposable
     {
         private bool bDisposed = false;
 
-        public FDisposer()
+        public FDisposable()
         {
             
         }
 
-        ~FDisposer()
+        ~FDisposable()
         {
             Finalizer();
         }
