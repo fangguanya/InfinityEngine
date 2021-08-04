@@ -70,9 +70,10 @@ namespace InfinityEngine.Game.System
             {
                 ProcessGraphicsTasks();
                 renderPipeline.Render(renderContext, graphicsContext);
-
                 autoEvent.Set();
             }
+
+            ProcessGraphicsTasks();
         }
 
         internal void Exit()

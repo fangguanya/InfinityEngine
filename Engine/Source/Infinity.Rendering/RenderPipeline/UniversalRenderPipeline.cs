@@ -66,6 +66,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
             //fence?.Dispose();
             //buffer?.Dispose();
             //cmdList?.Dispose();
+            Console.WriteLine("Release Pipeline");
         }
     }
 }

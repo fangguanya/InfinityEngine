@@ -29,8 +29,6 @@ namespace ExampleProject
 
             dataReady = true;
             readData = new int[10000000];
-            int[] data = new int[10000000];
-            for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
 
             FGraphicsSystem.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
@@ -40,6 +38,8 @@ namespace ExampleProject
                 cmdList = graphicsContext.CreateCmdList("CmdList", EContextType.Copy);
 
                 cmdList.Clear();
+                int[] data = new int[10000000];
+                for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
                 buffer.SetData<int>(cmdList, data);
                 graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
@@ -94,7 +94,7 @@ namespace ExampleProject
                 fence?.Dispose();
                 buffer?.Dispose();
                 cmdList?.Dispose();
-                Console.WriteLine("Release RHI");
+                Console.WriteLine("Release Proxy");
             });
 
             Console.WriteLine("Disable Component");
