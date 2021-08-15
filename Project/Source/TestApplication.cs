@@ -3,6 +3,7 @@ using InfinityEngine.Game.System;
 using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 using InfinityEngine.Game.ActorSystem;
 using InfinityEngine.Game.Application;
 using InfinityEngine.Rendering.RenderLoop;
@@ -27,7 +28,7 @@ namespace ExampleProject
             Console.WriteLine("Enable Component");
             m_TimeProfiler = new FTimeProfiler();
 
-            dataReady = true;
+            /*dataReady = true;
             readData = new int[10000000];
 
             FGraphicsSystem.EnqueueTask(
@@ -43,7 +44,7 @@ namespace ExampleProject
                 buffer.SetData<int>(cmdList, data);
                 graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
-            });
+            });*/
 
             m_ManageDatas = new int[32768];
             m_UnsafeDatas = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
@@ -51,7 +52,7 @@ namespace ExampleProject
 
         public override void OnUpdate()
         {
-            FGraphicsSystem.EnqueueTask(
+            /*FGraphicsSystem.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 cmdList.Clear();
@@ -74,28 +75,28 @@ namespace ExampleProject
                 m_TimeProfiler.Stop();
                 graphicsContext.Submit();
                 Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
-            });
+            });*/
 
-            //m_TimeProfiler.Restart();
+            m_TimeProfiler.Restart();
             //RunNative(500, 32768);
-            //RunUnsafe(500, 32768);
+            RunUnsafe(500, 32768);
             //RunManaged(500, 32768);
-            //m_TimeProfiler.Stop();
+            m_TimeProfiler.Stop();
 
             //Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
-            //Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
+            Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
         }
 
         public override void OnDisable()
         {
-            FGraphicsSystem.EnqueueTask(
+            /*FGraphicsSystem.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 fence?.Dispose();
                 buffer?.Dispose();
                 cmdList?.Dispose();
                 Console.WriteLine("Release Proxy");
-            });
+            });*/
 
             Console.WriteLine("Disable Component");
             Marshal.FreeHGlobal((IntPtr)m_UnsafeDatas);
@@ -106,6 +107,7 @@ namespace ExampleProject
             CPUTimer.DoTask(m_UnsafeDatas, count, length);
         }
 
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RunUnsafe(in int count, in int length)
         {
             for (int i = 0; i < count; ++i)
@@ -113,11 +115,12 @@ namespace ExampleProject
                 for (int j = 0; j < length; ++j)
                 {
                     ref int unsafeData = ref m_UnsafeDatas[j];
-                    unsafeData = i + j;
+                    unsafeData = i * j;
                 }
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RunManaged(in int count, in int length)
         {
             for (int i = 0; i < count; ++i)
@@ -125,7 +128,7 @@ namespace ExampleProject
                 for (int j = 0; j < length; ++j)
                 {
                     ref int manageData = ref m_ManageDatas[j];
-                    manageData = i + j;
+                    manageData = i * j;
                 }
             }
         }

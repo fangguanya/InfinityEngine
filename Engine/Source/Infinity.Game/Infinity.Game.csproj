@@ -34,8 +34,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Infinity.Core\Infinity.Core.csproj" />
+	  <ProjectReference Include="..\Infinity.Physics\Infinity.Physics.csproj" />
     <ProjectReference Include="..\Infinity.Graphics\Infinity.Graphics.csproj" />
-    <ProjectReference Include="..\Infinity.Physcis\Infinity.Physcis.csproj" />
     <ProjectReference Include="..\Infinity.Rendering\Infinity.Rendering.csproj" />
   </ItemGroup>
 

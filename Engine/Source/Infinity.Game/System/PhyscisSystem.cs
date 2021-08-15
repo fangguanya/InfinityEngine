@@ -4,36 +4,31 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Game.System
 {
-    internal class FPhyscisSystem : FDisposable
+    internal class FPhysicsSystem : FDisposable
     {
         private bool bLoopExit;
-        internal Thread PhyscisThread;
+        internal Thread PhysicsThread;
 
-        internal FPhyscisSystem()
+        internal FPhysicsSystem()
         {
             bLoopExit = false;
 
-            PhyscisThread = new Thread(PhyscisFunc);
-            PhyscisThread.Name = "PhyscisThread";
-        }
-
-        internal void PhyscisFunc()
-        {
-            PhyscisLoop();
+            PhysicsThread = new Thread(PhysicsFunc);
+            PhysicsThread.Name = "PhyscisThread";
         }
 
         internal void Start()
         {
-            PhyscisThread.Start();
+            PhysicsThread.Start();
         }
 
         internal void Wiat()
         {
             bLoopExit = true;
-            PhyscisThread.Join();
+            PhysicsThread.Join();
         }
 
-        private void PhyscisLoop()
+        private void PhysicsFunc()
         {
             while (!bLoopExit)
             {

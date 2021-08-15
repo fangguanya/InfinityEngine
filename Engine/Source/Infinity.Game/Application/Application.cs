@@ -21,7 +21,7 @@ namespace InfinityEngine.Game.Application
         internal FTimeProfiler timeProfiler;
 
         internal FGameSystem gameSystem;
-        internal FPhyscisSystem physcisSystem;
+        internal FPhysicsSystem physicsSystem;
         internal FGraphicsSystem graphicsSystem;
 
         private AutoResetEvent renderEvent;
@@ -31,7 +31,7 @@ namespace InfinityEngine.Game.Application
             renderEvent = new AutoResetEvent(false);
             timeProfiler = new FTimeProfiler();
             gameSystem = new FGameSystem(End, Play, Tick, renderEvent);
-            physcisSystem = new FPhyscisSystem();
+            physicsSystem = new FPhysicsSystem();
             graphicsSystem = new FGraphicsSystem(renderEvent);
             CreateWindow(Name, Width, Height);
         }
@@ -54,7 +54,7 @@ namespace InfinityEngine.Game.Application
             timeProfiler.Start();
 
             gameSystem.Start();
-            physcisSystem.Start();
+            physicsSystem.Start();
             graphicsSystem.Start();
             gameSystem.GameLoop();
         }
@@ -64,8 +64,8 @@ namespace InfinityEngine.Game.Application
             gameSystem.Exit();
             mainWindow.Destroy();
 
-            physcisSystem.Wiat();
-            physcisSystem.Exit();
+            physicsSystem.Wiat();
+            physicsSystem.Exit();
             graphicsSystem.Wiat();
             graphicsSystem.Exit();
         }
@@ -73,7 +73,7 @@ namespace InfinityEngine.Game.Application
         protected override void Disposed()
         {
             gameSystem?.Dispose();
-            physcisSystem?.Dispose();
+            physicsSystem?.Dispose();
             graphicsSystem?.Dispose();
         }
 
