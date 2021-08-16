@@ -22,9 +22,9 @@ namespace InfinityEngine.Graphics.RHI
         Consume,
         Counter,
         Constant,
+        Arguments,
         Structured,
-        ByteAddressBuffer,
-        IndirectArguments,
+        ByteAddress,
     };
 
     public enum ETextureType
@@ -60,8 +60,8 @@ namespace InfinityEngine.Graphics.RHI
 
     public enum ETextureWrapMode
     {
-        Repeat = 0,
-        Clamp = 1,
+        Clamp = 0,
+        Repeat = 1,
         Mirror = 2,
         MirrorOnce = 3
     }

@@ -43,7 +43,6 @@ namespace InfinityEngine.Graphics.RHI
         internal int descriptorIndex;
         internal CpuDescriptorHandle descriptorHandle;
 
-
         public FRHIConstantBufferView(int descriptorSize, int descriptorIndex, CpuDescriptorHandle descriptorHandle)
         {
             this.descriptorSize = descriptorSize;
@@ -54,12 +53,6 @@ namespace InfinityEngine.Graphics.RHI
         public CpuDescriptorHandle GetDescriptorHandle()
         {
             return descriptorHandle + descriptorSize * descriptorIndex;
-        }
-
-        public void Disposed()
-        {
-            descriptorSize = 0;
-            descriptorIndex = 0;
         }
     }
 
@@ -81,12 +74,6 @@ namespace InfinityEngine.Graphics.RHI
         {
             return descriptorHandle + descriptorSize * descriptorIndex;
         }
-
-        public void Disposed()
-        {
-            descriptorSize = 0;
-            descriptorIndex = 0;
-        }
     }
 
     public struct FRHIUnorderedAccessView
@@ -106,12 +93,6 @@ namespace InfinityEngine.Graphics.RHI
         public CpuDescriptorHandle GetDescriptorHandle()
         {
             return descriptorHandle + descriptorSize * descriptorIndex;
-        }
-
-        public void Disposed()
-        {
-            descriptorSize = 0;
-            descriptorIndex = 0;
         }
     }
 
