@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infinity.Core\Infinity.Core.csproj" />
+    <ProjectReference Include="..\Core\Infinity.Core.csproj" />
   </ItemGroup>
 
 </Project>

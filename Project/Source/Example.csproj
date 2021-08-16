@@ -21,8 +21,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Source\Infinity.Core\Infinity.Core.csproj" />
-    <ProjectReference Include="..\..\Engine\Source\Infinity.Game\Infinity.Game.csproj" />
+    <ProjectReference Include="..\..\Engine\Source\Runtime\Core\Infinity.Core.csproj" />
+    <ProjectReference Include="..\..\Engine\Source\Runtime\Game\Infinity.Game.csproj" />
+    <ProjectReference Include="..\..\Engine\Source\Runtime\Graphics\Infinity.Graphics.csproj" />
+    <ProjectReference Include="..\..\Engine\Source\Runtime\Physics\Infinity.Physics.csproj" />
+    <ProjectReference Include="..\..\Engine\Source\Runtime\Rendering\Infinity.Rendering.csproj" />
   </ItemGroup>
 
 </Project>

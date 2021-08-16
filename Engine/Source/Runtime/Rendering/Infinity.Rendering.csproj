@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infinity.Graphics\Infinity.Graphics.csproj" />
+    <ProjectReference Include="..\Graphics\Infinity.Graphics.csproj" />
   </ItemGroup>
 
 </Project>
