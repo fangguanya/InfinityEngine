@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <MSBuildProjectExtensionsPath>$(ProjectDir)../../Intermediate/Rendering/</MSBuildProjectExtensionsPath>
-    <BaseIntermediateOutputPath>$(ProjectDir)../../Intermediate/Rendering/</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(ProjectDir)../../../Intermediate/Rendering/</MSBuildProjectExtensionsPath>
+    <BaseIntermediateOutputPath>$(ProjectDir)../../../Intermediate/Rendering/</BaseIntermediateOutputPath>
     <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
   </PropertyGroup>
 </Project>

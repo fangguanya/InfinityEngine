@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <MSBuildProjectExtensionsPath>$(ProjectDir)../../Intermediate/Core/</MSBuildProjectExtensionsPath>
-    <BaseIntermediateOutputPath>$(ProjectDir)../../Intermediate/Core/</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(ProjectDir)../../../Intermediate/Core/</MSBuildProjectExtensionsPath>
+    <BaseIntermediateOutputPath>$(ProjectDir)../../../Intermediate/Core/</BaseIntermediateOutputPath>
     <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
   </PropertyGroup>
 </Project>
