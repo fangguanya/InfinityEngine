@@ -16,7 +16,7 @@ namespace InfinityEngine.Graphics.RDG
             m_ResourceFactory = resourceFactory;
         }
 
-        public ref T GetPassData<T>() where T : struct => ref ((FRDGBasePass<T>)m_RenderPass).passData;
+        public ref T GetPassData<T>() where T : struct => ref ((FRDGPass<T>)m_RenderPass).passData;
 
         public void EnableAsyncCompute(bool value)
         {
@@ -78,9 +78,9 @@ namespace InfinityEngine.Graphics.RDG
             return input;
         }
 
-        public void SetRenderFunc<T>(FRDGExecuteFunc<T> RenderFunc) where T : struct
+        public void SetRenderFunc<T>(FRDGExecuteFunc<T> ExcuteFunc) where T : struct
         {
-            ((FRDGBasePass<T>)m_RenderPass).RenderFunc = RenderFunc;
+            ((FRDGPass<T>)m_RenderPass).ExcuteFunc = ExcuteFunc;
         }
 
         void Dispose(bool disposing)

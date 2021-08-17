@@ -8,12 +8,12 @@ namespace InfinityEngine.Rendering.RenderPipeline
     public abstract class FRenderPipeline : FDisposable
     {
         public string name;
-        protected FRDGGraphBuilder graphBuilder;
+        protected FRDGBuilder graphBuilder;
 
         public FRenderPipeline(string name)
         {
             this.name = name;
-            this.graphBuilder = new FRDGGraphBuilder("UniversalGraphBuilder");
+            this.graphBuilder = new FRDGBuilder("UniversalGraphBuilder");
         }
 
         public abstract void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);

@@ -23,7 +23,6 @@ namespace InfinityEngine.Graphics.RDG
         FRHITexturePool m_TexturePool = new FRHITexturePool();
         TArray<IRDGResource>[] m_Resources = new TArray<IRDGResource>[2];
 
-
         internal FRDGResourceFactory()
         {
             for (int i = 0; i < 2; ++i)
@@ -146,6 +145,10 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources[(int)EResourceType.Buffer][resourceRef] as FRDGBuffer;
         }
 
+        internal FRHIBufferDescription GetBufferResourceDesc(in FRDGResourceRef handle)
+        {
+            return (m_Resources[(int)EResourceType.Buffer][handle] as FRDGBuffer).desc;
+        }
 
         internal void CreateRealBuffer(int index)
         {

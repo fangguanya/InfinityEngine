@@ -105,20 +105,20 @@ namespace InfinityEngine.Graphics.RDG
 
     public delegate void FRDGExecuteFunc<T>(ref T passData, ref FRDGContext graphContext) where T : struct;
 
-    internal sealed class FRDGBasePass<T> : IRDGPass where T : struct
+    internal sealed class FRDGPass<T> : IRDGPass where T : struct
     {
         internal T passData;
-        internal FRDGExecuteFunc<T> RenderFunc;
+        internal FRDGExecuteFunc<T> ExcuteFunc;
 
         public override void Execute(ref FRDGContext graphContext)
         {
-            RenderFunc(ref passData, ref graphContext);
+            ExcuteFunc(ref passData, ref graphContext);
         }
 
         public override void Release(FRDGObjectPool graphObjectPool)
         {
             Clear();
-            RenderFunc = null;
+            ExcuteFunc = null;
             graphObjectPool.Release(this);
         }
     }

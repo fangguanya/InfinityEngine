@@ -5,7 +5,6 @@ namespace InfinityEngine.Graphics.RHI
     public abstract class FRHIResourcePool<Type> where Type : class
     {
         protected Dictionary<int, List<Type>> m_ResourcePool = new Dictionary<int, List<Type>>(64);
-
         abstract protected void ReleaseInternalResource(Type res);
         abstract protected string GetResourceName(Type res);
         abstract protected string GetResourceTypeName();
