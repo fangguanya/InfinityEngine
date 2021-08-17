@@ -107,11 +107,11 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        public void Cleanup()
+        protected override void Disposed()
         {
-            m_Resources.Cleanup();
-            m_BufferScope.ClearScope();
-            m_TextureScope.ClearScope();
+            m_Resources.Dispose();
+            m_BufferScope.Clear();
+            m_TextureScope.Clear();
         }
 
         public void MoveBuffer(in FRDGBufferRef srcBuffer, in FRDGBufferRef dscBuffer)
@@ -724,11 +724,9 @@ namespace InfinityEngine.Graphics.RDG
             {
                 pass.Release(m_ObjectPool);
             }
-
+            m_BufferScope.Clear();
+            m_TextureScope.Clear();
             m_RenderPasses.Clear();
-
-            m_BufferScope.ClearScope();
-            m_TextureScope.ClearScope();
         }
     }
 }

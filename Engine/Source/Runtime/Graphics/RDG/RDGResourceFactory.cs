@@ -19,8 +19,8 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        FRHIBufferPool m_BufferPool = new FRHIBufferPool();
-        FRHITexturePool m_TexturePool = new FRHITexturePool();
+        FRHIBufferCache m_BufferPool = new FRHIBufferCache();
+        FRHITextureCache m_TexturePool = new FRHITextureCache();
         TArray<IRDGResource>[] m_Resources = new TArray<IRDGResource>[2];
 
         internal FRDGResourceFactory()
@@ -233,12 +233,11 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        internal void Cleanup()
+        internal void Dispose()
         {
-            m_BufferPool.Cleanup();
-            m_TexturePool.Cleanup();
+            m_BufferPool.Dispose();
+            m_TexturePool.Dispose();
         }
-
         #endregion
     }
 }

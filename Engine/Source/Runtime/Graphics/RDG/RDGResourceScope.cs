@@ -23,9 +23,14 @@ namespace InfinityEngine.Graphics.RDG
             return output;
         }
 
-        internal void ClearScope()
+        internal void Clear()
         {
             resourceMap.Clear();
+        }
+
+        internal void Dispose()
+        {
+            resourceMap = null;
         }
     }
 }

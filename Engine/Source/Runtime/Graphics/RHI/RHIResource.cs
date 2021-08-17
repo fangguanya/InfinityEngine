@@ -400,10 +400,14 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHIBufferRef
     {
-        internal int Handle;
-        public FRHIBuffer Buffer;
+        internal int handle;
+        public FRHIBuffer buffer;
 
-        internal FRHIBufferRef(int InHandle, FRHIBuffer InBuffer) { Handle = InHandle; Buffer = InBuffer; }
+        internal FRHIBufferRef(int handle, FRHIBuffer buffer) 
+        { 
+           this.handle = handle; 
+           this.buffer = buffer; 
+        }
     }
 
     public struct FRHITextureDescription
@@ -484,9 +488,13 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHITextureRef
     {
-        internal int Handle;
-        public FRHITexture Texture;
+        internal int handle;
+        public FRHITexture texture;
 
-        internal FRHITextureRef(int InHandle, FRHITexture InTexture) { Handle = InHandle; Texture = InTexture; }
+        internal FRHITextureRef(int handle, FRHITexture texture) 
+        { 
+            this.handle = handle; 
+            this.texture = texture; 
+        }
     }
 }

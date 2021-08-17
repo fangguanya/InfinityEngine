@@ -62,19 +62,18 @@ namespace InfinityEngine.Graphics.RDG
     internal class IRDGResource
     {
         public bool imported;
+        public bool wasReleased;
         public int cachedHash;
         public int shaderProperty;
         public int temporalPassIndex;
-        public bool wasReleased;
-
 
         public virtual void Reset()
         {
             imported = false;
+            wasReleased = false;
             cachedHash = -1;
             shaderProperty = 0;
             temporalPassIndex = -1;
-            wasReleased = false;
         }
 
         public virtual string GetName()
@@ -87,7 +86,6 @@ namespace InfinityEngine.Graphics.RDG
     {
         public DescType desc;
         public ResType resource;
-
 
         protected FRDGResource()
         {

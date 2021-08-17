@@ -2,21 +2,21 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public abstract class FRHIResourcePool<Type> where Type : class
+    public abstract class FRHIResourceCache<Type> where Type : class
     {
         protected Dictionary<int, List<Type>> m_ResourcePool = new Dictionary<int, List<Type>>(64);
         abstract protected void ReleaseInternalResource(Type res);
         abstract protected string GetResourceName(Type res);
         abstract protected string GetResourceTypeName();
 
-        public bool Pull(int hashCode, out Type resource)
+        public bool Pull(in int hashCode, out Type resource)
         {
             if (m_ResourcePool.TryGetValue(hashCode, out var list) && list.Count > 0)
             {
-                resource = list[0];
-                list.RemoveAt(0);
-                //resource = list[list.Count - 1];
-                //list.RemoveAt(list.Count - 1);
+                /*resource = list[0];
+                list.RemoveAt(0);*/
+                resource = list[list.Count - 1];
+                list.RemoveAt(list.Count - 1);
                 return true;
             }
 
@@ -24,7 +24,7 @@ namespace InfinityEngine.Graphics.RHI
             return false;
         }
 
-        public void Push(int hash, Type resource)
+        public void Push(in int hash, Type resource)
         {
             if (!m_ResourcePool.TryGetValue(hash, out var list))
             {
@@ -35,7 +35,7 @@ namespace InfinityEngine.Graphics.RHI
             list.Add(resource);
         }
 
-        public void Cleanup()
+        public void Dispose()
         {
             foreach (var kvp in m_ResourcePool)
             {
@@ -47,7 +47,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIBufferPool : FRHIResourcePool<FRHIBuffer>
+    public class FRHIBufferCache : FRHIResourceCache<FRHIBuffer>
     {
         protected override void ReleaseInternalResource(FRHIBuffer rhiBuffer)
         {
@@ -65,7 +65,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHITexturePool : FRHIResourcePool<FRHITexture>
+    public class FRHITextureCache : FRHIResourceCache<FRHITexture>
     {
         protected override void ReleaseInternalResource(FRHITexture rhiTexture)
         {
@@ -80,6 +80,62 @@ namespace InfinityEngine.Graphics.RHI
         override protected string GetResourceTypeName()
         {
             return "Texture";
+        }
+    }
+
+    public class FRHIResourcePool
+    {
+        FRHIBufferCache m_BufferPool;
+        FRHITextureCache m_TexturePool;
+
+        public FRHIResourcePool()
+        {
+            m_BufferPool = new FRHIBufferCache();
+            m_TexturePool = new FRHITextureCache();
+        }
+
+        public FRHIBufferRef AllocateBuffer(in FRHIBufferDescription description)
+        {
+            FRHIBuffer buffer;
+            int handle = description.GetHashCode();
+
+            if (!m_BufferPool.Pull(handle, out buffer))
+            {
+                //buffer = new ComputeBuffer(description.count, description.stride, description.type);
+                buffer.name = description.name;
+            }
+
+            return new FRHIBufferRef(handle, buffer);
+        }
+
+        public void ReleaseBuffer(in FRHIBufferRef bufferRef)
+        {
+            m_BufferPool.Push(bufferRef.handle, bufferRef.buffer);
+        }
+
+        public FRHITextureRef AllocateTexture(in FRHITextureDescription description)
+        {
+            FRHITexture texture;
+            int handle = description.GetHashCode();
+
+            if (!m_TexturePool.Pull(handle, out texture))
+            {
+                //texture = RTHandles.Alloc(description.width, description.height, description.slices, (DepthBits)description.depthBufferBits, description.colorFormat, description.filterMode, description.wrapMode, description.dimension, description.enableRandomWrite,
+                                          //description.useMipMap, description.autoGenerateMips, description.isShadowMap, description.anisoLevel, description.mipMapBias, (MSAASamples)description.msaaSamples, description.bindTextureMS, false, RenderTextureMemoryless.None, description.name);
+            }
+
+            return new FRHITextureRef(handle, texture);
+        }
+
+        public void ReleaseTexture(in FRHITextureRef textureRef)
+        {
+            m_TexturePool.Push(textureRef.handle, textureRef.texture);
+        }
+
+        public void Dispose()
+        {
+            m_BufferPool.Dispose();
+            m_TexturePool.Dispose();
         }
     }
 }
