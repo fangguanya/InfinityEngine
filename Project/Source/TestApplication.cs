@@ -28,9 +28,8 @@ namespace ExampleProject
             Console.WriteLine("Enable Component");
             m_TimeProfiler = new FTimeProfiler();
 
-            /*dataReady = true;
+            dataReady = true;
             readData = new int[10000000];
-
             FGraphicsSystem.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
@@ -44,15 +43,15 @@ namespace ExampleProject
                 buffer.SetData<int>(cmdList, data);
                 graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
-            });*/
+            });
 
-            m_ManageDatas = new int[32768];
-            m_UnsafeDatas = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
+            //m_ManageDatas = new int[32768];
+            //m_UnsafeDatas = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
         }
 
         public override void OnUpdate()
         {
-            /*FGraphicsSystem.EnqueueTask(
+            FGraphicsSystem.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 cmdList.Clear();
@@ -75,16 +74,16 @@ namespace ExampleProject
                 m_TimeProfiler.Stop();
                 graphicsContext.Submit();
                 Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
-            });*/
+            });
 
-            m_TimeProfiler.Restart();
+            //m_TimeProfiler.Restart();
             //RunNative(500, 32768);
-            RunUnsafe(500, 32768);
+            //RunUnsafe(500, 32768);
             //RunManaged(500, 32768);
-            m_TimeProfiler.Stop();
+            //m_TimeProfiler.Stop();
 
             //Console.WriteLine(cpuTimer.GetMillisecond() + "ms");
-            Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
+            //Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
         }
 
         public override void OnDisable()
