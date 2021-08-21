@@ -4,8 +4,8 @@ using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using InfinityEngine.Game.ActorSystem;
 using InfinityEngine.Game.Application;
+using InfinityEngine.Game.ActorFramework;
 using InfinityEngine.Rendering.RenderLoop;
 
 namespace ExampleProject
@@ -88,14 +88,14 @@ namespace ExampleProject
 
         public override void OnDisable()
         {
-            /*FGraphicsSystem.EnqueueTask(
+            FGraphicsSystem.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 fence?.Dispose();
                 buffer?.Dispose();
                 cmdList?.Dispose();
                 Console.WriteLine("Release Proxy");
-            });*/
+            });
 
             Console.WriteLine("Disable Component");
             Marshal.FreeHGlobal((IntPtr)m_UnsafeDatas);

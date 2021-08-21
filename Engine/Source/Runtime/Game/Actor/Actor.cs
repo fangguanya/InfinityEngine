@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Mathmatics;
 
-namespace InfinityEngine.Game.ActorSystem
+namespace InfinityEngine.Game.ActorFramework
 {
     [Serializable]
     public class AActor : UObject, IComparable<AActor>, IEquatable<AActor>

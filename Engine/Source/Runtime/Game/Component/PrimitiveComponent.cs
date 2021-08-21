@@ -1,11 +1,6 @@
-﻿using System;
-using InfinityEngine.Core.Object;
-using InfinityEngine.Game.System;
-using InfinityEngine.Graphics.RHI;
-using InfinityEngine.Game.ActorSystem;
-using InfinityEngine.Rendering.RenderLoop;
+﻿using InfinityEngine.Core.Object;
 
-namespace InfinityEngine.Game.Component
+namespace InfinityEngine.Game.ActorFramework
 {
     public class FPrimitiveProxy : FDisposable
     {
