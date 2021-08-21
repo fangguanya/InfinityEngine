@@ -134,11 +134,10 @@ namespace ExampleProject
     }
 
     [Serializable]
-    public class TestActor : AActor
+    public unsafe class TestActor : AActor
     {
         //FTaskHandle m_AsynTaskRef;
         private TestComponent m_Component;
-
         
         public TestActor() : base()
         {
@@ -187,7 +186,7 @@ namespace ExampleProject
         }
     }
 
-    public class TestApplication : FApplication
+    public unsafe class TestApplication : FApplication
     {
         private TestActor m_Actor;
 
