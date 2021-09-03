@@ -18,7 +18,7 @@ namespace InfinityEngine.Graphics.RHI
 
         protected virtual void RequestReadback() { }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             m_Fence?.Dispose();
         }

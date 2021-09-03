@@ -20,7 +20,7 @@ namespace InfinityEngine.Graphics.RHI
             d3dDevice.QueryInterface<ID3D12Device6>();
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             d3dDevice?.Dispose();
             d3dAdapter?.Dispose();

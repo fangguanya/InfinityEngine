@@ -70,7 +70,7 @@ namespace InfinityEngine.Game.Application
             graphicsSystem.Exit();
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             gameSystem?.Dispose();
             physicsSystem?.Dispose();

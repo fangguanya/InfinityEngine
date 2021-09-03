@@ -131,7 +131,7 @@ namespace InfinityEngine.Graphics.RHI
             d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(index), unorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }

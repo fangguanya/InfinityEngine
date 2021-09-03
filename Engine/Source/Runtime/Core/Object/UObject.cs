@@ -17,9 +17,9 @@ namespace InfinityEngine.Core.Object
             this.name = name;
         }
 
-        protected override void Disposed() 
+        protected override void Release() 
         {
-            base.Disposed();
+            base.Release();
         }
     }
 }

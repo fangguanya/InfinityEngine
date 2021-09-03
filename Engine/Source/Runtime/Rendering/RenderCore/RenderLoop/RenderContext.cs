@@ -39,7 +39,7 @@ namespace InfinityEngine.Rendering.RenderLoop
 
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }

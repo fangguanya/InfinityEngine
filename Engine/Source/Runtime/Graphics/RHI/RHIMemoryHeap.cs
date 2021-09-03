@@ -14,7 +14,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }

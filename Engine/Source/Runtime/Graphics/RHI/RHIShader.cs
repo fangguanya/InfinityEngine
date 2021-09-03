@@ -34,7 +34,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }
@@ -47,9 +47,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
-            base.Disposed();
+            base.Release();
         }
     }
 
@@ -61,9 +61,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
-            base.Disposed();
+            base.Release();
         }
     }
 
@@ -74,9 +74,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
-            base.Disposed();
+            base.Release();
         }
     }
 }

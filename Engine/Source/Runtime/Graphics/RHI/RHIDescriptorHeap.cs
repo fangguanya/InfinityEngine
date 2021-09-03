@@ -69,7 +69,7 @@ namespace InfinityEngine.Graphics.RHI
             return d3d12GPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             d3d12CPUDescriptorHeap?.Dispose();
             d3d12GPUDescriptorHeap?.Dispose();

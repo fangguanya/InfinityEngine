@@ -67,7 +67,7 @@ namespace InfinityEngine.Graphics.RHI
             return math.round(timeResult * 100) / 100;
         }
 
-		protected override void Disposed()
+		protected override void Release()
 		{
 			timestamp_Heap?.Dispose();
             timestamp_Result?.Dispose();
@@ -81,7 +81,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }
@@ -148,7 +148,7 @@ namespace InfinityEngine.Graphics.RHI
 			return occlusinResult;
 		}
 
-		protected override void Disposed()
+		protected override void Release()
 		{
 			occlusion_Heap?.Dispose();
 			occlusion_Result?.Dispose();

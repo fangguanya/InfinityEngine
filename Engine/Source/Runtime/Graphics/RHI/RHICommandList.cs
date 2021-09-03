@@ -243,7 +243,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             d3dCmdList?.Dispose();
             d3dCmdAllocator?.Dispose();

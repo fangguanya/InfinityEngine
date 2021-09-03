@@ -29,7 +29,7 @@ namespace InfinityEngine.Game.ActorFramework
 
         public virtual void OnDisable() { }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }

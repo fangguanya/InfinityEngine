@@ -2,27 +2,18 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHIComputePipelineState : FDisposable
+    public struct FRHIComputePipelineState
     {
-        protected override void Disposed()
-        {
 
-        }
     }
 
-    public class FRHIRayTracePipelineState : FDisposable
+    public struct FRHIRayTracePipelineState
     {
-        protected override void Disposed()
-        {
 
-        }
     }
 
-    public class FRHIGraphicsPipelineState : FDisposable
+    public struct FRHIGraphicsPipelineState
     {
-        protected override void Disposed()
-        {
 
-        }
     }
 }

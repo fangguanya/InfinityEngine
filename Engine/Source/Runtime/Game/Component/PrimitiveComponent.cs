@@ -4,7 +4,7 @@ namespace InfinityEngine.Game.ActorFramework
 {
     public class FPrimitiveProxy : FDisposable
     {
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }

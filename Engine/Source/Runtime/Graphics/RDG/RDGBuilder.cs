@@ -107,7 +107,7 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             m_Resources.Dispose();
             m_BufferScope.Clear();

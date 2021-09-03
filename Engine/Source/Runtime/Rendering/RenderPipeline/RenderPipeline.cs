@@ -20,7 +20,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         public abstract void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 
-        protected override void Disposed()
+        protected override void Release()
         {
             graphBuilder?.Dispose();
         }

@@ -57,7 +57,7 @@ namespace InfinityEngine.Game.System
             gameEndFunc();
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }

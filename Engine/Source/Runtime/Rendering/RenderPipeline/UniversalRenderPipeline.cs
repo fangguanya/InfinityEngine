@@ -60,9 +60,9 @@ namespace InfinityEngine.Rendering.RenderPipeline
             Console.WriteLine(timeProfiler.milliseconds + "ms");*/
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
-            base.Disposed();
+            base.Release();
             //fence?.Dispose();
             //buffer?.Dispose();
             //cmdList?.Dispose();

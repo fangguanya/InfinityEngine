@@ -43,7 +43,7 @@ namespace InfinityEngine.Graphics.RHI
             d3d12CmdQueue.Wait(d3dFence, fenceValue);
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             d3dFence?.Dispose();
         }

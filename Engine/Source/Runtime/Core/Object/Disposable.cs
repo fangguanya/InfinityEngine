@@ -17,13 +17,13 @@ namespace InfinityEngine.Core.Object
             Finalizer();
         }
 
-        protected virtual void Disposed() { }
+        protected virtual void Release() { }
 
         private void Finalizer()
         {
             if (!bDisposed)
             {
-                Disposed();
+                Release();
             }
 
             bDisposed = true;

@@ -45,7 +45,7 @@ namespace InfinityEngine.Graphics.RHI
             m_Fence.WaitOnCPU(m_FenceEvent);
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             m_Fence?.Dispose();
             d3dCmdQueue?.Dispose();

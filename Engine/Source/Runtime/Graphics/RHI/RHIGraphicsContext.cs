@@ -258,7 +258,7 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHIResourceViewRange(device, cbvSrvUavDescriptorFactory, count);
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             device?.Dispose();
             copyCommands?.Dispose();

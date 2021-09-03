@@ -187,7 +187,7 @@ namespace InfinityEngine.Graphics.RHI
             this.useFlag = useFlag;
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
             uploadResource?.Dispose();
             defaultResource?.Dispose();
@@ -392,9 +392,9 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
-            base.Disposed();
+            base.Release();
         }
     }
 
@@ -480,9 +480,9 @@ namespace InfinityEngine.Graphics.RHI
             this.resourceType = EResourceType.Texture;
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
-            base.Disposed();
+            base.Release();
         }
     }
 

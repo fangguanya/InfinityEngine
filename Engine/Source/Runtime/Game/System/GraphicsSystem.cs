@@ -83,7 +83,7 @@ namespace InfinityEngine.Game.System
             graphicsContext?.Dispose();
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }

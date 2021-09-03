@@ -41,7 +41,7 @@ namespace InfinityEngine.Game.System
             bLoopExit = true;
         }
 
-        protected override void Disposed()
+        protected override void Release()
         {
 
         }
