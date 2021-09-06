@@ -40,7 +40,7 @@ namespace ExampleProject
                 cmdList.Clear();
                 int[] data = new int[10000000];
                 for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
-                buffer.SetData<int>(cmdList, data);
+                buffer.SetData(cmdList, data);
                 graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
             });
@@ -65,10 +65,9 @@ namespace ExampleProject
                     //graphicsContext.WaitFence(EContextType.Graphics, fence);
                 }
 
-                dataReady = fence.Completed();
-                if (dataReady)
+                if (dataReady = fence.Completed())
                 {
-                    buffer.GetData<int>(readData);
+                    buffer.GetData(readData);
                 }
 
                 m_TimeProfiler.Stop();

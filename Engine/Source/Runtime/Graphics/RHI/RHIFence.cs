@@ -6,8 +6,8 @@ namespace InfinityEngine.Graphics.RHI
 {
     public class FRHIFence : FDisposable
     {
-        private ulong fenceValue;
-        private ID3D12Fence d3dFence;
+        internal ulong fenceValue;
+        internal ID3D12Fence d3dFence;
 
         internal FRHIFence(ID3D12Device6 d3dDevice) : base()
         {
