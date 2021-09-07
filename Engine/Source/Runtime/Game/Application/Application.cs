@@ -1,35 +1,28 @@
-﻿using System;
-using System.Threading;
-using InfinityEngine.Core.Object;
+﻿using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
-using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Game.Application
 {
-    [Serializable]
     public abstract partial class FApplication : FDisposable
     {
         internal static readonly string WndClassName = "InfinityApp";
 
         internal WNDPROC wndProc;
-        internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
         internal FWindow mainWindow { get; private set; }
+        internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
 
-        internal FTimeProfiler timeProfiler;
+        private AutoResetEvent renderEvent;
 
         internal FGameSystem gameSystem;
         internal FPhysicsSystem physicsSystem;
         internal FGraphicsSystem graphicsSystem;
 
-        private AutoResetEvent renderEvent;
-
         public FApplication(string Name, int Width, int Height)
         {
             renderEvent = new AutoResetEvent(false);
-            timeProfiler = new FTimeProfiler();
             gameSystem = new FGameSystem(End, Play, Tick, renderEvent);
             physicsSystem = new FPhysicsSystem();
             graphicsSystem = new FGraphicsSystem(renderEvent);
@@ -50,9 +43,6 @@ namespace InfinityEngine.Game.Application
 
         private void PlatformRun()
         {
-            timeProfiler.Reset();
-            timeProfiler.Start();
-
             gameSystem.Start();
             physicsSystem.Start();
             graphicsSystem.Start();
@@ -62,12 +52,11 @@ namespace InfinityEngine.Game.Application
         private void PlatformExit()
         {
             gameSystem.Exit();
-            mainWindow.Destroy();
-
             physicsSystem.Wiat();
             physicsSystem.Exit();
             graphicsSystem.Wiat();
             graphicsSystem.Exit();
+            mainWindow.Destroy();
         }
 
         protected override void Release()
