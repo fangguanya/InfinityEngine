@@ -93,11 +93,11 @@ namespace ExampleProject
                 fence?.Dispose();
                 buffer?.Dispose();
                 cmdList?.Dispose();
-                Console.WriteLine("Release Proxy");
+                Console.WriteLine("Release RenderProxy");
             });
 
             Console.WriteLine("Disable Component");
-            Marshal.FreeHGlobal((IntPtr)m_UnsafeDatas);
+            //Marshal.FreeHGlobal((IntPtr)m_UnsafeDatas);
         }
 
         private void RunNative(in int count, in int length)

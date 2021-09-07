@@ -7,18 +7,20 @@ namespace InfinityEngine.Rendering.RenderPipeline
 {
     public class FUniversalRenderPipeline : FRenderPipeline
     {
-        //FRHIFence fence;
-        //FRHIBuffer buffer;
-        //FRHICommandList cmdList;
+        /*FRHIFence fence;
+        FRHIBuffer buffer;
+        FRHICommandList cmdList;
 
-        //bool dataReady;
-        //int[] readData;
-        //FTimeProfiler timeProfiler;
+        bool dataReady;
+        int[] readData;
+        FTimeProfiler timeProfiler;*/
 
         public FUniversalRenderPipeline(string pipelineName) : base(pipelineName) { }
 
         public override void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
+            Console.WriteLine("Initialize RenderPipeline");
+
             /*dataReady = true;
             timeProfiler = new FTimeProfiler();
 
@@ -38,11 +40,11 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         public override void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
-            /*cmdList.Clear();
-            timeProfiler.Restart();
+            /*timeProfiler.Restart();
 
             if (dataReady)
             {
+                cmdList.Clear();
                 buffer.RequestReadback<int>(cmdList);
                 graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
                 graphicsContext.WritFence(EContextType.Copy, fence);
@@ -55,18 +57,18 @@ namespace InfinityEngine.Rendering.RenderPipeline
                 buffer.GetData<int>(readData);
             }
 
-            graphicsContext.Submit();
             timeProfiler.Stop();
+            graphicsContext.Submit();
             Console.WriteLine(timeProfiler.milliseconds + "ms");*/
         }
 
         protected override void Release()
         {
             base.Release();
-            //fence?.Dispose();
-            //buffer?.Dispose();
-            //cmdList?.Dispose();
-            Console.WriteLine("Release Pipeline");
+            /*fence?.Dispose();
+            buffer?.Dispose();
+            cmdList?.Dispose();*/
+            Console.WriteLine("Release RenderPipeline");
         }
     }
 }

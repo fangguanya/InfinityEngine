@@ -51,29 +51,33 @@ namespace InfinityEngine.Game.System
             GraphicsTasks.Enqueue(graphicsTask);
         }
 
-        private void ProcessGraphicsTasks()
+        internal void GraphicsFunc()
         {
-            if(GraphicsTasks.Count == 0) { return; }
+            renderPipeline.Init(renderContext, graphicsContext);
+            //graphicsContext.WaitGPU();
+
+            while (!bLoopExit)
+            {
+                ProcessGraphicsTasks();
+
+                renderPipeline.Render(renderContext, graphicsContext);
+                graphicsContext.WaitGPU();
+
+                autoEvent.Set();
+            }
+
+            ProcessGraphicsTasks();
+        }
+
+        internal void ProcessGraphicsTasks()
+        {
+            if (GraphicsTasks.Count == 0) { return; }
 
             for (int i = 0; i < GraphicsTasks.Count; ++i)
             {
                 GraphicsTasks.TryDequeue(out FGraphicsTask graphicsTask);
                 graphicsTask(renderContext, graphicsContext);
             }
-        }
-
-        private void GraphicsFunc()
-        {
-            renderPipeline.Init(renderContext, graphicsContext);
-
-            while (!bLoopExit)
-            {
-                ProcessGraphicsTasks();
-                renderPipeline.Render(renderContext, graphicsContext);
-                autoEvent.Set();
-            }
-
-            ProcessGraphicsTasks();
         }
 
         internal void Exit()

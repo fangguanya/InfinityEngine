@@ -81,29 +81,35 @@ namespace InfinityEngine.Graphics.RHI
             executeInfos.Add(executeInfo);
         }
 
+        public void WaitGPU()
+        {
+            graphicsCommands.Flush();
+        }
+
         public void Submit()
         {
             for(int i = 0; i < executeInfos.Count; ++i)
             {
                 FExecuteInfo executeInfo = executeInfos[i];
+                FRHICommandContext cmdContext = executeInfo.cmdContext;
+
                 switch (executeInfo.executeType)
                 {
                     case EExecuteType.Signal:
-                        executeInfo.cmdContext.SignalQueue(executeInfo.fence);
+                        cmdContext.SignalQueue(executeInfo.fence);
                         break;
 
                     case EExecuteType.Wait:
-                        executeInfo.cmdContext.WaitQueue(executeInfo.fence);
+                        cmdContext.WaitQueue(executeInfo.fence);
                         break;
 
                     case EExecuteType.Execute:
-                        executeInfo.cmdContext.ExecuteQueue(executeInfo.cmdList);
+                        cmdContext.ExecuteQueue(executeInfo.cmdList);
                         break;
                 }
             }
 
             executeInfos.Clear();
-            graphicsCommands.Flush();
         }
 
         public FRHICommandList CreateCmdList(string name, EContextType contextType)
