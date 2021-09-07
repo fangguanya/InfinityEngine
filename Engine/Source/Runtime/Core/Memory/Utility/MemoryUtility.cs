@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace InfinityEngine.Core.Native.Utility
+namespace InfinityEngine.Core.Memory
 {
-    public static class FMemoryExtensions
+    public static class FMemoryUtility
     {
         public static void CopyMemory(IntPtr dest, IntPtr src, int sizeInBytesToCopy)
         {

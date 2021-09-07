@@ -2,9 +2,9 @@
 using Vortice.DXGI;
 using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
+using InfinityEngine.Core.Memory;
 using InfinityEngine.Core.Mathmatics;
 using System.Runtime.CompilerServices;
-using InfinityEngine.Core.Native.Utility;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -322,6 +322,40 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
+        public void SetData<T>(params T[] data) where T : struct
+        {
+            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
+            {
+                IntPtr uploadResourcePtr = uploadResource.Map(0);
+                data.AsSpan().CopyTo(uploadResourcePtr);
+                uploadResource.Unmap(0);
+            }
+        }
+
+        public void SetData<T>(ID3D12GraphicsCommandList5 d3dCmdList, params T[] data) where T : struct
+        {
+            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
+            {
+                IntPtr uploadResourcePtr = uploadResource.Map(0);
+                data.AsSpan().CopyTo(uploadResourcePtr);
+                uploadResource.Unmap(0);
+
+                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+            }
+        }
+
+        public void RequestUpload<T>(ID3D12GraphicsCommandList5 d3dCmdList) where T : struct
+        {
+            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
+            {
+                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+            }
+        }
+
         public void GetData<T>(T[] data) where T : struct
         {
             if (useFlag == EUseFlag.CPURead || useFlag == EUseFlag.CPURW)
@@ -355,40 +389,6 @@ namespace InfinityEngine.Graphics.RHI
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
                 d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
-            }
-        }
-
-        public void SetData<T>(params T[] data) where T : struct
-        {
-            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
-            {
-                IntPtr uploadResourcePtr = uploadResource.Map(0);
-                data.AsSpan().CopyTo(uploadResourcePtr);
-                uploadResource.Unmap(0);
-            }
-        }
-
-        public void SetData<T>(ID3D12GraphicsCommandList5 d3dCmdList, params T[] data) where T : struct
-        {
-            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW) 
-            {
-                IntPtr uploadResourcePtr = uploadResource.Map(0);
-                data.AsSpan().CopyTo(uploadResourcePtr);
-                uploadResource.Unmap(0);
-
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
-            }
-        }
-
-        public void RequestUpload<T>(ID3D12GraphicsCommandList5 d3dCmdList) where T : struct
-        {
-            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
-            {
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 
