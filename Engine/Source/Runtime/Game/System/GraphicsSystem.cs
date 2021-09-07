@@ -76,7 +76,9 @@ namespace InfinityEngine.Game.System
             for (int i = 0; i < GraphicsTasks.Count; ++i)
             {
                 GraphicsTasks.TryDequeue(out FGraphicsTask graphicsTask);
-                graphicsTask(renderContext, graphicsContext);
+                #pragma warning disable CS8602
+                graphicsTask(renderContext, graphicsContext); // 解引用可能出现空引用。
+                #pragma warning restore CS8602
             }
         }
 
