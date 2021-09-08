@@ -19,8 +19,8 @@ namespace ExampleProject
         FRHIBuffer buffer;
         FRHICommandList cmdList;
 
-        private int* m_UnsafeDatas;
-        private int[] m_ManageDatas;
+        //private int* m_UnsafeDatas;
+        //private int[] m_ManageDatas;
         private FTimeProfiler m_TimeProfiler;
 
         public override void OnEnable()
@@ -96,39 +96,40 @@ namespace ExampleProject
                 Console.WriteLine("Release RenderProxy");
             });
 
+            //m_ManageDatas = null;
             Console.WriteLine("Disable Component");
             //Marshal.FreeHGlobal((IntPtr)m_UnsafeDatas);
         }
 
         private void RunNative(in int count, in int length)
         {
-            CPUTimer.DoTask(m_UnsafeDatas, count, length);
+            //CPUTimer.DoTask(m_UnsafeDatas, count, length);
         }
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RunUnsafe(in int count, in int length)
         {
-            for (int i = 0; i < count; ++i)
+            /*for (int i = 0; i < count; ++i)
             {
                 for (int j = 0; j < length; ++j)
                 {
                     ref int unsafeData = ref m_UnsafeDatas[j];
                     unsafeData = i * j;
                 }
-            }
+            }*/
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RunManaged(in int count, in int length)
         {
-            for (int i = 0; i < count; ++i)
+            /*for (int i = 0; i < count; ++i)
             {
                 for (int j = 0; j < length; ++j)
                 {
                     ref int manageData = ref m_ManageDatas[j];
                     manageData = i * j;
                 }
-            }
+            }*/
         }
     }
 
