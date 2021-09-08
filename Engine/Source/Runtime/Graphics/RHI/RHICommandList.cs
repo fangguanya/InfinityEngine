@@ -200,17 +200,17 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetDepthBounds(float min, float max)
+        public void SetDepthBounds(in float min, in float max)
         {
 
         }
 
-        public void SetShadingRate(ShadingRate shadingRate, ShadingRateCombiner[] combineMathdo)
+        public void SetShadingRate(in ShadingRate shadingRate, in ShadingRateCombiner[] combineMathdo)
         {
             d3dCmdList.RSSetShadingRate(shadingRate, combineMathdo);
         }
 
-        public void SetShadingRateIndirect(FRHITexture indirectTexture)
+        public void SetShadingRate(FRHITexture indirectTexture)
         {
             d3dCmdList.RSSetShadingRateImage(indirectTexture.defaultResource);
         }
@@ -233,7 +233,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void DrawMultiInstance(FRHIBuffer cmdsBuffer, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
+        public void DrawMultiInstance(FRHIBuffer cmdBuffer, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
         {
 
         }
