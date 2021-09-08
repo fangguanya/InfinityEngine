@@ -51,16 +51,6 @@ namespace InfinityEngine.Graphics.RHI
             return commands;
         }
 
-        public void ExecuteCmdList(in EContextType contextType, FRHICommandList cmdList)
-        {
-            FExecuteInfo executeInfo;
-            executeInfo.fence = null;
-            executeInfo.cmdList = cmdList;
-            executeInfo.executeType = EExecuteType.Execute;
-            executeInfo.cmdContext = SelectContext(contextType);
-            executeInfos.Add(executeInfo);
-        }
-
         public void WritFence(in EContextType contextType, FRHIFence fence)
         {
             FExecuteInfo executeInfo;
@@ -81,9 +71,14 @@ namespace InfinityEngine.Graphics.RHI
             executeInfos.Add(executeInfo);
         }
 
-        public void WaitGPU()
+        public void ExecuteCommandList(in EContextType contextType, FRHICommandList cmdList)
         {
-            graphicsCommands.Flush();
+            FExecuteInfo executeInfo;
+            executeInfo.fence = null;
+            executeInfo.cmdList = cmdList;
+            executeInfo.executeType = EExecuteType.Execute;
+            executeInfo.cmdContext = SelectContext(contextType);
+            executeInfos.Add(executeInfo);
         }
 
         public void Submit()
@@ -112,7 +107,12 @@ namespace InfinityEngine.Graphics.RHI
             executeInfos.Clear();
         }
 
-        public FRHICommandList CreateCmdList(string name, EContextType contextType)
+        public void WaitGPU()
+        {
+            graphicsCommands.Flush();
+        }
+
+        public FRHICommandList CreateCommandList(string name, EContextType contextType)
         {
             FRHICommandList cmdList = new FRHICommandList(name, device, contextType);
             cmdList.Close();
@@ -174,9 +174,9 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public FRHIBuffer CreateBuffer(in ulong count, in ulong stride, in EUseFlag useFlag, in EBufferType bufferType)
+        public FRHIBuffer CreateBuffer(in ulong count, in ulong stride, in EUseFlag useFlag, in EModeFlag modeFlag = EModeFlag.Dynamic, in EBufferType bufferType = EBufferType.Structured)
         {
-            FRHIBuffer buffer = new FRHIBuffer(device, useFlag, bufferType, count, stride);
+            FRHIBuffer buffer = new FRHIBuffer(device, useFlag, modeFlag, bufferType, count, stride);
             return buffer;
         }
 

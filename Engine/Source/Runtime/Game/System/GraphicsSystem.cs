@@ -9,17 +9,25 @@ namespace InfinityEngine.Game.System
 {
     public delegate void FGraphicsTask(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 
+    public static class FGraphics
+    {
+        public static void EnqueueTask(FGraphicsTask graphicsTask)
+        {
+            FGraphicsSystem.GraphicsTasks.Enqueue(graphicsTask);
+        }
+    }
+
     public class FGraphicsSystem : FDisposable
     {
         private bool bLoopExit;
 
         internal Thread renderThread;
-        private AutoResetEvent autoEvent;
+        internal AutoResetEvent autoEvent;
         internal FRenderContext renderContext;
         internal FRenderPipeline renderPipeline;
         internal FRHIGraphicsContext graphicsContext;
 
-        private static ConcurrentQueue<FGraphicsTask> GraphicsTasks;
+        internal static ConcurrentQueue<FGraphicsTask> GraphicsTasks;
 
         internal FGraphicsSystem(AutoResetEvent autoEvent)
         {
@@ -44,11 +52,6 @@ namespace InfinityEngine.Game.System
         {
             bLoopExit = true;
             renderThread.Join();
-        }
-
-        public static void EnqueueTask(FGraphicsTask graphicsTask)
-        {
-            GraphicsTasks.Enqueue(graphicsTask);
         }
 
         internal void GraphicsFunc()

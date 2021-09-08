@@ -1,5 +1,4 @@
-﻿using System;
-using Vortice.DXGI;
+﻿using Vortice.DXGI;
 using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Memory;
@@ -10,36 +9,44 @@ namespace InfinityEngine.Graphics.RHI
 {
     public enum EUseFlag
     {
-        GPURW,
-        CPURW,
-        CPURead,
-        CPUWrite,
+        CPURead = 0x1,
+        CPUWrite = 0x2,
+        GPURead = 0x4,
+        GPUWrite = 0x8
+    };
+
+    public enum EModeFlag
+    {
+        Static = 0,
+        Dynamic = 1
     };
 
     public enum EBufferType
     {
-        Append,
-        Consume,
-        Counter,
-        Constant,
-        Arguments,
-        Structured,
-        ByteAddress,
+        Index = 0,
+        Vertex = 1,
+        Append = 2,
+        Consume = 3,
+        Counter = 4,
+        Constant = 5,
+        Argument = 6,
+        Structured = 7,
+        ByteAddress = 8
     };
 
     public enum ETextureType
     {
-        Tex2D,
-        Tex2DArray,
-        TexCube,
-        TexCubeArray,
-        Tex3D,
+        Tex2D = 0,
+        Tex2DArray = 1,
+        TexCube = 2,
+        TexCubeArray = 3,
+        Tex3D = 4
     };
 
     public enum EResourceType
     {
-        Buffer,
-        Texture,
+        Buffer = 0,
+        Texture = 1
     };
 
     public enum EDepthBits
@@ -233,7 +240,7 @@ namespace InfinityEngine.Graphics.RHI
         internal ulong stride;
         internal EBufferType bufferType;
 
-        internal FRHIBuffer(ID3D12Device6 d3dDevice, in EUseFlag useFlag, in EBufferType bufferType, in ulong count, in ulong stride) : base(useFlag)
+        internal FRHIBuffer(ID3D12Device6 d3dDevice, in EUseFlag useFlag, in EModeFlag modeFlag, in EBufferType bufferType, in ulong count, in ulong stride) : base(useFlag)
         {
             this.count = count;
             this.stride = stride;
@@ -265,8 +272,8 @@ namespace InfinityEngine.Graphics.RHI
             }
             defaultResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperty, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
 
-            // CPUMemory
-            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
+            // Upload
+            if ((useFlag & EUseFlag.CPUWrite) == EUseFlag.CPUWrite)
             {
                 HeapProperties uploadHeapProperty;
                 {
@@ -294,7 +301,7 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             // Readback
-            if (useFlag == EUseFlag.CPURead || useFlag == EUseFlag.CPURW)
+            if ((useFlag & EUseFlag.CPURead) == EUseFlag.CPURead)
             {
                 HeapProperties readbackHeapProperties;
                 {
@@ -324,7 +331,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void SetData<T>(params T[] data) where T : struct
         {
-            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
+            if ((useFlag & EUseFlag.CPUWrite) == EUseFlag.CPUWrite)
             {
                 IntPtr uploadResourcePtr = uploadResource.Map(0);
                 data.AsSpan().CopyTo(uploadResourcePtr);
@@ -334,7 +341,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void SetData<T>(ID3D12GraphicsCommandList5 d3dCmdList, params T[] data) where T : struct
         {
-            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
+            if ((useFlag & EUseFlag.CPUWrite) == EUseFlag.CPUWrite)
             {
                 IntPtr uploadResourcePtr = uploadResource.Map(0);
                 data.AsSpan().CopyTo(uploadResourcePtr);
@@ -348,7 +355,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void RequestUpload<T>(ID3D12GraphicsCommandList5 d3dCmdList) where T : struct
         {
-            if (useFlag == EUseFlag.CPUWrite || useFlag == EUseFlag.CPURW)
+            if ((useFlag & EUseFlag.CPUWrite) == EUseFlag.CPUWrite)
             {
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
                 d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, count * (ulong)Unsafe.SizeOf<T>());
@@ -358,7 +365,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void GetData<T>(T[] data) where T : struct
         {
-            if (useFlag == EUseFlag.CPURead || useFlag == EUseFlag.CPURW)
+            if ((useFlag & EUseFlag.CPURead) == EUseFlag.CPURead)
             {
                 //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
                 IntPtr readbackResourcePtr = readbackResource.Map(0);
@@ -369,7 +376,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void GetData<T>(ID3D12GraphicsCommandList5 d3dCmdList, T[] data) where T : struct
         {
-            if (useFlag == EUseFlag.CPURead || useFlag == EUseFlag.CPURW)
+            if ((useFlag & EUseFlag.CPURead) == EUseFlag.CPURead)
             {
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
                 d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, count * (ulong)Unsafe.SizeOf<T>());
@@ -384,7 +391,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void RequestReadback<T>(ID3D12GraphicsCommandList5 d3dCmdList) where T : struct
         {
-            if (useFlag == EUseFlag.CPURead || useFlag == EUseFlag.CPURW)
+            if ((useFlag & EUseFlag.CPURead) == EUseFlag.CPURead)
             {
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
                 d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, count * (ulong)Unsafe.SizeOf<T>());

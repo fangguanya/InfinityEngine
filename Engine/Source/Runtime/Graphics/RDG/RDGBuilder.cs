@@ -675,9 +675,9 @@ namespace InfinityEngine.Graphics.RDG
 
             if (pass.enableAsyncCompute)
             {
-                graphContext.cmdList = graphContext.graphicsContext.PullCommandList(EContextType.Compute);
+                //graphContext.cmdList = graphContext.graphicsContext.PullCommandList(EContextType.Compute);
             } else {
-                graphContext.cmdList = graphContext.graphicsContext.PullCommandList(EContextType.Graphics);
+                //graphContext.cmdList = graphContext.graphicsContext.PullCommandList(EContextType.Graphics);
             }
 
             // Synchronize with graphics or compute pipe if needed.
@@ -695,14 +695,14 @@ namespace InfinityEngine.Graphics.RDG
             IRDGPass pass = passInfo.pass;
 
             if (passInfo.needGraphicsFence)
-                passInfo.fence = graphContext.graphicsContext.PullGPUFence();
+                //passInfo.fence = graphContext.graphicsContext.PullGPUFence();
 
             // The command list has been filled. We can kick the async task.
             if (pass.enableAsyncCompute)
             {
-                graphContext.graphicsContext.ExecuteCmdList(EContextType.Compute, graphContext.cmdList);
+                graphContext.graphicsContext.ExecuteCommandList(EContextType.Compute, graphContext.cmdList);
             } else {
-                graphContext.graphicsContext.ExecuteCmdList(EContextType.Graphics, graphContext.cmdList);
+                graphContext.graphicsContext.ExecuteCommandList(EContextType.Graphics, graphContext.cmdList);
             }
             
             m_ObjectPool.ReleaseAllTempAlloc();

@@ -30,18 +30,18 @@ namespace ExampleProject
 
             dataReady = true;
             readData = new int[10000000];
-            FGraphicsSystem.EnqueueTask(
+            FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 fence = graphicsContext.CreateFence();
-                buffer = graphicsContext.CreateBuffer(10000000, 4, EUseFlag.CPURW, EBufferType.Structured);
-                cmdList = graphicsContext.CreateCmdList("CmdList", EContextType.Copy);
+                buffer = graphicsContext.CreateBuffer(10000000, 4, EUseFlag.CPURead | EUseFlag.CPUWrite, EModeFlag.Dynamic);
+                cmdList = graphicsContext.CreateCommandList("CommandList", EContextType.Copy);
 
                 cmdList.Clear();
                 int[] data = new int[10000000];
                 for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
                 buffer.SetData(cmdList, data);
-                graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
+                graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
             });
 
@@ -51,7 +51,7 @@ namespace ExampleProject
 
         public override void OnUpdate()
         {
-            FGraphicsSystem.EnqueueTask(
+            FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 cmdList.Clear();
@@ -60,7 +60,7 @@ namespace ExampleProject
                 if (dataReady)
                 {
                     buffer.RequestReadback<int>(cmdList);
-                    graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
+                    graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                     graphicsContext.WritFence(EContextType.Copy, fence);
                     //graphicsContext.WaitFence(EContextType.Graphics, fence);
                 }
@@ -87,7 +87,7 @@ namespace ExampleProject
 
         public override void OnDisable()
         {
-            FGraphicsSystem.EnqueueTask(
+            FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 fence?.Dispose();
