@@ -665,56 +665,53 @@ namespace InfinityEngine.Graphics.RDG
         void PreRenderPassExecute(ref FRDGContext graphContext, in CompiledPassInfo passInfo)
         {
             // TODO RENDERGRAPH merge clear and setup here if possible
-            /*IRDGPass pass = passInfo.pass;
+            IRDGPass pass = passInfo.pass;
 
-            foreach (var BufferHandle in passInfo.resourceCreateList[(int)RDGResourceType.Buffer])
-                m_Resources.CreateRealBuffer(BufferHandle);
+            foreach (var bufferRef in passInfo.resourceCreateList[(int)EResourceType.Buffer])
+                m_Resources.CreateRealBuffer(bufferRef);
 
-            foreach (var texture in passInfo.resourceCreateList[(int)RDGResourceType.Texture])
-                m_Resources.CreateRealTexture(ref graphContext, texture);
-
-            PreRenderPassSetRenderTargets(ref graphContext, passInfo);
-
-            // Flush first the current command buffer on the render context.
-            graphContext.renderContext.ExecuteCommandBuffer(graphContext.cmdBuffer);
-            graphContext.cmdBuffer.Clear();
+            foreach (var textureRef in passInfo.resourceCreateList[(int)EResourceType.Texture])
+                m_Resources.CreateRealTexture(textureRef);
 
             if (pass.enableAsyncCompute)
             {
-                CommandBuffer asyncCmdBuffer = CommandBufferPool.Get(pass.name);
-                asyncCmdBuffer.SetExecutionFlags(CommandBufferExecutionFlags.AsyncCompute);
-                graphContext.cmdBuffer = asyncCmdBuffer;
+                graphContext.cmdList = graphContext.graphicsContext.PullCommandList(EContextType.Compute);
+            } else {
+                graphContext.cmdList = graphContext.graphicsContext.PullCommandList(EContextType.Graphics);
             }
 
             // Synchronize with graphics or compute pipe if needed.
             if (passInfo.syncToPassIndex != -1)
             {
-                graphContext.cmdBuffer.WaitOnAsyncGraphicsFence(m_CompiledPassInfos[passInfo.syncToPassIndex].fence);
-            }*/
+                graphContext.graphicsContext.WaitFence(EContextType.Graphics, m_CompiledPassInfos[passInfo.syncToPassIndex].fence);
+            }
+
+            // Auto bind render target
+            PreRenderPassSetRenderTargets(ref graphContext, passInfo);
         }
 
         void PostRenderPassExecute(ref FRDGContext graphContext, ref CompiledPassInfo passInfo)
         {
-            /*IRDGPass pass = passInfo.pass;
+            IRDGPass pass = passInfo.pass;
 
             if (passInfo.needGraphicsFence)
-                passInfo.fence = graphContext.cmdBuffer.CreateAsyncGraphicsFence();
+                passInfo.fence = graphContext.graphicsContext.PullGPUFence();
 
+            // The command list has been filled. We can kick the async task.
             if (pass.enableAsyncCompute)
             {
-                // The command buffer has been filled. We can kick the async task.
-                graphContext.renderContext.ExecuteCommandBufferAsync(graphContext.cmdBuffer, ComputeQueueType.Background);
-                CommandBufferPool.Release(graphContext.cmdBuffer);
-                graphContext.cmdBuffer = cmdBuffer; // Restore the main command buffer.
+                graphContext.graphicsContext.ExecuteCmdList(EContextType.Compute, graphContext.cmdList);
+            } else {
+                graphContext.graphicsContext.ExecuteCmdList(EContextType.Graphics, graphContext.cmdList);
             }
-
+            
             m_ObjectPool.ReleaseAllTempAlloc();
 
-            foreach (var buffer in passInfo.resourceReleaseList[(int)RDGResourceType.Buffer])
-                m_Resources.ReleaseRealBuffer(buffer);
+            foreach (var bufferRef in passInfo.resourceReleaseList[(int)EResourceType.Buffer])
+                m_Resources.ReleaseRealBuffer(bufferRef);
 
-            foreach (var texture in passInfo.resourceReleaseList[(int)RDGResourceType.Texture])
-                m_Resources.ReleaseRealTexture(texture);*/
+            foreach (var textureRef in passInfo.resourceReleaseList[(int)EResourceType.Texture])
+                m_Resources.ReleaseRealTexture(textureRef);
 
         }
 
