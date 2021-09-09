@@ -180,7 +180,7 @@ namespace InfinityEngine.Graphics.RHI
             return buffer;
         }
 
-        public FRHITexture CreateTexture(in EUsageType useFlag, in FRHITextureDescription textureDescription)
+        public FRHITexture CreateTexture(in FRHITextureDescription textureDescription, in EUsageType useFlag)
         {
             FRHITexture texture = new FRHITexture(device, useFlag, textureDescription);
             return texture;
