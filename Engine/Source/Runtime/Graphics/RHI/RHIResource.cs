@@ -200,19 +200,19 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHIBufferDescription
     {
+        public ulong count;
+        public ulong stride;
         public string name;
-        public int count;
-        public int stride;
         public EBufferType type;
 
-        public FRHIBufferDescription(int count, int stride) : this()
+        public FRHIBufferDescription(in ulong count, in ulong stride) : this()
         {
             this.count = count;
             this.stride = stride;
             type = EBufferType.Structured;
         }
 
-        public FRHIBufferDescription(int count, int stride, EBufferType type) : this()
+        public FRHIBufferDescription(in ulong count, in ulong stride, in EBufferType type) : this()
         {
             this.type = type;
             this.count = count;
@@ -222,9 +222,9 @@ namespace InfinityEngine.Graphics.RHI
         public override int GetHashCode()
         {
             int hashCode = 0;
-            hashCode += count;
-            hashCode += stride;
             hashCode += (int)type;
+            hashCode += count.GetHashCode();
+            hashCode += stride.GetHashCode();
 
             return hashCode;
         }
@@ -236,11 +236,11 @@ namespace InfinityEngine.Graphics.RHI
         internal ulong stride;
         internal EBufferType bufferType;
 
-        internal FRHIBuffer(ID3D12Device6 d3dDevice, in EUsageType useFlag, in EBufferType bufferType, in ulong count, in ulong stride) : base(useFlag)
+        internal FRHIBuffer(ID3D12Device6 d3dDevice, in EUsageType useFlag, in FRHIBufferDescription bufferDescription) : base(useFlag)
         {
-            this.count = count;
-            this.stride = stride;
-            this.bufferType = bufferType;
+            this.count = bufferDescription.count;
+            this.stride = bufferDescription.stride;
+            this.bufferType = bufferDescription.type;
             this.resourceType = EResourceType.Buffer;
 
             // GPUMemory
@@ -418,39 +418,24 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHITextureDescription
     {
-        public string name;
         public int width;
         public int height;
         public int slices;
-        public EDepthBits depthBufferBits;
-        public EGraphicsFormat colorFormat;
-        public EFilterMode filterMode;
-        public EWrapMode wrapMode;
+        public string name;
         public ETextureType type;
-        public bool enableRandomWrite;
+        public EGraphicsFormat colorFormat;
         public bool useMipMap;
-        public bool autoGenerateMips;
-        public bool isShadowMap;
         public int anisoLevel;
         public float mipMapBias;
         public bool enableMSAA;
-        public bool bindTextureMS;
         public EMSAASample msaaSample;
-        public bool clearBuffer;
-        public float4 clearColor;
 
-        public FRHITextureDescription(int Width, int Height) : this()
+        public FRHITextureDescription(in int Width, in int Height) : this()
         {
             width = Width;
             height = Height;
             slices = 1;
-
-            isShadowMap = false;
-            enableRandomWrite = false;
-
-            wrapMode = EWrapMode.Repeat;
             msaaSample = EMSAASample.None;
-            depthBufferBits = EDepthBits.None;
         }
 
         public override int GetHashCode()
@@ -460,18 +445,9 @@ namespace InfinityEngine.Graphics.RHI
             hashCode += height;
             hashCode += slices;
             hashCode += mipMapBias.GetHashCode();
-            hashCode += (int)depthBufferBits;
-            hashCode += (int)colorFormat;
-            hashCode += (int)filterMode;
-            hashCode += (int)wrapMode;
             hashCode += (int)type;
             hashCode += anisoLevel;
-            hashCode += (enableRandomWrite ? 1 : 0);
             hashCode += (useMipMap ? 1 : 0);
-            hashCode += (autoGenerateMips ? 1 : 0);
-            hashCode += (isShadowMap ? 1 : 0);
-            hashCode += (bindTextureMS ? 1 : 0);
-
             return hashCode;
         }
     }
@@ -480,9 +456,9 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal ETextureType textureType;
 
-        public FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in ETextureType textureType, in EGraphicsFormat graphicsFormat) : base(useFlag)
+        public FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in FRHITextureDescription textureDescription) : base(useFlag)
         {
-            this.textureType = textureType;
+            this.textureType = textureDescription.type;
             this.resourceType = EResourceType.Texture;
         }
 

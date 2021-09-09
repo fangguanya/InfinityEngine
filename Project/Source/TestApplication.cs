@@ -34,7 +34,8 @@ namespace ExampleProject
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 fence = graphicsContext.CreateFence();
-                buffer = graphicsContext.CreateBuffer(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
+                FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4);
+                buffer = graphicsContext.CreateBuffer(description, EUsageType.Dynamic | EUsageType.Staging);
                 cmdList = graphicsContext.CreateCommandList("CommandList", EContextType.Copy);
 
                 cmdList.Clear();
