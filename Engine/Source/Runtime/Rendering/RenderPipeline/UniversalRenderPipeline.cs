@@ -29,7 +29,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
             for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
 
             fence = graphicsContext.CreateFence();
-            buffer = graphicsContext.CreateBuffer(10000000, 4, EUseFlag.CPURead | EUseFlag.CPUWrite, EModeFlag.Dynamic, EBufferType.Structured);
+            buffer = graphicsContext.CreateBuffer(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
             cmdList = graphicsContext.CreateCmdList("CmdList", EContextType.Copy);
 
             cmdList.Clear();

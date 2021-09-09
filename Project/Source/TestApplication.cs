@@ -34,7 +34,7 @@ namespace ExampleProject
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 fence = graphicsContext.CreateFence();
-                buffer = graphicsContext.CreateBuffer(10000000, 4, EUseFlag.CPURead | EUseFlag.CPUWrite, EModeFlag.Dynamic);
+                buffer = graphicsContext.CreateBuffer(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
                 cmdList = graphicsContext.CreateCommandList("CommandList", EContextType.Copy);
 
                 cmdList.Clear();
@@ -61,7 +61,7 @@ namespace ExampleProject
                 {
                     buffer.RequestReadback<int>(cmdList);
                     graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
-                    graphicsContext.WritFence(EContextType.Copy, fence);
+                    graphicsContext.WriteFence(EContextType.Copy, fence);
                     //graphicsContext.WaitFence(EContextType.Graphics, fence);
                 }
 

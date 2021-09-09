@@ -51,7 +51,7 @@ namespace InfinityEngine.Graphics.RHI
             return commands;
         }
 
-        public void WritFence(in EContextType contextType, FRHIFence fence)
+        public void WriteFence(in EContextType contextType, FRHIFence fence)
         {
             FExecuteInfo executeInfo;
             executeInfo.fence = fence;
@@ -174,13 +174,13 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public FRHIBuffer CreateBuffer(in ulong count, in ulong stride, in EUseFlag useFlag, in EModeFlag modeFlag = EModeFlag.Dynamic, in EBufferType bufferType = EBufferType.Structured)
+        public FRHIBuffer CreateBuffer(in ulong count, in ulong stride, in EUsageType useFlag = EUsageType.Default, in EBufferType bufferType = EBufferType.Structured)
         {
-            FRHIBuffer buffer = new FRHIBuffer(device, useFlag, modeFlag, bufferType, count, stride);
+            FRHIBuffer buffer = new FRHIBuffer(device, useFlag, bufferType, count, stride);
             return buffer;
         }
 
-        public FRHITexture CreateTexture(in EUseFlag useFlag, in ETextureType textureType)
+        public FRHITexture CreateTexture(in EUsageType useFlag, in ETextureType textureType)
         {
             FRHITexture texture = new FRHITexture(device, useFlag, textureType);
             return texture;
