@@ -54,14 +54,7 @@ namespace InfinityEngine.Graphics.RHI
         Depth32 = 32
     }
 
-    public enum EFilterMode
-    {
-        Point = 0,
-        Bilinear = 1,
-        Trilinear = 2
-    }
-
-    public enum ETextureWrapMode
+    public enum EWrapMode
     {
         Clamp = 0,
         Repeat = 1,
@@ -69,7 +62,14 @@ namespace InfinityEngine.Graphics.RHI
         MirrorOnce = 3
     }
 
-    public enum EMSAASamples
+    public enum EFilterMode
+    {
+        Point = 0,
+        Bilinear = 1,
+        Trilinear = 2
+    }
+
+    public enum EMSAASample
     {
         None = 1,
         MSAA2x = 2,
@@ -178,9 +178,9 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHIResource : FDisposable
     {
         public string name;
-        protected EUsageType useFlag;
-        protected Format graphicsFormat;
-        protected EResourceType resourceType;
+        internal EUsageType useFlag;
+        internal EResourceType resourceType;
+        internal EGraphicsFormat graphicsFormat;
         internal ID3D12Resource uploadResource;
         internal ID3D12Resource defaultResource;
         internal ID3D12Resource readbackResource;
@@ -425,7 +425,7 @@ namespace InfinityEngine.Graphics.RHI
         public EDepthBits depthBufferBits;
         public EGraphicsFormat colorFormat;
         public EFilterMode filterMode;
-        public ETextureWrapMode wrapMode;
+        public EWrapMode wrapMode;
         public ETextureType type;
         public bool enableRandomWrite;
         public bool useMipMap;
@@ -435,7 +435,7 @@ namespace InfinityEngine.Graphics.RHI
         public float mipMapBias;
         public bool enableMSAA;
         public bool bindTextureMS;
-        public EMSAASamples msaaSamples;
+        public EMSAASample msaaSample;
         public bool clearBuffer;
         public float4 clearColor;
 
@@ -448,9 +448,9 @@ namespace InfinityEngine.Graphics.RHI
             isShadowMap = false;
             enableRandomWrite = false;
 
-            msaaSamples = EMSAASamples.None;
+            wrapMode = EWrapMode.Repeat;
+            msaaSample = EMSAASample.None;
             depthBufferBits = EDepthBits.None;
-            wrapMode = ETextureWrapMode.Repeat;
         }
 
         public override int GetHashCode()
@@ -480,7 +480,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal ETextureType textureType;
 
-        public FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in ETextureType textureType) : base(useFlag)
+        public FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in ETextureType textureType, in EGraphicsFormat graphicsFormat) : base(useFlag)
         {
             this.textureType = textureType;
             this.resourceType = EResourceType.Texture;

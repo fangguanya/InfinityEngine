@@ -174,15 +174,15 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public FRHIBuffer CreateBuffer(in ulong count, in ulong stride, in EUsageType useFlag = EUsageType.Default, in EBufferType bufferType = EBufferType.Structured)
+        public FRHIBuffer CreateBuffer(in ulong count, in ulong stride, in EUsageType useFlag, in EBufferType bufferType = EBufferType.Structured)
         {
             FRHIBuffer buffer = new FRHIBuffer(device, useFlag, bufferType, count, stride);
             return buffer;
         }
 
-        public FRHITexture CreateTexture(in EUsageType useFlag, in ETextureType textureType)
+        public FRHITexture CreateTexture(in EUsageType useFlag, in ETextureType textureType, in EGraphicsFormat graphicsFormat)
         {
-            FRHITexture texture = new FRHITexture(device, useFlag, textureType);
+            FRHITexture texture = new FRHITexture(device, useFlag, textureType, graphicsFormat);
             return texture;
         }
 
