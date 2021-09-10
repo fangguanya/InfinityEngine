@@ -36,7 +36,7 @@ namespace InfinityEngine.Graphics.RHI
         TexCube = 3,
         TexCubeArray = 4,
         Tex3D = 5,
-        Tex3DSparse = 6,
+        Tex3DSparse = 6
     };
 
     public enum EResourceType
@@ -420,15 +420,13 @@ namespace InfinityEngine.Graphics.RHI
     {
         public int width;
         public int height;
-        public int slices;
+        public ushort slices;
         public string name;
+        public ushort mipLevel;
+        public ushort anisoLevel;
         public ETextureType type;
-        public EGraphicsFormat colorFormat;
-        public bool useMipMap;
-        public int anisoLevel;
-        public float mipMapBias;
-        public bool enableMSAA;
         public EMSAASample msaaSample;
+        public EGraphicsFormat format;
 
         public FRHITextureDescription(in int Width, in int Height) : this()
         {
@@ -444,11 +442,55 @@ namespace InfinityEngine.Graphics.RHI
             hashCode += width;
             hashCode += height;
             hashCode += slices;
-            hashCode += mipMapBias.GetHashCode();
             hashCode += (int)type;
+            hashCode += mipLevel;
             hashCode += anisoLevel;
-            hashCode += (useMipMap ? 1 : 0);
             return hashCode;
+        }
+    }
+
+    internal static class FRHITextureUtility
+    {
+        internal static Format GetNativeFormat(this EGraphicsFormat format)
+        {
+            switch (format)
+            {
+                case EGraphicsFormat.R8_SRGB:
+                    return Format.R8_Typeless;
+                case EGraphicsFormat.R8G8_SRGB:
+                    return Format.R8G8_Typeless;
+                case EGraphicsFormat.R8G8B8A8_SRGB:
+                    return Format.R8G8B8A8_Typeless;
+                case EGraphicsFormat.R8_UNorm:
+                    return Format.R8_Typeless;
+                case EGraphicsFormat.R8G8_UNorm:
+                    return Format.R8G8_Typeless;
+                case EGraphicsFormat.R8G8B8A8_UNorm:
+                    return Format.R8G8B8A8_Typeless;
+            }
+
+            return Format.Unknown;
+        }
+
+        internal static ResourceDimension GetNativeDimension(this ETextureType type)
+        {
+            switch (type)
+            {
+                case ETextureType.Tex2DArray:
+                    return ResourceDimension.Texture2D;
+                case ETextureType.Tex2DSparse:
+                    return ResourceDimension.Texture2D;
+                case ETextureType.Tex3D:
+                    return ResourceDimension.Texture3D;
+                case ETextureType.Tex3DSparse:
+                    return ResourceDimension.Texture3D;
+                case ETextureType.TexCube:
+                    return ResourceDimension.Texture2D;
+                case ETextureType.TexCubeArray:
+                    return ResourceDimension.Texture2D;
+            }
+
+            return ResourceDimension.Texture2D;
         }
     }
 
@@ -456,10 +498,94 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal ETextureType textureType;
 
-        public FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in FRHITextureDescription textureDescription) : base(useFlag)
+        public FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in FRHITextureDescription description) : base(useFlag)
         {
-            this.textureType = textureDescription.type;
+            this.textureType = description.type;
             this.resourceType = EResourceType.Texture;
+
+            // GPUMemory
+            if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic || (useFlag & EUsageType.Default) == EUsageType.Default)
+            {
+                HeapProperties defaultHeapProperty;
+                {
+                    defaultHeapProperty.Type = HeapType.Default;
+                    defaultHeapProperty.CPUPageProperty = CpuPageProperty.Unknown;
+                    defaultHeapProperty.MemoryPoolPreference = MemoryPool.Unknown;
+                    defaultHeapProperty.CreationNodeMask = 1;
+                    defaultHeapProperty.VisibleNodeMask = 1;
+                }
+                ResourceDescription defaultResourceDesc;
+                {
+                    defaultResourceDesc.Dimension = description.type.GetNativeDimension();
+                    defaultResourceDesc.Alignment = 0;
+                    defaultResourceDesc.Width = (ulong)description.width;
+                    defaultResourceDesc.Height = description.height;
+                    defaultResourceDesc.DepthOrArraySize = description.slices;
+                    defaultResourceDesc.MipLevels = description.mipLevel;
+                    defaultResourceDesc.Format = description.format.GetNativeFormat();
+                    defaultResourceDesc.SampleDescription.Count = 1;
+                    defaultResourceDesc.SampleDescription.Quality = 0;
+                    defaultResourceDesc.Flags = ResourceFlags.None;
+                    defaultResourceDesc.Layout = TextureLayout.Unknown;
+                }
+                defaultResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperty, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
+            }
+
+            // UploadMemory
+            if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            {
+                HeapProperties uploadHeapProperty;
+                {
+                    uploadHeapProperty.Type = HeapType.Upload;
+                    uploadHeapProperty.CPUPageProperty = CpuPageProperty.Unknown;
+                    uploadHeapProperty.MemoryPoolPreference = MemoryPool.Unknown;
+                    uploadHeapProperty.CreationNodeMask = 1;
+                    uploadHeapProperty.VisibleNodeMask = 1;
+                }
+                ResourceDescription uploadResourceDesc;
+                {
+                    uploadResourceDesc.Dimension = description.type.GetNativeDimension();
+                    uploadResourceDesc.Alignment = 0;
+                    uploadResourceDesc.Width = (ulong)description.width;
+                    uploadResourceDesc.Height = description.height;
+                    uploadResourceDesc.DepthOrArraySize = description.slices;
+                    uploadResourceDesc.MipLevels = description.mipLevel;
+                    uploadResourceDesc.Format = description.format.GetNativeFormat();
+                    uploadResourceDesc.SampleDescription.Count = 1;
+                    uploadResourceDesc.SampleDescription.Quality = 0;
+                    uploadResourceDesc.Flags = ResourceFlags.None;
+                    uploadResourceDesc.Layout = TextureLayout.Unknown;
+                }
+                uploadResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperty, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
+            }
+
+            // ReadbackMemory
+            if ((useFlag & EUsageType.Staging) == EUsageType.Staging)
+            {
+                HeapProperties readbackHeapProperties;
+                {
+                    readbackHeapProperties.Type = HeapType.Readback;
+                    readbackHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
+                    readbackHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+                    readbackHeapProperties.CreationNodeMask = 1;
+                    readbackHeapProperties.VisibleNodeMask = 1;
+                }
+                ResourceDescription readbackResourceDesc;
+                {
+                    readbackResourceDesc.Dimension = description.type.GetNativeDimension();
+                    readbackResourceDesc.Alignment = 0;
+                    readbackResourceDesc.Width = (ulong)description.width;
+                    readbackResourceDesc.Height = description.height;
+                    readbackResourceDesc.DepthOrArraySize = description.slices;
+                    readbackResourceDesc.MipLevels = description.mipLevel;
+                    readbackResourceDesc.Format = description.format.GetNativeFormat();
+                    readbackResourceDesc.SampleDescription.Count = 1;
+                    readbackResourceDesc.SampleDescription.Quality = 0;
+                    readbackResourceDesc.Flags = ResourceFlags.None;
+                    readbackResourceDesc.Layout = TextureLayout.Unknown;
+                }
+                readbackResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
+            }
         }
 
         protected override void Release()
