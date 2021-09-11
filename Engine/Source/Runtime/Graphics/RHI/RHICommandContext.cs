@@ -15,10 +15,10 @@ namespace InfinityEngine.Graphics.RHI
             m_Fence = new FRHIFence(d3d12Device);
             m_FenceEvent = new AutoResetEvent(false);
 
-            CommandQueueDescription CmdQueueDescription = new CommandQueueDescription();
-            CmdQueueDescription.Type = cmdListType;
-            CmdQueueDescription.Flags = CommandQueueFlags.None;
-            d3dCmdQueue = d3d12Device.CreateCommandQueue<ID3D12CommandQueue>(CmdQueueDescription);
+            CommandQueueDescription queueDescription = new CommandQueueDescription();
+            queueDescription.Type = cmdListType;
+            queueDescription.Flags = CommandQueueFlags.None;
+            d3dCmdQueue = d3d12Device.CreateCommandQueue<ID3D12CommandQueue>(queueDescription);
         }
 
         public static implicit operator ID3D12CommandQueue(FRHICommandContext cmdContext) { return cmdContext.d3dCmdQueue; }

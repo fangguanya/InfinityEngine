@@ -53,10 +53,9 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIRayGenShader : FRHIShader
+    public class FRHIGraphicsShader : FRHIShader
     {
-        //Intersection, AnyHit, ClosestHit, Miss, RayGeneration
-        public FRHIRayGenShader() : base()
+        public FRHIGraphicsShader() : base()
         {
 
         }
@@ -67,9 +66,17 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIGraphicsShader : FRHIShader
+    public enum FRayTracingShaderType
     {
-        public FRHIGraphicsShader() : base()
+        RayGen = 0,
+        RayMiss = 1,
+        RayHitGroup = 2
+    }
+
+    public class FRHIRayTracingShader : FRHIShader
+    {
+        //Intersection, AnyHit, ClosestHit, Miss, RayGeneration
+        public FRHIRayTracingShader() : base()
         {
 
         }

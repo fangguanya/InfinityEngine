@@ -15,8 +15,11 @@ namespace ExampleProject
     {
         bool dataReady;
         int[] readData;
+        float copyTime;
+
         FRHIFence fence;
         FRHIBuffer buffer;
+        FRHITimeQuery timeQuery;
         FRHICommandList cmdList;
 
         //private int* m_UnsafeDatas;
@@ -37,6 +40,7 @@ namespace ExampleProject
                 FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4);
                 buffer = graphicsContext.CreateBuffer(description, EUsageType.Dynamic | EUsageType.Staging);
                 cmdList = graphicsContext.CreateCommandList("CommandList", EContextType.Copy);
+                timeQuery = graphicsContext.CreateTimeQuery(true);
 
                 cmdList.Clear();
                 int[] data = new int[10000000];
@@ -60,20 +64,24 @@ namespace ExampleProject
 
                 if (dataReady)
                 {
+                    timeQuery.Begin(cmdList);
                     buffer.RequestReadback<int>(cmdList);
+                    timeQuery.End(cmdList);
                     graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                     graphicsContext.WriteFence(EContextType.Copy, fence);
                     //graphicsContext.WaitFence(EContextType.Graphics, fence);
                 }
 
-                if (dataReady = fence.Completed())
+                dataReady = fence.Completed();
+                if (dataReady)
                 {
                     buffer.GetData(readData);
+                    copyTime = timeQuery.GetQueryResult(graphicsContext.GetGPUTimeStampFrequency(EContextType.Copy));
                 }
 
                 m_TimeProfiler.Stop();
                 graphicsContext.Submit();
-                Console.WriteLine(m_TimeProfiler.milliseconds + "ms");
+                Console.WriteLine("CPUTime : " + m_TimeProfiler.milliseconds + "ms" + "//" + "GPUTime : " + copyTime + "ms");
             });
 
             //m_TimeProfiler.Restart();
@@ -94,6 +102,7 @@ namespace ExampleProject
                 fence?.Dispose();
                 buffer?.Dispose();
                 cmdList?.Dispose();
+                timeQuery?.Dispose();
                 Console.WriteLine("Release RenderProxy");
             });
 

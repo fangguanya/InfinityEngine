@@ -200,19 +200,13 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHIBufferDescription
     {
+        public string name;
+
         public ulong count;
         public ulong stride;
-        public string name;
         public EBufferType type;
 
-        public FRHIBufferDescription(in ulong count, in ulong stride) : this()
-        {
-            this.count = count;
-            this.stride = stride;
-            type = EBufferType.Structured;
-        }
-
-        public FRHIBufferDescription(in ulong count, in ulong stride, in EBufferType type) : this()
+        public FRHIBufferDescription(in ulong count, in ulong stride, in EBufferType type = EBufferType.Structured) : this()
         {
             this.type = type;
             this.count = count;
@@ -246,13 +240,13 @@ namespace InfinityEngine.Graphics.RHI
             // GPUMemory
             if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic || (useFlag & EUsageType.Default) == EUsageType.Default)
             {
-                HeapProperties defaultHeapProperty;
+                HeapProperties defaultHeapProperties;
                 {
-                    defaultHeapProperty.Type = HeapType.Default;
-                    defaultHeapProperty.CPUPageProperty = CpuPageProperty.Unknown;
-                    defaultHeapProperty.MemoryPoolPreference = MemoryPool.Unknown;
-                    defaultHeapProperty.CreationNodeMask = 1;
-                    defaultHeapProperty.VisibleNodeMask = 1;
+                    defaultHeapProperties.Type = HeapType.Default;
+                    defaultHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
+                    defaultHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+                    defaultHeapProperties.VisibleNodeMask = 1;
+                    defaultHeapProperties.CreationNodeMask = 1;
                 }
                 ResourceDescription defaultResourceDesc;
                 {
@@ -265,22 +259,22 @@ namespace InfinityEngine.Graphics.RHI
                     defaultResourceDesc.Format = Format.Unknown;
                     defaultResourceDesc.SampleDescription.Count = 1;
                     defaultResourceDesc.SampleDescription.Quality = 0;
-                    defaultResourceDesc.Layout = TextureLayout.RowMajor;
                     defaultResourceDesc.Flags = ResourceFlags.None;
+                    defaultResourceDesc.Layout = TextureLayout.RowMajor;
                 }
-                defaultResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperty, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
+                defaultResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
             }
 
             // UploadMemory
             if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                HeapProperties uploadHeapProperty;
+                HeapProperties uploadHeapProperties;
                 {
-                    uploadHeapProperty.Type = HeapType.Upload;
-                    uploadHeapProperty.CPUPageProperty = CpuPageProperty.Unknown;
-                    uploadHeapProperty.MemoryPoolPreference = MemoryPool.Unknown;
-                    uploadHeapProperty.CreationNodeMask = 1;
-                    uploadHeapProperty.VisibleNodeMask = 1;
+                    uploadHeapProperties.Type = HeapType.Upload;
+                    uploadHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
+                    uploadHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+                    uploadHeapProperties.VisibleNodeMask = 1;
+                    uploadHeapProperties.CreationNodeMask = 1;
                 }
                 ResourceDescription uploadResourceDesc;
                 {
@@ -293,10 +287,10 @@ namespace InfinityEngine.Graphics.RHI
                     uploadResourceDesc.Format = Format.Unknown;
                     uploadResourceDesc.SampleDescription.Count = 1;
                     uploadResourceDesc.SampleDescription.Quality = 0;
-                    uploadResourceDesc.Layout = TextureLayout.RowMajor;
                     uploadResourceDesc.Flags = ResourceFlags.None;
+                    uploadResourceDesc.Layout = TextureLayout.RowMajor;
                 }
-                uploadResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperty, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
+                uploadResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
             }
 
             // ReadbackMemory
@@ -307,8 +301,8 @@ namespace InfinityEngine.Graphics.RHI
                     readbackHeapProperties.Type = HeapType.Readback;
                     readbackHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
                     readbackHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
-                    readbackHeapProperties.CreationNodeMask = 1;
                     readbackHeapProperties.VisibleNodeMask = 1;
+                    readbackHeapProperties.CreationNodeMask = 1;
                 }
                 ResourceDescription readbackResourceDesc;
                 {
@@ -321,8 +315,8 @@ namespace InfinityEngine.Graphics.RHI
                     readbackResourceDesc.Format = Format.Unknown;
                     readbackResourceDesc.SampleDescription.Count = 1;
                     readbackResourceDesc.SampleDescription.Quality = 0;
-                    readbackResourceDesc.Layout = TextureLayout.RowMajor;
                     readbackResourceDesc.Flags = ResourceFlags.None;
+                    readbackResourceDesc.Layout = TextureLayout.RowMajor;
                 }
                 readbackResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
             }
@@ -418,22 +412,27 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHITextureDescription
     {
+        public string name;
+
         public int width;
         public int height;
-        public ushort slices;
-        public string name;
+        public int slices;
         public ushort mipLevel;
         public ushort anisoLevel;
         public ETextureType type;
         public EMSAASample msaaSample;
         public EGraphicsFormat format;
 
-        public FRHITextureDescription(in int Width, in int Height) : this()
+        public FRHITextureDescription(in int width, in int height, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType type = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample msaaSample = EMSAASample.None) : this()
         {
-            width = Width;
-            height = Height;
-            slices = 1;
-            msaaSample = EMSAASample.None;
+            this.type = type;
+            this.width = width;
+            this.height = height;
+            this.slices = slices;
+            this.format = format;
+            this.mipLevel = mipLevel;
+            this.msaaSample = msaaSample;
+            this.anisoLevel = anisoLevel;
         }
 
         public override int GetHashCode()
@@ -498,7 +497,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal ETextureType textureType;
 
-        public FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in FRHITextureDescription description) : base(useFlag)
+        internal FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in FRHITextureDescription description) : base(useFlag)
         {
             this.textureType = description.type;
             this.resourceType = EResourceType.Texture;
@@ -506,13 +505,13 @@ namespace InfinityEngine.Graphics.RHI
             // GPUMemory
             if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic || (useFlag & EUsageType.Default) == EUsageType.Default)
             {
-                HeapProperties defaultHeapProperty;
+                HeapProperties defaultHeapProperties;
                 {
-                    defaultHeapProperty.Type = HeapType.Default;
-                    defaultHeapProperty.CPUPageProperty = CpuPageProperty.Unknown;
-                    defaultHeapProperty.MemoryPoolPreference = MemoryPool.Unknown;
-                    defaultHeapProperty.CreationNodeMask = 1;
-                    defaultHeapProperty.VisibleNodeMask = 1;
+                    defaultHeapProperties.Type = HeapType.Default;
+                    defaultHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
+                    defaultHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+                    defaultHeapProperties.VisibleNodeMask = 1;
+                    defaultHeapProperties.CreationNodeMask = 1;
                 }
                 ResourceDescription defaultResourceDesc;
                 {
@@ -520,7 +519,7 @@ namespace InfinityEngine.Graphics.RHI
                     defaultResourceDesc.Alignment = 0;
                     defaultResourceDesc.Width = (ulong)description.width;
                     defaultResourceDesc.Height = description.height;
-                    defaultResourceDesc.DepthOrArraySize = description.slices;
+                    defaultResourceDesc.DepthOrArraySize = (ushort)description.slices;
                     defaultResourceDesc.MipLevels = description.mipLevel;
                     defaultResourceDesc.Format = description.format.GetNativeFormat();
                     defaultResourceDesc.SampleDescription.Count = 1;
@@ -528,19 +527,19 @@ namespace InfinityEngine.Graphics.RHI
                     defaultResourceDesc.Flags = ResourceFlags.None;
                     defaultResourceDesc.Layout = TextureLayout.Unknown;
                 }
-                defaultResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperty, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
+                defaultResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
             }
 
             // UploadMemory
             if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                HeapProperties uploadHeapProperty;
+                HeapProperties uploadHeapProperties;
                 {
-                    uploadHeapProperty.Type = HeapType.Upload;
-                    uploadHeapProperty.CPUPageProperty = CpuPageProperty.Unknown;
-                    uploadHeapProperty.MemoryPoolPreference = MemoryPool.Unknown;
-                    uploadHeapProperty.CreationNodeMask = 1;
-                    uploadHeapProperty.VisibleNodeMask = 1;
+                    uploadHeapProperties.Type = HeapType.Upload;
+                    uploadHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
+                    uploadHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+                    uploadHeapProperties.VisibleNodeMask = 1;
+                    uploadHeapProperties.CreationNodeMask = 1;
                 }
                 ResourceDescription uploadResourceDesc;
                 {
@@ -548,7 +547,7 @@ namespace InfinityEngine.Graphics.RHI
                     uploadResourceDesc.Alignment = 0;
                     uploadResourceDesc.Width = (ulong)description.width;
                     uploadResourceDesc.Height = description.height;
-                    uploadResourceDesc.DepthOrArraySize = description.slices;
+                    uploadResourceDesc.DepthOrArraySize = (ushort)description.slices;
                     uploadResourceDesc.MipLevels = description.mipLevel;
                     uploadResourceDesc.Format = description.format.GetNativeFormat();
                     uploadResourceDesc.SampleDescription.Count = 1;
@@ -556,7 +555,7 @@ namespace InfinityEngine.Graphics.RHI
                     uploadResourceDesc.Flags = ResourceFlags.None;
                     uploadResourceDesc.Layout = TextureLayout.Unknown;
                 }
-                uploadResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperty, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
+                uploadResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
             }
 
             // ReadbackMemory
@@ -567,8 +566,8 @@ namespace InfinityEngine.Graphics.RHI
                     readbackHeapProperties.Type = HeapType.Readback;
                     readbackHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
                     readbackHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
-                    readbackHeapProperties.CreationNodeMask = 1;
                     readbackHeapProperties.VisibleNodeMask = 1;
+                    readbackHeapProperties.CreationNodeMask = 1;
                 }
                 ResourceDescription readbackResourceDesc;
                 {
@@ -576,7 +575,7 @@ namespace InfinityEngine.Graphics.RHI
                     readbackResourceDesc.Alignment = 0;
                     readbackResourceDesc.Width = (ulong)description.width;
                     readbackResourceDesc.Height = description.height;
-                    readbackResourceDesc.DepthOrArraySize = description.slices;
+                    readbackResourceDesc.DepthOrArraySize = (ushort)description.slices;
                     readbackResourceDesc.MipLevels = description.mipLevel;
                     readbackResourceDesc.Format = description.format.GetNativeFormat();
                     readbackResourceDesc.SampleDescription.Count = 1;

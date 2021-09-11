@@ -26,7 +26,7 @@ namespace InfinityEngine.Graphics.RHI
         internal ID3D12GraphicsCommandList5 d3dCmdList;
         internal ID3D12CommandAllocator d3dCmdAllocator;
 
-        public FRHICommandList(string name, ID3D12Device6 d3d12Device, EContextType contextType)
+        internal FRHICommandList(string name, ID3D12Device6 d3d12Device, EContextType contextType)
         {
             this.name = name;
             this.bClose = false;
@@ -135,7 +135,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetRayTracePipelineState(FRHIRayGenShader rayGenShader, FRHIRayTracePipelineState rayTraceState)
+        public void SetRayTracePipelineState(FRHIRayTracingShader rayTracingShader, FRHIRayTracePipelineState rayTraceState)
         {
 
         }
@@ -150,12 +150,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void DispatchRay(FRHIRayGenShader rayGenShader, uint sizeX, uint sizeY, uint sizeZ)
+        public void DispatchRay(FRHIRayTracingShader rayTracingShader, uint sizeX, uint sizeY, uint sizeZ)
         {
 
         }
 
-        public void DispatchRayIndirect(FRHIRayGenShader rayGenShader, FRHIBuffer argsBuffer, uint argsOffset)
+        public void DispatchRayIndirect(FRHIRayTracingShader rayTracingShader, FRHIBuffer argsBuffer, uint argsOffset)
         {
 
         }

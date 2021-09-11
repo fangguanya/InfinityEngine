@@ -112,6 +112,24 @@ namespace InfinityEngine.Graphics.RHI
             graphicsCommands.Flush();
         }
 
+        public float GetGPUTimeStampFrequency(EContextType contextType)
+        {
+            float timestampFrequency = graphicsCommands.d3dCmdQueue.TimestampFrequency;
+
+            switch (contextType)
+            {
+                case EContextType.Copy:
+                    timestampFrequency = copyCommands.d3dCmdQueue.TimestampFrequency;
+                    break;
+
+                case EContextType.Compute:
+                    timestampFrequency = computeCommands.d3dCmdQueue.TimestampFrequency;
+                    break;
+            }
+
+            return timestampFrequency;
+        }
+
         public FRHICommandList CreateCommandList(string name, EContextType contextType)
         {
             FRHICommandList cmdList = new FRHICommandList(name, device, contextType);
@@ -129,9 +147,9 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHIFence(device);
         }
 
-        public FRHITimeQuery CreateTimeQuery()
+        public FRHITimeQuery CreateTimeQuery(in bool copyQueue = false)
         {
-            return new FRHITimeQuery(device);
+            return new FRHITimeQuery(device, copyQueue);
         }
 
         public FRHIOcclusionQuery CreateOcclusionQuery()
@@ -159,14 +177,14 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHIComputePipelineState();
         }
 
-        public FRHIRayTracePipelineState CreateRayTracePipelineState()
-        {
-            return new FRHIRayTracePipelineState();
-        }
-
         public FRHIGraphicsPipelineState CreateGraphicsPipelineState()
         {
             return new FRHIGraphicsPipelineState();
+        }
+
+        public FRHIRayTracePipelineState CreateRayTracePipelineState()
+        {
+            return new FRHIRayTracePipelineState();
         }
 
         public void CreateSamplerState()
@@ -177,12 +195,14 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIBuffer CreateBuffer(in FRHIBufferDescription bufferDescription, in EUsageType useFlag)
         {
             FRHIBuffer buffer = new FRHIBuffer(device, useFlag, bufferDescription);
+            buffer.name = bufferDescription.name;
             return buffer;
         }
 
         public FRHITexture CreateTexture(in FRHITextureDescription textureDescription, in EUsageType useFlag)
         {
             FRHITexture texture = new FRHITexture(device, useFlag, textureDescription);
+            texture.name = textureDescription.name;
             return texture;
         }
 
