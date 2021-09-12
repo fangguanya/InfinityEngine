@@ -92,12 +92,13 @@ namespace InfinityEngine.Graphics.RHI
 
         public void BeginQuery(FRHITimeQuery timeQuery)
         {
-            timeQuery.Begin(d3dCmdList);
+            d3dCmdList.EndQuery(timeQuery.timestamp_Heap, QueryType.Timestamp, 0);
         }
 
         public void EndQuery(FRHITimeQuery timeQuery)
         {
-            timeQuery.End(d3dCmdList);
+            d3dCmdList.EndQuery(timeQuery.timestamp_Heap, QueryType.Timestamp, 1);
+            d3dCmdList.ResolveQueryData(timeQuery.timestamp_Heap, QueryType.Timestamp, 0, 2, timeQuery.timestamp_Result, 0);
         }
 
         public void BeginQuery(FRHIOcclusionQuery occlusionQuery)
@@ -135,7 +136,7 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetRayTracePipelineState(FRHIRayTracingShader rayTracingShader, FRHIRayTracePipelineState rayTraceState)
+        public void SetRayTracePipelineState(FRHIRayTraceShader rayTraceShader, FRHIRayTracePipelineState rayTraceState)
         {
 
         }
@@ -150,12 +151,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void DispatchRay(FRHIRayTracingShader rayTracingShader, uint sizeX, uint sizeY, uint sizeZ)
+        public void DispatchRay(FRHIRayTraceShader rayTraceShader, uint sizeX, uint sizeY, uint sizeZ)
         {
 
         }
 
-        public void DispatchRayIndirect(FRHIRayTracingShader rayTracingShader, FRHIBuffer argsBuffer, uint argsOffset)
+        public void DispatchRayIndirect(FRHIRayTraceShader rayTraceShader, FRHIBuffer argsBuffer, uint argsOffset)
         {
 
         }

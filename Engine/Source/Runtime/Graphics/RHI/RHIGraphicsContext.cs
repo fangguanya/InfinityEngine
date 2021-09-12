@@ -14,6 +14,27 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIGraphicsContext : FDisposable
     {
+        public float copyFrequency
+        {
+            get
+            {
+                return copyCommands.d3dCmdQueue.TimestampFrequency;
+            }
+        }
+        public float computeFrequency
+        {
+            get
+            {
+                return computeCommands.d3dCmdQueue.TimestampFrequency;
+            }
+        }
+        public float graphicsFrequency
+        {
+            get
+            {
+                return graphicsCommands.d3dCmdQueue.TimestampFrequency;
+            }
+        }
         internal FRHIDevice device;
         internal List<FExecuteInfo> executeInfos;
         internal FRHICommandContext copyCommands;
@@ -24,12 +45,10 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIGraphicsContext() : base()
         {
             device = new FRHIDevice();
-
+            executeInfos = new List<FExecuteInfo>(64);
             copyCommands = new FRHICommandContext(device, CommandListType.Copy);
             computeCommands = new FRHICommandContext(device, CommandListType.Compute);
             graphicsCommands = new FRHICommandContext(device, CommandListType.Direct);
-
-            executeInfos = new List<FExecuteInfo>(64);
             cbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
@@ -162,16 +181,6 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHIStatisticsQuery(device);
         }
 
-        public void CreateInputVertexLayout()
-        {
-
-        }
-
-        public void CreateInputResourceLayout()
-        {
-
-        }
-
         public FRHIComputePipelineState CreateComputePipelineState()
         {
             return new FRHIComputePipelineState();
@@ -188,6 +197,16 @@ namespace InfinityEngine.Graphics.RHI
         }
 
         public void CreateSamplerState()
+        {
+
+        }
+
+        public void CreateInputVertexLayout()
+        {
+
+        }
+
+        public void CreateInputResourceLayout()
         {
 
         }

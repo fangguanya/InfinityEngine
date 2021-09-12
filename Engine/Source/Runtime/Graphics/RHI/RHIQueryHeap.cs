@@ -9,8 +9,8 @@ namespace InfinityEngine.Graphics.RHI
 {
 	public class FRHITimeQuery : FDisposable
 	{
-		private ID3D12QueryHeap timestamp_Heap;
-		private ID3D12Resource timestamp_Result;
+		internal ID3D12QueryHeap timestamp_Heap;
+		internal ID3D12Resource timestamp_Result;
 
 		internal FRHITimeQuery(ID3D12Device6 d3dDevice, in bool copyQueue) : base()
 		{

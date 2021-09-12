@@ -66,17 +66,17 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public enum FRayTracingShaderType
+    public enum FRayTraceShaderType
     {
         RayGen = 0,
         RayMiss = 1,
         RayHitGroup = 2
     }
 
-    public class FRHIRayTracingShader : FRHIShader
+    public class FRHIRayTraceShader : FRHIShader
     {
         //Intersection, AnyHit, ClosestHit, Miss, RayGeneration
-        public FRHIRayTracingShader() : base()
+        public FRHIRayTraceShader() : base()
         {
 
         }

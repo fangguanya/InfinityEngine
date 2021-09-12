@@ -64,9 +64,9 @@ namespace ExampleProject
 
                 if (dataReady)
                 {
-                    timeQuery.Begin(cmdList);
+                    cmdList.BeginQuery(timeQuery);
                     buffer.RequestReadback<int>(cmdList);
-                    timeQuery.End(cmdList);
+                    cmdList.EndQuery(timeQuery);
                     graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                     graphicsContext.WriteFence(EContextType.Copy, fence);
                     //graphicsContext.WaitFence(EContextType.Graphics, fence);
@@ -76,7 +76,7 @@ namespace ExampleProject
                 if (dataReady)
                 {
                     buffer.GetData(readData);
-                    copyTime = timeQuery.GetQueryResult(graphicsContext.GetGPUTimeStampFrequency(EContextType.Copy));
+                    copyTime = timeQuery.GetQueryResult(graphicsContext.copyFrequency);
                 }
 
                 m_TimeProfiler.Stop();
