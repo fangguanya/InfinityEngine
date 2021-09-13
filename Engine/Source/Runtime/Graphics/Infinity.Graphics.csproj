@@ -37,8 +37,8 @@
     <PackageReference Include="Vortice.Dxc" Version="1.9.143" />
     <PackageReference Include="Vortice.DXGI" Version="1.9.143" />
     <PackageReference Include="Vortice.Mathematics" Version="1.3.21" />
-    <PackageReference Include="Vortice.Mathematics.PackedVector" Version="1.3.21" />
     <PackageReference Include="Vortice.Vulkan" Version="1.3.34" />
+    <PackageReference Include="WaveEngine.HLSLEverywhere" Version="3.3.0.8524-preview" />
   </ItemGroup>
 
   <ItemGroup>
