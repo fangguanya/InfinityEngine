@@ -116,19 +116,19 @@ namespace InfinityEngine.Graphics.RHI
             return descriptorHandle + d3dDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
         }
 
-        public void SetConstantBufferView(in int index, FRHIConstantBufferView constantBufferView)
+        public void SetConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
         {
-            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(index), constantBufferView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), constantBufferView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
-        public void SetShaderResourceView(in int index, FRHIShaderResourceView shaderResourceView)
+        public void SetShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
         {
-            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(index), shaderResourceView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), shaderResourceView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
-        public void SetUnorderedAccessView(in int index, FRHIUnorderedAccessView unorderedAccessView)
+        public void SetUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
         {
-            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(index), unorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), unorderedAccessView.GetDescriptorHandle(), DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
         protected override void Release()

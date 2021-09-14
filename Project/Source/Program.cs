@@ -64,8 +64,8 @@ namespace ExampleProject
     {
         static void Main(string[] args)
         {
-            TestApplication App = new TestApplication("InfinityExample", 1280, 720);
-            App.Run();
+            /*TestApplication App = new TestApplication("InfinityExample", 1280, 720);
+            App.Run();*/
 
             // TaskExample
             /*int[] IntArray = new int[10];
@@ -204,7 +204,7 @@ namespace ExampleProject
             Console.WriteLine(ShaderSource.Substring(StartIndex, EndIndex - StartIndex));
             Console.ReadKey();*/
 
-            /*string hlslCode = new string(@"cbuffer ParamsBuffer : register(b0)
+            string hlslCode = new string(@"cbuffer ParamsBuffer : register(b0)
             {
 	            uint Samples;
 	            bool IsPathTracing;
@@ -236,8 +236,8 @@ namespace ExampleProject
 
 	            return float4(color, a);
             }");
-            string ShaderCode = WaveEngine.HLSLEverywhere.HLSLTranslator.HLSLTo(hlslCode, WaveEngine.Common.Graphics.ShaderStages.Pixel, WaveEngine.Common.Graphics.GraphicsProfile.Level_12_1, "PS", WaveEngine.HLSLEverywhere.ShadingLanguage.Dxil);
-            */
+            string ShaderCode = WaveEngine.HLSLEverywhere.HLSLTranslator.HLSLTo(hlslCode, WaveEngine.Common.Graphics.ShaderStages.Pixel, WaveEngine.Common.Graphics.GraphicsProfile.Level_12_1, "PS", WaveEngine.HLSLEverywhere.ShadingLanguage.SpirV);
+            Console.ReadKey();
         }
     }
 }
