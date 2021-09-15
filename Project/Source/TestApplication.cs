@@ -19,32 +19,32 @@ namespace ExampleProject
 
         FRHIFence fence;
         FRHIBuffer buffer;
-        FRHITimeQuery timeQuery;
+        FRHITimeQuery query;
         FRHICommandList cmdList;
-
+        FTimeProfiler timeProfiler;
         //private int* m_UnsafeDatas;
         //private int[] m_ManageDatas;
-        private FTimeProfiler m_TimeProfiler;
 
         public override void OnEnable()
         {
             Console.WriteLine("Enable Component");
-            m_TimeProfiler = new FTimeProfiler();
+            timeProfiler = new FTimeProfiler();
 
             dataReady = true;
-            readData = new int[10000000];
+            readData = new int[8400];
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
+                FRHIBufferDescription description = new FRHIBufferDescription(8400, 4, EUsageType.Dynamic | EUsageType.Staging);
+
                 fence = graphicsContext.CreateFence();
-                FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4);
-                buffer = graphicsContext.CreateBuffer(description, EUsageType.Dynamic | EUsageType.Staging);
+                query = graphicsContext.CreateTimeQuery(true);
+                buffer = graphicsContext.CreateBuffer(description);
                 cmdList = graphicsContext.CreateCommandList("CommandList", EContextType.Copy);
-                timeQuery = graphicsContext.CreateTimeQuery(true);
 
                 cmdList.Clear();
-                int[] data = new int[10000000];
-                for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
+                int[] data = new int[8400];
+                for (int i = 0; i < 8400; ++i) { data[i] = 8400 - i; }
                 buffer.SetData(cmdList, data);
                 graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
@@ -59,14 +59,14 @@ namespace ExampleProject
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                cmdList.Clear();
-                m_TimeProfiler.Restart();
+                timeProfiler.Restart();
 
                 if (dataReady)
                 {
-                    cmdList.BeginQuery(timeQuery);
+                    cmdList.Clear();
+                    cmdList.BeginQuery(query);
                     buffer.RequestReadback<int>(cmdList);
-                    cmdList.EndQuery(timeQuery);
+                    cmdList.EndQuery(query);
                     graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                     graphicsContext.WriteFence(EContextType.Copy, fence);
                     //graphicsContext.WaitFence(EContextType.Graphics, fence);
@@ -76,12 +76,14 @@ namespace ExampleProject
                 if (dataReady)
                 {
                     buffer.GetData(readData);
-                    copyTime = timeQuery.GetQueryResult(graphicsContext.copyFrequency);
+                    copyTime = query.GetQueryResult(graphicsContext.copyFrequency);
                 }
 
-                m_TimeProfiler.Stop();
+                timeProfiler.Stop();
                 graphicsContext.Submit();
-                Console.WriteLine("CPUTime : " + m_TimeProfiler.milliseconds + "ms" + "//" + "GPUTime : " + copyTime + "ms");
+                Console.WriteLine("||");
+                Console.WriteLine("GPUTime : " + copyTime + "ms");
+                Console.WriteLine("CPUTime : " + (double)timeProfiler.microseconds / 1000.0f);
             });
 
             //m_TimeProfiler.Restart();
@@ -100,9 +102,9 @@ namespace ExampleProject
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 fence?.Dispose();
+                query?.Dispose();
                 buffer?.Dispose();
                 cmdList?.Dispose();
-                timeQuery?.Dispose();
                 Console.WriteLine("Release RenderProxy");
             });
 
@@ -148,7 +150,7 @@ namespace ExampleProject
     {
         //FTaskHandle m_AsynTaskRef;
         private TestComponent m_Component;
-        
+
         public TestActor() : base()
         {
             m_Component = new TestComponent();
