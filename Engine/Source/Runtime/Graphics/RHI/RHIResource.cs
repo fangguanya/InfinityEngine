@@ -32,11 +32,9 @@ namespace InfinityEngine.Graphics.RHI
     {
         Tex2D = 0,
         Tex2DArray = 1,
-        Tex2DSparse = 2,
-        TexCube = 3,
-        TexCubeArray = 4,
-        Tex3D = 5,
-        Tex3DSparse = 6
+        TexCube = 2,
+        TexCubeArray = 3,
+        Tex3D = 4,
     };
 
     public enum EResourceType
@@ -177,17 +175,13 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIResource : FDisposable
     {
-        public string name;
-        internal EUsageType useFlag;
-        internal EResourceType resourceType;
-        internal EGraphicsFormat graphicsFormat;
         internal ID3D12Resource uploadResource;
         internal ID3D12Resource defaultResource;
         internal ID3D12Resource readbackResource;
 
-        public FRHIResource(in EUsageType useFlag) : base()
+        public FRHIResource() : base()
         {
-            this.useFlag = useFlag;
+
         }
 
         protected override void Release()
@@ -204,11 +198,13 @@ namespace InfinityEngine.Graphics.RHI
 
         public ulong count;
         public ulong stride;
+        public EUsageType flag;
         public EBufferType type;
 
-        public FRHIBufferDescription(in ulong count, in ulong stride, in EBufferType type = EBufferType.Structured) : this()
+        public FRHIBufferDescription(in ulong count, in ulong stride, in EUsageType usageFlag, in EBufferType type = EBufferType.Structured) : this()
         {
             this.type = type;
+            this.flag = usageFlag;
             this.count = count;
             this.stride = stride;
         }
@@ -226,19 +222,14 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIBuffer : FRHIResource
     {
-        internal ulong count;
-        internal ulong stride;
-        internal EBufferType bufferType;
+        internal FRHIBufferDescription description;
 
-        internal FRHIBuffer(ID3D12Device6 d3dDevice, in EUsageType useFlag, in FRHIBufferDescription bufferDescription) : base(useFlag)
+        internal FRHIBuffer(ID3D12Device6 d3dDevice, in FRHIBufferDescription description)
         {
-            this.count = bufferDescription.count;
-            this.stride = bufferDescription.stride;
-            this.bufferType = bufferDescription.type;
-            this.resourceType = EResourceType.Buffer;
+            this.description = description;
 
             // GPUMemory
-            if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic || (useFlag & EUsageType.Default) == EUsageType.Default)
+            if ((description.flag & EUsageType.Static) == EUsageType.Static || (description.flag & EUsageType.Dynamic) == EUsageType.Dynamic || (description.flag & EUsageType.Default) == EUsageType.Default)
             {
                 HeapProperties defaultHeapProperties;
                 {
@@ -252,7 +243,7 @@ namespace InfinityEngine.Graphics.RHI
                 {
                     defaultResourceDesc.Dimension = ResourceDimension.Buffer;
                     defaultResourceDesc.Alignment = 0;
-                    defaultResourceDesc.Width = stride * count;
+                    defaultResourceDesc.Width = description.stride * description.count;
                     defaultResourceDesc.Height = 1;
                     defaultResourceDesc.DepthOrArraySize = 1;
                     defaultResourceDesc.MipLevels = 1;
@@ -266,7 +257,7 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             // UploadMemory
-            if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((description.flag & EUsageType.Static) == EUsageType.Static || (description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
                 HeapProperties uploadHeapProperties;
                 {
@@ -280,7 +271,7 @@ namespace InfinityEngine.Graphics.RHI
                 {
                     uploadResourceDesc.Dimension = ResourceDimension.Buffer;
                     uploadResourceDesc.Alignment = 0;
-                    uploadResourceDesc.Width = stride * count;
+                    uploadResourceDesc.Width = description.stride * description.count;
                     uploadResourceDesc.Height = 1;
                     uploadResourceDesc.DepthOrArraySize = 1;
                     uploadResourceDesc.MipLevels = 1;
@@ -294,7 +285,7 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             // ReadbackMemory
-            if ((useFlag & EUsageType.Staging) == EUsageType.Staging)
+            if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
                 HeapProperties readbackHeapProperties;
                 {
@@ -308,7 +299,7 @@ namespace InfinityEngine.Graphics.RHI
                 {
                     readbackResourceDesc.Dimension = ResourceDimension.Buffer;
                     readbackResourceDesc.Alignment = 0;
-                    readbackResourceDesc.Width = stride * count;
+                    readbackResourceDesc.Width = description.stride * description.count;
                     readbackResourceDesc.Height = 1;
                     readbackResourceDesc.DepthOrArraySize = 1;
                     readbackResourceDesc.MipLevels = 1;
@@ -324,7 +315,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void SetData<T>(params T[] data) where T : struct
         {
-            if ((useFlag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
                 IntPtr uploadResourcePtr = uploadResource.Map(0);
                 data.AsSpan().CopyTo(uploadResourcePtr);
@@ -334,31 +325,31 @@ namespace InfinityEngine.Graphics.RHI
 
         public void SetData<T>(ID3D12GraphicsCommandList5 d3dCmdList, params T[] data) where T : struct
         {
-            if ((useFlag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
                 IntPtr uploadResourcePtr = uploadResource.Map(0);
                 data.AsSpan().CopyTo(uploadResourcePtr);
                 uploadResource.Unmap(0);
 
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 
         public void RequestUpload<T>(ID3D12GraphicsCommandList5 d3dCmdList) where T : struct
         {
-            if ((useFlag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 
         public void GetData<T>(T[] data) where T : struct
         {
-            if ((useFlag & EUsageType.Staging) == EUsageType.Staging)
+            if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
                 //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
                 IntPtr readbackResourcePtr = readbackResource.Map(0);
@@ -369,10 +360,10 @@ namespace InfinityEngine.Graphics.RHI
 
         public void GetData<T>(ID3D12GraphicsCommandList5 d3dCmdList, T[] data) where T : struct
         {
-            if ((useFlag & EUsageType.Staging) == EUsageType.Staging)
+            if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
 
                 //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
@@ -384,10 +375,10 @@ namespace InfinityEngine.Graphics.RHI
 
         public void RequestReadback<T>(ID3D12GraphicsCommandList5 d3dCmdList) where T : struct
         {
-            if ((useFlag & EUsageType.Staging) == EUsageType.Staging)
+            if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
             }
         }
@@ -417,21 +408,25 @@ namespace InfinityEngine.Graphics.RHI
         public int width;
         public int height;
         public int slices;
+        public bool sparse;
         public ushort mipLevel;
         public ushort anisoLevel;
+        public EUsageType flag;
+        public EMSAASample sample;
         public ETextureType type;
-        public EMSAASample msaaSample;
         public EGraphicsFormat format;
 
-        public FRHITextureDescription(in int width, in int height, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType type = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample msaaSample = EMSAASample.None) : this()
+        public FRHITextureDescription(in int width, in int height, in EUsageType usageFlag, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType type = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample msaaSample = EMSAASample.None, in bool sparse = false) : this()
         {
             this.type = type;
             this.width = width;
             this.height = height;
             this.slices = slices;
+            this.sparse = sparse;
             this.format = format;
+            this.sample = msaaSample;
+            this.flag = usageFlag;
             this.mipLevel = mipLevel;
-            this.msaaSample = msaaSample;
             this.anisoLevel = anisoLevel;
         }
 
@@ -477,11 +472,7 @@ namespace InfinityEngine.Graphics.RHI
             {
                 case ETextureType.Tex2DArray:
                     return ResourceDimension.Texture2D;
-                case ETextureType.Tex2DSparse:
-                    return ResourceDimension.Texture2D;
                 case ETextureType.Tex3D:
-                    return ResourceDimension.Texture3D;
-                case ETextureType.Tex3DSparse:
                     return ResourceDimension.Texture3D;
                 case ETextureType.TexCube:
                     return ResourceDimension.Texture2D;
@@ -495,15 +486,14 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHITexture : FRHIResource
     {
-        internal ETextureType textureType;
+        internal FRHITextureDescription description;
 
-        internal FRHITexture(ID3D12Device6 d3dDevice, in EUsageType useFlag, in FRHITextureDescription description) : base(useFlag)
+        internal FRHITexture(ID3D12Device6 d3dDevice, in FRHITextureDescription description)
         {
-            this.textureType = description.type;
-            this.resourceType = EResourceType.Texture;
+            this.description = description;
 
             // GPUMemory
-            if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic || (useFlag & EUsageType.Default) == EUsageType.Default)
+            if ((description.flag & EUsageType.Static) == EUsageType.Static || (description.flag & EUsageType.Dynamic) == EUsageType.Dynamic || (description.flag & EUsageType.Default) == EUsageType.Default)
             {
                 HeapProperties defaultHeapProperties;
                 {
@@ -522,7 +512,7 @@ namespace InfinityEngine.Graphics.RHI
                     defaultResourceDesc.DepthOrArraySize = (ushort)description.slices;
                     defaultResourceDesc.MipLevels = description.mipLevel;
                     defaultResourceDesc.Format = description.format.GetNativeFormat();
-                    defaultResourceDesc.SampleDescription.Count = 1;
+                    defaultResourceDesc.SampleDescription.Count = (int)description.sample;
                     defaultResourceDesc.SampleDescription.Quality = 0;
                     defaultResourceDesc.Flags = ResourceFlags.None;
                     defaultResourceDesc.Layout = TextureLayout.Unknown;
@@ -531,7 +521,7 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             // UploadMemory
-            if ((useFlag & EUsageType.Static) == EUsageType.Static || (useFlag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((description.flag & EUsageType.Static) == EUsageType.Static || (description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
                 HeapProperties uploadHeapProperties;
                 {
@@ -550,7 +540,7 @@ namespace InfinityEngine.Graphics.RHI
                     uploadResourceDesc.DepthOrArraySize = (ushort)description.slices;
                     uploadResourceDesc.MipLevels = description.mipLevel;
                     uploadResourceDesc.Format = description.format.GetNativeFormat();
-                    uploadResourceDesc.SampleDescription.Count = 1;
+                    uploadResourceDesc.SampleDescription.Count = (int)description.sample;
                     uploadResourceDesc.SampleDescription.Quality = 0;
                     uploadResourceDesc.Flags = ResourceFlags.None;
                     uploadResourceDesc.Layout = TextureLayout.Unknown;
@@ -559,7 +549,7 @@ namespace InfinityEngine.Graphics.RHI
             }
 
             // ReadbackMemory
-            if ((useFlag & EUsageType.Staging) == EUsageType.Staging)
+            if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
                 HeapProperties readbackHeapProperties;
                 {
@@ -578,7 +568,7 @@ namespace InfinityEngine.Graphics.RHI
                     readbackResourceDesc.DepthOrArraySize = (ushort)description.slices;
                     readbackResourceDesc.MipLevels = description.mipLevel;
                     readbackResourceDesc.Format = description.format.GetNativeFormat();
-                    readbackResourceDesc.SampleDescription.Count = 1;
+                    readbackResourceDesc.SampleDescription.Count = (int)description.sample;
                     readbackResourceDesc.SampleDescription.Quality = 0;
                     readbackResourceDesc.Flags = ResourceFlags.None;
                     readbackResourceDesc.Layout = TextureLayout.Unknown;

@@ -53,6 +53,15 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
+    public enum EGraphicsShaderType
+    {
+        Vertex = 0,
+        Hull = 1,
+        Domain = 2,
+        Geometry = 3,
+        Pixel = 4
+    }
+
     public class FRHIGraphicsShader : FRHIShader
     {
         public FRHIGraphicsShader() : base()
@@ -66,7 +75,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public enum FRayTraceShaderType
+    public enum ERayTraceShaderType
     {
         RayGen = 0,
         RayMiss = 1,

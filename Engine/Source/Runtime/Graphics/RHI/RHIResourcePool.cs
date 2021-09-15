@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Vortice.Direct3D12;
+using System.Collections.Generic;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public abstract class FRHIResourceCache<Type> where Type : class
+    internal abstract class FRHIResourceCache<Type> where Type : class
     {
         protected Dictionary<int, List<Type>> m_ResourcePool = new Dictionary<int, List<Type>>(64);
         abstract protected void ReleaseInternalResource(Type res);
@@ -47,16 +48,16 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIBufferCache : FRHIResourceCache<FRHIBuffer>
+    internal class FRHIBufferCache : FRHIResourceCache<FRHIBuffer>
     {
-        protected override void ReleaseInternalResource(FRHIBuffer rhiBuffer)
+        protected override void ReleaseInternalResource(FRHIBuffer buffer)
         {
-            rhiBuffer.Dispose();
+            buffer.Dispose();
         }
 
-        protected override string GetResourceName(FRHIBuffer rhiBuffer)
+        protected override string GetResourceName(FRHIBuffer buffer)
         {
-            return rhiBuffer.name;
+            return buffer.description.name;
         }
 
         override protected string GetResourceTypeName()
@@ -65,16 +66,16 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHITextureCache : FRHIResourceCache<FRHITexture>
+    internal class FRHITextureCache : FRHIResourceCache<FRHITexture>
     {
-        protected override void ReleaseInternalResource(FRHITexture rhiTexture)
+        protected override void ReleaseInternalResource(FRHITexture texture)
         {
-            rhiTexture.Dispose();
+            texture.Dispose();
         }
 
-        protected override string GetResourceName(FRHITexture rhiTexture)
+        protected override string GetResourceName(FRHITexture texture)
         {
-            return rhiTexture.name;
+            return texture.description.name;
         }
 
         override protected string GetResourceTypeName()
@@ -85,24 +86,25 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIResourcePool
     {
+        FRHIDevice m_Device;
         FRHIBufferCache m_BufferPool;
         FRHITextureCache m_TexturePool;
 
-        public FRHIResourcePool()
+        internal FRHIResourcePool(FRHIDevice device)
         {
+            m_Device = device;
             m_BufferPool = new FRHIBufferCache();
             m_TexturePool = new FRHITextureCache();
         }
 
-        public FRHIBufferRef AllocateBuffer(in FRHIBufferDescription description)
+        public FRHIBufferRef GetBuffer(in FRHIBufferDescription description)
         {
             FRHIBuffer buffer;
             int handle = description.GetHashCode();
 
             if (!m_BufferPool.Pull(handle, out buffer))
             {
-                //buffer = new ComputeBuffer(description.count, description.stride, description.type);
-                buffer.name = description.name;
+                buffer = new FRHIBuffer(m_Device, description);
             }
 
             return new FRHIBufferRef(handle, buffer);
@@ -113,15 +115,14 @@ namespace InfinityEngine.Graphics.RHI
             m_BufferPool.Push(bufferRef.handle, bufferRef.buffer);
         }
 
-        public FRHITextureRef AllocateTexture(in FRHITextureDescription description)
+        public FRHITextureRef GetTexture(in FRHITextureDescription description)
         {
             FRHITexture texture;
             int handle = description.GetHashCode();
 
             if (!m_TexturePool.Pull(handle, out texture))
             {
-                //texture = RTHandles.Alloc(description.width, description.height, description.slices, (DepthBits)description.depthBufferBits, description.colorFormat, description.filterMode, description.wrapMode, description.dimension, description.enableRandomWrite,
-                                          //description.useMipMap, description.autoGenerateMips, description.isShadowMap, description.anisoLevel, description.mipMapBias, (MSAASamples)description.msaaSamples, description.bindTextureMS, false, RenderTextureMemoryless.None, description.name);
+                texture = new FRHITexture(m_Device, description);
             }
 
             return new FRHITextureRef(handle, texture);

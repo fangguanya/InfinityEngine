@@ -64,8 +64,8 @@ namespace ExampleProject
     {
         static void Main(string[] args)
         {
-            /*TestApplication App = new TestApplication("InfinityExample", 1280, 720);
-            App.Run();*/
+            TestApplication App = new TestApplication("InfinityExample", 1280, 720);
+            App.Run();
 
             // TaskExample
             /*int[] IntArray = new int[10];
@@ -204,7 +204,7 @@ namespace ExampleProject
             Console.WriteLine(ShaderSource.Substring(StartIndex, EndIndex - StartIndex));
             Console.ReadKey();*/
 
-            string hlslCode1 = new string(
+            /*string hlslCode1 = new string(
             @"struct Attributes
 	        {
 		        float2 uv : TEXCOORD0;
@@ -269,7 +269,7 @@ namespace ExampleProject
 
             string shaderCode = WaveEngine.HLSLEverywhere.HLSLTranslator.HLSLTo(hlslCode2, WaveEngine.Common.Graphics.ShaderStages.Pixel, WaveEngine.Common.Graphics.GraphicsProfile.Level_12_1, "PS", WaveEngine.HLSLEverywhere.ShadingLanguage.Hlsl);
             Vortice.Dxc.IDxcResult result = Vortice.Dxc.DxcCompiler.Compile(hlslCode2, new string[] { "PS" });
-            Console.ReadKey();
+            Console.ReadKey();*/
         }
     }
 }

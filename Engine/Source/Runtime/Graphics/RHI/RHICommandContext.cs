@@ -4,13 +4,13 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHICommandContext : FDisposable
+    internal class FRHICommandContext : FDisposable
     {
         private FRHIFence m_Fence;
         private AutoResetEvent m_FenceEvent;
         internal ID3D12CommandQueue d3dCmdQueue;
 
-        public FRHICommandContext(ID3D12Device6 d3d12Device, CommandListType cmdListType) : base()
+        internal FRHICommandContext(ID3D12Device6 d3d12Device, CommandListType cmdListType) : base()
         {
             m_Fence = new FRHIFence(d3d12Device);
             m_FenceEvent = new AutoResetEvent(false);
