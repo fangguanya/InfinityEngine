@@ -204,7 +204,37 @@ namespace ExampleProject
             Console.WriteLine(ShaderSource.Substring(StartIndex, EndIndex - StartIndex));
             Console.ReadKey();*/
 
-            string hlslCode = new string(@"cbuffer ParamsBuffer : register(b0)
+            string hlslCode1 = new string(
+            @"struct Attributes
+	        {
+		        float2 uv : TEXCOORD0;
+		        float4 vertex : POSITION;
+	        };
+
+	        struct Varyings
+	        {
+		        float2 uv : TEXCOORD0;
+		        float4 vertex : SV_POSITION;
+	        };
+            
+            float4x4 Matrix_Model, Matrix_ViewJitterProj;
+		    Varyings VS(Attributes In)
+		    {
+			    Varyings Out = (Varyings)0;
+
+			    Out.uv = In.uv;
+			    float4 WorldPos = mul(Matrix_Model, float4(In.vertex.xyz, 1.0));
+			    Out.vertex = mul(Matrix_ViewJitterProj, WorldPos);
+			    return Out;
+		    }
+
+		    float4 PS(Varyings In) : SV_Target
+		    {
+			    return 0;
+		    }");
+
+            string hlslCode2 = new string(
+            @"cbuffer ParamsBuffer : register(b0)
             {
 	            uint Samples;
 	            bool IsPathTracing;
@@ -236,7 +266,9 @@ namespace ExampleProject
 
 	            return float4(color, a);
             }");
-            string ShaderCode = WaveEngine.HLSLEverywhere.HLSLTranslator.HLSLTo(hlslCode, WaveEngine.Common.Graphics.ShaderStages.Pixel, WaveEngine.Common.Graphics.GraphicsProfile.Level_12_1, "PS", WaveEngine.HLSLEverywhere.ShadingLanguage.SpirV);
+
+            string shaderCode = WaveEngine.HLSLEverywhere.HLSLTranslator.HLSLTo(hlslCode2, WaveEngine.Common.Graphics.ShaderStages.Pixel, WaveEngine.Common.Graphics.GraphicsProfile.Level_12_1, "PS", WaveEngine.HLSLEverywhere.ShadingLanguage.Hlsl);
+            Vortice.Dxc.IDxcResult result = Vortice.Dxc.DxcCompiler.Compile(hlslCode2, new string[] { "PS" });
             Console.ReadKey();
         }
     }
