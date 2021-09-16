@@ -40,7 +40,7 @@ namespace ExampleProject
                 fence = graphicsContext.CreateFence();
                 query = graphicsContext.CreateTimeQuery(true);
                 buffer = graphicsContext.CreateBuffer(description);
-                cmdList = graphicsContext.CreateCommandList("CommandList", EContextType.Copy);
+                cmdList = graphicsContext.CreateCommandList(EContextType.Copy, "CommandList");
 
                 cmdList.Clear();
                 int[] data = new int[8400];

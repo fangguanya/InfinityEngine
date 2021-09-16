@@ -42,6 +42,9 @@ namespace InfinityEngine.Graphics.RHI
         internal FRHICommandContext copyCommands;
         internal FRHICommandContext computeCommands;
         internal FRHICommandContext graphicsCommands;
+        internal FRHICommandListPool copyCommandListPool;
+        internal FRHICommandListPool computeCommandListPool;
+        internal FRHICommandListPool graphicsCommandListPool;
         internal FRHIDescriptorHeapFactory cbvSrvUavDescriptorFactory;
 
         public FRHIGraphicsContext() : base()
@@ -49,9 +52,12 @@ namespace InfinityEngine.Graphics.RHI
             device = new FRHIDevice();
             executeInfos = new List<FExecuteInfo>(64);
             resourcePool = new FRHIResourcePool(device);
-            copyCommands = new FRHICommandContext(device, CommandListType.Copy);
-            computeCommands = new FRHICommandContext(device, CommandListType.Compute);
-            graphicsCommands = new FRHICommandContext(device, CommandListType.Direct);
+            copyCommands = new FRHICommandContext(device, EContextType.Copy);
+            computeCommands = new FRHICommandContext(device, EContextType.Compute);
+            graphicsCommands = new FRHICommandContext(device, EContextType.Graphics);
+            copyCommandListPool = new FRHICommandListPool(device, EContextType.Copy);
+            computeCommandListPool = new FRHICommandListPool(device, EContextType.Compute);
+            graphicsCommandListPool = new FRHICommandListPool(device, EContextType.Graphics);
             cbvSrvUavDescriptorFactory = new FRHIDescriptorHeapFactory(device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
@@ -74,21 +80,49 @@ namespace InfinityEngine.Graphics.RHI
             return commands;
         }
         
-        public FRHICommandList CreateCommandList(string name, in EContextType contextType)
+        public FRHICommandList CreateCommandList(in EContextType contextType, string name = null)
         {
             FRHICommandList cmdList = new FRHICommandList(name, device, contextType);
             cmdList.Close();
             return cmdList;
         }
 
-        public FRHICommandList GetTemporaryCommandList(string name, in EContextType contextType)
+        public FRHICommandList GetCommandList(in EContextType contextType, string name = null)
         {
-            return null;
+            FRHICommandList cmdList = null;
+            switch (contextType)
+            {
+                case EContextType.Copy:
+                    cmdList = copyCommandListPool.GetTemporary(name);
+                    break;
+
+                case EContextType.Compute:
+                    cmdList = computeCommandListPool.GetTemporary(name);
+                    break;
+
+                case EContextType.Graphics:
+                    cmdList = graphicsCommandListPool.GetTemporary(name);
+                    break;
+            }
+            return cmdList;
         }
 
-        public void ReleaseTemporaryCommandList(FRHICommandList cmdList)
+        public void ReleaseCommandList(FRHICommandList cmdList)
         {
+            switch (cmdList.contextType)
+            {
+                case EContextType.Copy:
+                    copyCommandListPool.ReleaseTemporary(cmdList);
+                    break;
 
+                case EContextType.Compute:
+                    computeCommandListPool.ReleaseTemporary(cmdList);
+                    break;
+
+                case EContextType.Graphics:
+                    graphicsCommandListPool.ReleaseTemporary(cmdList);
+                    break;
+            }
         }
 
         public void WriteFence(in EContextType contextType, FRHIFence fence)
@@ -213,7 +247,7 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHIBuffer(device, description);
         }
 
-        public FRHIBufferRef GetTemporaryBuffer(in FRHIBufferDescription description, in EUsageType useFlag)
+        public FRHIBufferRef GetBuffer(in FRHIBufferDescription description, in EUsageType useFlag)
         {
             return resourcePool.GetBuffer(description);
         }
@@ -228,12 +262,12 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHITexture(device, description);
         }
         
-        public FRHITextureRef GetTemporaryTexture(in FRHITextureDescription description, in EUsageType useFlag)
+        public FRHITextureRef GetTexture(in FRHITextureDescription description, in EUsageType useFlag)
         {
             return resourcePool.GetTexture(description);
         }
 
-        public void ReleaseTemporaryTexture(FRHITextureRef textureRef)
+        public void ReleaseTexture(FRHITextureRef textureRef)
         {
             resourcePool.ReleaseTexture(textureRef);
         }
@@ -323,6 +357,9 @@ namespace InfinityEngine.Graphics.RHI
             copyCommands?.Dispose();
             computeCommands?.Dispose();
             graphicsCommands?.Dispose();
+            copyCommandListPool?.Dispose();
+            computeCommandListPool?.Dispose();
+            graphicsCommandListPool?.Dispose();
             cbvSrvUavDescriptorFactory?.Dispose();
         }
     }

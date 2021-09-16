@@ -1,5 +1,6 @@
 ﻿using Vortice.Direct3D12;
 using System.Collections.Generic;
+using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -137,6 +138,73 @@ namespace InfinityEngine.Graphics.RHI
         {
             m_BufferPool.Dispose();
             m_TexturePool.Dispose();
+        }
+    }
+
+    internal struct FRHICommandListPooledObject : IDisposable
+    {
+        readonly FRHICommandList m_ToReturn;
+        readonly FRHICommandListPool m_Pool;
+
+        internal FRHICommandListPooledObject(FRHICommandList value, FRHICommandListPool pool)
+        {
+            m_Pool = pool;
+            m_ToReturn = value;
+        }
+
+        void IDisposable.Dispose() => m_Pool.ReleaseTemporary(m_ToReturn);
+    }
+
+    internal class FRHICommandListPool : FDisposable
+    {
+        private FRHIDevice m_Device;
+        private EContextType m_ContextType;
+        readonly bool m_CollectionCheck = true;
+        readonly Stack<FRHICommandList> m_Stack = new Stack<FRHICommandList>();
+        public int countAll { get; private set; }
+        public int countActive { get { return countAll - countInactive; } }
+        public int countInactive { get { return m_Stack.Count; } }
+
+        internal FRHICommandListPool(FRHIDevice device, EContextType contextType, bool collectionCheck = true)
+        {
+            m_Device = device;
+            m_ContextType = contextType;
+            m_CollectionCheck = collectionCheck;
+        }
+
+        public FRHICommandList GetTemporary(string name)
+        {
+            FRHICommandList element;
+            if (m_Stack.Count == 0)
+            {
+                element = new FRHICommandList(m_Device.d3dDevice, m_ContextType);
+                countAll++;
+            } else {
+                element = m_Stack.Pop();
+            }
+            element.name = name;
+            return element;
+        }
+
+        public void ReleaseTemporary(FRHICommandList element)
+        {
+#if WITH_EDITOR // keep heavy checks in editor
+            if (m_CollectionCheck && m_Stack.Count > 0)
+            {
+                if (m_Stack.Contains(element))
+                    Console.WriteLine("Internal error. Trying to destroy object that is already released to pool.");
+            }
+#endif
+            m_Stack.Push(element);
+        }
+
+        protected override void Release()
+        {
+            m_Device = null;
+            foreach (FRHICommandList cmdList in m_Stack)
+            {
+                cmdList.Dispose();
+            }
         }
     }
 }
