@@ -18,7 +18,7 @@ namespace ExampleProject
         float copyTime;
 
         FRHIFence fence;
-        FRHIBuffer buffer;
+        FRHIBufferRef bufferRef;
         FRHITimeQuery query;
         FRHICommandList cmdList;
         FTimeProfiler timeProfiler;
@@ -37,15 +37,15 @@ namespace ExampleProject
             {
                 FRHIBufferDescription description = new FRHIBufferDescription(8400, 4, EUsageType.Dynamic | EUsageType.Staging);
 
-                fence = graphicsContext.CreateFence();
+                fence = graphicsContext.GetFence();
                 query = graphicsContext.CreateTimeQuery(true);
-                buffer = graphicsContext.CreateBuffer(description);
-                cmdList = graphicsContext.CreateCommandList(EContextType.Copy, "CommandList");
+                bufferRef = graphicsContext.GetBuffer(description);
+                cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList");
 
                 cmdList.Clear();
                 int[] data = new int[8400];
                 for (int i = 0; i < 8400; ++i) { data[i] = 8400 - i; }
-                buffer.SetData(cmdList, data);
+                bufferRef.buffer.SetData(cmdList, data);
                 graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
             });
@@ -65,7 +65,7 @@ namespace ExampleProject
                 {
                     cmdList.Clear();
                     cmdList.BeginQuery(query);
-                    buffer.RequestReadback<int>(cmdList);
+                    bufferRef.buffer.RequestReadback<int>(cmdList);
                     cmdList.EndQuery(query);
                     graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                     graphicsContext.WriteFence(EContextType.Copy, fence);
@@ -75,7 +75,7 @@ namespace ExampleProject
                 dataReady = fence.Completed();
                 if (dataReady)
                 {
-                    buffer.GetData(readData);
+                    bufferRef.buffer.GetData(readData);
                     copyTime = query.GetQueryResult(graphicsContext.copyFrequency);
                 }
 
@@ -101,10 +101,10 @@ namespace ExampleProject
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                fence?.Dispose();
                 query?.Dispose();
-                buffer?.Dispose();
-                cmdList?.Dispose();
+                graphicsContext.ReleaseFence(fence);
+                graphicsContext.ReleaseBuffer(bufferRef);
+                graphicsContext.ReleaseCommandList(cmdList);
                 Console.WriteLine("Release RenderProxy");
             });
 

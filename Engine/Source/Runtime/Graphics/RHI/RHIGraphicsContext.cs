@@ -37,6 +37,7 @@ namespace InfinityEngine.Graphics.RHI
         }
       
         internal FRHIDevice device;
+        internal FRHIFencePool fencePool;
         internal FRHIResourcePool resourcePool;
         internal List<FExecuteInfo> executeInfos;
         internal FRHICommandContext copyCommands;
@@ -50,6 +51,7 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIGraphicsContext() : base()
         {
             device = new FRHIDevice();
+            fencePool = new FRHIFencePool(device);
             executeInfos = new List<FExecuteInfo>(64);
             resourcePool = new FRHIResourcePool(device);
             copyCommands = new FRHICommandContext(device, EContextType.Copy);
@@ -192,9 +194,19 @@ namespace InfinityEngine.Graphics.RHI
         }
 
         // Resource
-        public FRHIFence CreateFence()
+        public FRHIFence CreateFence(string name = null)
         {
-            return new FRHIFence(device);
+            return new FRHIFence(device, name);
+        }
+        
+        public FRHIFence GetFence(string name = null)
+        {
+            return fencePool.GetTemporary(name);
+        }
+
+        public void ReleaseFence(FRHIFence fence)
+        {
+            fencePool.ReleaseTemporary(fence);
         }
 
         public FRHITimeQuery CreateTimeQuery(in bool copyQueue = false)
@@ -247,12 +259,12 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHIBuffer(device, description);
         }
 
-        public FRHIBufferRef GetBuffer(in FRHIBufferDescription description, in EUsageType useFlag)
+        public FRHIBufferRef GetBuffer(in FRHIBufferDescription description)
         {
             return resourcePool.GetBuffer(description);
         }
 
-        public void ReleaseTemporaryBuffer(FRHIBufferRef bufferRef)
+        public void ReleaseBuffer(FRHIBufferRef bufferRef)
         {
             resourcePool.ReleaseBuffer(bufferRef);
         }
@@ -262,7 +274,7 @@ namespace InfinityEngine.Graphics.RHI
             return new FRHITexture(device, description);
         }
         
-        public FRHITextureRef GetTexture(in FRHITextureDescription description, in EUsageType useFlag)
+        public FRHITextureRef GetTexture(in FRHITextureDescription description)
         {
             return resourcePool.GetTexture(description);
         }
@@ -353,6 +365,7 @@ namespace InfinityEngine.Graphics.RHI
         protected override void Release()
         {
             device?.Dispose();
+            fencePool?.Dispose();
             resourcePool?.Dispose();
             copyCommands?.Dispose();
             computeCommands?.Dispose();

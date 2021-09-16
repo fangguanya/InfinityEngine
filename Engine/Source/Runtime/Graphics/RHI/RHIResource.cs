@@ -211,12 +211,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public override int GetHashCode()
         {
-            int hashCode = 0;
-            hashCode += (int)type;
-            hashCode += count.GetHashCode();
-            hashCode += stride.GetHashCode();
-
-            return hashCode;
+            return new int3((int)type, count.GetHashCode(), stride.GetHashCode()).GetHashCode();
         }
     }
 

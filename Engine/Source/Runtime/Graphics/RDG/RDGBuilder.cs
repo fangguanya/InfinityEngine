@@ -666,16 +666,20 @@ namespace InfinityEngine.Graphics.RDG
             IRDGPass pass = passInfo.pass;
 
             foreach (var bufferRef in passInfo.resourceCreateList[(int)EResourceType.Buffer])
+            {
                 m_Resources.CreateRealBuffer(bufferRef);
+            }
 
             foreach (var textureRef in passInfo.resourceCreateList[(int)EResourceType.Texture])
+            {
                 m_Resources.CreateRealTexture(textureRef);
+            }
 
             if (pass.enableAsyncCompute)
             {
-                //graphContext.cmdList = graphContext.graphicsContext.PullCommandList(EContextType.Compute);
+                graphContext.cmdList = graphContext.graphicsContext.GetCommandList(EContextType.Compute);
             } else {
-                //graphContext.cmdList = graphContext.graphicsContext.PullCommandList(EContextType.Graphics);
+                graphContext.cmdList = graphContext.graphicsContext.GetCommandList(EContextType.Graphics);
             }
 
             // Synchronize with graphics or compute pipe if needed.
@@ -692,8 +696,7 @@ namespace InfinityEngine.Graphics.RDG
         {
             IRDGPass pass = passInfo.pass;
 
-            if (passInfo.needGraphicsFence)
-                //passInfo.fence = graphContext.graphicsContext.PullGPUFence();
+            if (passInfo.needGraphicsFence) { passInfo.fence = graphContext.graphicsContext.GetFence(); }
 
             // The command list has been filled. We can kick the async task.
             if (pass.enableAsyncCompute)
@@ -706,10 +709,14 @@ namespace InfinityEngine.Graphics.RDG
             m_ObjectPool.ReleaseAllTempAlloc();
 
             foreach (var bufferRef in passInfo.resourceReleaseList[(int)EResourceType.Buffer])
+            {
                 m_Resources.ReleaseRealBuffer(bufferRef);
+            }
 
             foreach (var textureRef in passInfo.resourceReleaseList[(int)EResourceType.Texture])
+            {
                 m_Resources.ReleaseRealTexture(textureRef);
+            }
 
         }
 
