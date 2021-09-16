@@ -89,7 +89,7 @@ namespace InfinityEngine.Graphics.RHI
             return cmdList;
         }
 
-        public FRHICommandList GetCommandList(in EContextType contextType, string name = null)
+        public FRHICommandList GetCommandList(in EContextType contextType, string name = null, bool bAutoRelease = false)
         {
             FRHICommandList cmdList = null;
             switch (contextType)
@@ -106,6 +106,7 @@ namespace InfinityEngine.Graphics.RHI
                     cmdList = graphicsCommandListPool.GetTemporary(name);
                     break;
             }
+
             return cmdList;
         }
 
