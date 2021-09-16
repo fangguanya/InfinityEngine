@@ -219,7 +219,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal FRHIBufferDescription description;
 
-        internal FRHIBuffer(ID3D12Device6 d3dDevice, in FRHIBufferDescription description)
+        internal FRHIBuffer(FRHIDevice device, in FRHIBufferDescription description)
         {
             this.description = description;
 
@@ -248,7 +248,7 @@ namespace InfinityEngine.Graphics.RHI
                     defaultResourceDesc.Flags = ResourceFlags.None;
                     defaultResourceDesc.Layout = TextureLayout.RowMajor;
                 }
-                defaultResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
+                defaultResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
             }
 
             // UploadMemory
@@ -276,7 +276,7 @@ namespace InfinityEngine.Graphics.RHI
                     uploadResourceDesc.Flags = ResourceFlags.None;
                     uploadResourceDesc.Layout = TextureLayout.RowMajor;
                 }
-                uploadResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
+                uploadResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
             }
 
             // ReadbackMemory
@@ -304,7 +304,7 @@ namespace InfinityEngine.Graphics.RHI
                     readbackResourceDesc.Flags = ResourceFlags.None;
                     readbackResourceDesc.Layout = TextureLayout.RowMajor;
                 }
-                readbackResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
+                readbackResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
             }
         }
 
@@ -483,7 +483,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal FRHITextureDescription description;
 
-        internal FRHITexture(ID3D12Device6 d3dDevice, in FRHITextureDescription description)
+        internal FRHITexture(FRHIDevice device, in FRHITextureDescription description)
         {
             this.description = description;
 
@@ -512,7 +512,7 @@ namespace InfinityEngine.Graphics.RHI
                     defaultResourceDesc.Flags = ResourceFlags.None;
                     defaultResourceDesc.Layout = TextureLayout.Unknown;
                 }
-                defaultResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
+                defaultResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
             }
 
             // UploadMemory
@@ -540,7 +540,7 @@ namespace InfinityEngine.Graphics.RHI
                     uploadResourceDesc.Flags = ResourceFlags.None;
                     uploadResourceDesc.Layout = TextureLayout.Unknown;
                 }
-                uploadResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
+                uploadResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
             }
 
             // ReadbackMemory
@@ -568,7 +568,7 @@ namespace InfinityEngine.Graphics.RHI
                     readbackResourceDesc.Flags = ResourceFlags.None;
                     readbackResourceDesc.Layout = TextureLayout.Unknown;
                 }
-                readbackResource = d3dDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
+                readbackResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
             }
         }
 

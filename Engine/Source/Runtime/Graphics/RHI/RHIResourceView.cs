@@ -110,10 +110,10 @@ namespace InfinityEngine.Graphics.RHI
         internal ID3D12Device6 d3dDevice;
         internal CpuDescriptorHandle descriptorHandle;
 
-        internal FRHIResourceViewRange(ID3D12Device6 d3dDevice, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length) : base()
+        internal FRHIResourceViewRange(FRHIDevice device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length) : base()
         {
             this.length = length;
-            this.d3dDevice = d3dDevice;
+            this.d3dDevice = device;
             this.descriptorIndex = descriptorHeapFactory.Allocator(length);
             this.descriptorHandle = descriptorHeapFactory.GetCPUHandleStart();
         }

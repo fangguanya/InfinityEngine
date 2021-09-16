@@ -10,10 +10,10 @@ namespace InfinityEngine.Graphics.RHI
         internal ulong fenceValue;
         internal ID3D12Fence d3dFence;
 
-        internal FRHIFence(ID3D12Device6 d3dDevice, string name = null) : base()
+        internal FRHIFence(FRHIDevice device, string name = null) : base()
         {
             this.name = name;
-            this.d3dFence = d3dDevice.CreateFence<ID3D12Fence>(0, FenceFlags.None);
+            this.d3dFence = device.d3dDevice.CreateFence<ID3D12Fence>(0, FenceFlags.None);
         }
 
         public void Signal(ID3D12CommandQueue d3d12CmdQueue)

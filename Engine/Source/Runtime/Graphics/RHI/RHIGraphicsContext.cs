@@ -157,6 +157,11 @@ namespace InfinityEngine.Graphics.RHI
             executeInfos.Add(executeInfo);
         }
 
+        public void Flush()
+        {
+            graphicsCommands.Flush();
+        }
+
         public void Submit()
         {
             for(int i = 0; i < executeInfos.Count; ++i)
@@ -183,17 +188,12 @@ namespace InfinityEngine.Graphics.RHI
             executeInfos.Clear();
         }
 
-        public void WaitGPU()
-        {
-            graphicsCommands.Flush();
-        }
-
+        // Resource
         public void CreateViewport()
         {
 
         }
 
-        // Resource
         public FRHIFence CreateFence(string name = null)
         {
             return new FRHIFence(device, name);

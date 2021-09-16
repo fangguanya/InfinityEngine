@@ -14,9 +14,9 @@ namespace InfinityEngine.Graphics.RHI
         protected ID3D12DescriptorHeap d3d12CPUDescriptorHeap;
         protected ID3D12DescriptorHeap d3d12GPUDescriptorHeap;
 
-        internal FRHIDescriptorHeapFactory(ID3D12Device6 d3dDevice, in DescriptorHeapType descriptorType, in int descriptorCount) : base()
+        internal FRHIDescriptorHeapFactory(FRHIDevice device, in DescriptorHeapType descriptorType, in int descriptorCount) : base()
         {
-            this.d3dDevice = d3dDevice;
+            this.d3dDevice = device.d3dDevice;
 
             this.descriptorSize = d3dDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
 

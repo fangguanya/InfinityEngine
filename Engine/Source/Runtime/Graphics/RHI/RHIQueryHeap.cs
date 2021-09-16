@@ -12,13 +12,13 @@ namespace InfinityEngine.Graphics.RHI
 		internal ID3D12QueryHeap timestamp_Heap;
 		internal ID3D12Resource timestamp_Result;
 
-		internal FRHITimeQuery(ID3D12Device6 d3dDevice, in bool copyQueue) : base()
+		internal FRHITimeQuery(FRHIDevice device, in bool copyQueue) : base()
 		{
 			QueryHeapDescription queryHeapDesc;
 			queryHeapDesc.Type = (QueryHeapType)(copyQueue ? 5 : 1);
 			queryHeapDesc.Count = 2;
 			queryHeapDesc.NodeMask = 0;
-			timestamp_Heap = d3dDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
+			timestamp_Heap = device.d3dDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
 
             HeapProperties heapProperties;
             {
@@ -42,7 +42,7 @@ namespace InfinityEngine.Graphics.RHI
 				resourceDesc.Flags = ResourceFlags.None;
 				resourceDesc.Layout = TextureLayout.RowMajor;
             }
-			timestamp_Result = d3dDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
+			timestamp_Result = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
         }
 
 		public void Begin(ID3D12GraphicsCommandList5 d3dCmdList)
@@ -93,13 +93,13 @@ namespace InfinityEngine.Graphics.RHI
 		private ID3D12QueryHeap occlusion_Heap;
 		private ID3D12Resource occlusion_Result;
 
-		internal FRHIOcclusionQuery(ID3D12Device6 d3dDevice) : base()
+		internal FRHIOcclusionQuery(FRHIDevice device) : base()
 		{
 			QueryHeapDescription queryHeapDesc;
 			queryHeapDesc.Type = QueryHeapType.Occlusion;
 			queryHeapDesc.Count = 1;
 			queryHeapDesc.NodeMask = 0;
-			occlusion_Heap = d3dDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
+			occlusion_Heap = device.d3dDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
 
             HeapProperties resultProperties;
             {
@@ -123,7 +123,7 @@ namespace InfinityEngine.Graphics.RHI
 				resultDesc.Layout = TextureLayout.RowMajor;
 				resultDesc.Flags = ResourceFlags.None;
             }
-			occlusion_Result = d3dDevice.CreateCommittedResource<ID3D12Resource>(resultProperties, HeapFlags.None, resultDesc, ResourceStates.Common, null);
+			occlusion_Result = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(resultProperties, HeapFlags.None, resultDesc, ResourceStates.Common, null);
         }
 
 		public void Begin(ID3D12GraphicsCommandList5 d3dCmdList)

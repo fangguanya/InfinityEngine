@@ -57,14 +57,14 @@ namespace InfinityEngine.Game.System
         internal void GraphicsFunc()
         {
             renderPipeline.Init(renderContext, graphicsContext);
-            //graphicsContext.WaitGPU();
+            //graphicsContext.Flush();
 
             while (!bLoopExit)
             {
                 ProcessGraphicsTasks();
 
                 renderPipeline.Render(renderContext, graphicsContext);
-                graphicsContext.WaitGPU();
+                graphicsContext.Flush();
 
                 autoEvent.Set();
             }

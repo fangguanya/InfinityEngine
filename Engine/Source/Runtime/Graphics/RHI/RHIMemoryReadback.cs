@@ -9,9 +9,9 @@ namespace InfinityEngine.Graphics.RHI
 
         private FRHIFence m_Fence;
 
-        internal FRHIMemoryReadback(ID3D12Device6 d3dDevice) : base()
+        internal FRHIMemoryReadback(FRHIDevice device) : base()
         {
-            m_Fence = new FRHIFence(d3dDevice);
+            m_Fence = new FRHIFence(device);
         }
 
         protected virtual void RequestReadback(FRHIGraphicsContext graphicsContext, FRHICommandList cmdList, FRHIBuffer buffer) { }

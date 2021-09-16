@@ -27,23 +27,23 @@ namespace InfinityEngine.Graphics.RHI
         internal ID3D12GraphicsCommandList5 d3dCmdList;
         internal ID3D12CommandAllocator d3dCmdAllocator;
 
-        internal FRHICommandList(ID3D12Device6 d3d12Device, EContextType contextType)
+        internal FRHICommandList(FRHIDevice device, EContextType contextType)
         {
             this.name = null;
             this.bClose = false;
             this.contextType = contextType;
-            this.d3dCmdAllocator = d3d12Device.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
-            this.d3dCmdList = d3d12Device.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3dCmdAllocator, null);
+            this.d3dCmdAllocator = device.d3dDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
+            this.d3dCmdList = device.d3dDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3dCmdAllocator, null);
             this.d3dCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
-        internal FRHICommandList(string name, ID3D12Device6 d3d12Device, EContextType contextType)
+        internal FRHICommandList(string name, FRHIDevice device, EContextType contextType)
         {
             this.name = name;
             this.bClose = false;
             this.contextType = contextType;
-            this.d3dCmdAllocator = d3d12Device.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
-            this.d3dCmdList = d3d12Device.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3dCmdAllocator, null);
+            this.d3dCmdAllocator = device.d3dDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
+            this.d3dCmdList = device.d3dDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3dCmdAllocator, null);
             this.d3dCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
@@ -287,11 +287,9 @@ namespace InfinityEngine.Graphics.RHI
             FRHICommandList element;
             if (m_Stack.Count == 0)
             {
-                element = new FRHICommandList(m_Device.d3dDevice, m_ContextType);
+                element = new FRHICommandList(m_Device, m_ContextType);
                 countAll++;
-            }
-            else
-            {
+            } else {
                 element = m_Stack.Pop();
             }
             element.name = name;
