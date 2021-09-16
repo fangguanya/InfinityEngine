@@ -223,9 +223,9 @@ namespace InfinityEngine.Graphics.RHI
             d3dCmdList.RSSetShadingRate(shadingRate, combineMathdo);
         }
 
-        public void SetShadingRate(FRHITexture indirectTexture)
+        public void SetShadingRate(FRHITexture texture)
         {
-            d3dCmdList.RSSetShadingRateImage(indirectTexture.defaultResource);
+            d3dCmdList.RSSetShadingRateImage(texture.defaultResource);
         }
 
         public void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisState)
