@@ -210,19 +210,9 @@ namespace InfinityEngine.Graphics.RHI
             fencePool.ReleaseTemporary(fence);
         }
 
-        public FRHITimeQuery CreateTimeQuery(in bool copyQueue = false)
+        public FRHIQuery CreateQuery(in EQueryType queryType)
         {
-            return new FRHITimeQuery(device, copyQueue);
-        }
-
-        public FRHIOcclusionQuery CreateOcclusionQuery()
-        {
-            return new FRHIOcclusionQuery(device);
-        }
-
-        public FRHIStatisticsQuery CreateStatisticsQuery()
-        {
-            return new FRHIStatisticsQuery(device);
+            return new FRHIQuery(device, queryType, 2);
         }
 
         public FRHIComputePipelineState CreateComputePipelineState()

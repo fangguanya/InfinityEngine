@@ -18,8 +18,8 @@ namespace ExampleProject
         float copyTime;
 
         FRHIFence fence;
+        FRHIQuery query;
         FRHIBufferRef bufferRef;
-        FRHITimeQuery query;
         FRHICommandList cmdList;
         FTimeProfiler timeProfiler;
         //private int* m_UnsafeDatas;
@@ -38,7 +38,7 @@ namespace ExampleProject
                 FRHIBufferDescription description = new FRHIBufferDescription(8400, 4, EUsageType.Dynamic | EUsageType.Staging);
 
                 fence = graphicsContext.GetFence();
-                query = graphicsContext.CreateTimeQuery(true);
+                query = graphicsContext.CreateQuery(EQueryType.CopyTimestamp);
                 bufferRef = graphicsContext.GetBuffer(description);
                 cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList");
 

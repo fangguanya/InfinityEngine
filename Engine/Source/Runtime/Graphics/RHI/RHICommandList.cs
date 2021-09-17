@@ -102,35 +102,14 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void BeginQuery(FRHITimeQuery timeQuery)
+        public void BeginQuery(FRHIQuery query)
         {
-            d3dCmdList.EndQuery(timeQuery.timestamp_Heap, QueryType.Timestamp, 0);
+            query.Begin(d3dCmdList);
         }
 
-        public void EndQuery(FRHITimeQuery timeQuery)
+        public void EndQuery(FRHIQuery query)
         {
-            d3dCmdList.EndQuery(timeQuery.timestamp_Heap, QueryType.Timestamp, 1);
-            d3dCmdList.ResolveQueryData(timeQuery.timestamp_Heap, QueryType.Timestamp, 0, 2, timeQuery.timestamp_Result, 0);
-        }
-
-        public void BeginQuery(FRHIOcclusionQuery occlusionQuery)
-        {
-            occlusionQuery.Begin(d3dCmdList);
-        }
-
-        public void EndQuery(FRHIOcclusionQuery occlusionQuery)
-        {
-            occlusionQuery.End(d3dCmdList);
-        }
-
-        public void BeginQuery(FRHIStatisticsQuery statisticsQuery)
-        {
-
-        }
-
-        public void EndQuery(FRHIStatisticsQuery statisticsQuery)
-        {
-
+            query.End(d3dCmdList);
         }
 
         public void SetComputePipelineState(FRHIComputePipelineState computeState)
