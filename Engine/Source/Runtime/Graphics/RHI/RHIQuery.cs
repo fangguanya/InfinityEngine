@@ -41,19 +41,21 @@ namespace InfinityEngine.Graphics.RHI
 
 	public class FRHIQuery : FDisposable
 	{
+		internal ulong[] queryData;
 		internal EQueryType queryType;
-		internal ID3D12QueryHeap heap;
-		internal ID3D12Resource result;
+		internal ID3D12QueryHeap queryHeap;
+		internal ID3D12Resource queryResult;
 
 		internal FRHIQuery(FRHIDevice device, in EQueryType queryType, in ulong count) : base()
 		{
 			this.queryType = queryType;
+			this.queryData = new ulong[count];
 
 			QueryHeapDescription queryHeapDesc;
 			queryHeapDesc.Type = (QueryHeapType)queryType;
 			queryHeapDesc.Count = 2;
 			queryHeapDesc.NodeMask = 0;
-			this.heap = device.d3dDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
+			this.queryHeap = device.d3dDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
 
             HeapProperties heapProperties;
             {
@@ -77,35 +79,28 @@ namespace InfinityEngine.Graphics.RHI
 				resourceDesc.SampleDescription.Count = 1;
 				resourceDesc.SampleDescription.Quality = 0;
             }
-			this.result = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
+			this.queryResult = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
         }
 
-		public void Begin(ID3D12GraphicsCommandList5 d3dCmdList)
-		{
-			d3dCmdList.EndQuery(heap, queryType.GetNativeQueryType(), 0);
-		}
-
-		public void End(ID3D12GraphicsCommandList5 d3dCmdList)
-		{
-			d3dCmdList.EndQuery(heap, queryType.GetNativeQueryType(), 1);
-			d3dCmdList.ResolveQueryData(heap, queryType.GetNativeQueryType(), 0, 2, result, 0);
+		public void RequestReadback(FRHICommandList cmdList)
+        {
+			cmdList.d3dCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, 2, queryResult, 0);
 		}
 
 		public float GetQueryResult(float timestampFrequency)
 		{
-            ulong[] timestamp = new ulong[2];
-            IntPtr timeesult_Ptr = result.Map(0);
-            timeesult_Ptr.CopyTo(timestamp.AsSpan());
-			result.Unmap(0);
+            IntPtr timeesult_Ptr = queryResult.Map(0);
+            timeesult_Ptr.CopyTo(queryData.AsSpan());
+			queryResult.Unmap(0);
 
-			float timeResult = (float)((timestamp[1] - timestamp[0]) / timestampFrequency) * 1000;
+			float timeResult = (float)((queryData[1] - queryData[0]) / timestampFrequency) * 1000;
             return math.round(timeResult * 100) / 100;
         }
 
 		protected override void Release()
 		{
-			heap?.Dispose();
-			result?.Dispose();
+			queryHeap?.Dispose();
+			queryResult?.Dispose();
         }
 	}
 }
