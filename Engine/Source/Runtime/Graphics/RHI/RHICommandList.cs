@@ -110,7 +110,7 @@ namespace InfinityEngine.Graphics.RHI
         public void EndQuery(FRHIQuery query)
         {
             d3dCmdList.EndQuery(query.queryHeap, query.queryType.GetNativeQueryType(), 1);
-            //d3dCmdList.ResolveQueryData(query.queryHeap, query.queryType.GetNativeQueryType(), 0, 2, query.queryResult, 0);
+            //d3dCmdList.ResolveQueryData(query.queryHeap, query.queryType.GetNativeQueryType(), 0, query.queryCount, query.queryResult, 0);
         }
 
         public void SetComputePipelineState(FRHIComputePipelineState computeState)

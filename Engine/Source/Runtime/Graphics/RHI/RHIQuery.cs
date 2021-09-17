@@ -41,19 +41,21 @@ namespace InfinityEngine.Graphics.RHI
 
 	public class FRHIQuery : FDisposable
 	{
+		internal int queryCount;
 		internal ulong[] queryData;
 		internal EQueryType queryType;
 		internal ID3D12QueryHeap queryHeap;
 		internal ID3D12Resource queryResult;
 
-		internal FRHIQuery(FRHIDevice device, in EQueryType queryType, in ulong count) : base()
+		internal FRHIQuery(FRHIDevice device, in EQueryType queryType, in int queryCount) : base()
 		{
 			this.queryType = queryType;
-			this.queryData = new ulong[count];
+			this.queryCount= (int)queryCount;
+			this.queryData = new ulong[queryCount];
 
 			QueryHeapDescription queryHeapDesc;
 			queryHeapDesc.Type = (QueryHeapType)queryType;
-			queryHeapDesc.Count = 2;
+			queryHeapDesc.Count = queryCount;
 			queryHeapDesc.NodeMask = 0;
 			this.queryHeap = device.d3dDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
 
@@ -69,7 +71,7 @@ namespace InfinityEngine.Graphics.RHI
             {
 				resourceDesc.Alignment = 0;
 				resourceDesc.Dimension = ResourceDimension.Buffer;
-				resourceDesc.Width = sizeof(ulong) * count;
+				resourceDesc.Width = sizeof(ulong) * (ulong)queryCount;
 				resourceDesc.Height = 1;
 				resourceDesc.DepthOrArraySize = 1;
 				resourceDesc.MipLevels = 1;
@@ -84,16 +86,16 @@ namespace InfinityEngine.Graphics.RHI
 
 		public void RequestReadback(FRHICommandList cmdList)
         {
-			cmdList.d3dCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, 2, queryResult, 0);
+			cmdList.d3dCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
 		}
 
-		public float GetQueryResult(float timestampFrequency)
+		public float GetQueryResult(in float frequency)
 		{
             IntPtr timeesult_Ptr = queryResult.Map(0);
             timeesult_Ptr.CopyTo(queryData.AsSpan());
 			queryResult.Unmap(0);
 
-			float timeResult = (float)((queryData[1] - queryData[0]) / timestampFrequency) * 1000;
+			float timeResult = (float)((queryData[1] - queryData[0]) / frequency) * 1000;
             return math.round(timeResult * 100) / 100;
         }
 
