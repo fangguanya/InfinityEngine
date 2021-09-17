@@ -102,15 +102,14 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void BeginQuery(FRHIQuery query)
+        public void BeginQuery(in FRHIQuery query)
         {
-            d3dCmdList.EndQuery(query.queryHeap, query.queryType.GetNativeQueryType(), 0);
+            d3dCmdList.EndQuery(query.queryPool.queryHeap, query.queryPool.queryType.GetNativeQueryType(), query.indexHead);
         }
 
-        public void EndQuery(FRHIQuery query)
+        public void EndQuery(in FRHIQuery query)
         {
-            d3dCmdList.EndQuery(query.queryHeap, query.queryType.GetNativeQueryType(), 1);
-            //d3dCmdList.ResolveQueryData(query.queryHeap, query.queryType.GetNativeQueryType(), 0, query.queryCount, query.queryResult, 0);
+            d3dCmdList.EndQuery(query.queryPool.queryHeap, query.queryPool.queryType.GetNativeQueryType(), query.indexLast);
         }
 
         public void SetComputePipelineState(FRHIComputePipelineState computeState)

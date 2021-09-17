@@ -38,6 +38,7 @@ namespace InfinityEngine.Graphics.RHI
       
         internal FRHIDevice device;
         internal FRHIFencePool fencePool;
+        internal FRHIQueryPool timeQueryPool;
         internal FRHIResourcePool resourcePool;
         internal List<FExecuteInfo> executeInfos;
         internal FRHICommandContext copyCommands;
@@ -54,6 +55,7 @@ namespace InfinityEngine.Graphics.RHI
             fencePool = new FRHIFencePool(device);
             executeInfos = new List<FExecuteInfo>(64);
             resourcePool = new FRHIResourcePool(device);
+            timeQueryPool = new FRHIQueryPool(device, EQueryType.CopyTimestamp, 64);
             copyCommands = new FRHICommandContext(device, EContextType.Copy);
             computeCommands = new FRHICommandContext(device, EContextType.Compute);
             graphicsCommands = new FRHICommandContext(device, EContextType.Graphics);
@@ -161,11 +163,17 @@ namespace InfinityEngine.Graphics.RHI
         public void Flush()
         {
             graphicsCommands.Flush();
+            timeQueryPool.RefreshResult();
         }
 
         public void Submit()
         {
-            for(int i = 0; i < executeInfos.Count; ++i)
+            FRHICommandList queryCmdList = GetCommandList(EContextType.Copy, "QueryCommandList");
+            queryCmdList.Clear();
+            timeQueryPool.RequestReadback(this, queryCmdList);
+            ReleaseCommandList(queryCmdList);
+
+            for (int i = 0; i < executeInfos.Count; ++i)
             {
                 FExecuteInfo executeInfo = executeInfos[i];
                 FRHICommandContext cmdContext = executeInfo.cmdContext;
@@ -212,7 +220,23 @@ namespace InfinityEngine.Graphics.RHI
 
         public FRHIQuery CreateQuery(in EQueryType queryType)
         {
-            return new FRHIQuery(device, queryType, 2);
+            FRHIQuery outQuery = default;
+            switch (queryType)
+            {
+                case EQueryType.Occlusion:
+                    outQuery = new FRHIQuery(timeQueryPool);
+                    break;
+                case EQueryType.Timestamp:
+                    outQuery = new FRHIQuery(timeQueryPool);
+                    break;
+                case EQueryType.Statistics:
+                    outQuery = new FRHIQuery(timeQueryPool);
+                    break;
+                case EQueryType.CopyTimestamp:
+                    outQuery = new FRHIQuery(timeQueryPool);
+                    break;
+            }
+            return outQuery;
         }
 
         public FRHIComputePipelineState CreateComputePipelineState()
@@ -359,6 +383,7 @@ namespace InfinityEngine.Graphics.RHI
             fencePool?.Dispose();
             resourcePool?.Dispose();
             copyCommands?.Dispose();
+            timeQueryPool?.Dispose();
             computeCommands?.Dispose();
             graphicsCommands?.Dispose();
             copyCommandListPool?.Dispose();

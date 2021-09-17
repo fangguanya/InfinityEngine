@@ -31,11 +31,11 @@ namespace ExampleProject
             timeProfiler = new FTimeProfiler();
 
             dataReady = true;
-            readData = new int[8400];
+            readData = new int[10000000];
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                FRHIBufferDescription description = new FRHIBufferDescription(8400, 4, EUsageType.Dynamic | EUsageType.Staging);
+                FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
 
                 fence = graphicsContext.GetFence();
                 query = graphicsContext.CreateQuery(EQueryType.CopyTimestamp);
@@ -43,8 +43,8 @@ namespace ExampleProject
                 cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList");
 
                 cmdList.Clear();
-                int[] data = new int[8400];
-                for (int i = 0; i < 8400; ++i) { data[i] = 8400 - i; }
+                int[] data = new int[10000000];
+                for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
                 bufferRef.buffer.SetData(cmdList, data);
                 graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
@@ -76,7 +76,7 @@ namespace ExampleProject
                 if (dataReady)
                 {
                     bufferRef.buffer.GetData(readData);
-                    copyTime = query.GetQueryResult(graphicsContext.copyFrequency);
+                    copyTime = query.GetResult(graphicsContext.copyFrequency);
                 }
 
                 timeProfiler.Stop();
@@ -101,7 +101,7 @@ namespace ExampleProject
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                query?.Dispose();
+                query.Dispose();
                 graphicsContext.ReleaseFence(fence);
                 graphicsContext.ReleaseBuffer(bufferRef);
                 graphicsContext.ReleaseCommandList(cmdList);
