@@ -62,7 +62,6 @@ namespace InfinityEngine.Game.System
             while (!bLoopExit)
             {
                 ProcessGraphicsTasks();
-
                 renderPipeline.Render(renderContext, graphicsContext);
                 graphicsContext.Flush();
 

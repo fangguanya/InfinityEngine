@@ -137,13 +137,18 @@ namespace InfinityEngine.Graphics.RHI
 			this.queryResult = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
         }
 
-		public void RequestReadback(FRHIGraphicsContext graphicsContext, FRHICommandList cmdList)
+		public void RequestReadback(FRHIGraphicsContext graphicsContext)
         {
 			if (bCopyReady) 
 			{
+				FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "QueryCommandList");
+				cmdList.Clear();
+
 				cmdList.d3dCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
 				graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
 				graphicsContext.WriteFence(EContextType.Copy, queryFence);
+
+				graphicsContext.ReleaseCommandList(cmdList);
 			}
 		}
 
