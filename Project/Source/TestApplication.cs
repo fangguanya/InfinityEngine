@@ -15,7 +15,11 @@ namespace ExampleProject
     {
         bool dataReady;
         int[] readData;
-        float copyTime;
+        float cpuTime 
+        { 
+            get { return (float)timeProfiler.microseconds / 1000.0f; } 
+        }
+        float gpuTime;
 
         FRHIFence fence;
         FRHIQuery query;
@@ -76,14 +80,14 @@ namespace ExampleProject
                 if (dataReady)
                 {
                     bufferRef.buffer.GetData(readData);
-                    copyTime = query.GetResult(graphicsContext.copyFrequency);
+                    gpuTime = query.GetResult(graphicsContext.copyFrequency);
                 }
 
                 timeProfiler.Stop();
                 graphicsContext.Submit();
                 Console.WriteLine("||");
-                Console.WriteLine("GPUTime : " + copyTime + "ms");
-                Console.WriteLine("CPUTime : " + (double)timeProfiler.microseconds / 1000.0f);
+                Console.WriteLine("CPUTime : " + cpuTime + "ms");
+                Console.WriteLine("GPUTime : " + gpuTime + "ms");
             });
 
             //m_TimeProfiler.Restart();
@@ -101,8 +105,8 @@ namespace ExampleProject
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                graphicsContext.ReleaseQuery(query);
                 graphicsContext.ReleaseFence(fence);
+                graphicsContext.ReleaseQuery(query);
                 graphicsContext.ReleaseBuffer(bufferRef);
                 graphicsContext.ReleaseCommandList(cmdList);
                 Console.WriteLine("Release RenderProxy");

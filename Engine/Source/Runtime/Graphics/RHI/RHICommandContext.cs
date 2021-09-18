@@ -8,7 +8,15 @@ namespace InfinityEngine.Graphics.RHI
     {
         private FRHIFence m_Fence;
         private AutoResetEvent m_FenceEvent;
-        internal ID3D12CommandQueue d3dCmdQueue;
+        private ID3D12CommandQueue m_NativeCmdQueue;
+
+        internal ID3D12CommandQueue nativeCmdQueue
+        {
+            get
+            {
+                return m_NativeCmdQueue;
+            }
+        }
 
         internal FRHICommandContext(FRHIDevice device, EContextType contextType) : base()
         {
@@ -18,38 +26,38 @@ namespace InfinityEngine.Graphics.RHI
             CommandQueueDescription queueDescription = new CommandQueueDescription();
             queueDescription.Type = (CommandListType)contextType;
             queueDescription.Flags = CommandQueueFlags.None;
-            d3dCmdQueue = device.d3dDevice.CreateCommandQueue<ID3D12CommandQueue>(queueDescription);
+            m_NativeCmdQueue = device.nativeDevice.CreateCommandQueue<ID3D12CommandQueue>(queueDescription);
         }
 
-        public static implicit operator ID3D12CommandQueue(FRHICommandContext cmdContext) { return cmdContext.d3dCmdQueue; }
+        public static implicit operator ID3D12CommandQueue(FRHICommandContext cmdContext) { return cmdContext.m_NativeCmdQueue; }
 
         public void SignalQueue(FRHIFence fence)
         {
-            fence.Signal(d3dCmdQueue);
+            fence.Signal(this);
         }
 
         public void WaitQueue(FRHIFence fence)
         {
-            fence.WaitOnGPU(d3dCmdQueue);
+            fence.WaitOnGPU(this);
         }
 
         public void ExecuteQueue(FRHICommandList cmdList)
         {
             cmdList.Close();
-            d3dCmdQueue.ExecuteCommandList(cmdList);
+            m_NativeCmdQueue.ExecuteCommandList(cmdList);
         }
 
         public void Flush()
         {
-            m_Fence.Signal(d3dCmdQueue);
+            m_Fence.Signal(this);
             m_Fence.WaitOnCPU(m_FenceEvent);
         }
 
         protected override void Release()
         {
             m_Fence?.Dispose();
-            d3dCmdQueue?.Dispose();
             m_FenceEvent?.Dispose();
+            m_NativeCmdQueue?.Dispose();
         }
     }
 }

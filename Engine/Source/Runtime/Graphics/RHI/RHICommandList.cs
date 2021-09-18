@@ -24,17 +24,17 @@ namespace InfinityEngine.Graphics.RHI
         public string name;
         internal bool bClose;
         internal EContextType contextType;
-        internal ID3D12GraphicsCommandList5 d3dCmdList;
-        internal ID3D12CommandAllocator d3dCmdAllocator;
+        internal ID3D12GraphicsCommandList5 nativeCmdList;
+        internal ID3D12CommandAllocator nativeCmdAllocator;
 
         internal FRHICommandList(FRHIDevice device, EContextType contextType)
         {
             this.name = null;
             this.bClose = false;
             this.contextType = contextType;
-            this.d3dCmdAllocator = device.d3dDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
-            this.d3dCmdList = device.d3dDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3dCmdAllocator, null);
-            this.d3dCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
+            this.nativeCmdAllocator = device.nativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
+            this.nativeCmdList = device.nativeDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, nativeCmdAllocator, null);
+            this.nativeCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
         internal FRHICommandList(string name, FRHIDevice device, EContextType contextType)
@@ -42,9 +42,9 @@ namespace InfinityEngine.Graphics.RHI
             this.name = name;
             this.bClose = false;
             this.contextType = contextType;
-            this.d3dCmdAllocator = device.d3dDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
-            this.d3dCmdList = device.d3dDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, d3dCmdAllocator, null);
-            this.d3dCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
+            this.nativeCmdAllocator = device.nativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
+            this.nativeCmdList = device.nativeDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, nativeCmdAllocator, null);
+            this.nativeCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
         public void Clear()
@@ -52,14 +52,24 @@ namespace InfinityEngine.Graphics.RHI
             if(!bClose) { return; }
 
             bClose = false;
-            d3dCmdAllocator.Reset();
-            d3dCmdList.Reset(d3dCmdAllocator, null);
+            nativeCmdAllocator.Reset();
+            nativeCmdList.Reset(nativeCmdAllocator, null);
         }
 
         internal void Close()
         {
             bClose = true;
-            d3dCmdList.Close();
+            nativeCmdList.Close();
+        }
+
+        public void Barriers(FRHIResource resource)
+        {
+
+        }
+
+        public void Transitions(FRHIResource resource)
+        {
+
         }
 
         public void ClearBuffer(FRHIBuffer buffer)
@@ -68,6 +78,11 @@ namespace InfinityEngine.Graphics.RHI
         }
 
         public void ClearTexture(FRHITexture texture)
+        {
+
+        }
+
+        public void GenerateMipmaps(FRHITexture texture)
         {
 
         }
@@ -92,24 +107,14 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void GenerateMipmaps(FRHITexture texture)
-        {
-
-        }
-
-        public void TransitionResource()
-        {
-
-        }
-
         public void BeginQuery(in FRHIQuery query)
         {
-            d3dCmdList.EndQuery(query.queryPool.queryHeap, query.queryPool.queryType.GetNativeQueryType(), query.indexHead);
+            nativeCmdList.EndQuery(query.queryPool.queryHeap, query.queryPool.queryType.GetNativeQueryType(), query.indexHead);
         }
 
         public void EndQuery(in FRHIQuery query)
         {
-            d3dCmdList.EndQuery(query.queryPool.queryHeap, query.queryPool.queryType.GetNativeQueryType(), query.indexLast);
+            nativeCmdList.EndQuery(query.queryPool.queryHeap, query.queryPool.queryType.GetNativeQueryType(), query.indexLast);
         }
 
         public void SetComputePipelineState(FRHIComputePipelineState computeState)
@@ -152,12 +157,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public void SetViewport()
+        public void SetScissor()
         {
 
         }
 
-        public void SetScissorRect()
+        public void SetViewport()
         {
 
         }
@@ -179,7 +184,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void EndRenderPass()
         {
-            d3dCmdList.EndRenderPass();
+            nativeCmdList.EndRenderPass();
         }
 
         public void SetStencilRef()
@@ -199,12 +204,12 @@ namespace InfinityEngine.Graphics.RHI
 
         public void SetShadingRate(in ShadingRate shadingRate, in ShadingRateCombiner[] combineMathdo)
         {
-            d3dCmdList.RSSetShadingRate(shadingRate, combineMathdo);
+            nativeCmdList.RSSetShadingRate(shadingRate, combineMathdo);
         }
 
         public void SetShadingRate(FRHITexture texture)
         {
-            d3dCmdList.RSSetShadingRateImage(texture.defaultResource);
+            nativeCmdList.RSSetShadingRateImage(texture.defaultResource);
         }
 
         public void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisState)
@@ -214,10 +219,10 @@ namespace InfinityEngine.Graphics.RHI
 
         public void DrawInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
         {
-            d3dCmdList.IASetPrimitiveTopology(topologyType);
-            d3dCmdList.IASetIndexBuffer(indexBufferView.d3dView);
-            d3dCmdList.IASetVertexBuffers(0, vertexBufferView.d3dView);
-            d3dCmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
+            nativeCmdList.IASetPrimitiveTopology(topologyType);
+            nativeCmdList.IASetIndexBuffer(indexBufferView.nativeBufferView);
+            nativeCmdList.IASetVertexBuffers(0, vertexBufferView.nativeBufferView);
+            nativeCmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
         }
 
         public void DrawInstanceIndirect(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, PrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset)
@@ -237,11 +242,11 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Release()
         {
-            d3dCmdList?.Dispose();
-            d3dCmdAllocator?.Dispose();
+            nativeCmdList?.Dispose();
+            nativeCmdAllocator?.Dispose();
         }
 
-        public static implicit operator ID3D12GraphicsCommandList5(FRHICommandList cmdList) { return cmdList.d3dCmdList; }
+        public static implicit operator ID3D12GraphicsCommandList5(FRHICommandList cmdList) { return cmdList.nativeCmdList; }
     }
 
     internal class FRHICommandListPool : FDisposable

@@ -116,7 +116,7 @@ namespace InfinityEngine.Graphics.RHI
 			queryHeapDesc.Type = (QueryHeapType)queryType;
 			queryHeapDesc.Count = queryCount;
 			queryHeapDesc.NodeMask = 0;
-			this.queryHeap = device.d3dDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
+			this.queryHeap = device.nativeDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
 
             HeapProperties heapProperties;
             {
@@ -140,7 +140,7 @@ namespace InfinityEngine.Graphics.RHI
 				resourceDesc.SampleDescription.Count = 1;
 				resourceDesc.SampleDescription.Quality = 0;
             }
-			this.queryResult = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
+			this.queryResult = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
         }
 
 		public void RequestReadback(FRHIGraphicsContext graphicsContext)
@@ -150,7 +150,7 @@ namespace InfinityEngine.Graphics.RHI
 				FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "QueryCommandList");
 				cmdList.Clear();
 
-				cmdList.d3dCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
+				cmdList.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
 				graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
 				graphicsContext.WriteFence(EContextType.Copy, queryFence);
 

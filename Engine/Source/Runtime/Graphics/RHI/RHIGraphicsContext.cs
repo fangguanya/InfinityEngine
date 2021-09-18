@@ -18,21 +18,21 @@ namespace InfinityEngine.Graphics.RHI
         {
             get
             {
-                return m_CopyCommands.d3dCmdQueue.TimestampFrequency;
+                return m_CopyCommands.nativeCmdQueue.TimestampFrequency;
             }
         }
         public float computeFrequency
         {
             get
             {
-                return m_ComputeCommands.d3dCmdQueue.TimestampFrequency;
+                return m_ComputeCommands.nativeCmdQueue.TimestampFrequency;
             }
         }
         public float graphicsFrequency
         {
             get
             {
-                return m_GraphicsCommands.d3dCmdQueue.TimestampFrequency;
+                return m_GraphicsCommands.nativeCmdQueue.TimestampFrequency;
             }
         }
       
@@ -377,7 +377,7 @@ namespace InfinityEngine.Graphics.RHI
             };
             int descriptorIndex = m_DescriptorFactory.Allocator(1);
             CpuDescriptorHandle descriptorHandle = m_DescriptorFactory.GetCPUHandleStart() + m_DescriptorFactory.GetDescriptorSize() * descriptorIndex;
-            m_Device.d3dDevice.CreateShaderResourceView(buffer.defaultResource, srvDescriptor, descriptorHandle);
+            m_Device.nativeDevice.CreateShaderResourceView(buffer.defaultResource, srvDescriptor, descriptorHandle);
 
             return new FRHIShaderResourceView(m_DescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);
         }
@@ -398,7 +398,7 @@ namespace InfinityEngine.Graphics.RHI
             };
             int descriptorIndex = m_DescriptorFactory.Allocator(1);
             CpuDescriptorHandle descriptorHandle = m_DescriptorFactory.GetCPUHandleStart() + m_DescriptorFactory.GetDescriptorSize() * descriptorIndex;
-            m_Device.d3dDevice.CreateUnorderedAccessView(buffer.defaultResource, null, uavDescriptor, descriptorHandle);
+            m_Device.nativeDevice.CreateUnorderedAccessView(buffer.defaultResource, null, uavDescriptor, descriptorHandle);
 
             return new FRHIUnorderedAccessView(m_DescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);
         }

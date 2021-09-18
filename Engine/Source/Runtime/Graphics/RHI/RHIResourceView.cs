@@ -17,14 +17,14 @@ namespace InfinityEngine.Graphics.RHI
 
     public struct FRHIIndexBufferView
     {
-        internal IndexBufferView d3dView;
         internal ulong virtualAddressGPU;
+        internal IndexBufferView nativeBufferView;
     }
 
     public struct FRHIVertexBufferView
     {
-        internal VertexBufferView d3dView;
         internal ulong virtualAddressGPU;
+        internal VertexBufferView nativeBufferView;
     }
 
     public struct FRHIDeptnStencilView
@@ -107,35 +107,35 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal int length;
         internal int descriptorIndex;
-        internal ID3D12Device6 d3dDevice;
+        internal ID3D12Device6 nativeDevice;
         internal CpuDescriptorHandle descriptorHandle;
 
         internal FRHIResourceSet(FRHIDevice device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length) : base()
         {
             this.length = length;
-            this.d3dDevice = device;
+            this.nativeDevice = device.nativeDevice;
             this.descriptorIndex = descriptorHeapFactory.Allocator(length);
             this.descriptorHandle = descriptorHeapFactory.GetCPUHandleStart();
         }
 
         private CpuDescriptorHandle GetDescriptorHandle(in int offset)
         {
-            return descriptorHandle + d3dDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
+            return descriptorHandle + nativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
         }
 
         public void SetConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
         {
-            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), constantBufferView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+            nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), constantBufferView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
         public void SetShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
         {
-            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), shaderResourceView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+            nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), shaderResourceView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
         public void SetUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
         {
-            d3dDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), unorderedAccessView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+            nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), unorderedAccessView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
         protected override void Release()

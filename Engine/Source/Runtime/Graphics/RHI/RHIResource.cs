@@ -248,7 +248,7 @@ namespace InfinityEngine.Graphics.RHI
                     defaultResourceDesc.Flags = ResourceFlags.None;
                     defaultResourceDesc.Layout = TextureLayout.RowMajor;
                 }
-                defaultResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
+                defaultResource = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
             }
 
             // UploadMemory
@@ -276,7 +276,7 @@ namespace InfinityEngine.Graphics.RHI
                     uploadResourceDesc.Flags = ResourceFlags.None;
                     uploadResourceDesc.Layout = TextureLayout.RowMajor;
                 }
-                uploadResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
+                uploadResource = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
             }
 
             // ReadbackMemory
@@ -304,7 +304,7 @@ namespace InfinityEngine.Graphics.RHI
                     readbackResourceDesc.Flags = ResourceFlags.None;
                     readbackResourceDesc.Layout = TextureLayout.RowMajor;
                 }
-                readbackResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
+                readbackResource = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
             }
         }
 
@@ -318,7 +318,7 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public void SetData<T>(ID3D12GraphicsCommandList5 d3dCmdList, params T[] data) where T : struct
+        public void SetData<T>(FRHICommandList cmdList, params T[] data) where T : struct
         {
             if ((description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
@@ -326,19 +326,19 @@ namespace InfinityEngine.Graphics.RHI
                 data.AsSpan().CopyTo(uploadResourcePtr);
                 uploadResource.Unmap(0);
 
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+                cmdList.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
+                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 
-        public void RequestUpload<T>(ID3D12GraphicsCommandList5 d3dCmdList) where T : struct
+        public void RequestUpload<T>(FRHICommandList cmdList) where T : struct
         {
             if ((description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+                cmdList.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
+                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 
@@ -353,13 +353,13 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public void GetData<T>(ID3D12GraphicsCommandList5 d3dCmdList, T[] data) where T : struct
+        public void GetData<T>(FRHICommandList cmdList, T[] data) where T : struct
         {
             if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
+                cmdList.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
+                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
 
                 //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
                 IntPtr readbackResourcePtr = readbackResource.Map(0);
@@ -368,13 +368,13 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public void RequestReadback<T>(ID3D12GraphicsCommandList5 d3dCmdList) where T : struct
+        public void RequestReadback<T>(FRHICommandList cmdList) where T : struct
         {
             if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                d3dCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
+                cmdList.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
+                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
             }
         }
 
@@ -512,7 +512,7 @@ namespace InfinityEngine.Graphics.RHI
                     defaultResourceDesc.Flags = ResourceFlags.None;
                     defaultResourceDesc.Layout = TextureLayout.Unknown;
                 }
-                defaultResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
+                defaultResource = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
             }
 
             // UploadMemory
@@ -540,7 +540,7 @@ namespace InfinityEngine.Graphics.RHI
                     uploadResourceDesc.Flags = ResourceFlags.None;
                     uploadResourceDesc.Layout = TextureLayout.Unknown;
                 }
-                uploadResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
+                uploadResource = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
             }
 
             // ReadbackMemory
@@ -568,7 +568,7 @@ namespace InfinityEngine.Graphics.RHI
                     readbackResourceDesc.Flags = ResourceFlags.None;
                     readbackResourceDesc.Layout = TextureLayout.Unknown;
                 }
-                readbackResource = device.d3dDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
+                readbackResource = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
             }
         }
 

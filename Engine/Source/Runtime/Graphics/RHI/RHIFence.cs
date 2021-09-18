@@ -7,47 +7,47 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHIFence : FDisposable
     {
         public string name;
-        internal ulong fenceValue;
-        internal ID3D12Fence d3dFence;
+        private ulong m_FenceValue;
+        private ID3D12Fence m_NativeFence;
 
         internal FRHIFence(FRHIDevice device, string name = null) : base()
         {
             this.name = name;
-            this.d3dFence = device.d3dDevice.CreateFence<ID3D12Fence>(0, FenceFlags.None);
+            this.m_NativeFence = device.nativeDevice.CreateFence<ID3D12Fence>(0, FenceFlags.None);
         }
 
-        public void Signal(ID3D12CommandQueue d3d12CmdQueue)
+        internal void Signal(FRHICommandContext cmdContext)
         {
-            ++fenceValue;
-            d3d12CmdQueue.Signal(d3dFence, fenceValue);
+            ++m_FenceValue;
+            cmdContext.nativeCmdQueue.Signal(m_NativeFence, m_FenceValue);
         }
 
         public bool Completed()
         {
-            if (d3dFence.CompletedValue < fenceValue)
+            if (m_NativeFence.CompletedValue < m_FenceValue)
             {
                 return false;
             }
             return true;
         }
 
-        public void WaitOnCPU(AutoResetEvent fenceEvent)
+        internal void WaitOnCPU(AutoResetEvent fenceEvent)
         {
             if (!Completed())
             {
-                d3dFence.SetEventOnCompletion(fenceValue, fenceEvent);
+                m_NativeFence.SetEventOnCompletion(m_FenceValue, fenceEvent);
                 fenceEvent.WaitOne();
             }
         }
 
-        public void WaitOnGPU(ID3D12CommandQueue d3d12CmdQueue)
+        internal void WaitOnGPU(FRHICommandContext cmdContext)
         {
-            d3d12CmdQueue.Wait(d3dFence, fenceValue);
+            cmdContext.nativeCmdQueue.Wait(m_NativeFence, m_FenceValue);
         }
 
         protected override void Release()
         {
-            d3dFence?.Dispose();
+            m_NativeFence?.Dispose();
         }
     }
 
