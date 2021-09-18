@@ -66,7 +66,7 @@ namespace InfinityEngine.Graphics.RHI
         }
 
         // Context
-        private FRHICommandContext SelectContext(in EContextType contextType)
+        FRHICommandContext SelectContext(in EContextType contextType)
         {
             FRHICommandContext commandContext = m_GraphicsCommands;
 
@@ -215,9 +215,9 @@ namespace InfinityEngine.Graphics.RHI
             m_FencePool.ReleaseTemporary(fence);
         }
 
-        public FRHIQuery CreateQuery(in EQueryType queryType)
+        public FRHIQuery CreateQuery(in EQueryType queryType, string name = null)
         {
-            FRHIQuery outQuery = default;
+            FRHIQuery outQuery = null;
             switch (queryType)
             {
                 case EQueryType.Occlusion:
@@ -234,6 +234,46 @@ namespace InfinityEngine.Graphics.RHI
                     break;
             }
             return outQuery;
+        }
+
+        public FRHIQuery GetQuery(in EQueryType queryType, string name = null)
+        {
+            FRHIQuery outQuery = null;
+            switch (queryType)
+            {
+                case EQueryType.Occlusion:
+                    outQuery = m_TimeQueryPool.GetTemporary(name);
+                    break;
+                case EQueryType.Timestamp:
+                    outQuery = m_TimeQueryPool.GetTemporary(name);
+                    break;
+                case EQueryType.Statistics:
+                    outQuery = m_TimeQueryPool.GetTemporary(name);
+                    break;
+                case EQueryType.CopyTimestamp:
+                    outQuery = m_TimeQueryPool.GetTemporary(name);
+                    break;
+            }
+            return outQuery;
+        }
+
+        public void ReleaseQuery(FRHIQuery query)
+        {
+            switch (query.queryPool.queryType)
+            {
+                case EQueryType.Occlusion:
+                    m_TimeQueryPool.ReleaseTemporary(query);
+                    break;
+                case EQueryType.Timestamp:
+                    m_TimeQueryPool.ReleaseTemporary(query);
+                    break;
+                case EQueryType.Statistics:
+                    m_TimeQueryPool.ReleaseTemporary(query);
+                    break;
+                case EQueryType.CopyTimestamp:
+                    m_TimeQueryPool.ReleaseTemporary(query);
+                    break;
+            }
         }
 
         public FRHIComputePipelineState CreateComputePipelineState()
@@ -369,9 +409,9 @@ namespace InfinityEngine.Graphics.RHI
             return uav;
         }
 
-        public FRHIResourceViewRange CreateResourceViewRange(in int count)
+        public FRHIResourceSet CreateResourceSet(in int count)
         {
-            return new FRHIResourceViewRange(m_Device, m_DescriptorFactory, count);
+            return new FRHIResourceSet(m_Device, m_DescriptorFactory, count);
         }
 
         protected override void Release()

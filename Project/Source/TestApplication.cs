@@ -38,7 +38,7 @@ namespace ExampleProject
                 FRHIBufferDescription description = new FRHIBufferDescription(10000, 4, EUsageType.Dynamic | EUsageType.Staging);
 
                 fence = graphicsContext.GetFence();
-                query = graphicsContext.CreateQuery(EQueryType.CopyTimestamp);
+                query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
                 bufferRef = graphicsContext.GetBuffer(description);
                 cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList");
 
@@ -101,7 +101,7 @@ namespace ExampleProject
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                query.Dispose();
+                graphicsContext.ReleaseQuery(query);
                 graphicsContext.ReleaseFence(fence);
                 graphicsContext.ReleaseBuffer(bufferRef);
                 graphicsContext.ReleaseCommandList(cmdList);

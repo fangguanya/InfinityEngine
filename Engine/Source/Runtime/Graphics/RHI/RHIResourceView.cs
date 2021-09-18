@@ -103,14 +103,14 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public sealed class FRHIResourceViewRange : FDisposable
+    public sealed class FRHIResourceSet : FDisposable
     {
         internal int length;
         internal int descriptorIndex;
         internal ID3D12Device6 d3dDevice;
         internal CpuDescriptorHandle descriptorHandle;
 
-        internal FRHIResourceViewRange(FRHIDevice device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length) : base()
+        internal FRHIResourceSet(FRHIDevice device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length) : base()
         {
             this.length = length;
             this.d3dDevice = device;

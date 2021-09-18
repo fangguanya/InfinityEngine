@@ -249,27 +249,28 @@ namespace InfinityEngine.Graphics.RHI
         private FRHIDevice m_Device;
         private EContextType m_ContextType;
         readonly bool m_CollectionCheck = true;
-        readonly Stack<FRHICommandList> m_Stack = new Stack<FRHICommandList>();
+        readonly Stack<FRHICommandList> m_StackPool;
         public int countAll { get; private set; }
         public int countActive { get { return countAll - countInactive; } }
-        public int countInactive { get { return m_Stack.Count; } }
+        public int countInactive { get { return m_StackPool.Count; } }
 
         internal FRHICommandListPool(FRHIDevice device, EContextType contextType, bool collectionCheck = true)
         {
             m_Device = device;
             m_ContextType = contextType;
             m_CollectionCheck = collectionCheck;
+            m_StackPool = new Stack<FRHICommandList>(64);
         }
 
         public FRHICommandList GetTemporary(string name)
         {
             FRHICommandList element;
-            if (m_Stack.Count == 0)
+            if (m_StackPool.Count == 0)
             {
                 element = new FRHICommandList(m_Device, m_ContextType);
                 countAll++;
             } else {
-                element = m_Stack.Pop();
+                element = m_StackPool.Pop();
             }
             element.name = name;
             return element;
@@ -284,13 +285,13 @@ namespace InfinityEngine.Graphics.RHI
                     Console.WriteLine("Internal error. Trying to destroy object that is already released to pool.");
             }
 #endif
-            m_Stack.Push(element);
+            m_StackPool.Push(element);
         }
 
         protected override void Release()
         {
             m_Device = null;
-            foreach (FRHICommandList cmdList in m_Stack)
+            foreach (FRHICommandList cmdList in m_StackPool)
             {
                 cmdList.Dispose();
             }

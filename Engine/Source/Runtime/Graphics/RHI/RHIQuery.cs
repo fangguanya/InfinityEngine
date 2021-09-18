@@ -40,8 +40,8 @@ namespace InfinityEngine.Graphics.RHI
 		}
 	}
 
-    public struct FRHIQuery : IDisposable
-    {
+    public class FRHIQuery : FDisposable
+	{
 		internal int indexHead;
 		internal int indexLast;
 		internal FRHIQueryPool queryPool;
@@ -49,8 +49,8 @@ namespace InfinityEngine.Graphics.RHI
 		internal FRHIQuery(FRHIQueryPool queryPool)
 		{
 			this.queryPool = queryPool;
-			this.indexHead = queryPool.AllocateQuery();
-			this.indexLast = queryPool.bTimeQuery ? queryPool.AllocateQuery() : -1;
+			this.indexHead = queryPool.AllocateQueryID();
+			this.indexLast = queryPool.bTimeQuery ? queryPool.AllocateQueryID() : -1;
 		}
 
 		public int GetResult()
@@ -64,13 +64,13 @@ namespace InfinityEngine.Graphics.RHI
 			return math.round((float)((queryPool.queryData[indexLast] - queryPool.queryData[indexHead]) / frequency) * 1000 * 100) / 100;
 		}
 
-		public void Dispose()
+		protected override void Release()
         {
-			queryPool.ReleaseQuery(indexHead);
+			queryPool.ReleaseQueryID(indexHead);
 
 			if(queryPool.bTimeQuery)
             {
-				queryPool.ReleaseQuery(indexLast);
+				queryPool.ReleaseQueryID(indexLast);
 			}
 		}
     }
@@ -85,15 +85,20 @@ namespace InfinityEngine.Graphics.RHI
 		internal FRHIFence queryFence;
 		internal ID3D12QueryHeap queryHeap;
 		internal ID3D12Resource queryResult;
-		internal bool bTimeQuery
+		readonly Stack<FRHIQuery> m_StackPool;
+
+		public bool bTimeQuery
 		{
 			get
 			{
 				return queryType == EQueryType.Timestamp || queryType == EQueryType.CopyTimestamp;
 			}
 		}
+		public int countAll { get; private set; }
+		public int countActive { get { return countAll - countInactive; } }
+		public int countInactive { get { return m_StackPool.Count; } }
 
-		public FRHIQueryPool(FRHIDevice device, in EQueryType queryType, in int queryCount) : base()
+		public FRHIQueryPool(FRHIDevice device, in EQueryType queryType, in int queryCount)
 		{
 			this.bCopyReady = true;
 			this.queryType = queryType;
@@ -101,7 +106,8 @@ namespace InfinityEngine.Graphics.RHI
 			this.queryData = new ulong[queryCount];
 			this.queryFence = new FRHIFence(device, null);
 			this.m_QueryMap = new TArray<int>(queryCount);
-			for(int i = 0; i < queryCount; ++i)
+			this.m_StackPool = new Stack<FRHIQuery>(64);
+			for (int i = 0; i < queryCount; ++i)
             {
 				m_QueryMap.Add(i);
 			}
@@ -163,7 +169,7 @@ namespace InfinityEngine.Graphics.RHI
 			}
 		}
 
-		public int AllocateQuery()
+		public int AllocateQueryID()
         {
 			if (m_QueryMap.length != 0)
 			{
@@ -174,18 +180,48 @@ namespace InfinityEngine.Graphics.RHI
 			return -1;
 		}
 
-		public void ReleaseQuery(in int index)
+		public void ReleaseQueryID(in int index)
 		{
 			m_QueryMap.Add(index);
 		}
 
+		public FRHIQuery GetTemporary(string name)
+		{
+			FRHIQuery query;
+			if (m_StackPool.Count == 0)
+			{
+				query = new FRHIQuery(this);
+				countAll++;
+			} else {
+				query = m_StackPool.Pop();
+			}
+			return query;
+		}
+
+		public void ReleaseTemporary(FRHIQuery query)
+		{
+#if WITH_EDITOR // keep heavy checks in editor
+            if (m_CollectionCheck && m_Stack.Count > 0)
+            {
+                if (m_Stack.Contains(element))
+                    Console.WriteLine("Internal error. Trying to destroy object that is already released to pool.");
+            }
+#endif
+			m_StackPool.Push(query);
+		}
+
 		protected override void Release()
 		{
+			foreach (FRHIQuery query in m_StackPool)
+			{
+				query.Dispose();
+			}
+			
 			queryData = null;
 			m_QueryMap = null;
 			queryHeap?.Dispose();
 			queryFence?.Dispose();
 			queryResult?.Dispose();
-        }
+		}
 	}
 }
