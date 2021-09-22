@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using InfinityEngine.Core.Container;
 using InfinityEngine.Core.TaskSystem;
@@ -60,15 +61,26 @@ namespace ExampleProject
         }
     }
 
-    class Program
+    unsafe class Program
     {
         static void Main(string[] args)
         {
             TestApplication App = new TestApplication("InfinityExample", 1280, 720);
             App.Run();
 
+            // PtrTest
+            /*int*[] aArray = new int*[2];
+            int** aArray = (int**)Marshal.AllocHGlobal(8).ToPointer();
+            for (int i = 0; i < 2; i++)
+            {
+                aArray[i] = (int*)Marshal.AllocHGlobal(4).ToPointer();
+                *aArray[i] = i + 100;
+                Console.WriteLine(*aArray[i]);
+            }
+            Console.ReadKey();
+
             // TaskExample
-            /*int[] IntArray = new int[10];
+            int[] IntArray = new int[10];
 
             FTestTask TaskA;
             TaskA.SleepTime = 0;
