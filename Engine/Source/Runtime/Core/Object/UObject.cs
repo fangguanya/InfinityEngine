@@ -9,7 +9,7 @@ namespace InfinityEngine.Core.Object
 
         public UObject()
         {
-            name = "";
+            name = null;
         }
 
         public UObject(string name)

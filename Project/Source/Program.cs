@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 using InfinityEngine.Core.Container;
 using InfinityEngine.Core.TaskSystem;
+using System.Runtime.InteropServices;
 
 namespace ExampleProject
 {
@@ -70,13 +70,31 @@ namespace ExampleProject
 
             // PtrTest
             /*int*[] aArray = new int*[2];
-            int** aArray = (int**)Marshal.AllocHGlobal(8).ToPointer();
+            //int** aArray = (int**)Marshal.AllocHGlobal(8).ToPointer();
             for (int i = 0; i < 2; i++)
             {
-                aArray[i] = (int*)Marshal.AllocHGlobal(4).ToPointer();
+                //aArray[i] = (int*)Marshal.AllocHGlobal(4).ToPointer();
+                aArray[i] = (int*)TerraFX.Interop.Mimalloc.mi_mallocn_aligned(1, 4, 64);
                 *aArray[i] = i + 100;
                 Console.WriteLine(*aArray[i]);
             }
+            Console.ReadKey();
+
+            //Bitmask Test
+            int bitMask = 0;
+
+            int[] maskValue = new int[8] { 0, 1, 1, 0, 0, 0, 1, 1 };
+            for (int i = 0; i < 8; ++i)
+            {
+                bitMask += maskValue[i] << i;
+            }
+
+            int[] outValue = new int[8];
+            for (int i = 0; i < 8; ++i)
+            {
+                outValue[i] = bitMask >> i & 1;
+            }
+
             Console.ReadKey();
 
             // TaskExample

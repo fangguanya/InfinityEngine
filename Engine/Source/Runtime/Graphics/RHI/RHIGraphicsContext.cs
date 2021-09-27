@@ -62,6 +62,7 @@ namespace InfinityEngine.Graphics.RHI
             m_CopyCommandListPool = new FRHICommandListPool(m_Device, EContextType.Copy);
             m_ComputeCommandListPool = new FRHICommandListPool(m_Device, EContextType.Compute);
             m_GraphicsCommandListPool = new FRHICommandListPool(m_Device, EContextType.Graphics);
+            //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
             m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
