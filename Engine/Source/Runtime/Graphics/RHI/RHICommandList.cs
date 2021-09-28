@@ -1,5 +1,6 @@
 ﻿using Vortice.Direct3D;
 using Vortice.Direct3D12;
+using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI

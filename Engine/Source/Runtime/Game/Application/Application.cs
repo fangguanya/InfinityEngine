@@ -1,4 +1,6 @@
-﻿using InfinityEngine.Core.Object;
+﻿using System;
+using System.Threading;
+using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
 using System.Runtime.InteropServices;

@@ -1,6 +1,7 @@
 ﻿using System;
 using Vortice.DXGI;
 using Vortice.Direct3D12;
+using System.Collections.Generic;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Memory;
 using InfinityEngine.Core.Container;

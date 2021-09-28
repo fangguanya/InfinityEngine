@@ -1,4 +1,5 @@
-﻿using Vortice.DXGI;
+﻿using System;
+using Vortice.DXGI;
 using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Memory;
