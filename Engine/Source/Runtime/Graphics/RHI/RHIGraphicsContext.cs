@@ -2,6 +2,7 @@
 using Vortice.Direct3D12;
 using System.Collections.Generic;
 using InfinityEngine.Core.Object;
+using InfinityEngine.Core.Container;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -47,6 +48,7 @@ namespace InfinityEngine.Graphics.RHI
         private FRHICommandListPool m_CopyCommandListPool;
         private FRHICommandListPool m_ComputeCommandListPool;
         private FRHICommandListPool m_GraphicsCommandListPool;
+        private TArray<FRHICommandList> m_ManagedCommandList;
         private FRHIDescriptorHeapFactory m_DescriptorFactory;
 
         public FRHIGraphicsContext() : base()
@@ -55,6 +57,7 @@ namespace InfinityEngine.Graphics.RHI
             m_FencePool = new FRHIFencePool(m_Device);
             m_ExecuteInfos = new List<FExecuteInfo>(64);
             m_ResourcePool = new FRHIResourcePool(m_Device);
+            m_ManagedCommandList = new TArray<FRHICommandList>(32);
             m_TimeQueryPool = new FRHIQueryPool(m_Device, EQueryType.CopyTimestamp, 64);
             m_CopyCommands = new FRHICommandContext(m_Device, EContextType.Copy);
             m_ComputeCommands = new FRHICommandContext(m_Device, EContextType.Compute);
@@ -110,6 +113,8 @@ namespace InfinityEngine.Graphics.RHI
                     break;
             }
 
+            if (bAutoRelease) { m_ManagedCommandList.Add(cmdList); }
+
             return cmdList;
         }
 
@@ -163,14 +168,21 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Flush()
         {
+            m_TimeQueryPool.RequestReadback(this);
+            Submit();
             m_GraphicsCommands.Flush();
+
+            for (int i = 0; i < m_ManagedCommandList.length; ++i)
+            {
+                ReleaseCommandList(m_ManagedCommandList[i]);
+                m_ManagedCommandList[i] = null;
+            }
+            m_ManagedCommandList.Clear();
             m_TimeQueryPool.RefreshResult();
         }
 
         public void Submit()
         {
-            m_TimeQueryPool.RequestReadback(this);
-
             for (int i = 0; i < m_ExecuteInfos.Count; ++i)
             {
                 FExecuteInfo executeInfo = m_ExecuteInfos[i];

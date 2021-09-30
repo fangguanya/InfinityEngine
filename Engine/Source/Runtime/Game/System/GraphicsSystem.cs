@@ -2,6 +2,7 @@
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
 using System.Collections.Concurrent;
+using InfinityEngine.Core.Container;
 using InfinityEngine.Core.Thread.Sync;
 using InfinityEngine.Rendering.RenderLoop;
 using InfinityEngine.Rendering.RenderPipeline;
@@ -14,7 +15,7 @@ namespace InfinityEngine.Game.System
     {
         public static void EnqueueTask(FGraphicsTask graphicsTask)
         {
-            FGraphicsSystem.GraphicsTasks.Enqueue(graphicsTask);
+            FGraphicsSystem.GraphicsTasks.Add(graphicsTask);
         }
     }
 
@@ -29,7 +30,7 @@ namespace InfinityEngine.Game.System
         internal FRenderPipeline renderPipeline;
         internal FRHIGraphicsContext graphicsContext;
 
-        internal static ConcurrentQueue<FGraphicsTask> GraphicsTasks;
+        internal static TArray<FGraphicsTask> GraphicsTasks;
 
         public FGraphicsSystem(FSemaphore semaphoreG2R, FSemaphore semaphoreR2G)
         {
@@ -43,7 +44,7 @@ namespace InfinityEngine.Game.System
             this.graphicsContext = new FRHIGraphicsContext();
             this.renderPipeline = new FUniversalRenderPipeline("UniversalRP");
 
-            FGraphicsSystem.GraphicsTasks = new ConcurrentQueue<FGraphicsTask>();
+            FGraphicsSystem.GraphicsTasks = new TArray<FGraphicsTask>(64);
         }
 
         public void Start()
@@ -65,26 +66,23 @@ namespace InfinityEngine.Game.System
             while (!bLoopExit)
             {
                 semaphoreG2R.WaitForSignal();
-
                 ProcessGraphicsTasks();
                 renderPipeline.Render(renderContext, graphicsContext);
                 graphicsContext.Flush();
-
                 semaphoreR2G.Signal();
             }
         }
 
         public void ProcessGraphicsTasks()
         {
-            if (GraphicsTasks.Count == 0) { return; }
+            if (GraphicsTasks.length == 0) { return; }
 
-            for (int i = 0; i < GraphicsTasks.Count; ++i)
+            for (int i = 0; i < GraphicsTasks.length; ++i)
             {
-                GraphicsTasks.TryDequeue(out FGraphicsTask graphicsTask);
-                #pragma warning disable CS8602
-                graphicsTask(renderContext, graphicsContext); // 解引用可能出现空引用。
-                #pragma warning restore CS8602
+                FGraphicsTask graphicsTask = GraphicsTasks[i];
+                graphicsTask(renderContext, graphicsContext);
             }
+            GraphicsTasks.Clear();
         }
 
         protected override void Release()

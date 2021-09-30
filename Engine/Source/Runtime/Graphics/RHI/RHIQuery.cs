@@ -148,14 +148,12 @@ namespace InfinityEngine.Graphics.RHI
         {
 			if (bCopyReady) 
 			{
-				FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "QueryCommandList");
+				FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "QueryCommandList", true);
 				cmdList.Clear();
 
 				cmdList.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
 				graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
 				graphicsContext.WriteFence(EContextType.Copy, queryFence);
-
-				graphicsContext.ReleaseCommandList(cmdList);
 			}
 		}
 

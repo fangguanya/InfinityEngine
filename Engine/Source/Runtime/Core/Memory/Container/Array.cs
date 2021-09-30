@@ -21,7 +21,7 @@ namespace InfinityEngine.Core.Container
             m_Array = new T[64];
         }
 
-        public TArray(int capacity)
+        public TArray(in int capacity)
         {
             length = 0;
             m_Array = new T[capacity];
@@ -105,7 +105,7 @@ namespace InfinityEngine.Core.Container
             length--;
         }
 
-        public void Resize(int newLength, bool keepData = true)
+        public void Resize(in int newLength, in bool keepData = true)
         {
             if (keepData)
             {
