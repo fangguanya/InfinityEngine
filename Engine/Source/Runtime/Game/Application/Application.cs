@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
@@ -19,7 +18,7 @@ namespace InfinityEngine.Game.Application
 
 
         internal FGameSystem gameSystem;
-        //internal FPhysicsSystem physicsSystem;
+        internal FPhysicsSystem physicsSystem;
         internal FGraphicsSystem graphicsSystem;
 
         private FSemaphore m_SemaphoreG2R;
@@ -32,7 +31,7 @@ namespace InfinityEngine.Game.Application
             m_SemaphoreG2R = new FSemaphore(false);
 
             gameSystem = new FGameSystem(End, Play, Tick, m_SemaphoreG2R, m_SemaphoreR2G);
-            //physicsSystem = new FPhysicsSystem();
+            physicsSystem = new FPhysicsSystem();
             graphicsSystem = new FGraphicsSystem(m_SemaphoreG2R, m_SemaphoreR2G);
         }
 
@@ -52,7 +51,7 @@ namespace InfinityEngine.Game.Application
         private void PlatformRun()
         {
             gameSystem.Start();
-            //physicsSystem.Start();
+            physicsSystem.Start();
             graphicsSystem.Start();
             gameSystem.GameLoop();
         }
@@ -60,7 +59,7 @@ namespace InfinityEngine.Game.Application
         private void PlatformExit()
         {
             gameSystem.Exit();
-            //physicsSystem.Exit();
+            physicsSystem.Exit();
             graphicsSystem.Exit();
         }
 
@@ -71,7 +70,7 @@ namespace InfinityEngine.Game.Application
             m_SemaphoreG2R.Dispose();
 
             gameSystem.Dispose();
-            //physicsSystem.Dispose();
+            physicsSystem.Dispose();
             graphicsSystem.Dispose();
         }
 

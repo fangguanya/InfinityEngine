@@ -60,7 +60,6 @@ namespace ExampleProject
 
         public override void OnUpdate()
         {
-            Console.WriteLine("G");
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {

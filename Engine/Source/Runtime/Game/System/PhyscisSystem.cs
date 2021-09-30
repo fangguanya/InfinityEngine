@@ -31,7 +31,7 @@ namespace InfinityEngine.Game.System
         {
             while (!bLoopExit)
             {
-                Console.WriteLine("Physics");
+
             }
         }
 

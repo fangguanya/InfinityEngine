@@ -2,10 +2,9 @@
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
 using System.Collections.Concurrent;
+using InfinityEngine.Core.Thread.Sync;
 using InfinityEngine.Rendering.RenderLoop;
 using InfinityEngine.Rendering.RenderPipeline;
-using InfinityEngine.Core.Thread.Sync;
-using System;
 
 namespace InfinityEngine.Game.System
 {
@@ -55,6 +54,7 @@ namespace InfinityEngine.Game.System
         public void Exit()
         {
             bLoopExit = true;
+            semaphoreG2R.Signal();
             renderThread.Join();
         }
 
