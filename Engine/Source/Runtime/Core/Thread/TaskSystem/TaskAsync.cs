@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace InfinityEngine.Core.TaskSystem
+namespace InfinityEngine.Core.Thread.TaskSystem
 {
     public interface ITaskAsync
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using InfinityEngine.Core.Container;
-using InfinityEngine.Core.TaskSystem;
 using System.Runtime.InteropServices;
+using InfinityEngine.Core.Thread.TaskSystem;
 
 namespace ExampleProject
 {

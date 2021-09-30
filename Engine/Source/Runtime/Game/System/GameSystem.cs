@@ -2,6 +2,7 @@
 using System.Threading;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
+using InfinityEngine.Core.Thread.Sync;
 
 namespace InfinityEngine.Game.System
 {
@@ -12,26 +13,33 @@ namespace InfinityEngine.Game.System
     internal class FGameSystem : FDisposable
     {
         private bool bLoopExit;
+        private FSemaphore semaphoreG2R;
+        internal FSemaphore semaphoreR2G;
         private FGameEndFunc gameEndFunc;
         private FGamePlayFunc gamePlayFunc;
         private FGameTickFunc gameTickFunc;
-        private AutoResetEvent autoEvent;
 
-        internal FGameSystem(FGameEndFunc gameEndFunc, FGamePlayFunc gamePlayFunc, FGameTickFunc gameTickFunc, AutoResetEvent autoEvent)
+        public FGameSystem(FGameEndFunc gameEndFunc, FGamePlayFunc gamePlayFunc, FGameTickFunc gameTickFunc, FSemaphore semaphoreG2R, FSemaphore semaphoreR2G)
         {
-            this.autoEvent = autoEvent;
+            this.semaphoreG2R = semaphoreG2R;
+            this.semaphoreR2G = semaphoreR2G;
             this.gameEndFunc = gameEndFunc;
             this.gamePlayFunc = gamePlayFunc;
             this.gameTickFunc = gameTickFunc;
             Thread.CurrentThread.Name = "GameThread";
         }
 
-        internal void Start()
+        public void Start()
         {
             gamePlayFunc();
         }
 
-        internal void GameLoop()
+        public void Exit()
+        {
+            gameEndFunc();
+        }
+
+        public void GameLoop()
         {
             while (!bLoopExit)
             {
@@ -39,22 +47,13 @@ namespace InfinityEngine.Game.System
                 {
                     User32.TranslateMessage(ref msg);
                     User32.DispatchMessage(ref msg);
-
-                    if (msg.Value == (uint)WindowMessage.Quit)
-                    {
-                        bLoopExit = true;
-                        break;
-                    }
+                    if (msg.Value == (uint)WindowMessage.Quit) { bLoopExit = true; break; }
                 }
 
+                semaphoreR2G.WaitForSignal();
                 gameTickFunc();
-                autoEvent.WaitOne();
+                semaphoreG2R.Signal();
             }
-        }
-
-        internal void Exit()
-        {
-            gameEndFunc();
         }
 
         protected override void Release()

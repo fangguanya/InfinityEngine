@@ -5,6 +5,7 @@ using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using InfinityEngine.Core.Thread.Sync;
 
 namespace InfinityEngine.Game.Application
 {
@@ -16,19 +17,23 @@ namespace InfinityEngine.Game.Application
         internal FWindow mainWindow { get; private set; }
         internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
 
-        private AutoResetEvent renderEvent;
 
         internal FGameSystem gameSystem;
-        internal FPhysicsSystem physicsSystem;
+        //internal FPhysicsSystem physicsSystem;
         internal FGraphicsSystem graphicsSystem;
+
+        private FSemaphore m_SemaphoreG2R;
+        private FSemaphore m_SemaphoreR2G;
 
         public FApplication(string Name, int Width, int Height)
         {
-            renderEvent = new AutoResetEvent(false);
-            gameSystem = new FGameSystem(End, Play, Tick, renderEvent);
-            physicsSystem = new FPhysicsSystem();
-            graphicsSystem = new FGraphicsSystem(renderEvent);
             CreateWindow(Name, Width, Height);
+            m_SemaphoreR2G = new FSemaphore(true);
+            m_SemaphoreG2R = new FSemaphore(false);
+
+            gameSystem = new FGameSystem(End, Play, Tick, m_SemaphoreG2R, m_SemaphoreR2G);
+            //physicsSystem = new FPhysicsSystem();
+            graphicsSystem = new FGraphicsSystem(m_SemaphoreG2R, m_SemaphoreR2G);
         }
 
         protected abstract void Play();
@@ -41,12 +46,13 @@ namespace InfinityEngine.Game.Application
         {
             PlatformRun();
             PlatformExit();
+            Release();
         }
 
         private void PlatformRun()
         {
             gameSystem.Start();
-            physicsSystem.Start();
+            //physicsSystem.Start();
             graphicsSystem.Start();
             gameSystem.GameLoop();
         }
@@ -54,18 +60,19 @@ namespace InfinityEngine.Game.Application
         private void PlatformExit()
         {
             gameSystem.Exit();
-            physicsSystem.Wiat();
-            physicsSystem.Exit();
-            graphicsSystem.Wiat();
+            //physicsSystem.Exit();
             graphicsSystem.Exit();
-            mainWindow.Destroy();
         }
 
         protected override void Release()
         {
-            gameSystem?.Dispose();
-            physicsSystem?.Dispose();
-            graphicsSystem?.Dispose();
+            mainWindow.Destroy();
+            m_SemaphoreR2G.Dispose();
+            m_SemaphoreG2R.Dispose();
+
+            gameSystem.Dispose();
+            //physicsSystem.Dispose();
+            graphicsSystem.Dispose();
         }
 
         private void CreateWindow(string name, int width, int height)

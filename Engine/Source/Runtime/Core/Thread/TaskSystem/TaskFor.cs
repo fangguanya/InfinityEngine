@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InfinityEngine.Core.TaskSystem
+namespace InfinityEngine.Core.Thread.TaskSystem
 {
-    class TaskForEach
+    class TaskFor
     {
     }
 }

@@ -13,10 +13,10 @@ namespace InfinityEngine.Rendering.RenderPipeline
         public FRenderPipeline(string name)
         {
             this.name = name;
-            this.graphBuilder = new FRDGBuilder("UniversalGraphBuilder");
+            this.graphBuilder = new FRDGBuilder("GraphBuilder");
         }
 
-        public abstract void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
+        public abstract void Init();
 
         public abstract void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 

@@ -7,38 +7,32 @@ namespace InfinityEngine.Game.System
     internal class FPhysicsSystem : FDisposable
     {
         private bool bLoopExit;
-        internal Thread PhysicsThread;
+        internal Thread physicsThread;
 
-        internal FPhysicsSystem()
+        public FPhysicsSystem()
         {
-            bLoopExit = false;
-
-            PhysicsThread = new Thread(PhysicsFunc);
-            PhysicsThread.Name = "PhyscisThread";
+            this.bLoopExit = false;
+            this.physicsThread = new Thread(PhysicsFunc);
+            this.physicsThread.Name = "PhyscisThread";
         }
 
-        internal void Start()
+        public void Start()
         {
-            PhysicsThread.Start();
+            physicsThread.Start();
         }
 
-        internal void Wiat()
+        public void Exit()
         {
             bLoopExit = true;
-            PhysicsThread.Join();
+            physicsThread.Join();
         }
 
-        private void PhysicsFunc()
+        public void PhysicsFunc()
         {
             while (!bLoopExit)
             {
-
+                Console.WriteLine("Physics");
             }
-        }
-
-        internal void Exit()
-        {
-            bLoopExit = true;
         }
 
         protected override void Release()

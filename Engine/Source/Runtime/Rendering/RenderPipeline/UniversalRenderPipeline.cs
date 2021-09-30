@@ -17,7 +17,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         public FUniversalRenderPipeline(string pipelineName) : base(pipelineName) { }
 
-        public override void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
+        public override void Init()
         {
             Console.WriteLine("Initialize RenderPipeline");
 

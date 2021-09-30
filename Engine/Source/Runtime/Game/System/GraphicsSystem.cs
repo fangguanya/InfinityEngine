@@ -4,6 +4,8 @@ using InfinityEngine.Graphics.RHI;
 using System.Collections.Concurrent;
 using InfinityEngine.Rendering.RenderLoop;
 using InfinityEngine.Rendering.RenderPipeline;
+using InfinityEngine.Core.Thread.Sync;
+using System;
 
 namespace InfinityEngine.Game.System
 {
@@ -17,61 +19,62 @@ namespace InfinityEngine.Game.System
         }
     }
 
-    public class FGraphicsSystem : FDisposable
+    internal class FGraphicsSystem : FDisposable
     {
         private bool bLoopExit;
 
         internal Thread renderThread;
-        internal AutoResetEvent autoEvent;
+        internal FSemaphore semaphoreG2R;
+        internal FSemaphore semaphoreR2G;
         internal FRenderContext renderContext;
         internal FRenderPipeline renderPipeline;
         internal FRHIGraphicsContext graphicsContext;
 
         internal static ConcurrentQueue<FGraphicsTask> GraphicsTasks;
 
-        internal FGraphicsSystem(AutoResetEvent autoEvent)
+        public FGraphicsSystem(FSemaphore semaphoreG2R, FSemaphore semaphoreR2G)
         {
-            bLoopExit = false;
-            this.autoEvent = autoEvent;
-            renderThread = new Thread(GraphicsFunc);
-            renderThread.Name = "RenderThread";
+            this.bLoopExit = false;
+            this.semaphoreG2R = semaphoreG2R;
+            this.semaphoreR2G = semaphoreR2G;
+            this.renderThread = new Thread(GraphicsFunc);
+            this.renderThread.Name = "RenderThread";
 
-            renderContext = new FRenderContext();
-            graphicsContext = new FRHIGraphicsContext();
-            renderPipeline = new FUniversalRenderPipeline("UniversalRP");
+            this.renderContext = new FRenderContext();
+            this.graphicsContext = new FRHIGraphicsContext();
+            this.renderPipeline = new FUniversalRenderPipeline("UniversalRP");
 
-            GraphicsTasks = new ConcurrentQueue<FGraphicsTask>();
+            FGraphicsSystem.GraphicsTasks = new ConcurrentQueue<FGraphicsTask>();
         }
 
-        internal void Start()
+        public void Start()
         {
             renderThread.Start();
         }
 
-        internal void Wiat()
+        public void Exit()
         {
             bLoopExit = true;
             renderThread.Join();
         }
 
-        internal void GraphicsFunc()
+        public void GraphicsFunc()
         {
-            renderPipeline.Init(renderContext, graphicsContext);
-            //graphicsContext.Flush();
+            renderPipeline.Init();
 
             while (!bLoopExit)
             {
+                semaphoreG2R.WaitForSignal();
+
                 ProcessGraphicsTasks();
                 renderPipeline.Render(renderContext, graphicsContext);
                 graphicsContext.Flush();
 
-                autoEvent.Set();
+                semaphoreR2G.Signal();
             }
-
-            ProcessGraphicsTasks();
         }
 
-        internal void ProcessGraphicsTasks()
+        public void ProcessGraphicsTasks()
         {
             if (GraphicsTasks.Count == 0) { return; }
 
@@ -84,16 +87,12 @@ namespace InfinityEngine.Game.System
             }
         }
 
-        internal void Exit()
+        protected override void Release()
         {
+            ProcessGraphicsTasks();
             renderContext?.Dispose();
             renderPipeline?.Dispose();
             graphicsContext?.Dispose();
-        }
-
-        protected override void Release()
-        {
-
         }
     }
 }
