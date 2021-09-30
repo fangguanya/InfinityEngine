@@ -22,7 +22,7 @@ namespace InfinityEngine.Core.Thread.Sync
             m_SignalEvent.Set();
         }
 
-        public void WaitForSignal()
+        public void Wait()
         {
             m_SignalEvent.WaitOne();
         }

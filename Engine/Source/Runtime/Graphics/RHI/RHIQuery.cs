@@ -142,12 +142,8 @@ namespace InfinityEngine.Graphics.RHI
 				resourceDesc.SampleDescription.Count = 1;
 				resourceDesc.SampleDescription.Quality = 0;
             }
+			this.cmdList = new FRHICommandList("QueryCommandList", device, EContextType.Copy);
 			this.queryResult = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
-        }
-
-		public void Init(FRHIGraphicsContext graphicsContext)
-		{
-			cmdList = graphicsContext.CreateCommandList(EContextType.Copy, "QueryCommandList");
 		}
 
 		public void RequestReadback(FRHICommandContext copyCommands)

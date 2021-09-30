@@ -65,7 +65,7 @@ namespace InfinityEngine.Game.System
 
             while (!bLoopExit)
             {
-                semaphoreG2R.WaitForSignal();
+                semaphoreG2R.Wait();
                 ProcessGraphicsTasks();
                 renderPipeline.Render(renderContext, graphicsContext);
                 graphicsContext.Flush();

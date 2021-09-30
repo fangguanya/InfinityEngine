@@ -50,7 +50,7 @@ namespace InfinityEngine.Game.System
                     if (msg.Value == (uint)WindowMessage.Quit) { bLoopExit = true; break; }
                 }
 
-                semaphoreR2G.WaitForSignal();
+                semaphoreR2G.Wait();
                 gameTickFunc();
                 semaphoreG2R.Signal();
             }

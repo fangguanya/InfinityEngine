@@ -41,8 +41,8 @@ namespace InfinityEngine.Graphics.RHI
         private FRHIFencePool m_FencePool;
         private FRHIQueryPool m_TimeQueryPool;
         private FRHIResourcePool m_ResourcePool;
-        private List<FExecuteInfo> m_ExecuteInfos;
         private FRHICommandContext m_CopyCommands;
+        private TArray<FExecuteInfo> m_ExecuteInfos;
         private FRHICommandContext m_ComputeCommands;
         private FRHICommandContext m_GraphicsCommands;
         private FRHICommandListPool m_CopyCommandListPool;
@@ -55,20 +55,20 @@ namespace InfinityEngine.Graphics.RHI
         {
             m_Device = new FRHIDevice();
             m_FencePool = new FRHIFencePool(m_Device);
-            m_ExecuteInfos = new List<FExecuteInfo>(64);
+            m_ExecuteInfos = new TArray<FExecuteInfo>(32);
             m_ResourcePool = new FRHIResourcePool(m_Device);
             m_ManagedCommandList = new TArray<FRHICommandList>(32);
             m_TimeQueryPool = new FRHIQueryPool(m_Device, EQueryType.CopyTimestamp, 64);
+
             m_CopyCommands = new FRHICommandContext(m_Device, EContextType.Copy);
             m_ComputeCommands = new FRHICommandContext(m_Device, EContextType.Compute);
             m_GraphicsCommands = new FRHICommandContext(m_Device, EContextType.Graphics);
             m_CopyCommandListPool = new FRHICommandListPool(m_Device, EContextType.Copy);
             m_ComputeCommandListPool = new FRHICommandListPool(m_Device, EContextType.Compute);
             m_GraphicsCommandListPool = new FRHICommandListPool(m_Device, EContextType.Graphics);
+
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
             m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
-
-            m_TimeQueryPool.Init(this);
         }
 
         // Context
@@ -92,9 +92,7 @@ namespace InfinityEngine.Graphics.RHI
         
         public FRHICommandList CreateCommandList(in EContextType contextType, string name = null)
         {
-            FRHICommandList cmdList = new FRHICommandList(name, m_Device, contextType);
-            cmdList.Close();
-            return cmdList;
+            return new FRHICommandList(name, m_Device, contextType);
         }
 
         public FRHICommandList GetCommandList(in EContextType contextType, string name = null, bool bAutoRelease = false)
@@ -185,7 +183,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Submit()
         {
-            for (int i = 0; i < m_ExecuteInfos.Count; ++i)
+            for (int i = 0; i < m_ExecuteInfos.length; ++i)
             {
                 FExecuteInfo executeInfo = m_ExecuteInfos[i];
                 FRHICommandContext cmdContext = executeInfo.cmdContext;
