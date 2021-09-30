@@ -79,8 +79,8 @@ namespace InfinityEngine.Game.System
 
             for (int i = 0; i < GraphicsTasks.length; ++i)
             {
-                FGraphicsTask graphicsTask = GraphicsTasks[i];
-                graphicsTask(renderContext, graphicsContext);
+                GraphicsTasks[i](renderContext, graphicsContext);
+                GraphicsTasks[i] = null;
             }
             GraphicsTasks.Clear();
         }

@@ -67,6 +67,8 @@ namespace InfinityEngine.Graphics.RHI
             m_GraphicsCommandListPool = new FRHICommandListPool(m_Device, EContextType.Graphics);
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
             m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
+
+            m_TimeQueryPool.Init(this);
         }
 
         // Context
@@ -168,9 +170,10 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Flush()
         {
-            m_TimeQueryPool.RequestReadback(this);
-            Submit();
+            m_TimeQueryPool.RequestReadback(m_CopyCommands);
+
             m_GraphicsCommands.Flush();
+            m_TimeQueryPool.RefreshResult();
 
             for (int i = 0; i < m_ManagedCommandList.length; ++i)
             {
@@ -178,7 +181,6 @@ namespace InfinityEngine.Graphics.RHI
                 m_ManagedCommandList[i] = null;
             }
             m_ManagedCommandList.Clear();
-            m_TimeQueryPool.RefreshResult();
         }
 
         public void Submit()

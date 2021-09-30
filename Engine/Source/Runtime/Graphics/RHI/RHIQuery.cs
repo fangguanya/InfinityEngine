@@ -84,6 +84,7 @@ namespace InfinityEngine.Graphics.RHI
 		internal EQueryType queryType;
 		private TArray<int> m_QueryMap;
 		internal FRHIFence queryFence;
+		internal FRHICommandList cmdList;
 		internal ID3D12QueryHeap queryHeap;
 		internal ID3D12Resource queryResult;
 		readonly Stack<FRHIQuery> m_StackPool;
@@ -144,16 +145,19 @@ namespace InfinityEngine.Graphics.RHI
 			this.queryResult = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
         }
 
-		public void RequestReadback(FRHIGraphicsContext graphicsContext)
+		public void Init(FRHIGraphicsContext graphicsContext)
+		{
+			cmdList = graphicsContext.CreateCommandList(EContextType.Copy, "QueryCommandList");
+		}
+
+		public void RequestReadback(FRHICommandContext copyCommands)
         {
 			if (bCopyReady) 
 			{
-				FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "QueryCommandList", true);
 				cmdList.Clear();
-
 				cmdList.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
-				graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
-				graphicsContext.WriteFence(EContextType.Copy, queryFence);
+				copyCommands.SignalQueue(queryFence);
+				copyCommands.ExecuteQueue(cmdList);
 			}
 		}
 
@@ -218,6 +222,7 @@ namespace InfinityEngine.Graphics.RHI
 			
 			queryData = null;
 			m_QueryMap = null;
+			cmdList?.Dispose();
 			queryHeap?.Dispose();
 			queryFence?.Dispose();
 			queryResult?.Dispose();

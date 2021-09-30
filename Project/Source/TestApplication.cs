@@ -15,16 +15,15 @@ namespace ExampleProject
     {
         bool dataReady;
         int[] readData;
-        float cpuTime 
-        { 
-            get { return (float)timeProfiler.microseconds / 1000.0f; } 
+        float cpuTime
+        {
+            get { return (float)timeProfiler.microseconds / 1000.0f; }
         }
         float gpuTime;
 
         FRHIFence fence;
         FRHIQuery query;
         FRHIBufferRef bufferRef;
-        FRHICommandList cmdList;
         FTimeProfiler timeProfiler;
         //private int* m_UnsafeDatas;
         //private int[] m_ManageDatas;
@@ -44,9 +43,9 @@ namespace ExampleProject
                 fence = graphicsContext.GetFence();
                 query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
                 bufferRef = graphicsContext.GetBuffer(description);
-                cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList");
-
+                FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList", true);
                 cmdList.Clear();
+
                 int[] data = new int[10000];
                 for (int i = 0; i < 10000; ++i) { data[i] = 10000 - i; }
                 bufferRef.buffer.SetData(cmdList, data);
@@ -67,6 +66,7 @@ namespace ExampleProject
 
                 if (dataReady)
                 {
+                    FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList2", true);
                     cmdList.Clear();
                     cmdList.BeginQuery(query);
                     bufferRef.buffer.RequestReadback<int>(cmdList);
@@ -108,7 +108,6 @@ namespace ExampleProject
                 graphicsContext.ReleaseFence(fence);
                 graphicsContext.ReleaseQuery(query);
                 graphicsContext.ReleaseBuffer(bufferRef);
-                graphicsContext.ReleaseCommandList(cmdList);
                 Console.WriteLine("Release RenderProxy");
             });
 
