@@ -2,55 +2,45 @@
 
 namespace InfinityEngine.Core.Profiler
 {
-    public class FTime
+    public class FGameTime
     {
-        static float delta;
-        public static float DeltaTime { get { return delta; } }
+        public static double SecondsPerTick { get { return 1.0 / Stopwatch.Frequency; } }
+        public static double MilliSecsPerTick { get { return 1000.0f / Stopwatch.Frequency; } }
+        public static double MicroSecsPerTick { get { return 1000000.0f / Stopwatch.Frequency; } }
 
-        static float elapsed = 0;
-        public static float ElapsedTime { get { return elapsed; } }
+        static float deltaTime;
+        public static float DeltaTime { get { return deltaTime; } }
+
+        static float elapsedTime = 0;
+        public static float ElapsedTime { get { return elapsedTime; } }
 
         static int frameIndex = 0;
         public static int FrameIndex { get { return frameIndex; } }
 
-        public static void Tick(float timeStep)
+        public static void Tick(in float deltaTime)
         {
-            frameIndex += 1;
-            delta = timeStep;
-            elapsed += delta;
+            FGameTime.frameIndex += 1;
+            FGameTime.deltaTime = deltaTime;
+            FGameTime.elapsedTime += elapsedTime;
         }
     }
 
     public class FTimeProfiler
     {
-        public static double SecondsPerTick { get; }
-        public static double MilliSecsPerTick { get; }
-        public static double MicroSecsPerTick { get; }
-
-        private Stopwatch stopwatch;
-        static FTimeProfiler()
-        {
-            SecondsPerTick = 0.0;
-            long countsPerSec = Stopwatch.Frequency;
-            SecondsPerTick = 1.0 / countsPerSec;
-            MilliSecsPerTick = 1000.0f / countsPerSec;
-            MicroSecsPerTick = 1000000.0f / countsPerSec;
-        }
+        private Stopwatch m_Stopwatch;
 
         public FTimeProfiler()
         {
-            Debug.Assert(Stopwatch.IsHighResolution,
-                "System does not support high-resolution performance counter.");
-            stopwatch = new Stopwatch();
+            m_Stopwatch = new Stopwatch();
         }
 
-        public long microseconds { get { return (long)(stopwatch.ElapsedTicks * MicroSecsPerTick); } }
-        public long milliseconds {get { return stopwatch.ElapsedMilliseconds; } }
-        public float seconds {get { return stopwatch.ElapsedMilliseconds / 1000.0f; } }
-        public void Reset() => stopwatch.Reset();
-        public void Start() => stopwatch.Start();
-        public void Restart() => stopwatch.Restart();
-        public void Stop() => stopwatch.Stop();
+        public long microseconds { get { return (long)(m_Stopwatch.ElapsedTicks * FGameTime.MicroSecsPerTick); } }
+        public long milliseconds {get { return m_Stopwatch.ElapsedMilliseconds; } }
+        public float seconds {get { return m_Stopwatch.ElapsedMilliseconds / 1000.0f; } }
+        public void Reset() => m_Stopwatch.Reset();
+        public void Start() => m_Stopwatch.Start();
+        public void Restart() => m_Stopwatch.Restart();
+        public void Stop() => m_Stopwatch.Stop();
 
     }
 }

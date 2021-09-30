@@ -2,6 +2,7 @@
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
+using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using InfinityEngine.Core.Thread.Sync;
@@ -16,17 +17,19 @@ namespace InfinityEngine.Game.Application
         internal FWindow mainWindow { get; private set; }
         internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
 
+        public static uint TargetFrameRate = 30;
+
+        private FSemaphore m_SemaphoreG2R;
+        private FSemaphore m_SemaphoreR2G;
 
         internal FGameSystem gameSystem;
         internal FPhysicsSystem physicsSystem;
         internal FGraphicsSystem graphicsSystem;
 
-        private FSemaphore m_SemaphoreG2R;
-        private FSemaphore m_SemaphoreR2G;
-
         public FApplication(string Name, int Width, int Height)
         {
             CreateWindow(Name, Width, Height);
+            
             m_SemaphoreR2G = new FSemaphore(true);
             m_SemaphoreG2R = new FSemaphore(false);
 
@@ -65,13 +68,13 @@ namespace InfinityEngine.Game.Application
 
         protected override void Release()
         {
-            mainWindow.Destroy();
-            m_SemaphoreR2G.Dispose();
-            m_SemaphoreG2R.Dispose();
-
             gameSystem.Dispose();
             physicsSystem.Dispose();
             graphicsSystem.Dispose();
+
+            mainWindow.Destroy();
+            m_SemaphoreR2G.Dispose();
+            m_SemaphoreG2R.Dispose();
         }
 
         private void CreateWindow(string name, int width, int height)

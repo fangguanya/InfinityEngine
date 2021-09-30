@@ -59,10 +59,12 @@ namespace InfinityEngine.Graphics.RHI
 			return (int)queryPool.queryData[indexHead];
 		}
 
-		public float GetResult(in float frequency)
+		public float GetResult(in ulong frequency)
 		{
-			if (!queryPool.bTimeQuery) { return 0; }
-			return math.round((float)((queryPool.queryData[indexLast] - queryPool.queryData[indexHead]) / frequency) * 1000 * 100) / 100;
+			if (!queryPool.bTimeQuery) { return -1; }
+
+			double result = (double)(queryPool.queryData[indexLast] - queryPool.queryData[indexHead]);
+			return (float)math.round(1000 * (result / frequency) * 100) / 100;
 		}
 
 		protected override void Release()

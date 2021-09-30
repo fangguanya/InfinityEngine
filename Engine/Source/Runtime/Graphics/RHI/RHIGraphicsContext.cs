@@ -15,21 +15,21 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIGraphicsContext : FDisposable
     {
-        public float copyFrequency
+        public ulong copyFrequency
         {
             get
             {
                 return m_CopyCommands.nativeCmdQueue.TimestampFrequency;
             }
         }
-        public float computeFrequency
+        public ulong computeFrequency
         {
             get
             {
                 return m_ComputeCommands.nativeCmdQueue.TimestampFrequency;
             }
         }
-        public float graphicsFrequency
+        public ulong graphicsFrequency
         {
             get
             {
@@ -169,8 +169,6 @@ namespace InfinityEngine.Graphics.RHI
         public void Flush()
         {
             m_TimeQueryPool.RequestReadback(m_CopyCommands);
-
-            m_GraphicsCommands.Flush();
             m_TimeQueryPool.RefreshResult();
 
             for (int i = 0; i < m_ManagedCommandList.length; ++i)
@@ -179,6 +177,8 @@ namespace InfinityEngine.Graphics.RHI
                 m_ManagedCommandList[i] = null;
             }
             m_ManagedCommandList.Clear();
+
+            m_GraphicsCommands.Flush();
         }
 
         public void Submit()

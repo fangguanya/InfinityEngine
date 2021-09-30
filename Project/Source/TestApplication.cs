@@ -85,6 +85,7 @@ namespace ExampleProject
 
                 timeProfiler.Stop();
                 graphicsContext.Submit();
+
                 Console.WriteLine("||");
                 Console.WriteLine("CPUTime : " + cpuTime + "ms");
                 Console.WriteLine("GPUTime : " + gpuTime + "ms");
