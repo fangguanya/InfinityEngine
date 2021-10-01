@@ -7,34 +7,41 @@ namespace InfinityEngine.Rendering.RenderPipeline
 {
     public class FUniversalRenderPipeline : FRenderPipeline
     {
-        /*FRHIFence fence;
-        FRHIBuffer buffer;
-        FRHICommandList cmdList;
-
-        bool dataReady;
+        /*bool dataReady;
         int[] readData;
+        float cpuTime
+        {
+            get { return (float)timeProfiler.microseconds / 1000.0f; }
+        }
+        float gpuTime;
+
+        FRHIFence fence;
+        FRHIQuery query;
+        FRHIBufferRef bufferRef;
         FTimeProfiler timeProfiler;*/
 
         public FUniversalRenderPipeline(string pipelineName) : base(pipelineName) { }
 
-        public override void Init()
+        public override void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
-            Console.WriteLine("Initialize RenderPipeline");
+            Console.WriteLine("Init RenderPipeline");
 
             /*dataReady = true;
+            readData = new int[10000000];
             timeProfiler = new FTimeProfiler();
 
-            readData = new int[10000000];
+            FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
+
+            fence = graphicsContext.GetFence();
+            query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
+            bufferRef = graphicsContext.GetBuffer(description);
+            FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList", true);
+            cmdList.Clear();
+
             int[] data = new int[10000000];
             for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
-
-            fence = graphicsContext.CreateFence();
-            buffer = graphicsContext.CreateBuffer(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
-            cmdList = graphicsContext.CreateCmdList("CmdList", EContextType.Copy);
-
-            cmdList.Clear();
-            buffer.SetData<int>(cmdList, data);
-            graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
+            bufferRef.buffer.SetData(cmdList, data);
+            graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
             graphicsContext.Submit();*/
         }
 
@@ -44,31 +51,42 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
             if (dataReady)
             {
+                FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList2", true);
                 cmdList.Clear();
-                buffer.RequestReadback<int>(cmdList);
-                graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
-                graphicsContext.WritFence(EContextType.Copy, fence);
+                cmdList.BeginQuery(query);
+                bufferRef.buffer.RequestReadback<int>(cmdList);
+                cmdList.EndQuery(query);
+                graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
+                graphicsContext.WriteFence(EContextType.Copy, fence);
                 //graphicsContext.WaitFence(EContextType.Graphics, fence);
             }
 
             dataReady = fence.Completed();
             if (dataReady)
             {
-                buffer.GetData<int>(readData);
+                bufferRef.buffer.GetData(readData);
+                gpuTime = query.GetResult(graphicsContext.copyFrequency);
             }
 
             timeProfiler.Stop();
             graphicsContext.Submit();
-            Console.WriteLine(timeProfiler.milliseconds + "ms");*/
+
+            Console.WriteLine("||");
+            Console.WriteLine("CPUTime : " + cpuTime + "ms");
+            Console.WriteLine("GPUTime : " + gpuTime + "ms");*/
+        }
+
+        public override void Destroy(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
+        {
+            /*graphicsContext.ReleaseFence(fence);
+            graphicsContext.ReleaseQuery(query);
+            graphicsContext.ReleaseBuffer(bufferRef);*/
+            Console.WriteLine("Release RenderPipeline");
         }
 
         protected override void Release()
         {
             base.Release();
-            /*fence?.Dispose();
-            buffer?.Dispose();
-            cmdList?.Dispose();*/
-            Console.WriteLine("Release RenderPipeline");
         }
     }
 }

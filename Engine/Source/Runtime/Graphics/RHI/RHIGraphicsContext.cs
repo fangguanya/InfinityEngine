@@ -39,8 +39,9 @@ namespace InfinityEngine.Graphics.RHI
       
         private FRHIDevice m_Device;
         private FRHIFencePool m_FencePool;
-        private FRHIQueryPool m_TimeQueryPool;
         private FRHIResourcePool m_ResourcePool;
+        private FRHIQueryPool m_CopyTimeQueryPool;
+        private FRHIQueryPool m_GraphicsTimeQueryPool;
         private FRHICommandContext m_CopyCommands;
         private TArray<FExecuteInfo> m_ExecuteInfos;
         private FRHICommandContext m_ComputeCommands;
@@ -58,7 +59,8 @@ namespace InfinityEngine.Graphics.RHI
             m_ExecuteInfos = new TArray<FExecuteInfo>(32);
             m_ResourcePool = new FRHIResourcePool(m_Device);
             m_ManagedCommandList = new TArray<FRHICommandList>(32);
-            m_TimeQueryPool = new FRHIQueryPool(m_Device, EQueryType.CopyTimestamp, 64);
+            m_CopyTimeQueryPool = new FRHIQueryPool(m_Device, EQueryType.CopyTimestamp, 64);
+            m_GraphicsTimeQueryPool = new FRHIQueryPool(m_Device, EQueryType.Timestamp, 64);
 
             m_CopyCommands = new FRHICommandContext(m_Device, EContextType.Copy);
             m_ComputeCommands = new FRHICommandContext(m_Device, EContextType.Compute);
@@ -168,15 +170,18 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Flush()
         {
-            m_TimeQueryPool.RequestReadback(m_CopyCommands);
-            m_TimeQueryPool.RefreshResult();
-
             for (int i = 0; i < m_ManagedCommandList.length; ++i)
             {
                 ReleaseCommandList(m_ManagedCommandList[i]);
                 m_ManagedCommandList[i] = null;
             }
             m_ManagedCommandList.Clear();
+
+            m_CopyTimeQueryPool.RefreshResult();
+            m_GraphicsTimeQueryPool.RefreshResult();
+
+            m_CopyTimeQueryPool.RequestReadback(m_CopyCommands);
+            m_GraphicsTimeQueryPool.RequestReadback(m_GraphicsCommands);
 
             m_GraphicsCommands.Flush();
         }
@@ -234,16 +239,16 @@ namespace InfinityEngine.Graphics.RHI
             switch (queryType)
             {
                 case EQueryType.Occlusion:
-                    outQuery = new FRHIQuery(m_TimeQueryPool);
+                    outQuery = null;
                     break;
                 case EQueryType.Timestamp:
-                    outQuery = new FRHIQuery(m_TimeQueryPool);
+                    outQuery = new FRHIQuery(m_GraphicsTimeQueryPool);
                     break;
                 case EQueryType.Statistics:
-                    outQuery = new FRHIQuery(m_TimeQueryPool);
+                    outQuery = null;
                     break;
                 case EQueryType.CopyTimestamp:
-                    outQuery = new FRHIQuery(m_TimeQueryPool);
+                    outQuery = new FRHIQuery(m_CopyTimeQueryPool);
                     break;
             }
             return outQuery;
@@ -255,16 +260,16 @@ namespace InfinityEngine.Graphics.RHI
             switch (queryType)
             {
                 case EQueryType.Occlusion:
-                    outQuery = m_TimeQueryPool.GetTemporary(name);
+                    outQuery = null;
                     break;
                 case EQueryType.Timestamp:
-                    outQuery = m_TimeQueryPool.GetTemporary(name);
+                    outQuery = m_GraphicsTimeQueryPool.GetTemporary(name);
                     break;
                 case EQueryType.Statistics:
-                    outQuery = m_TimeQueryPool.GetTemporary(name);
+                    outQuery = null;
                     break;
                 case EQueryType.CopyTimestamp:
-                    outQuery = m_TimeQueryPool.GetTemporary(name);
+                    outQuery = m_CopyTimeQueryPool.GetTemporary(name);
                     break;
             }
             return outQuery;
@@ -275,16 +280,14 @@ namespace InfinityEngine.Graphics.RHI
             switch (query.queryPool.queryType)
             {
                 case EQueryType.Occlusion:
-                    m_TimeQueryPool.ReleaseTemporary(query);
                     break;
                 case EQueryType.Timestamp:
-                    m_TimeQueryPool.ReleaseTemporary(query);
+                    m_GraphicsTimeQueryPool.ReleaseTemporary(query);
                     break;
                 case EQueryType.Statistics:
-                    m_TimeQueryPool.ReleaseTemporary(query);
                     break;
                 case EQueryType.CopyTimestamp:
-                    m_TimeQueryPool.ReleaseTemporary(query);
+                    m_CopyTimeQueryPool.ReleaseTemporary(query);
                     break;
             }
         }
@@ -433,11 +436,12 @@ namespace InfinityEngine.Graphics.RHI
             m_FencePool?.Dispose();
             m_ResourcePool?.Dispose();
             m_CopyCommands?.Dispose();
-            m_TimeQueryPool?.Dispose();
             m_ComputeCommands?.Dispose();
             m_GraphicsCommands?.Dispose();
             m_DescriptorFactory?.Dispose();
+            m_CopyTimeQueryPool?.Dispose();
             m_CopyCommandListPool?.Dispose();
+            m_GraphicsTimeQueryPool?.Dispose();
             m_ComputeCommandListPool?.Dispose();
             m_GraphicsCommandListPool?.Dispose();
         }

@@ -34,11 +34,11 @@ namespace ExampleProject
             timeProfiler = new FTimeProfiler();
 
             dataReady = true;
-            readData = new int[10000];
+            readData = new int[10000000];
             FGraphics.EnqueueTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                FRHIBufferDescription description = new FRHIBufferDescription(10000, 4, EUsageType.Dynamic | EUsageType.Staging);
+                FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
 
                 fence = graphicsContext.GetFence();
                 query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
@@ -46,8 +46,8 @@ namespace ExampleProject
                 FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList", true);
                 cmdList.Clear();
 
-                int[] data = new int[10000];
-                for (int i = 0; i < 10000; ++i) { data[i] = 10000 - i; }
+                int[] data = new int[10000000];
+                for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
                 bufferRef.buffer.SetData(cmdList, data);
                 graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
                 graphicsContext.Submit();
@@ -86,11 +86,13 @@ namespace ExampleProject
                 timeProfiler.Stop();
                 graphicsContext.Submit();
 
-                Console.WriteLine("||");
-                Console.WriteLine("CPUTime : " + cpuTime + "ms");
-                Console.WriteLine("GPUTime : " + gpuTime + "ms");
+                //Console.WriteLine("||");
+                Console.WriteLine("Draw : " + cpuTime + "ms");
+                Console.WriteLine("GPU  : " + gpuTime + "ms");
             });
 
+            Console.WriteLine("||");
+            Console.WriteLine("Game");
             //m_TimeProfiler.Restart();
             //RunNative(500, 32768);
             //RunUnsafe(500, 32768);

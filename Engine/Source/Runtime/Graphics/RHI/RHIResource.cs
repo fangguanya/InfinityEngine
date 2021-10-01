@@ -375,7 +375,7 @@ namespace InfinityEngine.Graphics.RHI
             {
                 cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
                 cmdList.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
-                cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                //cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
             }
         }
 

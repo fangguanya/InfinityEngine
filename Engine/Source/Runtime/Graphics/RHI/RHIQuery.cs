@@ -14,7 +14,8 @@ namespace InfinityEngine.Graphics.RHI
 		Occlusion = 0,
 		Timestamp = 1,
 		Statistics = 2,
-		CopyTimestamp = 5
+		CopyTimestamp = 5,
+		ComputeTimestamp = 6
 	}
 	
 	internal static class FRHIQueryUtility
@@ -111,10 +112,7 @@ namespace InfinityEngine.Graphics.RHI
 			this.queryFence = new FRHIFence(device, null);
 			this.m_QueryMap = new TArray<int>(queryCount);
 			this.m_StackPool = new Stack<FRHIQuery>(64);
-			for (int i = 0; i < queryCount; ++i)
-            {
-				m_QueryMap.Add(i);
-			}
+			for (int i = 0; i < queryCount; ++i) { this.m_QueryMap.Add(i); }
 
 			QueryHeapDescription queryHeapDesc;
 			queryHeapDesc.Type = (QueryHeapType)queryType;
@@ -144,18 +142,18 @@ namespace InfinityEngine.Graphics.RHI
 				resourceDesc.SampleDescription.Count = 1;
 				resourceDesc.SampleDescription.Quality = 0;
             }
-			this.cmdList = new FRHICommandList("QueryCommandList", device, EContextType.Copy);
+			this.cmdList = new FRHICommandList("QueryCommandList", device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Graphics);
 			this.queryResult = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
 		}
 
-		public void RequestReadback(FRHICommandContext copyCommands)
+		public void RequestReadback(FRHICommandContext commandContext)
         {
 			if (bCopyReady) 
 			{
 				cmdList.Clear();
 				cmdList.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
-				copyCommands.SignalQueue(queryFence);
-				copyCommands.ExecuteQueue(cmdList);
+				commandContext.SignalQueue(queryFence);
+				commandContext.ExecuteQueue(cmdList);
 			}
 		}
 

@@ -13,24 +13,23 @@ namespace InfinityEngine.Game.System
 
     public static class FGraphics
     {
+        internal static TArray<FGraphicsTask> GraphicsTasks = new TArray<FGraphicsTask>(64);
+
         public static void EnqueueTask(FGraphicsTask graphicsTask)
         {
-            FGraphicsSystem.GraphicsTasks.Add(graphicsTask);
+            GraphicsTasks.Add(graphicsTask);
         }
     }
 
     internal class FGraphicsSystem : FDisposable
     {
         private bool bLoopExit;
-
         internal Thread renderThread;
         internal FSemaphore semaphoreG2R;
         internal FSemaphore semaphoreR2G;
         internal FRenderContext renderContext;
         internal FRenderPipeline renderPipeline;
         internal FRHIGraphicsContext graphicsContext;
-
-        internal static TArray<FGraphicsTask> GraphicsTasks;
 
         public FGraphicsSystem(FSemaphore semaphoreG2R, FSemaphore semaphoreR2G)
         {
@@ -43,8 +42,6 @@ namespace InfinityEngine.Game.System
             this.renderContext = new FRenderContext();
             this.graphicsContext = new FRHIGraphicsContext();
             this.renderPipeline = new FUniversalRenderPipeline("UniversalRP");
-
-            FGraphicsSystem.GraphicsTasks = new TArray<FGraphicsTask>(64);
         }
 
         public void Start()
@@ -61,11 +58,16 @@ namespace InfinityEngine.Game.System
 
         public void GraphicsFunc()
         {
-            renderPipeline.Init();
+            bool isInit = true;
 
             while (!bLoopExit)
             {
                 semaphoreG2R.Wait();
+                if (isInit) 
+                {
+                    isInit = false;
+                    renderPipeline.Init(renderContext, graphicsContext); 
+                }
                 ProcessGraphicsTasks();
                 renderPipeline.Render(renderContext, graphicsContext);
                 graphicsContext.Flush();
@@ -75,19 +77,21 @@ namespace InfinityEngine.Game.System
 
         public void ProcessGraphicsTasks()
         {
-            if (GraphicsTasks.length == 0) { return; }
+            if (FGraphics.GraphicsTasks.length == 0) { return; }
 
-            for (int i = 0; i < GraphicsTasks.length; ++i)
+            for (int i = 0; i < FGraphics.GraphicsTasks.length; ++i)
             {
-                GraphicsTasks[i](renderContext, graphicsContext);
-                GraphicsTasks[i] = null;
+                FGraphics.GraphicsTasks[i](renderContext, graphicsContext);
+                FGraphics.GraphicsTasks[i] = null;
             }
-            GraphicsTasks.Clear();
+            FGraphics.GraphicsTasks.Clear();
         }
 
         protected override void Release()
         {
             ProcessGraphicsTasks();
+            renderPipeline?.Destroy(renderContext, graphicsContext);
+
             renderContext?.Dispose();
             renderPipeline?.Dispose();
             graphicsContext?.Dispose();

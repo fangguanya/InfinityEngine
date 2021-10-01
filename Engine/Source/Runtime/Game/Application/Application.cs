@@ -17,7 +17,7 @@ namespace InfinityEngine.Game.Application
         internal FWindow mainWindow { get; private set; }
         internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
 
-        public static uint TargetFrameRate = 30;
+        public static uint TargetFrameRate = 60;
 
         private FSemaphore m_SemaphoreG2R;
         private FSemaphore m_SemaphoreR2G;
