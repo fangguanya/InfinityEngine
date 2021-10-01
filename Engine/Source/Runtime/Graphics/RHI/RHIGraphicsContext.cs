@@ -177,13 +177,12 @@ namespace InfinityEngine.Graphics.RHI
             }
             m_ManagedCommandList.Clear();
 
-            m_CopyTimeQueryPool.RefreshResult();
-            m_GraphicsTimeQueryPool.RefreshResult();
-
-            m_CopyTimeQueryPool.RequestReadback(m_CopyCommands);
-            m_GraphicsTimeQueryPool.RequestReadback(m_GraphicsCommands);
+            m_CopyTimeQueryPool.Submit(m_CopyCommands);
+            m_GraphicsTimeQueryPool.Submit(m_GraphicsCommands);
 
             m_GraphicsCommands.Flush();
+            m_CopyTimeQueryPool.Flush();
+            m_GraphicsTimeQueryPool.Flush();
         }
 
         public void Submit()

@@ -146,7 +146,7 @@ namespace InfinityEngine.Graphics.RHI
 			this.queryResult = device.nativeDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
 		}
 
-		public void RequestReadback(FRHICommandContext commandContext)
+		public void Submit(FRHICommandContext commandContext)
         {
 			if (bCopyReady) 
 			{
@@ -157,7 +157,7 @@ namespace InfinityEngine.Graphics.RHI
 			}
 		}
 
-		public void RefreshResult()
+		public void Flush()
 		{
 			bCopyReady = queryFence.Completed();
 			if (bCopyReady) 
