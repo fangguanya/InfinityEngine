@@ -78,7 +78,7 @@ namespace InfinityEngine.Game.System
             {
                 long targetMax = 1000000L / FApplication.TargetFrameRate;
 
-                for (; ; )
+                while(true)
                 {
                     elapsed = m_TimeProfiler.microseconds;
                     if (elapsed >= targetMax)

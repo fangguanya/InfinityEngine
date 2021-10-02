@@ -2,7 +2,7 @@
 
 namespace InfinityEngine.Game.ActorFramework
 {
-    public class FPrimitiveProxy : FDisposable
+    public class FPrimitiveRenderProxy : FDisposable
     {
         protected override void Release()
         {
