@@ -15,7 +15,7 @@ namespace InfinityEngine.Game.System
     {
         internal static TArray<FGraphicsTask> GraphicsTasks = new TArray<FGraphicsTask>(64);
 
-        public static void EnqueueTask(FGraphicsTask graphicsTask)
+        public static void AddTask(FGraphicsTask graphicsTask)
         {
             GraphicsTasks.Add(graphicsTask);
         }

@@ -35,7 +35,7 @@ namespace ExampleProject
 
             dataReady = true;
             readData = new int[10000000];
-            FGraphics.EnqueueTask(
+            FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
@@ -59,7 +59,7 @@ namespace ExampleProject
 
         public override void OnUpdate()
         {
-            FGraphics.EnqueueTask(
+            FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 timeProfiler.Restart();
@@ -105,7 +105,7 @@ namespace ExampleProject
 
         public override void OnDisable()
         {
-            FGraphics.EnqueueTask(
+            FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 graphicsContext.ReleaseFence(fence);
