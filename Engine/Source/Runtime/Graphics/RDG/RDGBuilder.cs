@@ -198,7 +198,7 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources.GetTextureResourceDesc(textureRef.handle);
         }
 
-        public FRDGPassBuilder AddPass<T>(string passName/*, ProfilingSampler profilerSampler*/) where T : struct
+        public FRDGPassRef AddPass<T>(string passName/*, ProfilingSampler profilerSampler*/) where T : struct
         {
             var renderPass = m_ObjectPool.Get<FRDGPass<T>>();
             renderPass.Clear();
@@ -206,7 +206,7 @@ namespace InfinityEngine.Graphics.RDG
             renderPass.index = m_RenderPasses.Count;
             //renderPass.customSampler = profilerSampler;
             m_RenderPasses.Add(renderPass);
-            return new FRDGPassBuilder(renderPass, m_Resources);
+            return new FRDGPassRef(renderPass, m_Resources);
         }
 
         internal void Execute(FRHIGraphicsContext graphicsContext, FRDGResourceFactory resourceFactory)
