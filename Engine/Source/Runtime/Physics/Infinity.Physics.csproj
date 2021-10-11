@@ -31,8 +31,4 @@
     <None Remove="Mathematics\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JitterPhysics" Version="0.2.0.20" />
-  </ItemGroup>
-
 </Project>
