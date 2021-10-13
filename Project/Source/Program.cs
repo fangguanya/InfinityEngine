@@ -68,19 +68,26 @@ namespace ExampleProject
             TestApplication App = new TestApplication("InfinityExample", 1280, 720);
             App.Run();
 
-            // PtrTest
-            /*int*[] aArray = new int*[2];
-            //int** aArray = (int**)Marshal.AllocHGlobal(8).ToPointer();
-            for (int i = 0; i < 2; i++)
-            {
-                //aArray[i] = (int*)Marshal.AllocHGlobal(4).ToPointer();
-                aArray[i] = (int*)TerraFX.Interop.Mimalloc.mi_mallocn_aligned(1, 4, 64);
-                *aArray[i] = i + 100;
-                Console.WriteLine(*aArray[i]);
-            }
+            //packing data test
+            /*float testFloatBA = 0.25f;
+            float testFloatBB = 0.35f;
+            int encodeDataA = ((int)(testFloatBA * 65535) << 16) + (int)(testFloatBB * 65535);
+            float decodeFloatBA = (encodeDataA >> 16 & 65535) / 65535.0f;
+            float decodeFloatBB = (encodeDataA >> 32 & 65535) / 65535.0f;
+
+            float testFloatA = 0.25f;
+            float testFloatB = 0.35f;
+            float testFloatC = 0.55f;
+            float testFloatD = 0.65f;
+            int encodeDataB = ((int)(testFloatA * 255) << 24) + ((int)(testFloatB * 255) << 16) + ((int)(testFloatC * 255) << 8) + (int)(testFloatD * 255);
+            float decodeFloatA = (encodeDataB >> 24 & 255) / 255.0f;
+            float decodeFloatB = (encodeDataB >> 16 & 255) / 255.0f;
+            float decodeFloatC = (encodeDataB >> 8 & 255) / 255.0f;
+            float decodeFloatD = (encodeDataB >> 32 & 255) / 255.0f;
+
             Console.ReadKey();
 
-            //Bitmask Test
+            // Bitmask Test
             int bitMask = 0;
 
             int[] maskValue = new int[8] { 0, 1, 1, 0, 0, 0, 1, 1 };
@@ -95,6 +102,18 @@ namespace ExampleProject
                 outValue[i] = bitMask >> i & 1;
             }
 
+            Console.ReadKey();
+
+            // PtrTest
+            int*[] aArray = new int*[2];
+            //int** aArray = (int**)Marshal.AllocHGlobal(8).ToPointer();
+            for (int i = 0; i < 2; i++)
+            {
+                //aArray[i] = (int*)Marshal.AllocHGlobal(4).ToPointer();
+                aArray[i] = (int*)TerraFX.Interop.Mimalloc.mi_mallocn_aligned(1, 4, 64);
+                *aArray[i] = i + 100;
+                Console.WriteLine(*aArray[i]);
+            }
             Console.ReadKey();
 
             // TaskExample
