@@ -15,17 +15,15 @@ namespace InfinityEngine.Game.System
 
     internal class FGameSystem : FDisposable
     {
-        private bool bLoopExit;
+        private bool IsLoopExit;
         private float m_DeltaTime;
-        private FTimeProfiler m_TimeProfiler;
-        private List<float> m_LastDeltaTimes = new List<float>(64);
-
         private FSemaphore m_SemaphoreG2R;
         private FSemaphore m_SemaphoreR2G;
-
         private FGameEndFunc m_GameEndFunc;
         private FGamePlayFunc m_GamePlayFunc;
         private FGameTickFunc m_GameTickFunc;
+        private FTimeProfiler m_TimeCounter;
+        private List<float> m_LastDeltaTimes;
 
         public FGameSystem(FGameEndFunc gameEndFunc, FGamePlayFunc gamePlayFunc, FGameTickFunc gameTickFunc, FSemaphore semaphoreG2R, FSemaphore semaphoreR2G)
         {
@@ -34,15 +32,17 @@ namespace InfinityEngine.Game.System
             this.m_GameTickFunc = gameTickFunc;
             this.m_SemaphoreG2R = semaphoreG2R;
             this.m_SemaphoreR2G = semaphoreR2G;
-            this.m_TimeProfiler = new FTimeProfiler();
+            this.m_TimeCounter = new FTimeProfiler();
+            this.m_LastDeltaTimes = new List<float>(64);
+
             Thread.CurrentThread.Name = "GameThread";
         }
 
         public void Start()
         {
             m_GamePlayFunc();
-            m_TimeProfiler.Reset();
-            m_TimeProfiler.Start();
+            m_TimeCounter.Reset();
+            m_TimeCounter.Start();
         }
 
         public void Exit()
@@ -52,27 +52,28 @@ namespace InfinityEngine.Game.System
 
         public void GameLoop()
         {
-            while (!bLoopExit)
+            while (!IsLoopExit)
             {
                 if (User32.PeekMessage(out var msg, IntPtr.Zero, 0, 0, 1))
                 {
                     User32.TranslateMessage(ref msg);
                     User32.DispatchMessage(ref msg);
-                    if (msg.Value == (uint)WindowMessage.Quit) { bLoopExit = true; break; }
+                    if (msg.Value == (uint)WindowMessage.Quit) { IsLoopExit = true; break; }
                 }
 
-                m_TimeProfiler.Restart();
+                m_TimeCounter.Restart();
                 m_SemaphoreR2G.Wait();
                 FGameTime.Tick(m_DeltaTime);
                 m_GameTickFunc();
                 m_SemaphoreG2R.Signal();
-                ApplyFrameLimitSync();
+                WaitForTargetFPS();
             }
         }
         
-        void ApplyFrameLimitSync()
+        void WaitForTargetFPS()
         {
             long elapsed = 0;
+            int deltaTimeSmoothing = 2;
 
             if (FApplication.TargetFrameRate > 0)
             {
@@ -80,7 +81,7 @@ namespace InfinityEngine.Game.System
 
                 while(true)
                 {
-                    elapsed = m_TimeProfiler.microseconds;
+                    elapsed = m_TimeCounter.microseconds;
                     if (elapsed >= targetMax)
                         break;
 
@@ -93,15 +94,11 @@ namespace InfinityEngine.Game.System
                 }
             }
 
-            m_TimeProfiler.Restart();
-            elapsed = m_TimeProfiler.microseconds;
-
-            // If FPS lower than targetMin, clamp elapsed time
-            if (elapsed > 1000000L) { elapsed = 1000000L; }
+            elapsed = m_TimeCounter.microseconds;
+            m_TimeCounter.Restart();
 
             // Perform timestep smoothing
             m_DeltaTime = 0.0f;
-            int deltaTimeSmoothing = 2;
             m_LastDeltaTimes.Add(elapsed / 1000000.0f);
 
             if (m_LastDeltaTimes.Count > deltaTimeSmoothing)
@@ -113,14 +110,16 @@ namespace InfinityEngine.Game.System
                     m_DeltaTime += m_LastDeltaTimes[i];
                 }
                 m_DeltaTime /= m_LastDeltaTimes.Count;
-            } else {
+            }
+            else
+            {
                 m_DeltaTime = m_LastDeltaTimes[m_LastDeltaTimes.Count - 1];
             }
         }
         
         protected override void Release()
         {
-            m_TimeProfiler.Stop();
+            m_TimeCounter.Stop();
         }
     }
 }

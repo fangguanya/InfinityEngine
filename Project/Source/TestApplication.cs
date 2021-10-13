@@ -57,7 +57,7 @@ namespace ExampleProject
             //m_UnsafeDatas = (int*)Marshal.AllocHGlobal(sizeof(int) * 32768);
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(in float deltaTime)
         {
             FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
@@ -163,13 +163,13 @@ namespace ExampleProject
             //AddComponent(m_Component);
         }
 
-        public TestActor(string InName) : base(InName)
+        public TestActor(string name) : base(name)
         {
             m_Component = new TestComponent();
             //AddComponent(m_Component);
         }
 
-        public TestActor(string InName, AActor InParent) : base(InName, InParent)
+        public TestActor(string name, AActor parent) : base(name, parent)
         {
             m_Component = new TestComponent();
             //AddComponent(m_Component);
@@ -179,12 +179,14 @@ namespace ExampleProject
         {
             base.OnEnable();
             AddComponent(m_Component);
+            Console.WriteLine("Enable Actor");
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(in float deltaTime)
         {
-            base.OnUpdate();
+            base.OnUpdate(deltaTime);
             //Console.WriteLine("Update Actor");
+            //Console.WriteLine(deltaTime);
 
             //Async Task
             /*Thread.Sleep(100);
@@ -200,6 +202,7 @@ namespace ExampleProject
         public override void OnDisable()
         {
             base.OnDisable();
+            RemoveComponent(m_Component);
             Console.WriteLine("Disable Actor");
         }
     }
@@ -208,7 +211,7 @@ namespace ExampleProject
     {
         private TestActor m_Actor;
 
-        public TestApplication(string Name, int Width, int Height) : base(Name, Width, Height)
+        public TestApplication(string name, int width, int height) : base(width, height, name)
         {
             m_Actor = new TestActor("TestActor");
         }
@@ -220,7 +223,7 @@ namespace ExampleProject
 
         protected override void Tick()
         {
-            m_Actor.OnUpdate();
+            m_Actor.OnUpdate(FGameTime.DeltaTime);
         }
 
         protected override void End()

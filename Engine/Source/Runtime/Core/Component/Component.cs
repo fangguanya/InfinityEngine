@@ -7,25 +7,25 @@ namespace InfinityEngine.Game.ActorFramework
     public class UComponent : UObject
     {
         public AActor owner;
-        internal bool bConstruct;
+        internal bool IsConstruct;
 
         public UComponent()
         {
             owner = null;
-            bConstruct = true;
+            IsConstruct = true;
         }
 
         public UComponent(string name) : base(name)
         {
             owner = null;
-            bConstruct = true;
+            IsConstruct = true;
         }
 
         public virtual void OnEnable() { }
 
         public virtual void OnTransform() { }
 
-        public virtual void OnUpdate() { }
+        public virtual void OnUpdate(in float deltaTime) { }
 
         public virtual void OnDisable() { }
 

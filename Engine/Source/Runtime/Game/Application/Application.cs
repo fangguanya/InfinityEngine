@@ -11,13 +11,13 @@ namespace InfinityEngine.Game.Application
 {
     public abstract partial class FApplication : FDisposable
     {
+        public static uint TargetFrameRate = 60;
+
         internal static readonly string WndClassName = "InfinityApp";
 
         internal WNDPROC wndProc;
         internal FWindow mainWindow { get; private set; }
         internal readonly IntPtr HInstance = Kernel32.GetModuleHandle(null);
-
-        public static uint TargetFrameRate = 60;
 
         private FSemaphore m_SemaphoreG2R;
         private FSemaphore m_SemaphoreR2G;
@@ -26,9 +26,9 @@ namespace InfinityEngine.Game.Application
         internal FPhysicsSystem physicsSystem;
         internal FGraphicsSystem graphicsSystem;
 
-        public FApplication(string Name, int Width, int Height)
+        public FApplication(in int width, in int height, string name = null)
         {
-            CreateWindow(Name, Width, Height);
+            CreateWindow(width, height, name);
             
             m_SemaphoreR2G = new FSemaphore(true);
             m_SemaphoreG2R = new FSemaphore(false);
@@ -77,7 +77,7 @@ namespace InfinityEngine.Game.Application
             m_SemaphoreG2R.Dispose();
         }
 
-        private void CreateWindow(string name, int width, int height)
+        private void CreateWindow(in int width, in int height, string name)
         {
             wndProc = ProcessWindowMessage;
             var wndClassEx = new WNDCLASSEX

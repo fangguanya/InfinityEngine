@@ -23,7 +23,7 @@ namespace InfinityEngine.Game.ActorFramework
             CreateRender();
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(in float deltaTime)
         {
 
         }
