@@ -33,9 +33,11 @@ namespace InfinityEngine.Graphics.RHI
     {
         Tex2D = 0,
         Tex2DArray = 1,
-        TexCube = 2,
-        TexCubeArray = 3,
-        Tex3D = 4,
+        Tex2DSparse = 2,
+        TexCube = 3,
+        TexCubeArray = 4,
+        Tex3D = 5,
+        Tex3DSparse = 6,
     };
 
     public enum EResourceType
@@ -56,16 +58,18 @@ namespace InfinityEngine.Graphics.RHI
     public enum EWrapMode
     {
         Clamp = 0,
-        Repeat = 1,
-        Mirror = 2,
-        MirrorOnce = 3
+        Border = 1,
+        Repeat = 2,
+        Mirror = 3,
+        MirrorOnce = 4
     }
 
     public enum EFilterMode
     {
         Point = 0,
         Bilinear = 1,
-        Trilinear = 2
+        Trilinear = 2,
+        Anisotropic = 3
     }
 
     public enum EMSAASample
