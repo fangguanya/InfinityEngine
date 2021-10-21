@@ -11,7 +11,7 @@ namespace InfinityEngine.Graphics.RDG
 
     internal struct FRDGResourceRef
     {
-        bool bValid;
+        internal bool IsValid;
         public int index { get; private set; }
         public EResourceType type { get; private set; }
         public int iType { get { return (int)type; } }
@@ -21,42 +21,34 @@ namespace InfinityEngine.Graphics.RDG
         {
             this.type = type;
             this.index = value;
-            this.bValid = true;
+            this.IsValid = true;
         }
 
         public static implicit operator int(FRDGResourceRef handle) => handle.index;
-
-        public bool IsValid() => bValid;
     }
 
     public struct FRDGBufferRef
     {
         internal FRDGResourceRef handle;
 
-
         internal FRDGBufferRef(int handle) 
         { 
             this.handle = new FRDGResourceRef(handle, EResourceType.Buffer); 
         }
 
-        public bool IsValid() => handle.IsValid();
-
-        public static implicit operator FRHIBuffer(FRDGBufferRef bufferRef) => bufferRef.IsValid() ? FRDGResourceFactory.current.GetBuffer(bufferRef) : null;
+        public static implicit operator FRHIBuffer(FRDGBufferRef bufferRef) => bufferRef.handle.IsValid ? FRDGResourceFactory.current.GetBuffer(bufferRef) : null;
     }
 
     public struct FRDGTextureRef
     {
         internal FRDGResourceRef handle;
 
-
         internal FRDGTextureRef(int handle) 
         { 
             this.handle = new FRDGResourceRef(handle, EResourceType.Texture); 
         }
 
-        public bool IsValid() => handle.IsValid();
-
-        public static implicit operator FRHITexture(FRDGTextureRef textureRef) => textureRef.IsValid() ? FRDGResourceFactory.current.GetTexture(textureRef) : null;
+        public static implicit operator FRHITexture(FRDGTextureRef textureRef) => textureRef.handle.IsValid ? FRDGResourceFactory.current.GetTexture(textureRef) : null;
     }
 
     internal class IRDGResource

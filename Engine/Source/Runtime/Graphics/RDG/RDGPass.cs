@@ -125,13 +125,13 @@ namespace InfinityEngine.Graphics.RDG
 
     public struct FRDGPassRef : IDisposable
     {
-        bool bDisposed;
+        bool IsDisposed;
         IRDGPass m_RenderPass;
         FRDGResourceFactory m_ResourceFactory;
 
         internal FRDGPassRef(IRDGPass renderPass, FRDGResourceFactory resourceFactory)
         {
-            bDisposed = false;
+            IsDisposed = false;
             m_RenderPass = renderPass;
             m_ResourceFactory = resourceFactory;
         }
@@ -205,10 +205,10 @@ namespace InfinityEngine.Graphics.RDG
 
         void Dispose(bool disposing)
         {
-            if (bDisposed)
+            if (IsDisposed)
                 return;
 
-            bDisposed = true;
+            IsDisposed = true;
         }
 
         public void Dispose()

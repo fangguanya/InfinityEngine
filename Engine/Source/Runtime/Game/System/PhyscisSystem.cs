@@ -6,12 +6,12 @@ namespace InfinityEngine.Game.System
 {
     internal class FPhysicsSystem : FDisposable
     {
-        private bool bLoopExit;
+        private bool IsLoopExit;
         internal Thread physicsThread;
 
         public FPhysicsSystem()
         {
-            this.bLoopExit = false;
+            this.IsLoopExit = false;
             this.physicsThread = new Thread(PhysicsFunc);
             this.physicsThread.Name = "PhyscisThread";
         }
@@ -23,13 +23,13 @@ namespace InfinityEngine.Game.System
 
         public void Exit()
         {
-            bLoopExit = true;
+            IsLoopExit = true;
             physicsThread.Join();
         }
 
         public void PhysicsFunc()
         {
-            while (!bLoopExit)
+            while (!IsLoopExit)
             {
 
             }

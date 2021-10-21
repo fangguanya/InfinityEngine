@@ -23,7 +23,7 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHICommandList : FDisposable
     {
         public string name;
-        internal bool bClose;
+        internal bool IsClose;
         internal EContextType contextType;
         internal ID3D12GraphicsCommandList5 nativeCmdList;
         internal ID3D12CommandAllocator nativeCmdAllocator;
@@ -31,7 +31,7 @@ namespace InfinityEngine.Graphics.RHI
         internal FRHICommandList(FRHIDevice device, EContextType contextType)
         {
             this.name = null;
-            this.bClose = false;
+            this.IsClose = false;
             this.contextType = contextType;
             this.nativeCmdAllocator = device.nativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
             this.nativeCmdList = device.nativeDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, nativeCmdAllocator, null);
@@ -41,7 +41,7 @@ namespace InfinityEngine.Graphics.RHI
         internal FRHICommandList(string name, FRHIDevice device, EContextType contextType)
         {
             this.name = name;
-            this.bClose = false;
+            this.IsClose = false;
             this.contextType = contextType;
             this.nativeCmdAllocator = device.nativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
             this.nativeCmdList = device.nativeDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, nativeCmdAllocator, null);
@@ -50,16 +50,16 @@ namespace InfinityEngine.Graphics.RHI
 
         public void Clear()
         {
-            if(!bClose) { return; }
+            if(!IsClose) { return; }
 
-            bClose = false;
+            IsClose = false;
             nativeCmdAllocator.Reset();
             nativeCmdList.Reset(nativeCmdAllocator, null);
         }
 
         internal void Close()
         {
-            bClose = true;
+            IsClose = true;
             nativeCmdList.Close();
         }
 

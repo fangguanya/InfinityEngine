@@ -23,7 +23,7 @@ namespace InfinityEngine.Game.System
 
     internal class FGraphicsSystem : FDisposable
     {
-        private bool bLoopExit;
+        private bool IsLoopExit;
         internal Thread renderThread;
         internal FSemaphore semaphoreG2R;
         internal FSemaphore semaphoreR2G;
@@ -33,7 +33,7 @@ namespace InfinityEngine.Game.System
 
         public FGraphicsSystem(FSemaphore semaphoreG2R, FSemaphore semaphoreR2G)
         {
-            this.bLoopExit = false;
+            this.IsLoopExit = false;
             this.semaphoreG2R = semaphoreG2R;
             this.semaphoreR2G = semaphoreR2G;
             this.renderThread = new Thread(GraphicsFunc);
@@ -51,7 +51,7 @@ namespace InfinityEngine.Game.System
 
         public void Exit()
         {
-            bLoopExit = true;
+            IsLoopExit = true;
             semaphoreG2R.Signal();
             renderThread.Join();
         }
@@ -60,7 +60,7 @@ namespace InfinityEngine.Game.System
         {
             bool isInit = true;
 
-            while (!bLoopExit)
+            while (!IsLoopExit)
             {
                 semaphoreG2R.Wait();
                 if (isInit) 

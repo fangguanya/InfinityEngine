@@ -52,7 +52,7 @@ namespace InfinityEngine.Graphics.RHI
 		{
 			this.queryPool = queryPool;
 			this.indexHead = queryPool.AllocateQueryID();
-			this.indexLast = queryPool.bTimeQuery ? queryPool.AllocateQueryID() : -1;
+			this.indexLast = queryPool.IsTimeQuery ? queryPool.AllocateQueryID() : -1;
 		}
 
 		public int GetResult()
@@ -62,7 +62,7 @@ namespace InfinityEngine.Graphics.RHI
 
 		public float GetResult(in ulong frequency)
 		{
-			if (!queryPool.bTimeQuery) { return -1; }
+			if (!queryPool.IsTimeQuery) { return -1; }
 
 			double result = (double)(queryPool.queryData[indexLast] - queryPool.queryData[indexHead]);
 			return (float)math.round(1000 * (result / frequency) * 100) / 100;
@@ -72,7 +72,7 @@ namespace InfinityEngine.Graphics.RHI
         {
 			queryPool.ReleaseQueryID(indexHead);
 
-			if(queryPool.bTimeQuery)
+			if(queryPool.IsTimeQuery)
             {
 				queryPool.ReleaseQueryID(indexLast);
 			}
@@ -81,8 +81,8 @@ namespace InfinityEngine.Graphics.RHI
 
 	internal class FRHIQueryPool : FDisposable
 	{
-		internal bool bCopyReady;
 		internal int queryCount;
+		internal bool IsReadReady;
 		internal ulong[] queryData;
 		internal EQueryType queryType;
 		private TArray<int> m_QueryMap;
@@ -92,7 +92,7 @@ namespace InfinityEngine.Graphics.RHI
 		internal ID3D12Resource queryResult;
 		readonly Stack<FRHIQuery> m_StackPool;
 
-		public bool bTimeQuery
+		public bool IsTimeQuery
 		{
 			get
 			{
@@ -105,7 +105,7 @@ namespace InfinityEngine.Graphics.RHI
 
 		public FRHIQueryPool(FRHIDevice device, in EQueryType queryType, in int queryCount)
 		{
-			this.bCopyReady = true;
+			this.IsReadReady = true;
 			this.queryType = queryType;
 			this.queryCount= (int)queryCount;
 			this.queryData = new ulong[queryCount];
@@ -148,7 +148,7 @@ namespace InfinityEngine.Graphics.RHI
 
 		public void Submit(FRHICommandContext commandContext)
         {
-			if (bCopyReady) 
+			if (IsReadReady) 
 			{
 				cmdList.Clear();
 				cmdList.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
@@ -159,7 +159,7 @@ namespace InfinityEngine.Graphics.RHI
 
 		public void Flush()
 		{
-			if (bCopyReady = queryFence.IsCompleted) 
+			if (IsReadReady = queryFence.IsCompleted) 
 			{
 				IntPtr queryResult_Ptr = queryResult.Map(0);
 				queryResult_Ptr.CopyTo(queryData.AsSpan());
