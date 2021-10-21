@@ -8,6 +8,10 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHIFence : FDisposable
     {
         public string name;
+        public bool IsCompleted
+        {
+            get { return m_NativeFence.CompletedValue >= m_FenceValue ? true : false; }
+        }
         private ulong m_FenceValue;
         private ID3D12Fence m_NativeFence;
 
@@ -23,18 +27,9 @@ namespace InfinityEngine.Graphics.RHI
             cmdContext.nativeCmdQueue.Signal(m_NativeFence, m_FenceValue);
         }
 
-        public bool Completed()
-        {
-            if (m_NativeFence.CompletedValue < m_FenceValue)
-            {
-                return false;
-            }
-            return true;
-        }
-
         internal void WaitOnCPU(AutoResetEvent fenceEvent)
         {
-            if (!Completed())
+            if (!IsCompleted)
             {
                 m_NativeFence.SetEventOnCompletion(m_FenceValue, fenceEvent);
                 fenceEvent.WaitOne();

@@ -76,8 +76,7 @@ namespace ExampleProject
                     //graphicsContext.WaitFence(EContextType.Graphics, fence);
                 }
 
-                dataReady = fence.Completed();
-                if (dataReady)
+                if (dataReady = fence.IsCompleted)
                 {
                     bufferRef.buffer.GetData(readData);
                     gpuTime = query.GetResult(graphicsContext.copyFrequency);

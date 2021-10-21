@@ -159,8 +159,7 @@ namespace InfinityEngine.Graphics.RHI
 
 		public void Flush()
 		{
-			bCopyReady = queryFence.Completed();
-			if (bCopyReady) 
+			if (bCopyReady = queryFence.IsCompleted) 
 			{
 				IntPtr queryResult_Ptr = queryResult.Map(0);
 				queryResult_Ptr.CopyTo(queryData.AsSpan());

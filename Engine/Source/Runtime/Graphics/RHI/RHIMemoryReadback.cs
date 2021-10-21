@@ -5,7 +5,7 @@ namespace InfinityEngine.Graphics.RHI
 {
     public class FRHIMemoryReadback : FDisposable
     {
-        public bool bReady { get { return m_Fence.Completed(); } }
+        public bool bReady { get { return m_Fence.IsCompleted; } }
 
         private FRHIFence m_Fence;
 
