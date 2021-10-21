@@ -123,17 +123,12 @@ namespace InfinityEngine.Graphics.RHI
             return descriptorHandle + nativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
         }
 
-        public void SetConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
-        {
-            nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), constantBufferView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
-        }
-
-        public void SetShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
+        public void SetShaderResourceView(in int slot, in FRHIShaderResourceView shaderResourceView)
         {
             nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), shaderResourceView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
-        public void SetUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        public void SetUnorderedAccessView(in int slot, in FRHIUnorderedAccessView unorderedAccessView)
         {
             nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), unorderedAccessView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
