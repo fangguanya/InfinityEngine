@@ -101,19 +101,24 @@ namespace ExampleProject
             {
                 outValue[i] = bitMask >> i & 1;
             }
-
             Console.ReadKey();
 
             // PtrTest
-            int*[] aArray = new int*[2];
-            //int** aArray = (int**)Marshal.AllocHGlobal(8).ToPointer();
+            int aValue = 100;
+            int** aArray = (int**)TerraFX.Interop.Mimalloc.mi_mallocn_aligned(2, 8, 64);
             for (int i = 0; i < 2; i++)
             {
-                //aArray[i] = (int*)Marshal.AllocHGlobal(4).ToPointer();
-                aArray[i] = (int*)TerraFX.Interop.Mimalloc.mi_mallocn_aligned(1, 4, 64);
-                *aArray[i] = i + 100;
-                Console.WriteLine(*aArray[i]);
+                aArray[i] = &aValue;
             }
+            Console.WriteLine(aValue);
+            Console.WriteLine(*aArray[0]);
+            Console.WriteLine(*aArray[1]);
+            *aArray[0] = 200;
+            Console.WriteLine(aValue);
+            Console.WriteLine(*aArray[0]);
+            Console.WriteLine(*aArray[1]);
+
+            TerraFX.Interop.Mimalloc.mi_free_aligned(aArray, 64);
             Console.ReadKey();
 
             // TaskExample
