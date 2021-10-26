@@ -8,12 +8,12 @@ namespace InfinityEngine.Rendering.RenderPipeline
     public abstract class FRenderPipeline : FDisposable
     {
         public string name;
-        protected FRDGBuilder graphBuilder;
+        protected FRDGBuilder m_GraphBuilder;
 
         public FRenderPipeline(string name)
         {
             this.name = name;
-            this.graphBuilder = new FRDGBuilder("GraphBuilder");
+            this.m_GraphBuilder = new FRDGBuilder("GraphBuilder");
         }
 
         public abstract void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
@@ -24,7 +24,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         protected override void Release()
         {
-            graphBuilder?.Dispose();
+            m_GraphBuilder?.Dispose();
         }
     }
 }

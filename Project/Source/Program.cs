@@ -256,9 +256,9 @@ namespace ExampleProject
             int StartIndex = ShaderSource.IndexOf("HLSLPROGRAM") + 11;
             int EndIndex = ShaderSource.IndexOf("ENDHLSL");
             Console.WriteLine(ShaderSource.Substring(StartIndex, EndIndex - StartIndex));
-            Console.ReadKey();*/
+            Console.ReadKey();
 
-            /*string hlslCode1 = new string(
+            string hlslCode1 = new string(
             @"struct Attributes
 	        {
 		        float2 uv : TEXCOORD0;
@@ -294,8 +294,8 @@ namespace ExampleProject
 	            bool IsPathTracing;
             }
 
-            Texture2D DiffuseTexture 			: register(t0);
-            SamplerState Sampler			 	: register(s0);
+            Texture2D DiffuseTexture : register(t0);
+            SamplerState DiffuseTextureSampler : register(s0);
 
             struct PS_IN
             {
@@ -315,13 +315,13 @@ namespace ExampleProject
 
             float4 PS(PS_IN input) : SV_Target
             {
-	            float3 color = DiffuseTexture.Sample(Sampler, input.tex).rgb;
+	            float3 color = DiffuseTexture.Sample(DiffuseTextureSampler, input.tex).rgb;
 	            float a = IsPathTracing ? 1.0 / Samples : 1.0;
 
 	            return float4(color, a);
             }");
 
-            string shaderCode = WaveEngine.HLSLEverywhere.HLSLTranslator.HLSLTo(hlslCode2, WaveEngine.Common.Graphics.ShaderStages.Pixel, WaveEngine.Common.Graphics.GraphicsProfile.Level_12_1, "PS", WaveEngine.HLSLEverywhere.ShadingLanguage.Hlsl);
+            string shaderCode = WaveEngine.HLSLEverywhere.HLSLTranslator.HLSLTo(hlslCode2, WaveEngine.Common.Graphics.ShaderStages.Pixel, WaveEngine.Common.Graphics.GraphicsProfile.Level_12_3, "PS", WaveEngine.HLSLEverywhere.ShadingLanguage.Msl_macOS);
             Vortice.Dxc.IDxcResult result = Vortice.Dxc.DxcCompiler.Compile(hlslCode2, new string[] { "PS" });
             Console.ReadKey();*/
         }

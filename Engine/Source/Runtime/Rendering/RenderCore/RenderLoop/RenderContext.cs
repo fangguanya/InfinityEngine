@@ -9,32 +9,32 @@ namespace InfinityEngine.Rendering.RenderLoop
 
         }
 
-        public void Culling()
+        public void Cull()
         {
 
         }
 
-        private void CullingLight()
+        private void CullLight()
         {
 
         }
 
-        private void CullingTerrain()
+        private void CullTerrain()
         {
 
         }
 
-        private void CullingFoliage()
+        private void CullFoliage()
         {
 
         }
 
-        private void CullingPrimitive()
+        private void CullPrimitive()
         {
 
         }
 
-        private void CullingLightProbe()
+        private void CullLightProbe()
         {
 
         }
