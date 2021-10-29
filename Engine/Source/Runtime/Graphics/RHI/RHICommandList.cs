@@ -110,12 +110,12 @@ namespace InfinityEngine.Graphics.RHI
 
         public void BeginQuery(FRHIQuery query)
         {
-            nativeCmdList.EndQuery(query.queryPool.queryHeap, query.queryPool.queryType.GetNativeQueryType(), query.indexHead);
+            nativeCmdList.EndQuery(query.queryContext.queryHeap, query.queryContext.queryType.GetNativeQueryType(), query.indexHead);
         }
 
         public void EndQuery(FRHIQuery query)
         {
-            nativeCmdList.EndQuery(query.queryPool.queryHeap, query.queryPool.queryType.GetNativeQueryType(), query.indexLast);
+            nativeCmdList.EndQuery(query.queryContext.queryHeap, query.queryContext.queryType.GetNativeQueryType(), query.indexLast);
         }
 
         public void SetComputePipelineState(FRHIComputePipelineState computeState)

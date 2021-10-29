@@ -46,40 +46,40 @@ namespace InfinityEngine.Graphics.RHI
 	{
 		internal int indexHead;
 		internal int indexLast;
-		internal FRHIQueryPool queryPool;
+		internal FRHIQueryContext queryContext;
 
-		internal FRHIQuery(FRHIQueryPool queryPool)
+		internal FRHIQuery(FRHIQueryContext queryContext)
 		{
-			this.queryPool = queryPool;
-			this.indexHead = queryPool.AllocateQueryID();
-			this.indexLast = queryPool.IsTimeQuery ? queryPool.AllocateQueryID() : -1;
+			this.queryContext = queryContext;
+			this.indexHead = queryContext.AllocateQueryID();
+			this.indexLast = queryContext.IsTimeQuery ? queryContext.AllocateQueryID() : -1;
 		}
 
 		public int GetResult()
 		{
-			return (int)queryPool.queryData[indexHead];
+			return (int)queryContext.queryData[indexHead];
 		}
 
 		public float GetResult(in ulong frequency)
 		{
-			if (!queryPool.IsTimeQuery) { return -1; }
+			if (!queryContext.IsTimeQuery) { return -1; }
 
-			double result = (double)(queryPool.queryData[indexLast] - queryPool.queryData[indexHead]);
+			double result = (double)(queryContext.queryData[indexLast] - queryContext.queryData[indexHead]);
 			return (float)math.round(1000 * (result / frequency) * 100) / 100;
 		}
 
 		protected override void Release()
         {
-			queryPool.ReleaseQueryID(indexHead);
+			queryContext.ReleaseQueryID(indexHead);
 
-			if(queryPool.IsTimeQuery)
+			if(queryContext.IsTimeQuery)
             {
-				queryPool.ReleaseQueryID(indexLast);
+				queryContext.ReleaseQueryID(indexLast);
 			}
 		}
     }
 
-	internal class FRHIQueryPool : FDisposable
+	internal class FRHIQueryContext : FDisposable
 	{
 		internal int queryCount;
 		internal bool IsReadReady;
@@ -103,7 +103,7 @@ namespace InfinityEngine.Graphics.RHI
 		public int countActive { get { return countAll - countInactive; } }
 		public int countInactive { get { return m_StackPool.Count; } }
 
-		public FRHIQueryPool(FRHIDevice device, in EQueryType queryType, in int queryCount)
+		public FRHIQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount)
 		{
 			this.IsReadReady = true;
 			this.queryType = queryType;
@@ -157,7 +157,7 @@ namespace InfinityEngine.Graphics.RHI
 			}
 		}
 
-		public void Flush()
+		public void GetData()
 		{
 			if (IsReadReady = queryFence.IsCompleted) 
 			{
