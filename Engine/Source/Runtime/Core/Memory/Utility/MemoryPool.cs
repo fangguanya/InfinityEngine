@@ -59,13 +59,13 @@ namespace InfinityEngine.Core.Memory
 
         public void ReleaseTemporary(T element)
         {
-#if WITH_EDITOR // keep heavy checks in editor
+        #if WITH_EDITOR // keep heavy checks in editor
             if (m_CollectionCheck && m_Stack.Count > 0)
             {
                 if (m_Stack.Contains(element))
                     Console.WriteLine("Internal error. Trying to destroy object that is already released to pool.");
             }
-#endif
+        #endif
             if (m_ActionOnRelease != null)
                 m_ActionOnRelease(element);
             m_Stack.Push(element);
@@ -126,5 +126,4 @@ namespace InfinityEngine.Core.Memory
 
         public static void Release(Dictionary<TKey, TValue> toRelease) => s_Pool.ReleaseTemporary(toRelease);
     }
-
 }
