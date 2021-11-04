@@ -105,7 +105,7 @@ namespace ExampleProject
 
             // PtrTest
             int aValue = 100;
-            int** aArray = (int**)TerraFX.Interop.Mimalloc.mi_mallocn_aligned(2, 8, 64);
+            int** aArray = (int**)FMemoryUtil.Malloc(8, 2);
             for (int i = 0; i < 2; i++)
             {
                 aArray[i] = &aValue;
@@ -118,7 +118,7 @@ namespace ExampleProject
             Console.WriteLine(*aArray[0]);
             Console.WriteLine(*aArray[1]);
 
-            TerraFX.Interop.Mimalloc.mi_free_aligned(aArray, 64);
+            FMemoryUtil.Free(aArray);
             Console.ReadKey();
 
             // TaskExample
