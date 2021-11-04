@@ -85,12 +85,14 @@ namespace InfinityEngine.Graphics.RHI
 		internal bool IsReadReady;
 		internal ulong[] queryData;
 		internal EQueryType queryType;
-		private TArray<int> m_QueryMap;
+
 		internal FRHIFence queryFence;
 		internal FRHICommandList cmdList;
 		internal ID3D12QueryHeap queryHeap;
 		internal ID3D12Resource queryResult;
-		readonly Stack<FRHIQuery> m_StackPool;
+
+		private TArray<int> m_QueryMap;
+		private Stack<FRHIQuery> m_StackPool;
 
 		public bool IsTimeQuery
 		{
