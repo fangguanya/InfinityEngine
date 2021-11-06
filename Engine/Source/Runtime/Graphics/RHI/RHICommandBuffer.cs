@@ -92,8 +92,8 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void SetStencilRef() { }
         public virtual void SetBlendFactor() { }
         public virtual void SetDepthBounds(in float min, in float max) { }
-        public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo) { }
         public virtual void SetShadingRate(FRHITexture texture) { }
+        public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo) { }
         public virtual void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisState) { }
         public virtual void DrawInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, EPrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance) { }
         public virtual void DrawInstanceIndirect(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, EPrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset) { }

@@ -188,15 +188,15 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo)
-        {
-
-        }
-
         public override void SetShadingRate(FRHITexture texture)
         {
             FD3DTexture d3dTexture = (FD3DTexture)texture;
             nativeCmdList.RSSetShadingRateImage(d3dTexture.defaultResource);
+        }
+
+        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo)
+        {
+
         }
 
         public override void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisState)
