@@ -104,33 +104,31 @@ namespace InfinityEngine.Graphics.RHI
     internal class FRHICommandBufferPool : FDisposable
     {
         EContextType m_ContextType;
-        bool m_CollectionCheck = true;
-        Stack<FRHICommandBuffer> m_StackPool;
+        Stack<FRHICommandBuffer> m_Pooled;
         FRHIGraphicsContext m_GraphicsContext;
 
         public int countAll { get; private set; }
         public int countActive { get { return countAll - countInactive; } }
-        public int countInactive { get { return m_StackPool.Count; } }
+        public int countInactive { get { return m_Pooled.Count; } }
 
-        internal FRHICommandBufferPool(FRHIGraphicsContext graphicsContext, EContextType contextType, bool collectionCheck = true)
+        internal FRHICommandBufferPool(FRHIGraphicsContext graphicsContext, EContextType contextType)
         {
             m_ContextType = contextType;
-            m_CollectionCheck = collectionCheck;
             m_GraphicsContext = graphicsContext;
-            m_StackPool = new Stack<FRHICommandBuffer>(64);
+            m_Pooled = new Stack<FRHICommandBuffer>(64);
         }
 
         public FRHICommandBuffer GetTemporary(string name = null)
         {
             FRHICommandBuffer cmdBuffer;
-            if (m_StackPool.Count == 0)
+            if (m_Pooled.Count == 0)
             {
                 ++countAll;
                 cmdBuffer = m_GraphicsContext.CreateCommandBuffer(m_ContextType, name);
             }
             else
             {
-                cmdBuffer = m_StackPool.Pop();
+                cmdBuffer = m_Pooled.Pop();
             }
             cmdBuffer.name = name;
             return cmdBuffer;
@@ -138,13 +136,13 @@ namespace InfinityEngine.Graphics.RHI
 
         public void ReleaseTemporary(FRHICommandBuffer cmdBuffer)
         {
-            m_StackPool.Push(cmdBuffer);
+            m_Pooled.Push(cmdBuffer);
         }
 
         protected override void Release()
         {
             m_GraphicsContext = null;
-            foreach (FRHICommandBuffer cmdBuffer in m_StackPool)
+            foreach (FRHICommandBuffer cmdBuffer in m_Pooled)
             {
                 cmdBuffer.Dispose();
             }
