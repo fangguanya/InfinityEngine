@@ -10,15 +10,10 @@ namespace InfinityEngine.Graphics.RHI
         public string name;
         public virtual bool IsCompleted => false;
 
-        internal FRHIFence(FRHIDevice device, string name = null)
-        {
-            this.name = name;
-        }
+        internal FRHIFence(FRHIDevice device, string name = null) { }
 
         internal virtual void Signal(FRHICommandContext cmdContext) { }
-
         internal virtual void WaitOnCPU(AutoResetEvent fenceEvent) { }
-
         internal virtual void WaitOnGPU(FRHICommandContext cmdContext) { }
     }
 

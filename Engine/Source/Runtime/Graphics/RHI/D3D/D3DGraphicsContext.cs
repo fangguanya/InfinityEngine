@@ -1,7 +1,5 @@
 ﻿using Vortice.DXGI;
 using Vortice.Direct3D12;
-using System.Collections.Generic;
-using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Container;
 
 namespace InfinityEngine.Graphics.RHI
@@ -38,10 +36,10 @@ namespace InfinityEngine.Graphics.RHI
         private FD3DCommandContext m_ComputeContext;
         private FD3DCommandContext m_GraphicsContext;
         private TArray<FExecuteInfo> m_ExecuteGPUInfos;
-        private FD3DCommandListPool m_CopyCommandListPool;
-        private FD3DCommandListPool m_ComputeCommandListPool;
-        private FD3DCommandListPool m_GraphicsCommandListPool;
-        private TArray<FD3DCommandList> m_ManagedCommandList;
+        private FRHICommandListPool m_CopyCommandListPool;
+        private FRHICommandListPool m_ComputeCommandListPool;
+        private FRHICommandListPool m_GraphicsCommandListPool;
+        private TArray<FRHICommandList> m_ManagedCommandList;
         private FRHIDescriptorHeapFactory m_DescriptorFactory;
 
         public FD3DGraphicsContext() : base()
@@ -50,7 +48,7 @@ namespace InfinityEngine.Graphics.RHI
             m_FencePool = new FRHIFencePool(this);
             m_ResourcePool = new FRHIResourcePool(this);
             m_ExecuteGPUInfos = new TArray<FExecuteInfo>(32);
-            m_ManagedCommandList = new TArray<FD3DCommandList>(32);
+            m_ManagedCommandList = new TArray<FRHICommandList>(32);
 
             m_QueryContext = new FD3DQueryContext[2];
             m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.Timestamp, 64);
@@ -59,9 +57,10 @@ namespace InfinityEngine.Graphics.RHI
             m_TransContext = new FD3DCommandContext(m_Device, EContextType.Copy);
             m_ComputeContext = new FD3DCommandContext(m_Device, EContextType.Compute);
             m_GraphicsContext = new FD3DCommandContext(m_Device, EContextType.Graphics);
-            m_CopyCommandListPool = new FD3DCommandListPool(m_Device, EContextType.Copy);
-            m_ComputeCommandListPool = new FD3DCommandListPool(m_Device, EContextType.Compute);
-            m_GraphicsCommandListPool = new FD3DCommandListPool(m_Device, EContextType.Graphics);
+
+            m_CopyCommandListPool = new FRHICommandListPool(this, EContextType.Copy);
+            m_ComputeCommandListPool = new FRHICommandListPool(this, EContextType.Compute);
+            m_GraphicsCommandListPool = new FRHICommandListPool(this, EContextType.Graphics);
 
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
             m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
@@ -93,7 +92,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public override FRHICommandList GetCommandList(in EContextType contextType, string name = null, bool bAutoRelease = false)
         {
-            FD3DCommandList cmdList = null;
+            FRHICommandList cmdList = null;
             switch (contextType)
             {
                 case EContextType.Copy:
@@ -119,15 +118,15 @@ namespace InfinityEngine.Graphics.RHI
             switch (cmdList.contextType)
             {
                 case EContextType.Copy:
-                    m_CopyCommandListPool.ReleaseTemporary((FD3DCommandList)cmdList);
+                    m_CopyCommandListPool.ReleaseTemporary(cmdList);
                     break;
 
                 case EContextType.Compute:
-                    m_ComputeCommandListPool.ReleaseTemporary((FD3DCommandList)cmdList);
+                    m_ComputeCommandListPool.ReleaseTemporary(cmdList);
                     break;
 
                 case EContextType.Graphics:
-                    m_GraphicsCommandListPool.ReleaseTemporary((FD3DCommandList)cmdList);
+                    m_GraphicsCommandListPool.ReleaseTemporary(cmdList);
                     break;
             }
         }

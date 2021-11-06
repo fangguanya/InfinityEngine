@@ -1,5 +1,4 @@
 ﻿using System.Threading;
-using Vortice.Direct3D12;
 using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
@@ -8,17 +7,11 @@ namespace InfinityEngine.Graphics.RHI
     {
         protected AutoResetEvent m_FenceEvent;
 
-        internal FRHICommandContext(FRHIDevice device, EContextType contextType) : base()
-        {
-
-        }
+        internal FRHICommandContext(FRHIDevice device, EContextType contextType) : base() { }
 
         public virtual void SignalQueue(FRHIFence fence) { }
-
         public virtual void WaitQueue(FRHIFence fence) { }
-
         public virtual void ExecuteQueue(FRHICommandList cmdList) { }
-
         public virtual void Flush() { }
     }
 }

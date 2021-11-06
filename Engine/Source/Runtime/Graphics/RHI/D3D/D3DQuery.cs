@@ -2,14 +2,37 @@
 using Vortice.DXGI;
 using Vortice.Direct3D12;
 using System.Collections.Generic;
-using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Memory;
 using InfinityEngine.Core.Container;
 using InfinityEngine.Core.Mathmatics;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FD3DQuery : FRHIQuery
+	internal static class FD3DQueryUtility
+	{
+		internal static QueryType GetNativeQueryType(this EQueryType queryType)
+		{
+			QueryType outType = default;
+			switch (queryType)
+			{
+				case EQueryType.Occlusion:
+					outType = QueryType.Occlusion;
+					break;
+				case EQueryType.Timestamp:
+					outType = QueryType.Timestamp;
+					break;
+				case EQueryType.Statistics:
+					outType = QueryType.PipelineStatistics;
+					break;
+				case EQueryType.CopyTimestamp:
+					outType = QueryType.Timestamp;
+					break;
+			}
+			return outType;
+		}
+	}
+
+	public class FD3DQuery : FRHIQuery
 	{
 		internal FD3DQueryContext context;
 

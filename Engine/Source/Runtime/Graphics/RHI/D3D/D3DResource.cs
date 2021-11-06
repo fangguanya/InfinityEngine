@@ -1,9 +1,7 @@
 ﻿using System;
 using Vortice.DXGI;
 using Vortice.Direct3D12;
-using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Memory;
-using InfinityEngine.Core.Mathmatics;
 using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Graphics.RHI
@@ -183,6 +181,47 @@ namespace InfinityEngine.Graphics.RHI
             uploadResource?.Dispose();
             defaultResource?.Dispose();
             readbackResource?.Dispose();
+        }
+    }
+
+    internal static class FD3DTextureUtility
+    {
+        internal static Format GetNativeFormat(this EGraphicsFormat format)
+        {
+            switch (format)
+            {
+                case EGraphicsFormat.R8_SRGB:
+                    return Format.R8_Typeless;
+                case EGraphicsFormat.R8G8_SRGB:
+                    return Format.R8G8_Typeless;
+                case EGraphicsFormat.R8G8B8A8_SRGB:
+                    return Format.R8G8B8A8_Typeless;
+                case EGraphicsFormat.R8_UNorm:
+                    return Format.R8_Typeless;
+                case EGraphicsFormat.R8G8_UNorm:
+                    return Format.R8G8_Typeless;
+                case EGraphicsFormat.R8G8B8A8_UNorm:
+                    return Format.R8G8B8A8_Typeless;
+            }
+
+            return Format.Unknown;
+        }
+
+        internal static ResourceDimension GetNativeDimension(this ETextureType type)
+        {
+            switch (type)
+            {
+                case ETextureType.Tex2DArray:
+                    return ResourceDimension.Texture2D;
+                case ETextureType.Tex3D:
+                    return ResourceDimension.Texture3D;
+                case ETextureType.TexCube:
+                    return ResourceDimension.Texture2D;
+                case ETextureType.TexCubeArray:
+                    return ResourceDimension.Texture2D;
+            }
+
+            return ResourceDimension.Texture2D;
         }
     }
 

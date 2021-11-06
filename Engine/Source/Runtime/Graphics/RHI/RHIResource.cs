@@ -1,10 +1,5 @@
-﻿using System;
-using Vortice.DXGI;
-using Vortice.Direct3D12;
-using InfinityEngine.Core.Object;
-using InfinityEngine.Core.Memory;
+﻿using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Mathmatics;
-using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -213,15 +208,10 @@ namespace InfinityEngine.Graphics.RHI
         internal FRHIBuffer(FRHIDevice device, in FRHIBufferDescription description) { }
 
         public virtual void SetData<T>(params T[] data) where T : struct { }
-
         public virtual void SetData<T>(FRHICommandList cmdList, params T[] data) where T : struct { }
-
         public virtual void RequestUpload<T>(FRHICommandList cmdList) where T : struct { }
-
         public virtual void GetData<T>(T[] data) where T : struct { }
-
         public virtual void GetData<T>(FRHICommandList cmdList, T[] data) where T : struct { }
-
         public virtual void RequestReadback<T>(FRHICommandList cmdList) where T : struct { }
     }
 
@@ -276,47 +266,6 @@ namespace InfinityEngine.Graphics.RHI
             hashCode += mipLevel;
             hashCode += anisoLevel;
             return hashCode;
-        }
-    }
-
-    internal static class FRHITextureUtility
-    {
-        internal static Format GetNativeFormat(this EGraphicsFormat format)
-        {
-            switch (format)
-            {
-                case EGraphicsFormat.R8_SRGB:
-                    return Format.R8_Typeless;
-                case EGraphicsFormat.R8G8_SRGB:
-                    return Format.R8G8_Typeless;
-                case EGraphicsFormat.R8G8B8A8_SRGB:
-                    return Format.R8G8B8A8_Typeless;
-                case EGraphicsFormat.R8_UNorm:
-                    return Format.R8_Typeless;
-                case EGraphicsFormat.R8G8_UNorm:
-                    return Format.R8G8_Typeless;
-                case EGraphicsFormat.R8G8B8A8_UNorm:
-                    return Format.R8G8B8A8_Typeless;
-            }
-
-            return Format.Unknown;
-        }
-
-        internal static ResourceDimension GetNativeDimension(this ETextureType type)
-        {
-            switch (type)
-            {
-                case ETextureType.Tex2DArray:
-                    return ResourceDimension.Texture2D;
-                case ETextureType.Tex3D:
-                    return ResourceDimension.Texture3D;
-                case ETextureType.TexCube:
-                    return ResourceDimension.Texture2D;
-                case ETextureType.TexCubeArray:
-                    return ResourceDimension.Texture2D;
-            }
-
-            return ResourceDimension.Texture2D;
         }
     }
 

@@ -1,7 +1,4 @@
-﻿using Vortice.Direct3D;
-using Vortice.Direct3D12;
-using System.Collections.Generic;
-using InfinityEngine.Core.Object;
+﻿using Vortice.Direct3D12;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -234,54 +231,5 @@ namespace InfinityEngine.Graphics.RHI
         }
 
         public static implicit operator ID3D12GraphicsCommandList5(FD3DCommandList cmdList) { return cmdList.nativeCmdList; }
-    }
-
-    internal class FD3DCommandListPool : FDisposable
-    {
-        private FRHIDevice m_Device;
-        private EContextType m_ContextType;
-        readonly bool m_CollectionCheck = true;
-        readonly Stack<FD3DCommandList> m_StackPool;
-        public int countAll { get; private set; }
-        public int countActive { get { return countAll - countInactive; } }
-        public int countInactive { get { return m_StackPool.Count; } }
-
-        internal FD3DCommandListPool(FRHIDevice device, EContextType contextType, bool collectionCheck = true)
-        {
-            m_Device = device;
-            m_ContextType = contextType;
-            m_CollectionCheck = collectionCheck;
-            m_StackPool = new Stack<FD3DCommandList>(64);
-        }
-
-        public FD3DCommandList GetTemporary(string name)
-        {
-            FD3DCommandList element;
-            if (m_StackPool.Count == 0)
-            {
-                ++countAll;
-                element = new FD3DCommandList(m_Device, m_ContextType);
-            }
-            else
-            {
-                element = m_StackPool.Pop();
-            }
-            element.name = name;
-            return element;
-        }
-
-        public void ReleaseTemporary(FD3DCommandList element)
-        {
-            m_StackPool.Push(element);
-        }
-
-        protected override void Release()
-        {
-            m_Device = null;
-            foreach (FD3DCommandList cmdList in m_StackPool)
-            {
-                cmdList.Dispose();
-            }
-        }
     }
 }

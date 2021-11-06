@@ -1,7 +1,6 @@
 ﻿using System;
 using Vortice.Dxc;
 using Vortice.Direct3D12.Shader;
-using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {

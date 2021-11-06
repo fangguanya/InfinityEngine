@@ -1,11 +1,4 @@
-﻿using System;
-using Vortice.DXGI;
-using Vortice.Direct3D12;
-using System.Collections.Generic;
-using InfinityEngine.Core.Object;
-using InfinityEngine.Core.Memory;
-using InfinityEngine.Core.Container;
-using InfinityEngine.Core.Mathmatics;
+﻿using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -17,30 +10,6 @@ namespace InfinityEngine.Graphics.RHI
 		CopyTimestamp = 5,
 		ComputeTimestamp = 6
 	}
-	
-	internal static class FRHIQueryUtility
-    {
-		internal static QueryType GetNativeQueryType(this EQueryType queryType)
-		{
-			QueryType outType = default;
-			switch (queryType)
-			{
-				case EQueryType.Occlusion:
-					outType = QueryType.Occlusion;
-					break;
-				case EQueryType.Timestamp:
-					outType = QueryType.Timestamp;
-					break;
-				case EQueryType.Statistics:
-					outType = QueryType.PipelineStatistics;
-					break;
-				case EQueryType.CopyTimestamp:
-					outType = QueryType.Timestamp;
-					break;
-			}
-			return outType;
-		}
-	}
 
     public class FRHIQuery : FDisposable
 	{
@@ -50,7 +19,6 @@ namespace InfinityEngine.Graphics.RHI
 		internal FRHIQuery(FRHIQueryContext context) { }
 
 		public virtual int GetResult() { return -1; }
-
 		public virtual float GetResult(in ulong frequency) { return -1; }
 	}
 
@@ -68,15 +36,10 @@ namespace InfinityEngine.Graphics.RHI
 		public FRHIQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount) { }
 
 		public virtual void Submit(FRHICommandContext commandContext) { }
-
 		public virtual void GetData() { }
-
 		public virtual int AllocateQueryID() { return -1; }
-
 		public virtual void ReleaseQueryID(in int index) { }
-
 		public virtual FRHIQuery GetTemporary(string name = null) { return null; }
-
 		public virtual void ReleaseTemporary(FRHIQuery query) { }
 	}
 }
