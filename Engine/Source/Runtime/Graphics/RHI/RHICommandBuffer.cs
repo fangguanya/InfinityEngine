@@ -79,8 +79,8 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void DispatchCompute(FRHIComputeShader computeShader, uint sizeX, uint sizeY, uint sizeZ) { }
         public virtual void DispatchComputeIndirect(FRHIComputeShader computeShader, FRHIBuffer argsBuffer, uint argsOffset) { }
         public virtual void SetRayTracePipelineState(FRHIRayTraceShader rayTraceShader, FRHIRayTracePipelineState rayTraceState) { }
-        public virtual void BuildAccelerationStructure() { }
         public virtual void CopyAccelerationStructure() { }
+        public virtual void BuildAccelerationStructure() { }
         public virtual void DispatchRay(FRHIRayTraceShader rayTraceShader, uint sizeX, uint sizeY, uint sizeZ) { }
         public virtual void DispatchRayIndirect(FRHIRayTraceShader rayTraceShader, FRHIBuffer argsBuffer, uint argsOffset) { }
         public virtual void SetScissor() { }

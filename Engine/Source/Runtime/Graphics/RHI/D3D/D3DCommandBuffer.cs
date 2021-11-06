@@ -123,12 +123,12 @@ namespace InfinityEngine.Graphics.RHI
 
         }
 
-        public override void BuildAccelerationStructure()
+        public override void CopyAccelerationStructure()
         {
 
         }
 
-        public override void CopyAccelerationStructure()
+        public override void BuildAccelerationStructure()
         {
 
         }
