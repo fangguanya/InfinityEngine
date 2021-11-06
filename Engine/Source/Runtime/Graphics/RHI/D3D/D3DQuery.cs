@@ -70,9 +70,9 @@ namespace InfinityEngine.Graphics.RHI
 	internal class FD3DQueryContext : FRHIQueryContext
 	{
 		internal FD3DFence queryFence;
-		internal FD3DCommandList cmdList;
 		internal ID3D12QueryHeap queryHeap;
 		internal ID3D12Resource queryResult;
+		internal FD3DCommandBuffer cmdBuffer;
 
 		private TArray<int> m_QueryMap;
 		private Stack<FD3DQuery> m_StackPool;
@@ -129,7 +129,7 @@ namespace InfinityEngine.Graphics.RHI
 				resourceDesc.SampleDescription.Count = 1;
 				resourceDesc.SampleDescription.Quality = 0;
             }
-			this.cmdList = new FD3DCommandList("QueryCommandList", device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Graphics);
+			this.cmdBuffer = new FD3DCommandBuffer("QueryCmdBuffer", device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Graphics);
 			this.queryResult = d3dDevice.nativeDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
 		}
 
@@ -137,10 +137,10 @@ namespace InfinityEngine.Graphics.RHI
         {
 			if (IsReadReady) 
 			{
-				cmdList.Clear();
-				cmdList.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
+				cmdBuffer.Clear();
+				cmdBuffer.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
 				commandContext.SignalQueue(queryFence);
-				commandContext.ExecuteQueue(cmdList);
+				commandContext.ExecuteQueue(cmdBuffer);
 			}
 		}
 
@@ -197,7 +197,7 @@ namespace InfinityEngine.Graphics.RHI
 			
 			queryData = null;
 			m_QueryMap = null;
-			cmdList?.Dispose();
+			cmdBuffer?.Dispose();
 			queryHeap?.Dispose();
 			queryFence?.Dispose();
 			queryResult?.Dispose();

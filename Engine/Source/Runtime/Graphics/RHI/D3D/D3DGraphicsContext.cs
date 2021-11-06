@@ -36,10 +36,10 @@ namespace InfinityEngine.Graphics.RHI
         private FD3DCommandContext m_ComputeContext;
         private FD3DCommandContext m_GraphicsContext;
         private TArray<FExecuteInfo> m_ExecuteGPUInfos;
-        private FRHICommandListPool m_CopyCommandListPool;
-        private FRHICommandListPool m_ComputeCommandListPool;
-        private FRHICommandListPool m_GraphicsCommandListPool;
-        private TArray<FRHICommandList> m_ManagedCommandList;
+        private FRHICommandBufferPool m_CopyCmdBufferPool;
+        private FRHICommandBufferPool m_ComputeCmdBufferPool;
+        private FRHICommandBufferPool m_GraphicsCmdBufferPool;
+        private TArray<FRHICommandBuffer> m_ManagedCmdBuffers;
         private FRHIDescriptorHeapFactory m_DescriptorFactory;
 
         public FD3DGraphicsContext() : base()
@@ -48,7 +48,7 @@ namespace InfinityEngine.Graphics.RHI
             m_FencePool = new FRHIFencePool(this);
             m_ResourcePool = new FRHIResourcePool(this);
             m_ExecuteGPUInfos = new TArray<FExecuteInfo>(32);
-            m_ManagedCommandList = new TArray<FRHICommandList>(32);
+            m_ManagedCmdBuffers = new TArray<FRHICommandBuffer>(32);
 
             m_QueryContext = new FD3DQueryContext[2];
             m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.Timestamp, 64);
@@ -58,9 +58,9 @@ namespace InfinityEngine.Graphics.RHI
             m_ComputeContext = new FD3DCommandContext(m_Device, EContextType.Compute);
             m_GraphicsContext = new FD3DCommandContext(m_Device, EContextType.Graphics);
 
-            m_CopyCommandListPool = new FRHICommandListPool(this, EContextType.Copy);
-            m_ComputeCommandListPool = new FRHICommandListPool(this, EContextType.Compute);
-            m_GraphicsCommandListPool = new FRHICommandListPool(this, EContextType.Graphics);
+            m_CopyCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Copy);
+            m_ComputeCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Compute);
+            m_GraphicsCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Graphics);
 
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
             m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
@@ -85,48 +85,48 @@ namespace InfinityEngine.Graphics.RHI
             return (FD3DCommandContext)commandContext;
         }
         
-        public override FRHICommandList CreateCommandList(in EContextType contextType, string name = null)
+        public override FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null)
         {
-            return new FD3DCommandList(name, m_Device, contextType);
+            return new FD3DCommandBuffer(name, m_Device, contextType);
         }
 
-        public override FRHICommandList GetCommandList(in EContextType contextType, string name = null, bool bAutoRelease = false)
+        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = false)
         {
-            FRHICommandList cmdList = null;
+            FRHICommandBuffer cmdBuffer = null;
             switch (contextType)
             {
                 case EContextType.Copy:
-                    cmdList = m_CopyCommandListPool.GetTemporary(name);
+                    cmdBuffer = m_CopyCmdBufferPool.GetTemporary(name);
                     break;
 
                 case EContextType.Compute:
-                    cmdList = m_ComputeCommandListPool.GetTemporary(name);
+                    cmdBuffer = m_ComputeCmdBufferPool.GetTemporary(name);
                     break;
 
                 case EContextType.Graphics:
-                    cmdList = m_GraphicsCommandListPool.GetTemporary(name);
+                    cmdBuffer = m_GraphicsCmdBufferPool.GetTemporary(name);
                     break;
             }
 
-            if (bAutoRelease) { m_ManagedCommandList.Add(cmdList); }
+            if (bAutoRelease) { m_ManagedCmdBuffers.Add(cmdBuffer); }
 
-            return cmdList;
+            return cmdBuffer;
         }
 
-        public override void ReleaseCommandList(FRHICommandList cmdList)
+        public override void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer)
         {
-            switch (cmdList.contextType)
+            switch (cmdBuffer.contextType)
             {
                 case EContextType.Copy:
-                    m_CopyCommandListPool.ReleaseTemporary(cmdList);
+                    m_CopyCmdBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
 
                 case EContextType.Compute:
-                    m_ComputeCommandListPool.ReleaseTemporary(cmdList);
+                    m_ComputeCmdBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
 
                 case EContextType.Graphics:
-                    m_GraphicsCommandListPool.ReleaseTemporary(cmdList);
+                    m_GraphicsCmdBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
             }
         }
@@ -135,7 +135,7 @@ namespace InfinityEngine.Graphics.RHI
         {
             FExecuteInfo executeInfo;
             executeInfo.fence = fence;
-            executeInfo.cmdList = null;
+            executeInfo.cmdBuffer = null;
             executeInfo.executeType = EExecuteType.Signal;
             executeInfo.cmdContext = SelectContext(contextType);
             m_ExecuteGPUInfos.Add(executeInfo);
@@ -145,17 +145,17 @@ namespace InfinityEngine.Graphics.RHI
         {
             FExecuteInfo executeInfo;
             executeInfo.fence = fence;
-            executeInfo.cmdList = null;
+            executeInfo.cmdBuffer = null;
             executeInfo.executeType = EExecuteType.Wait;
             executeInfo.cmdContext = SelectContext(contextType);
             m_ExecuteGPUInfos.Add(executeInfo);
         }
 
-        public override void ExecuteCommandList(in EContextType contextType, FRHICommandList cmdList)
+        public override void ExecuteCommandBuffer(in EContextType contextType, FRHICommandBuffer cmdBuffer)
         {
             FExecuteInfo executeInfo;
             executeInfo.fence = null;
-            executeInfo.cmdList = cmdList;
+            executeInfo.cmdBuffer = cmdBuffer;
             executeInfo.executeType = EExecuteType.Execute;
             executeInfo.cmdContext = SelectContext(contextType);
             m_ExecuteGPUInfos.Add(executeInfo);
@@ -163,12 +163,12 @@ namespace InfinityEngine.Graphics.RHI
 
         public override void Flush()
         {
-            for (int i = 0; i < m_ManagedCommandList.length; ++i)
+            for (int i = 0; i < m_ManagedCmdBuffers.length; ++i)
             {
-                ReleaseCommandList(m_ManagedCommandList[i]);
-                m_ManagedCommandList[i] = null;
+                ReleaseCommandBuffer(m_ManagedCmdBuffers[i]);
+                m_ManagedCmdBuffers[i] = null;
             }
-            m_ManagedCommandList.Clear();
+            m_ManagedCmdBuffers.Clear();
 
             m_QueryContext[1].Submit(m_TransContext);
             m_QueryContext[0].Submit(m_GraphicsContext);
@@ -197,7 +197,7 @@ namespace InfinityEngine.Graphics.RHI
                         break;
 
                     case EExecuteType.Execute:
-                        cmdContext.ExecuteQueue(executeInfo.cmdList);
+                        cmdContext.ExecuteQueue(executeInfo.cmdBuffer);
                         break;
                 }
             }
@@ -438,9 +438,9 @@ namespace InfinityEngine.Graphics.RHI
             m_QueryContext[0]?.Dispose();
             m_QueryContext[1]?.Dispose();
             m_DescriptorFactory?.Dispose();
-            m_CopyCommandListPool?.Dispose();
-            m_ComputeCommandListPool?.Dispose();
-            m_GraphicsCommandListPool?.Dispose();
+            m_CopyCmdBufferPool?.Dispose();
+            m_ComputeCmdBufferPool?.Dispose();
+            m_GraphicsCmdBufferPool?.Dispose();
         }
     }
 }

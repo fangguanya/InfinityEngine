@@ -18,12 +18,12 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIGraphicsContext() { }
 
         internal virtual FRHICommandContext SelectContext(in EContextType contextType) { return null; }
-        public virtual FRHICommandList CreateCommandList(in EContextType contextType, string name = null) { return null; }
-        public virtual FRHICommandList GetCommandList(in EContextType contextType, string name = null, bool bAutoRelease = false) { return null; }
-        public virtual void ReleaseCommandList(FRHICommandList cmdList) { }
+        public virtual FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null) { return null; }
+        public virtual FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = false) { return null; }
+        public virtual void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer) { }
         public virtual void WriteFence(in EContextType contextType, FRHIFence fence) { }
         public virtual void WaitFence(in EContextType contextType, FRHIFence fence) { }
-        public virtual void ExecuteCommandList(in EContextType contextType, FRHICommandList cmdList) { }
+        public virtual void ExecuteCommandBuffer(in EContextType contextType, FRHICommandBuffer cmdBuffer) { }
         public virtual void Flush() { }
         public virtual void Submit() { }
         public virtual void CreateViewport() { }

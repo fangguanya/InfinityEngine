@@ -13,7 +13,7 @@ namespace InfinityEngine.Graphics.RHI
             m_Fence = new FRHIFence(device);
         }
 
-        protected virtual void RequestReadback(FRHIGraphicsContext graphicsContext, FRHICommandList cmdList, FRHIBuffer buffer) { }
+        protected virtual void RequestReadback(FRHIGraphicsContext graphicsContext, FRHICommandBuffer cmdBuffer, FRHIBuffer buffer) { }
 
         protected virtual void RequestReadback() { }
 

@@ -90,7 +90,7 @@ namespace InfinityEngine.Game.System
         protected override void Release()
         {
             ProcessGraphicsTasks();
-            renderPipeline?.Destroy(renderContext, graphicsContext);
+            renderPipeline?.Release(renderContext, graphicsContext);
 
             renderContext?.Dispose();
             renderPipeline?.Dispose();

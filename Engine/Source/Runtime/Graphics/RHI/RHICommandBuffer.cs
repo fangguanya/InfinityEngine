@@ -21,15 +21,6 @@ namespace InfinityEngine.Graphics.RHI
         Rate4x4 = 10
     }
 
-    public enum EShadingRateCombiner
-    {
-        Min = 0,
-        Max = 1,
-        Sum = 2,
-        Override = 3,
-        Passthrough = 4
-    }
-
     public enum EPrimitiveTopology
     {
         LineList = 0,
@@ -45,22 +36,31 @@ namespace InfinityEngine.Graphics.RHI
         Undefined = 10
     }
 
+    public enum EShadingRateCombiner
+    {
+        Min = 0,
+        Max = 1,
+        Sum = 2,
+        Override = 3,
+        Passthrough = 4
+    }
+
     internal struct FExecuteInfo
     {
         public FRHIFence fence;
         public EExecuteType executeType;
-        public FRHICommandList cmdList;
+        public FRHICommandBuffer cmdBuffer;
         public FRHICommandContext cmdContext;
     }
 
-    public class FRHICommandList : FDisposable
+    public class FRHICommandBuffer : FDisposable
     {
         public string name;
         internal bool IsClose;
         internal EContextType contextType;
 
-        internal FRHICommandList(FRHIDevice device, EContextType contextType) { }
-        internal FRHICommandList(string name, FRHIDevice device, EContextType contextType) { }
+        internal FRHICommandBuffer(FRHIDevice device, EContextType contextType) { }
+        internal FRHICommandBuffer(string name, FRHIDevice device, EContextType contextType) { }
 
         public virtual void Clear() { }
         internal virtual void Close() { }
@@ -101,52 +101,52 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void DrawMultiInstanceIndirect() { }
     }
 
-    internal class FRHICommandListPool : FDisposable
+    internal class FRHICommandBufferPool : FDisposable
     {
         EContextType m_ContextType;
         bool m_CollectionCheck = true;
-        Stack<FRHICommandList> m_StackPool;
+        Stack<FRHICommandBuffer> m_StackPool;
         FRHIGraphicsContext m_GraphicsContext;
 
         public int countAll { get; private set; }
         public int countActive { get { return countAll - countInactive; } }
         public int countInactive { get { return m_StackPool.Count; } }
 
-        internal FRHICommandListPool(FRHIGraphicsContext graphicsContext, EContextType contextType, bool collectionCheck = true)
+        internal FRHICommandBufferPool(FRHIGraphicsContext graphicsContext, EContextType contextType, bool collectionCheck = true)
         {
             m_ContextType = contextType;
             m_CollectionCheck = collectionCheck;
             m_GraphicsContext = graphicsContext;
-            m_StackPool = new Stack<FRHICommandList>(64);
+            m_StackPool = new Stack<FRHICommandBuffer>(64);
         }
 
-        public FRHICommandList GetTemporary(string name = null)
+        public FRHICommandBuffer GetTemporary(string name = null)
         {
-            FRHICommandList element;
+            FRHICommandBuffer cmdBuffer;
             if (m_StackPool.Count == 0)
             {
                 ++countAll;
-                element = m_GraphicsContext.CreateCommandList(m_ContextType, name);
+                cmdBuffer = m_GraphicsContext.CreateCommandBuffer(m_ContextType, name);
             }
             else
             {
-                element = m_StackPool.Pop();
+                cmdBuffer = m_StackPool.Pop();
             }
-            element.name = name;
-            return element;
+            cmdBuffer.name = name;
+            return cmdBuffer;
         }
 
-        public void ReleaseTemporary(FRHICommandList element)
+        public void ReleaseTemporary(FRHICommandBuffer cmdBuffer)
         {
-            m_StackPool.Push(element);
+            m_StackPool.Push(cmdBuffer);
         }
 
         protected override void Release()
         {
             m_GraphicsContext = null;
-            foreach (FRHICommandList cmdList in m_StackPool)
+            foreach (FRHICommandBuffer cmdBuffer in m_StackPool)
             {
-                cmdList.Dispose();
+                cmdBuffer.Dispose();
             }
         }
     }

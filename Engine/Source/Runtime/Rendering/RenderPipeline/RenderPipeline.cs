@@ -20,7 +20,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         public abstract void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 
-        public abstract void Destroy(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
+        public abstract void Release(FRenderContext renderContext, FRHIGraphicsContext graphicsContext);
 
         protected override void Release()
         {

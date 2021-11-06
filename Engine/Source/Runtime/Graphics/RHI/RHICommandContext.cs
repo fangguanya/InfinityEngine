@@ -11,7 +11,7 @@ namespace InfinityEngine.Graphics.RHI
 
         public virtual void SignalQueue(FRHIFence fence) { }
         public virtual void WaitQueue(FRHIFence fence) { }
-        public virtual void ExecuteQueue(FRHICommandList cmdList) { }
+        public virtual void ExecuteQueue(FRHICommandBuffer cmdBuffer) { }
         public virtual void Flush() { }
     }
 }

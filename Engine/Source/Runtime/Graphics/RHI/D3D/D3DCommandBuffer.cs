@@ -2,12 +2,12 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FD3DCommandList : FRHICommandList
+    public class FD3DCommandBuffer : FRHICommandBuffer
     {
         internal ID3D12GraphicsCommandList5 nativeCmdList;
         internal ID3D12CommandAllocator nativeCmdAllocator;
 
-        internal FD3DCommandList(FRHIDevice device, EContextType contextType) : base(device, contextType)
+        internal FD3DCommandBuffer(FRHIDevice device, EContextType contextType) : base(device, contextType)
         {
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
@@ -19,7 +19,7 @@ namespace InfinityEngine.Graphics.RHI
             this.nativeCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
         }
 
-        internal FD3DCommandList(string name, FRHIDevice device, EContextType contextType) : base(name, device, contextType)
+        internal FD3DCommandBuffer(string name, FRHIDevice device, EContextType contextType) : base(name, device, contextType)
         {
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
@@ -230,6 +230,6 @@ namespace InfinityEngine.Graphics.RHI
             nativeCmdAllocator?.Dispose();
         }
 
-        public static implicit operator ID3D12GraphicsCommandList5(FD3DCommandList cmdList) { return cmdList.nativeCmdList; }
+        public static implicit operator ID3D12GraphicsCommandList5(FD3DCommandBuffer cmdBuffer) { return cmdBuffer.nativeCmdList; }
     }
 }

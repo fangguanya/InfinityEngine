@@ -8,8 +8,8 @@ namespace InfinityEngine.Graphics.RDG
 {
     public struct FRDGContext
     {
-        public FRHICommandList cmdList;
         public FRDGObjectPool objectPool;
+        public FRHICommandBuffer cmdBuffer;
         public FRHIGraphicsContext graphicsContext;
     }
 
@@ -573,7 +573,7 @@ namespace InfinityEngine.Graphics.RDG
         void ExecuteRenderPass(FRHIGraphicsContext graphicsContext, FRDGResourceFactory resourceFactory)
         {
             FRDGContext graphContext;
-            graphContext.cmdList = null;
+            graphContext.cmdBuffer = null;
             graphContext.objectPool = m_ObjectPool;
             graphContext.graphicsContext = graphicsContext;
 
@@ -677,9 +677,9 @@ namespace InfinityEngine.Graphics.RDG
 
             if (pass.enableAsyncCompute)
             {
-                graphContext.cmdList = graphContext.graphicsContext.GetCommandList(EContextType.Compute);
+                graphContext.cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Compute);
             } else {
-                graphContext.cmdList = graphContext.graphicsContext.GetCommandList(EContextType.Graphics);
+                graphContext.cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Graphics);
             }
 
             // Synchronize with graphics or compute pipe if needed.
@@ -701,9 +701,9 @@ namespace InfinityEngine.Graphics.RDG
             // The command list has been filled. We can kick the async task.
             if (pass.enableAsyncCompute)
             {
-                graphContext.graphicsContext.ExecuteCommandList(EContextType.Compute, graphContext.cmdList);
+                graphContext.graphicsContext.ExecuteCommandBuffer(EContextType.Compute, graphContext.cmdBuffer);
             } else {
-                graphContext.graphicsContext.ExecuteCommandList(EContextType.Graphics, graphContext.cmdList);
+                graphContext.graphicsContext.ExecuteCommandBuffer(EContextType.Graphics, graphContext.cmdBuffer);
             }
             
             m_ObjectPool.ReleaseAllTempAlloc();

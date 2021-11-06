@@ -41,12 +41,12 @@ namespace InfinityEngine.Graphics.RHI
             fence.WaitOnGPU(this);
         }
 
-        public override void ExecuteQueue(FRHICommandList cmdList)
+        public override void ExecuteQueue(FRHICommandBuffer cmdBuffer)
         {
-            FD3DCommandList d3dCmdList = (FD3DCommandList)cmdList;
+            FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
 
-            d3dCmdList.Close();
-            m_NativeCmdQueue.ExecuteCommandList(d3dCmdList);
+            d3dCmdBuffer.Close();
+            m_NativeCmdQueue.ExecuteCommandList(d3dCmdBuffer);
         }
 
         public override void Flush()

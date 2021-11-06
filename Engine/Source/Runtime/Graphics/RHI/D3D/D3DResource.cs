@@ -112,7 +112,7 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public override void SetData<T>(FRHICommandList cmdList, params T[] data) where T : struct
+        public override void SetData<T>(FRHICommandBuffer cmdBuffer, params T[] data) where T : struct
         {
             if ((description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
@@ -120,18 +120,18 @@ namespace InfinityEngine.Graphics.RHI
                 data.AsSpan().CopyTo(uploadResourcePtr);
                 uploadResource.Unmap(0);
 
-                FD3DCommandList d3dCmdList = (FD3DCommandList)cmdList;
+                FD3DCommandBuffer d3dCmdList = (FD3DCommandBuffer)cmdBuffer;
                 d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
                 d3dCmdList.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 
-        public override void RequestUpload<T>(FRHICommandList cmdList) where T : struct
+        public override void RequestUpload<T>(FRHICommandBuffer cmdBuffer) where T : struct
         {
             if ((description.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                FD3DCommandList d3dCmdList = (FD3DCommandList)cmdList;
+                FD3DCommandBuffer d3dCmdList = (FD3DCommandBuffer)cmdBuffer;
                 d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
                 d3dCmdList.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
@@ -149,11 +149,11 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public override void GetData<T>(FRHICommandList cmdList, T[] data) where T : struct
+        public override void GetData<T>(FRHICommandBuffer cmdBuffer, T[] data) where T : struct
         {
             if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                FD3DCommandList d3dCmdList = (FD3DCommandList)cmdList;
+                FD3DCommandBuffer d3dCmdList = (FD3DCommandBuffer)cmdBuffer;
                 d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
                 d3dCmdList.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
@@ -165,14 +165,14 @@ namespace InfinityEngine.Graphics.RHI
             }
         }
 
-        public override void RequestReadback<T>(FRHICommandList cmdList) where T : struct
+        public override void RequestReadback<T>(FRHICommandBuffer cmdBuffer) where T : struct
         {
             if ((description.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                FD3DCommandList d3dCmdList = (FD3DCommandList)cmdList;
+                FD3DCommandBuffer d3dCmdList = (FD3DCommandBuffer)cmdBuffer;
                 d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
                 d3dCmdList.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, description.count * (ulong)Unsafe.SizeOf<T>());
-                //cmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                //d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
             }
         }
 

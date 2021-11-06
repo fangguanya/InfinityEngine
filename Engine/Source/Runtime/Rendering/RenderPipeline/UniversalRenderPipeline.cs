@@ -20,7 +20,10 @@ namespace InfinityEngine.Rendering.RenderPipeline
         FRHIBufferRef bufferRef;
         FTimeProfiler timeProfiler;*/
 
-        public FUniversalRenderPipeline(string pipelineName) : base(pipelineName) { }
+        public FUniversalRenderPipeline(string pipelineName) : base(pipelineName) 
+        { 
+
+        }
 
         public override void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
@@ -29,19 +32,18 @@ namespace InfinityEngine.Rendering.RenderPipeline
             /*dataReady = true;
             readData = new int[10000000];
             timeProfiler = new FTimeProfiler();
-
             FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
 
             fence = graphicsContext.GetFence();
             query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
             bufferRef = graphicsContext.GetBuffer(description);
-            FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList", true);
-            cmdList.Clear();
+            FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1", true);
+            cmdBuffer.Clear();
 
             int[] data = new int[10000000];
             for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
-            bufferRef.buffer.SetData(cmdList, data);
-            graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
+            bufferRef.buffer.SetData(cmdBuffer, data);
+            graphicsContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
             graphicsContext.Submit();*/
         }
 
@@ -51,18 +53,17 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
             if (dataReady)
             {
-                FRHICommandList cmdList = graphicsContext.GetCommandList(EContextType.Copy, "CommandList2", true);
-                cmdList.Clear();
-                cmdList.BeginQuery(query);
-                bufferRef.buffer.RequestReadback<int>(cmdList);
-                cmdList.EndQuery(query);
-                graphicsContext.ExecuteCommandList(EContextType.Copy, cmdList);
+                FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2", true);
+                cmdBuffer.Clear();
+                cmdBuffer.BeginQuery(query);
+                bufferRef.buffer.RequestReadback<int>(cmdBuffer);
+                cmdBuffer.EndQuery(query);
+                graphicsContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
                 graphicsContext.WriteFence(EContextType.Copy, fence);
                 //graphicsContext.WaitFence(EContextType.Graphics, fence);
             }
 
-            dataReady = fence.Completed();
-            if (dataReady)
+            if (dataReady = fence.IsCompleted)
             {
                 bufferRef.buffer.GetData(readData);
                 gpuTime = query.GetResult(graphicsContext.copyFrequency);
@@ -71,22 +72,17 @@ namespace InfinityEngine.Rendering.RenderPipeline
             timeProfiler.Stop();
             graphicsContext.Submit();
 
-            Console.WriteLine("||");
-            Console.WriteLine("CPUTime : " + cpuTime + "ms");
-            Console.WriteLine("GPUTime : " + gpuTime + "ms");*/
+            //Console.WriteLine("||");
+            Console.WriteLine("Draw : " + cpuTime + "ms");
+            Console.WriteLine("GPU  : " + gpuTime + "ms");*/
         }
 
-        public override void Destroy(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
+        public override void Release(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
         {
             /*graphicsContext.ReleaseFence(fence);
             graphicsContext.ReleaseQuery(query);
             graphicsContext.ReleaseBuffer(bufferRef);*/
             Console.WriteLine("Release RenderPipeline");
-        }
-
-        protected override void Release()
-        {
-            base.Release();
         }
     }
 }

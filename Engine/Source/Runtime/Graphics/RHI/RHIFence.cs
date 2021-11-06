@@ -37,31 +37,31 @@ namespace InfinityEngine.Graphics.RHI
 
         public FRHIFence GetTemporary(string name)
         {
-            FRHIFence element;
+            FRHIFence gpuFence;
             if (m_Stack.Count == 0)
             {
-                element = m_GraphicsContext.CreateFence();
+                gpuFence = m_GraphicsContext.CreateFence();
                 countAll++;
             }
             else
             {
-                element = m_Stack.Pop();
+                gpuFence = m_Stack.Pop();
             }
-            element.name = name;
-            return element;
+            gpuFence.name = name;
+            return gpuFence;
         }
 
-        public void ReleaseTemporary(FRHIFence element)
+        public void ReleaseTemporary(FRHIFence gpuFence)
         {
-            m_Stack.Push(element);
+            m_Stack.Push(gpuFence);
         }
 
         protected override void Release()
         {
             m_GraphicsContext = null;
-            foreach (FRHIFence cmdList in m_Stack)
+            foreach (FRHIFence gpuFence in m_Stack)
             {
-                cmdList.Dispose();
+                gpuFence.Dispose();
             }
         }
     }
