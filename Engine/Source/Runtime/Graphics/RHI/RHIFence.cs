@@ -8,57 +8,35 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHIFence : FDisposable
     {
         public string name;
-        public bool IsCompleted
-        {
-            get { return m_NativeFence.CompletedValue >= m_FenceValue ? true : false; }
-        }
-        private ulong m_FenceValue;
-        private ID3D12Fence m_NativeFence;
+        public virtual bool IsCompleted => false;
 
-        internal FRHIFence(FRHIDevice device, string name = null) : base()
+        internal FRHIFence(FRHIDevice device, string name = null)
         {
             this.name = name;
-            this.m_NativeFence = device.nativeDevice.CreateFence<ID3D12Fence>(0, FenceFlags.None);
         }
 
-        internal void Signal(FRHICommandContext cmdContext)
-        {
-            ++m_FenceValue;
-            cmdContext.nativeCmdQueue.Signal(m_NativeFence, m_FenceValue);
-        }
+        internal virtual void Signal(FRHICommandContext cmdContext) { }
 
-        internal void WaitOnCPU(AutoResetEvent fenceEvent)
-        {
-            if (!IsCompleted)
-            {
-                m_NativeFence.SetEventOnCompletion(m_FenceValue, fenceEvent);
-                fenceEvent.WaitOne();
-            }
-        }
+        internal virtual void WaitOnCPU(AutoResetEvent fenceEvent) { }
 
-        internal void WaitOnGPU(FRHICommandContext cmdContext)
-        {
-            cmdContext.nativeCmdQueue.Wait(m_NativeFence, m_FenceValue);
-        }
-
-        protected override void Release()
-        {
-            m_NativeFence?.Dispose();
-        }
+        internal virtual void WaitOnGPU(FRHICommandContext cmdContext) { }
     }
 
     internal class FRHIFencePool : FDisposable
     {
-        private FRHIDevice m_Device;
-        readonly bool m_CollectionCheck = true;
-        readonly Stack<FRHIFence> m_Stack = new Stack<FRHIFence>();
+        bool m_CollectionCheck;
+        Stack<FRHIFence> m_Stack;
+        FRHIGraphicsContext m_GraphicsContext;
+
         public int countAll { get; private set; }
         public int countActive { get { return countAll - countInactive; } }
         public int countInactive { get { return m_Stack.Count; } }
 
-        internal FRHIFencePool(FRHIDevice device, bool collectionCheck = true)
+        public FRHIFencePool(FRHIGraphicsContext graphicsContext, bool collectionCheck = true)
         {
-            m_Device = device;
+            m_CollectionCheck = true;
+            m_Stack = new Stack<FRHIFence>();
+            m_GraphicsContext = graphicsContext;
             m_CollectionCheck = collectionCheck;
         }
 
@@ -67,7 +45,7 @@ namespace InfinityEngine.Graphics.RHI
             FRHIFence element;
             if (m_Stack.Count == 0)
             {
-                element = new FRHIFence(m_Device);
+                element = m_GraphicsContext.CreateFence();
                 countAll++;
             }
             else
@@ -80,19 +58,12 @@ namespace InfinityEngine.Graphics.RHI
 
         public void ReleaseTemporary(FRHIFence element)
         {
-#if WITH_EDITOR // keep heavy checks in editor
-            if (m_CollectionCheck && m_Stack.Count > 0)
-            {
-                if (m_Stack.Contains(element))
-                    Console.WriteLine("Internal error. Trying to destroy object that is already released to pool.");
-            }
-#endif
             m_Stack.Push(element);
         }
 
         protected override void Release()
         {
-            m_Device = null;
+            m_GraphicsContext = null;
             foreach (FRHIFence cmdList in m_Stack)
             {
                 cmdList.Dispose();

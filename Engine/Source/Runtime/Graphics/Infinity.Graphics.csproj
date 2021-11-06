@@ -46,7 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="RHI\D3D12\" />
     <Folder Include="RHI\Metal\" />
     <Folder Include="RHI\Vulkan\" />
   </ItemGroup>

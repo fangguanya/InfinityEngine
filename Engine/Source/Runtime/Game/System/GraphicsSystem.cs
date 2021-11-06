@@ -40,7 +40,7 @@ namespace InfinityEngine.Game.System
             this.renderThread.Name = "RenderThread";
 
             this.renderContext = new FRenderContext();
-            this.graphicsContext = new FRHIGraphicsContext();
+            this.graphicsContext = new FD3DGraphicsContext();
             this.renderPipeline = new FUniversalRenderPipeline("UniversalRP");
         }
 

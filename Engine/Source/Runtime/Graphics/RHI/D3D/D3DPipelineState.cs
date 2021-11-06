@@ -2,8 +2,5 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal class FRHIDevice : FDisposable
-    {
 
-    }
 }

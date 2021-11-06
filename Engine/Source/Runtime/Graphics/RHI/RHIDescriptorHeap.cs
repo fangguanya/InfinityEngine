@@ -9,24 +9,24 @@ namespace InfinityEngine.Graphics.RHI
 {
     internal class FRHIDescriptorHeapFactory : FDisposable
     {
-        protected int descriptorSize;
+        /*protected int descriptorSize;
         protected ID3D12DescriptorHeap nativeCPUDescriptorHeap;
-        protected ID3D12DescriptorHeap nativeGPUDescriptorHeap;
+        protected ID3D12DescriptorHeap nativeGPUDescriptorHeap;*/
 
         internal FRHIDescriptorHeapFactory(FRHIDevice device, in DescriptorHeapType descriptorType, in int descriptorCount) : base()
         {
-            this.descriptorSize = device.nativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
+            /*this.descriptorSize = device.nativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
 
             DescriptorHeapDescription descriptionCPU = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.ShaderVisible);
             this.nativeCPUDescriptorHeap = device.nativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionCPU);
 
             DescriptorHeapDescription descriptionGPU = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.None);
-            this.nativeGPUDescriptorHeap = device.nativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionGPU);
+            this.nativeGPUDescriptorHeap = device.nativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionGPU);*/
         }
 
         protected static DescriptorHeapType GetDescriptorType(in EDescriptorType DescriptorType)
         {
-            DescriptorHeapType OutType = DescriptorHeapType.Sampler;
+            /*DescriptorHeapType OutType = DescriptorHeapType.Sampler;
 
             switch (DescriptorType)
             {
@@ -43,7 +43,8 @@ namespace InfinityEngine.Graphics.RHI
                     break;
             }
 
-            return OutType;
+            return OutType;*/
+            return default;
         }
 
         internal int Allocator(in int count)
@@ -53,23 +54,26 @@ namespace InfinityEngine.Graphics.RHI
 
         internal int GetDescriptorSize()
         {
-            return descriptorSize;
+            return 1;
+            //return descriptorSize;
         }
 
         internal CpuDescriptorHandle GetCPUHandleStart()
         {
-            return nativeCPUDescriptorHeap.GetCPUDescriptorHandleForHeapStart();
+            return default;
+            //return nativeCPUDescriptorHeap.GetCPUDescriptorHandleForHeapStart();
         }
 
         internal GpuDescriptorHandle GetGPUHandleStart()
         {
-            return nativeGPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
+            return default;
+            //return nativeGPUDescriptorHeap.GetGPUDescriptorHandleForHeapStart();
         }
 
         protected override void Release()
         {
-            nativeCPUDescriptorHeap?.Dispose();
-            nativeGPUDescriptorHeap?.Dispose();
+            //nativeCPUDescriptorHeap?.Dispose();
+            //nativeGPUDescriptorHeap?.Dispose();
         }
     }
 }

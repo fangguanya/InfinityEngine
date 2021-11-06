@@ -105,32 +105,33 @@ namespace InfinityEngine.Graphics.RHI
 
     public sealed class FRHIResourceSet : FDisposable
     {
-        internal int length;
+        /*internal int length;
         internal int descriptorIndex;
         internal ID3D12Device6 nativeDevice;
-        internal CpuDescriptorHandle descriptorHandle;
+        internal CpuDescriptorHandle descriptorHandle;*/
 
         internal FRHIResourceSet(FRHIDevice device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length) : base()
         {
-            this.length = length;
+            /*this.length = length;
             this.nativeDevice = device.nativeDevice;
             this.descriptorIndex = descriptorHeapFactory.Allocator(length);
-            this.descriptorHandle = descriptorHeapFactory.GetCPUHandleStart();
+            this.descriptorHandle = descriptorHeapFactory.GetCPUHandleStart();*/
         }
 
         private CpuDescriptorHandle GetDescriptorHandle(in int offset)
         {
-            return descriptorHandle + nativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
+            return default;
+            //return descriptorHandle + nativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView) * (descriptorIndex + offset);
         }
 
         public void SetShaderResourceView(in int slot, in FRHIShaderResourceView shaderResourceView)
         {
-            nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), shaderResourceView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+            //nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), shaderResourceView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
         public void SetUnorderedAccessView(in int slot, in FRHIUnorderedAccessView unorderedAccessView)
         {
-            nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), unorderedAccessView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
+            //nativeDevice.CopyDescriptorsSimple(1, GetDescriptorHandle(slot), unorderedAccessView.descriptorHandle, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView);
         }
 
         protected override void Release()
