@@ -2,7 +2,7 @@
 using Vortice.Direct3D;
 using Vortice.Direct3D12;
 
-namespace InfinityEngine.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI.D3D
 {
     internal class FD3DDevice : FRHIDevice
     {

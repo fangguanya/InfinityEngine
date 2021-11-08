@@ -1,6 +1,6 @@
 ﻿using InfinityEngine.Core.Object;
 
-namespace InfinityEngine.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI.D3D
 {
     public class FD3DMemoryReadback : FDisposable
     {

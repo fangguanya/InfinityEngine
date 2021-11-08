@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
-using System.Collections.Concurrent;
 using InfinityEngine.Core.Container;
 using InfinityEngine.Core.Thread.Sync;
+using InfinityEngine.Graphics.RHI.D3D;
 using InfinityEngine.Rendering.RenderLoop;
 using InfinityEngine.Rendering.RenderPipeline;
 

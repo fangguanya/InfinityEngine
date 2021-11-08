@@ -5,7 +5,7 @@ using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Memory;
 using System.Runtime.CompilerServices;
 
-namespace InfinityEngine.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI.D3D
 {
 
 }

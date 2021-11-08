@@ -4,7 +4,7 @@ using Vortice.Direct3D12;
 using InfinityEngine.Core.Memory;
 using System.Runtime.CompilerServices;
 
-namespace InfinityEngine.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI.D3D
 {
     public class FD3DBuffer : FRHIBuffer
     {

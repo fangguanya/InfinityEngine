@@ -37,8 +37,8 @@ namespace InfinityEngine.Graphics.RHI
 
 		public virtual void Submit(FRHICommandContext commandContext) { }
 		public virtual void GetData() { }
-		public virtual int AllocateQueryID() { return -1; }
-		public virtual void ReleaseQueryID(in int index) { }
+		internal virtual int AllocateUnuseIndex() { return -1; }
+		internal virtual void ReleaseUnuseIndex(in int index) { }
 		public virtual FRHIQuery GetTemporary(string name = null) { return null; }
 		public virtual void ReleaseTemporary(FRHIQuery query) { }
 	}

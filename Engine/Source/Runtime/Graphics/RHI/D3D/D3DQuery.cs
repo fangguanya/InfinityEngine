@@ -6,7 +6,7 @@ using InfinityEngine.Core.Memory;
 using InfinityEngine.Core.Container;
 using InfinityEngine.Core.Mathmatics;
 
-namespace InfinityEngine.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI.D3D
 {
 	internal static class FD3DQueryUtility
 	{
@@ -39,8 +39,8 @@ namespace InfinityEngine.Graphics.RHI
 		internal FD3DQuery(FRHIQueryContext context) : base(context)
 		{
 			this.context = (FD3DQueryContext)context;
-			this.indexHead = context.AllocateQueryID();
-			this.indexLast = context.IsTimeQuery ? context.AllocateQueryID() : -1;
+			this.indexHead = context.AllocateUnuseIndex();
+			this.indexLast = context.IsTimeQuery ? context.AllocateUnuseIndex() : -1;
 		}
 
 		public override int GetResult()
@@ -58,11 +58,11 @@ namespace InfinityEngine.Graphics.RHI
 
 		protected override void Release()
         {
-			context.ReleaseQueryID(indexHead);
+			context.ReleaseUnuseIndex(indexHead);
 
 			if(context.IsTimeQuery)
             {
-				context.ReleaseQueryID(indexLast);
+				context.ReleaseUnuseIndex(indexLast);
 			}
 		}
     }
@@ -154,7 +154,7 @@ namespace InfinityEngine.Graphics.RHI
 			}
 		}
 
-		public override int AllocateQueryID()
+		internal override int AllocateUnuseIndex()
         {
 			if (m_QueryMap.length != 0)
 			{
@@ -165,7 +165,7 @@ namespace InfinityEngine.Graphics.RHI
 			return -1;
 		}
 
-		public override void ReleaseQueryID(in int index)
+		internal override void ReleaseUnuseIndex(in int index)
 		{
 			m_QueryMap.Add(index);
 		}

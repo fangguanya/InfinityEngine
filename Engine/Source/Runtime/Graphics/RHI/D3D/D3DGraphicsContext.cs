@@ -2,7 +2,7 @@
 using Vortice.Direct3D12;
 using InfinityEngine.Core.Container;
 
-namespace InfinityEngine.Graphics.RHI
+namespace InfinityEngine.Graphics.RHI.D3D
 {
     public class FD3DGraphicsContext : FRHIGraphicsContext
     {
