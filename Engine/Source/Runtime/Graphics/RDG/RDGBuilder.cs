@@ -701,9 +701,9 @@ namespace InfinityEngine.Graphics.RDG
             // The command list has been filled. We can kick the async task.
             if (pass.enableAsyncCompute)
             {
-                graphContext.graphicsContext.ExecuteCommandBuffer(EContextType.Compute, graphContext.cmdBuffer);
+                graphContext.graphicsContext.ExecuteCommandBuffer(graphContext.cmdBuffer);
             } else {
-                graphContext.graphicsContext.ExecuteCommandBuffer(EContextType.Graphics, graphContext.cmdBuffer);
+                graphContext.graphicsContext.ExecuteCommandBuffer(graphContext.cmdBuffer);
             }
             
             m_ObjectPool.ReleaseAllTempAlloc();

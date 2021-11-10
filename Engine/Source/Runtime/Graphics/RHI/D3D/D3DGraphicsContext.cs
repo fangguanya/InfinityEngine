@@ -151,13 +151,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ExecuteGPUInfos.Add(executeInfo);
         }
 
-        public override void ExecuteCommandBuffer(in EContextType contextType, FRHICommandBuffer cmdBuffer)
+        public override void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer)
         {
             FExecuteInfo executeInfo;
             executeInfo.fence = null;
             executeInfo.cmdBuffer = cmdBuffer;
             executeInfo.executeType = EExecuteType.Execute;
-            executeInfo.cmdContext = SelectContext(contextType);
+            executeInfo.cmdContext = SelectContext(cmdBuffer.contextType);
             m_ExecuteGPUInfos.Add(executeInfo);
         }
 

@@ -48,7 +48,7 @@ namespace ExampleProject
                 int[] data = new int[10000000];
                 for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
                 bufferRef.buffer.SetData(cmdBuffer, data);
-                graphicsContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
+                graphicsContext.ExecuteCommandBuffer(cmdBuffer);
                 graphicsContext.Submit();
             });
 
@@ -70,7 +70,7 @@ namespace ExampleProject
                     cmdBuffer.BeginQuery(query);
                     bufferRef.buffer.RequestReadback<int>(cmdBuffer);
                     cmdBuffer.EndQuery(query);
-                    graphicsContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
+                    graphicsContext.ExecuteCommandBuffer(cmdBuffer);
                     graphicsContext.WriteFence(EContextType.Copy, fence);
                     //graphicsContext.WaitFence(EContextType.Graphics, fence);
                 }

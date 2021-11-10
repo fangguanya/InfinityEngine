@@ -23,7 +23,7 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer) { }
         public virtual void WriteFence(in EContextType contextType, FRHIFence fence) { }
         public virtual void WaitFence(in EContextType contextType, FRHIFence fence) { }
-        public virtual void ExecuteCommandBuffer(in EContextType contextType, FRHICommandBuffer cmdBuffer) { }
+        public virtual void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer) { }
         public virtual void Flush() { }
         public virtual void Submit() { }
         public virtual void CreateViewport() { }
