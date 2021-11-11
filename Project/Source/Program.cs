@@ -290,32 +290,29 @@ namespace ExampleProject
             string hlslCode2 = new string(
             @"cbuffer ParamsBuffer : register(b0)
             {
-	            uint Samples;
-	            bool IsPathTracing;
+	            float2 Tiling;
             }
 
             Texture2D<float4> _DiffuseTexture : register(t0);
             SamplerState Sampler_DiffuseTexture : register(s0);
 
-            struct PS_IN
+            struct Varyings
             {
+	            float2 uv : TEXCOORD;
 	            float4 pos : SV_POSITION;
-	            float2 tex : TEXCOORD;
             };
 
-            PS_IN VS(uint id: SV_VertexID)
+            Varyings VS(uint id: SV_VertexID)
             {
-	            PS_IN output = (PS_IN)0;
-
-	            output.tex = float2((id << 1) & 2, id & 2);
-	            output.pos = float4(output.tex * float2(2, -2) + float2(-1, 1), 0, 1);
-
+	            Varyings output = (Varyings)0;
+	            output.uv = float2((id << 1) & 2, id & 2);
+	            output.pos = float4(output.uv * float2(2, -2) + float2(-1, 1), 0, 1);
 	            return output;
             }
 
-            float4 PS(PS_IN input) : SV_Target
+            float4 PS(Varyings input) : SV_Target
             {
-	            return _DiffuseTexture.Sample(Sampler_DiffuseTexture, input.tex);
+	            return _DiffuseTexture.Sample(Sampler_DiffuseTexture, input.uv * Tiling);
             }");
 
             Vortice.Vulkan.VkShaderModuleCreateInfo programInfo;
