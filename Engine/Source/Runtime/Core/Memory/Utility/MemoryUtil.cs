@@ -60,5 +60,11 @@ namespace InfinityEngine.Core.Memory
         {
             TerraFX.Interop.Mimalloc.mi_free_aligned(memory, alignment);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int SizeOf<T>()
+        {
+            return Unsafe.SizeOf<T>();
+        }
     }
 }
