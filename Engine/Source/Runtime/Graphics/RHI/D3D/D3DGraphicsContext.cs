@@ -287,19 +287,19 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        public override FRHIComputePipelineState CreateComputePipelineState()
+        public override FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescription description)
         {
             return new FRHIComputePipelineState();
         }
 
-        public override FRHIGraphicsPipelineState CreateGraphicsPipelineState()
-        {
-            return new FRHIGraphicsPipelineState();
-        }
-
-        public override FRHIRayTracePipelineState CreateRayTracePipelineState()
+        public override FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescription description)
         {
             return new FRHIRayTracePipelineState();
+        }
+
+        public override FRHIGraphicsPipelineState CreateGraphicsPipelineState(in FRHIGraphicsPipelineDescription description)
+        {
+            return new FRHIGraphicsPipelineState();
         }
 
         public override void CreateSamplerState()

@@ -75,10 +75,10 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void CopyTextureToTexture(FRHITexture srcTexture, FRHITexture dscTexture) { }
         public virtual void BeginQuery(FRHIQuery query) { }
         public virtual void EndQuery(FRHIQuery query) { }
-        public virtual void SetComputePipelineState(FRHIComputePipelineState computeState) { }
+        public virtual void SetComputePipelineState(FRHIComputePipelineState computePipelineState) { }
         public virtual void DispatchCompute(FRHIComputeShader computeShader, uint sizeX, uint sizeY, uint sizeZ) { }
         public virtual void DispatchComputeIndirect(FRHIComputeShader computeShader, FRHIBuffer argsBuffer, uint argsOffset) { }
-        public virtual void SetRayTracePipelineState(FRHIRayTraceShader rayTraceShader, FRHIRayTracePipelineState rayTraceState) { }
+        public virtual void SetRayTracePipelineState(FRHIRayTraceShader rayTraceShader, FRHIRayTracePipelineState rayTracePipelineState) { }
         public virtual void CopyAccelerationStructure() { }
         public virtual void BuildAccelerationStructure() { }
         public virtual void DispatchRay(FRHIRayTraceShader rayTraceShader, uint sizeX, uint sizeY, uint sizeZ) { }
@@ -94,7 +94,7 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void SetDepthBounds(in float min, in float max) { }
         public virtual void SetShadingRate(FRHITexture texture) { }
         public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo) { }
-        public virtual void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisState) { }
+        public virtual void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisPipelineState) { }
         public virtual void DrawInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, EPrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance) { }
         public virtual void DrawInstanceIndirect(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, EPrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset) { }
         public virtual void DrawMultiInstance(FRHIBuffer cmdBuffer, EPrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset) { }

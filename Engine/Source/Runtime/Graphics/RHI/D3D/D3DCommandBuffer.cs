@@ -103,7 +103,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList.EndQuery(d3dQuery.context.queryHeap, d3dQuery.context.queryType.GetNativeQueryType(), query.indexLast);
         }
 
-        public override void SetComputePipelineState(FRHIComputePipelineState computeState)
+        public override void SetComputePipelineState(FRHIComputePipelineState computePipelineState)
         {
 
         }
@@ -118,7 +118,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetRayTracePipelineState(FRHIRayTraceShader rayTraceShader, FRHIRayTracePipelineState rayTraceState)
+        public override void SetRayTracePipelineState(FRHIRayTraceShader rayTraceShader, FRHIRayTracePipelineState rayTracePipelineState)
         {
 
         }
@@ -199,7 +199,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisState)
+        public override void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisPipelineState)
         {
 
         }

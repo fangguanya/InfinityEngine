@@ -2,17 +2,32 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public struct FRHIComputePipelineState
+    public struct FRHIComputePipelineDescription
     {
 
     }
 
-    public struct FRHIRayTracePipelineState
+    public struct FRHIRayTracePipelineDescription
     {
 
     }
 
-    public struct FRHIGraphicsPipelineState
+    public struct FRHIGraphicsPipelineDescription
+    {
+
+    }
+
+    public class FRHIComputePipelineState
+    {
+
+    }
+
+    public class FRHIRayTracePipelineState
+    {
+
+    }
+
+    public class FRHIGraphicsPipelineState
     {
 
     }
