@@ -45,6 +45,31 @@ namespace InfinityEngine.Game.ActorFramework
             this.m_CoroutineDispatcher = new FCoroutineDispatcher();
         }
 
+        public override string ToString()
+        {
+            return name;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object target)
+        {
+            return Equals((AActor)target);
+        }
+
+        public bool Equals(AActor target)
+        {
+            return name.Equals(target.name) && parent.Equals(target.parent) && childs.Equals(target.childs) && components.Equals(target.components) && transform.Equals(target.transform);
+        }
+
+        public int CompareTo(AActor target)
+        {
+            return 0;
+        }
+        
         public virtual void OnEnable()
         {
             for (int i = 0; i < components.length; ++i)
@@ -90,16 +115,6 @@ namespace InfinityEngine.Game.ActorFramework
             {
                 components[i].OnDisable();
             }
-        }
-
-        public bool Equals(AActor target)
-        {
-            return name.Equals(target.name) && parent.Equals(target.parent) && childs.Equals(target.childs) && components.Equals(target.components) && transform.Equals(target.transform);
-        }
-
-        public int CompareTo(AActor target)
-        {
-            return 0;
         }
 
         public void SetParent(AActor parent)
