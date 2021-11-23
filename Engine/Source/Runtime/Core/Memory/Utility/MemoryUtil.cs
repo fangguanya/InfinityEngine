@@ -50,15 +50,21 @@ namespace InfinityEngine.Core.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void* Malloc(in uint size, in uint count, in uint alignment = 64)
+        public static unsafe void* Malloc(in int size, in int count, in int alignment = 64)
         {
-            return TerraFX.Interop.Mimalloc.mi_mallocn_aligned(count, size, alignment);
+            return TerraFX.Interop.Mimalloc.mi_mallocn_aligned((uint)count, (uint)size, (uint)alignment);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void Free(in void* memory, in uint alignment = 64)
+        public static unsafe void* Realloc(in void* memory, in int size, in int count, in int alignment = 64)
         {
-            TerraFX.Interop.Mimalloc.mi_free_aligned(memory, alignment);
+            return TerraFX.Interop.Mimalloc.mi_reallocn_aligned(memory, (uint)count, (uint)size, (uint)alignment);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Free(in void* memory, in int alignment = 64)
+        {
+            TerraFX.Interop.Mimalloc.mi_free_aligned(memory, (uint)alignment);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

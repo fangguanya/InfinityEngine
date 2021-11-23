@@ -159,7 +159,7 @@ namespace ExampleProject
 
 
             //TArray Test
-            /*TArray<float> MyArray = new TArray<float>(3);
+            /*TNativeArray<float> MyArray = new TNativeArray<float>(3);
             MyArray.Add(0.1f);
             MyArray.Add(0.2f);
             MyArray.Add(0.3f);
@@ -171,15 +171,16 @@ namespace ExampleProject
             MyArray.RemoveAtIndex(4);
             MyArray.Add(0.5f);
 
+            MyArray.AddUnique(0.5f);
             MyArray.AddUnique(0.6f);
-            MyArray.AddUnique(0.7f);
 
-            MyArray.Remove(0.6f);
+            MyArray.Remove(0.5f);
 
-            ref float value = ref MyArray[5];
+            ref float value = ref MyArray[4];
             value += 0.5f;
 
-            MyArray.RemoveAtIndex(5);
+            MyArray.RemoveAtIndex(4);
+            MyArray.Dispose();
             Console.ReadKey();*/
 
             //TSparseArray Test
@@ -198,9 +199,9 @@ namespace ExampleProject
             value += 0.5f;
 
             MyArray.Remove(5);
-            Console.ReadKey();
+            Console.ReadKey();*/
 
-            string shaderSource = @"
+            /*string shaderSource = @"
             struct PSInput 
             {
                 float4 position : SV_POSITION;

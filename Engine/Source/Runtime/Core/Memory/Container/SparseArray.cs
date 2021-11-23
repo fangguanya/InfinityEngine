@@ -11,7 +11,6 @@ namespace InfinityEngine.Core.Container
                 return m_Array.length;
             }
         }
-        
         public ref T this[int index]
         {
             get
@@ -25,11 +24,11 @@ namespace InfinityEngine.Core.Container
 
         public TSparseArray()
         {
-            m_Array = new TArray<T>();
-            m_PoolArray = new TArray<int>();
+            m_Array = new TArray<T>(64);
+            m_PoolArray = new TArray<int>(32);
         }
 
-        public TSparseArray(int capacity)
+        public TSparseArray(int capacity = 64)
         {
             m_Array = new TArray<T>(capacity);
             m_PoolArray = new TArray<int>(capacity / 2);
