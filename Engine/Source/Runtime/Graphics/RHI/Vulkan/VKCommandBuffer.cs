@@ -88,12 +88,12 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void DispatchCompute(uint sizeX, uint sizeY, uint sizeZ)
+        public override void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ)
         {
             vkCmdDispatch(nativeCmdBuffer, sizeX, sizeY, sizeZ);
         }
 
-        public override void DispatchComputeIndirect(FRHIBuffer argsBuffer, uint argsOffset)
+        public override void DispatchComputeIndirect(FRHIBuffer argsBuffer, in uint argsOffset)
         {
 
         }
@@ -113,12 +113,12 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void DispatchRay(uint sizeX, uint sizeY, uint sizeZ)
+        public override void DispatchRay(in uint sizeX, in uint sizeY, in uint sizeZ)
         {
             
         }
 
-        public override void DispatchRayIndirect(FRHIBuffer argsBuffer, uint argsOffset)
+        public override void DispatchRayIndirect(FRHIBuffer argsBuffer, in uint argsOffset)
         {
 
         }
@@ -198,17 +198,17 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
             
         }
 
-        public override void DrawIndexInstanced(int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
+        public override void DrawIndexInstanced(in int indexCount, in int startIndex, in int startVertex, in int instanceCount, in int startInstance)
         {
             
         }
 
-        public override void DrawMultiIndexInstanced(FRHIBuffer argsBuffer, uint argsOffset, FRHIBuffer countBuffer, uint countOffset)
+        public override void DrawMultiIndexInstanced(FRHIBuffer argsBuffer, in uint argsOffset, FRHIBuffer countBuffer, in uint countOffset)
         {
 
         }
 
-        public override void DrawIndexInstancedIndirect(FRHIBuffer argsBuffer, uint argsOffset)
+        public override void DrawIndexInstancedIndirect(FRHIBuffer argsBuffer, in uint argsOffset)
         {
   
         }
