@@ -95,7 +95,7 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void SetDepthBounds(in float min, in float max) { }
         public virtual void SetShadingRate(FRHITexture texture) { }
         public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo) { }
-        public virtual void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisPipelineState) { }
+        public virtual void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState) { }
         public virtual void SetPrimitiveTopology(EPrimitiveTopology topologyType) { }
         public virtual void SetIndexBuffer(FRHIIndexBufferView indexBufferView) { }
         public virtual void SetVertexBuffer(FRHIVertexBufferView vertexBufferView) { }

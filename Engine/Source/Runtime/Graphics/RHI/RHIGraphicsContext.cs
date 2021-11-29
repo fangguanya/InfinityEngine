@@ -35,7 +35,7 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void ReleaseQuery(FRHIQuery query) { }
         public virtual FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescription description) { return default; }
         public virtual FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescription description) { return default; }
-        public virtual FRHIGraphicsPipelineState CreateGraphicsPipelineState(in FRHIGraphicsPipelineDescription description) { return default; }
+        public virtual FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescription description) { return default; }
         public virtual void CreateSamplerState() { }
         public virtual void CreateVertexInputLayout() { }
         public virtual void CreateResourceInputLayout() { }

@@ -297,9 +297,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return new FRHIRayTracePipelineState();
         }
 
-        public override FRHIGraphicsPipelineState CreateGraphicsPipelineState(in FRHIGraphicsPipelineDescription description)
+        public override FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescription description)
         {
-            return new FRHIGraphicsPipelineState();
+            return new FRHIRenderPipelineState();
         }
 
         public override void CreateSamplerState()

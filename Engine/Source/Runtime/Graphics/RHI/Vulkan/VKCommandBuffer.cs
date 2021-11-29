@@ -178,7 +178,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisPipelineState)
+        public override void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState)
         {
 
         }
