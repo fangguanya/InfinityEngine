@@ -6,7 +6,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         Copy = 3,
         Compute = 2,
-        Graphics = 0
+        Render = 0
     }
 
     public class FRHIGraphicsContext : FDisposable
@@ -21,8 +21,8 @@ namespace InfinityEngine.Graphics.RHI
         public virtual FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null) { return null; }
         public virtual FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = false) { return null; }
         public virtual void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer) { }
-        public virtual void WriteFence(in EContextType contextType, FRHIFence fence) { }
-        public virtual void WaitFence(in EContextType contextType, FRHIFence fence) { }
+        public virtual void WriteToFence(in EContextType contextType, FRHIFence fence) { }
+        public virtual void WaitForFence(in EContextType contextType, FRHIFence fence) { }
         public virtual void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer) { }
         public virtual void Flush() { }
         public virtual void Submit() { }

@@ -675,17 +675,17 @@ namespace InfinityEngine.Graphics.RDG
                 m_Resources.CreateRealTexture(textureRef);
             }
 
-            if (pass.enableAsyncCompute)
+            if (!pass.enableAsyncCompute)
             {
-                graphContext.cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Compute);
+                graphContext.cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Render);
             } else {
-                graphContext.cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Graphics);
+                graphContext.cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Compute);
             }
 
             // Synchronize with graphics or compute pipe if needed.
             if (passInfo.syncToPassIndex != -1)
             {
-                graphContext.graphicsContext.WaitFence(EContextType.Graphics, m_CompiledPassInfos[passInfo.syncToPassIndex].fence);
+                graphContext.graphicsContext.WaitForFence(graphContext.cmdBuffer.contextType, m_CompiledPassInfos[passInfo.syncToPassIndex].fence);
             }
 
             // Auto bind render target
@@ -696,8 +696,6 @@ namespace InfinityEngine.Graphics.RDG
         {
             IRDGPass pass = passInfo.pass;
 
-            if (passInfo.needGraphicsFence) { passInfo.fence = graphContext.graphicsContext.GetFence(); }
-
             // The command list has been filled. We can kick the async task.
             if (pass.enableAsyncCompute)
             {
@@ -705,7 +703,13 @@ namespace InfinityEngine.Graphics.RDG
             } else {
                 graphContext.graphicsContext.ExecuteCommandBuffer(graphContext.cmdBuffer);
             }
-            
+
+            if (passInfo.needGraphicsFence)
+            {
+                passInfo.fence = graphContext.graphicsContext.GetFence();
+                graphContext.graphicsContext.WriteToFence(graphContext.cmdBuffer.contextType, passInfo.fence);
+            }
+
             m_ObjectPool.ReleaseAllTempAlloc();
 
             foreach (var bufferRef in passInfo.resourceReleaseList[(int)EResourceType.Buffer])

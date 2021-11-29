@@ -38,7 +38,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         private TArray<FExecuteInfo> m_ExecuteGPUInfos;
         private FRHICommandBufferPool m_CopyCmdBufferPool;
         private FRHICommandBufferPool m_ComputeCmdBufferPool;
-        private FRHICommandBufferPool m_GraphicsCmdBufferPool;
+        private FRHICommandBufferPool m_RenderCmdBufferPool;
         private TArray<FRHICommandBuffer> m_ManagedCmdBuffers;
         private FRHIDescriptorHeapFactory m_DescriptorFactory;
 
@@ -56,11 +56,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
             m_TransContext = new FD3DCommandContext(m_Device, EContextType.Copy);
             m_ComputeContext = new FD3DCommandContext(m_Device, EContextType.Compute);
-            m_GraphicsContext = new FD3DCommandContext(m_Device, EContextType.Graphics);
+            m_GraphicsContext = new FD3DCommandContext(m_Device, EContextType.Render);
 
             m_CopyCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Copy);
             m_ComputeCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Compute);
-            m_GraphicsCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Graphics);
+            m_RenderCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Render);
 
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
             m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
@@ -103,8 +103,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     cmdBuffer = m_ComputeCmdBufferPool.GetTemporary(name);
                     break;
 
-                case EContextType.Graphics:
-                    cmdBuffer = m_GraphicsCmdBufferPool.GetTemporary(name);
+                case EContextType.Render:
+                    cmdBuffer = m_RenderCmdBufferPool.GetTemporary(name);
                     break;
             }
 
@@ -125,13 +125,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     m_ComputeCmdBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
 
-                case EContextType.Graphics:
-                    m_GraphicsCmdBufferPool.ReleaseTemporary(cmdBuffer);
+                case EContextType.Render:
+                    m_RenderCmdBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
             }
         }
 
-        public override void WriteFence(in EContextType contextType, FRHIFence fence)
+        public override void WriteToFence(in EContextType contextType, FRHIFence fence)
         {
             FExecuteInfo executeInfo;
             executeInfo.fence = fence;
@@ -141,7 +141,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ExecuteGPUInfos.Add(executeInfo);
         }
 
-        public override void WaitFence(in EContextType contextType, FRHIFence fence)
+        public override void WaitForFence(in EContextType contextType, FRHIFence fence)
         {
             FExecuteInfo executeInfo;
             executeInfo.fence = fence;
@@ -440,7 +440,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_DescriptorFactory?.Dispose();
             m_CopyCmdBufferPool?.Dispose();
             m_ComputeCmdBufferPool?.Dispose();
-            m_GraphicsCmdBufferPool?.Dispose();
+            m_RenderCmdBufferPool?.Dispose();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace InfinityEngine.Game.System
     {
         internal static TArray<FGraphicsTask> GraphicsTasks = new TArray<FGraphicsTask>(64);
 
-        public static void AddTask(FGraphicsTask graphicsTask)
+        public static void AddTask(FGraphicsTask graphicsTask, in bool bParallel = false)
         {
             GraphicsTasks.Add(graphicsTask);
         }
@@ -63,12 +63,11 @@ namespace InfinityEngine.Game.System
             while (!IsLoopExit)
             {
                 semaphoreG2R.Wait();
-                if (isInit) 
-                {
+                ProcessGraphicsTasks();
+                if (isInit) {
                     isInit = false;
                     renderPipeline.Init(renderContext, graphicsContext); 
                 }
-                ProcessGraphicsTasks();
                 renderPipeline.Render(renderContext, graphicsContext);
                 graphicsContext.Flush();
                 semaphoreR2G.Signal();

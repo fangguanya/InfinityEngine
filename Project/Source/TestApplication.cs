@@ -71,8 +71,8 @@ namespace ExampleProject
                     bufferRef.buffer.RequestReadback<int>(cmdBuffer);
                     cmdBuffer.EndQuery(query);
                     graphicsContext.ExecuteCommandBuffer(cmdBuffer);
-                    graphicsContext.WriteFence(EContextType.Copy, fence);
-                    //graphicsContext.WaitFence(EContextType.Graphics, fence);
+                    graphicsContext.WriteToFence(EContextType.Copy, fence);
+                    graphicsContext.WaitForFence(EContextType.Render, fence);
                 }
 
                 if (dataReady = fence.IsCompleted)

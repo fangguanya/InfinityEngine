@@ -129,7 +129,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 				resourceDesc.SampleDescription.Count = 1;
 				resourceDesc.SampleDescription.Quality = 0;
             }
-			this.cmdBuffer = new FD3DCommandBuffer("QueryCmdBuffer", device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Graphics);
+			this.cmdBuffer = new FD3DCommandBuffer("QueryCmdBuffer", device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Render);
 			this.queryResult = d3dDevice.nativeDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
 		}
 
