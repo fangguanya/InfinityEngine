@@ -58,6 +58,7 @@ namespace InfinityEngine.Graphics.RHI
         public string name;
         internal bool IsClose;
         internal EContextType contextType;
+        internal EPrimitiveTopology topologyType;
 
         internal FRHICommandBuffer(FRHIDevice device, EContextType contextType) { }
         internal FRHICommandBuffer(string name, FRHIDevice device, EContextType contextType) { }
@@ -76,13 +77,13 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void BeginQuery(FRHIQuery query) { }
         public virtual void EndQuery(FRHIQuery query) { }
         public virtual void SetComputePipelineState(FRHIComputePipelineState computePipelineState) { }
-        public virtual void DispatchCompute(FRHIComputeShader computeShader, uint sizeX, uint sizeY, uint sizeZ) { }
-        public virtual void DispatchComputeIndirect(FRHIComputeShader computeShader, FRHIBuffer argsBuffer, uint argsOffset) { }
-        public virtual void SetRayTracePipelineState(FRHIRayTraceShader rayTraceShader, FRHIRayTracePipelineState rayTracePipelineState) { }
+        public virtual void DispatchCompute(uint sizeX, uint sizeY, uint sizeZ) { }
+        public virtual void DispatchComputeIndirect(FRHIBuffer argsBuffer, uint argsOffset) { }
+        public virtual void SetRayTracePipelineState(FRHIRayTracePipelineState rayTracePipelineState) { }
         public virtual void CopyAccelerationStructure() { }
         public virtual void BuildAccelerationStructure() { }
-        public virtual void DispatchRay(FRHIRayTraceShader rayTraceShader, uint sizeX, uint sizeY, uint sizeZ) { }
-        public virtual void DispatchRayIndirect(FRHIRayTraceShader rayTraceShader, FRHIBuffer argsBuffer, uint argsOffset) { }
+        public virtual void DispatchRay(uint sizeX, uint sizeY, uint sizeZ) { }
+        public virtual void DispatchRayIndirect(FRHIBuffer argsBuffer, uint argsOffset) { }
         public virtual void SetScissor() { }
         public virtual void SetViewport() { }
         public virtual void BeginEvent() { }
@@ -95,10 +96,12 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void SetShadingRate(FRHITexture texture) { }
         public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo) { }
         public virtual void SetGraphicsPipelineState(FRHIGraphicsShader graphicsShader, FRHIGraphicsPipelineState graphcisPipelineState) { }
-        public virtual void DrawInstance(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, EPrimitiveTopology topologyType, int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance) { }
-        public virtual void DrawInstanceIndirect(FRHIIndexBufferView indexBufferView, FRHIVertexBufferView vertexBufferView, EPrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset) { }
-        public virtual void DrawMultiInstance(FRHIBuffer cmdBuffer, EPrimitiveTopology topologyType, FRHIBuffer argsBuffer, uint argsOffset) { }
-        public virtual void DrawMultiInstanceIndirect() { }
+        public virtual void SetPrimitiveTopology(EPrimitiveTopology topologyType) { }
+        public virtual void SetIndexBuffer(FRHIIndexBufferView indexBufferView) { }
+        public virtual void SetVertexBuffer(FRHIVertexBufferView vertexBufferView) { }
+        public virtual void DrawIndexInstance(int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance) { }
+        public virtual void DrawIndexInstanceIndirect(FRHIBuffer argsBuffer, uint argsOffset) { }
+        public virtual void DrawMultiIndexInstanceIndirect(FRHIBuffer cmdsBuffer, uint cmdsOffset, FRHIBuffer argsBuffer, uint argsOffset) { }
     }
 
     internal class FRHICommandBufferPool : FDisposable
