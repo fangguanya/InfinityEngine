@@ -19,7 +19,7 @@ namespace InfinityEngine.Graphics.RHI
 
         internal virtual FRHICommandContext SelectContext(in EContextType contextType) { return null; }
         public virtual FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null) { return null; }
-        public virtual FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = false) { return null; }
+        public virtual FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = true) { return null; }
         public virtual void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer) { }
         public virtual void WriteToFence(in EContextType contextType, FRHIFence fence) { }
         public virtual void WaitForFence(in EContextType contextType, FRHIFence fence) { }

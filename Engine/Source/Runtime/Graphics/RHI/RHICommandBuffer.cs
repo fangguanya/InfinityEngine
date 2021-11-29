@@ -99,9 +99,9 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void SetPrimitiveTopology(EPrimitiveTopology topologyType) { }
         public virtual void SetIndexBuffer(FRHIIndexBufferView indexBufferView) { }
         public virtual void SetVertexBuffer(FRHIVertexBufferView vertexBufferView) { }
-        public virtual void DrawIndexInstance(int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance) { }
-        public virtual void DrawIndexInstanceIndirect(FRHIBuffer argsBuffer, uint argsOffset) { }
-        public virtual void DrawMultiIndexInstanceIndirect(FRHIBuffer cmdsBuffer, uint cmdsOffset, FRHIBuffer argsBuffer, uint argsOffset) { }
+        public virtual void DrawIndexInstanced(int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance) { }
+        public virtual void DrawMultiIndexInstanced(FRHIBuffer argsBuffer, uint argsOffset, FRHIBuffer countBuffer, uint countOffset) { }
+        public virtual void DrawIndexInstancedIndirect(FRHIBuffer argsBuffer, uint argsOffset) { }
     }
 
     internal class FRHICommandBufferPool : FDisposable

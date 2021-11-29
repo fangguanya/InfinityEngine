@@ -42,7 +42,7 @@ namespace ExampleProject
                 fence = graphicsContext.GetFence();
                 query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
                 bufferRef = graphicsContext.GetBuffer(description);
-                FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1", true);
+                FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1");
                 cmdBuffer.Clear();
 
                 int[] data = new int[10000000];
@@ -65,14 +65,14 @@ namespace ExampleProject
 
                 if (dataReady)
                 {
-                    FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2", true);
+                    FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2");
                     cmdBuffer.Clear();
                     cmdBuffer.BeginQuery(query);
                     bufferRef.buffer.RequestReadback<int>(cmdBuffer);
                     cmdBuffer.EndQuery(query);
                     graphicsContext.ExecuteCommandBuffer(cmdBuffer);
                     graphicsContext.WriteToFence(EContextType.Copy, fence);
-                    graphicsContext.WaitForFence(EContextType.Render, fence);
+                    //graphicsContext.WaitForFence(EContextType.Render, fence);
                 }
 
                 if (dataReady = fence.IsCompleted)

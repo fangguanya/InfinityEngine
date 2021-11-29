@@ -219,17 +219,17 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList.IASetVertexBuffers(0, vertexBufferView.nativeBufferView);
         }
 
-        public override void DrawIndexInstance(int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
+        public override void DrawIndexInstanced(int indexCount, int startIndex, int startVertex, int instanceCount, int startInstance)
         {
             nativeCmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
         }
 
-        public override void DrawIndexInstanceIndirect(FRHIBuffer argsBuffer, uint argsOffset)
+        public override void DrawMultiIndexInstanced(FRHIBuffer argsBuffer, uint argsOffset, FRHIBuffer countBuffer, uint countOffset)
         {
 
         }
 
-        public override void DrawMultiIndexInstanceIndirect(FRHIBuffer cmdsBuffer, uint cmdsOffset, FRHIBuffer argsBuffer, uint argsOffset)
+        public override void DrawIndexInstancedIndirect(FRHIBuffer argsBuffer, uint argsOffset)
         {
 
         }
