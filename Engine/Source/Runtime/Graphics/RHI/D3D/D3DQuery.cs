@@ -115,7 +115,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 				heapProperties.VisibleNodeMask = 0;
 				heapProperties.CreationNodeMask = 0;
             }
-            ResourceDescription resourceDesc;
+			ResourceDescription resourceDesc;
             {
 				resourceDesc.Alignment = 0;
 				resourceDesc.Dimension = ResourceDimension.Buffer;

@@ -33,17 +33,17 @@ namespace InfinityEngine.Graphics.RHI
         public virtual FRHIQuery CreateQuery(in EQueryType queryType, string name = null) { return null; }
         public virtual FRHIQuery GetQuery(in EQueryType queryType, string name = null) { return null; }
         public virtual void ReleaseQuery(FRHIQuery query) { }
-        public virtual FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescription description) { return default; }
-        public virtual FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescription description) { return default; }
-        public virtual FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescription description) { return default; }
+        public virtual FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescriptor descriptor) { return default; }
+        public virtual FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescriptor descriptor) { return default; }
+        public virtual FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescriptor descriptor) { return default; }
         public virtual void CreateSamplerState() { }
         public virtual void CreateVertexInputLayout() { }
         public virtual void CreateResourceInputLayout() { }
-        public virtual FRHIBuffer CreateBuffer(in FRHIBufferDescription description) { return null; }
-        public virtual FRHIBufferRef GetBuffer(in FRHIBufferDescription description) { return default; }
+        public virtual FRHIBuffer CreateBuffer(in FRHIBufferDescriptor descriptor) { return null; }
+        public virtual FRHIBufferRef GetBuffer(in FRHIBufferDescriptor descriptor) { return default; }
         public virtual void ReleaseBuffer(in FRHIBufferRef bufferRef) { }
-        public virtual FRHITexture CreateTexture(in FRHITextureDescription description) { return null; }
-        public virtual FRHITextureRef GetTexture(in FRHITextureDescription description) { return default; }
+        public virtual FRHITexture CreateTexture(in FRHITextureDescriptor descriptor) { return null; }
+        public virtual FRHITextureRef GetTexture(in FRHITextureDescriptor descriptor) { return default; }
         public virtual void ReleaseTexture(FRHITextureRef textureRef) { }
         public virtual FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer buffer) { return default; }
         public virtual FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer buffer) { return default; }

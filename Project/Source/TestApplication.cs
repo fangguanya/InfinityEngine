@@ -37,11 +37,11 @@ namespace ExampleProject
             FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
+                FRHIBufferDescriptor descriptor = new FRHIBufferDescriptor(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
 
                 fence = graphicsContext.GetFence();
                 query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
-                bufferRef = graphicsContext.GetBuffer(description);
+                bufferRef = graphicsContext.GetBuffer(descriptor);
                 FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1");
                 cmdBuffer.Clear();
 

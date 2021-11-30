@@ -160,9 +160,9 @@ namespace InfinityEngine.Graphics.RDG
             return input;
         }
 
-        public FRDGTextureRef CreateTemporalTexture(in FRHITextureDescription description)
+        public FRDGTextureRef CreateTemporalTexture(in FRHITextureDescriptor descriptor)
         {
-            var result = m_ResourceFactory.CreateTexture(description, 0, m_RenderPass.index);
+            var result = m_ResourceFactory.CreateTexture(descriptor, 0, m_RenderPass.index);
             m_RenderPass.AddTemporalResource(result.handle);
             return result;
         }
@@ -179,9 +179,9 @@ namespace InfinityEngine.Graphics.RDG
             return input;
         }
 
-        public FRDGBufferRef CreateTemporalBuffer(in FRHIBufferDescription description)
+        public FRDGBufferRef CreateTemporalBuffer(in FRHIBufferDescriptor descriptor)
         {
-            var result = m_ResourceFactory.CreateBuffer(description, m_RenderPass.index);
+            var result = m_ResourceFactory.CreateBuffer(descriptor, m_RenderPass.index);
             m_RenderPass.AddTemporalResource(result.handle);
             return result;
         }

@@ -32,11 +32,11 @@ namespace InfinityEngine.Rendering.RenderPipeline
             /*dataReady = true;
             readData = new int[10000000];
             timeProfiler = new FTimeProfiler();
-            FRHIBufferDescription description = new FRHIBufferDescription(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
+            FRHIBufferDescriptor descriptor = new FRHIBufferDescriptor(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
 
             fence = graphicsContext.GetFence();
             query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
-            bufferRef = graphicsContext.GetBuffer(description);
+            bufferRef = graphicsContext.GetBuffer(descriptor);
             FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1", true);
             cmdBuffer.Clear();
 

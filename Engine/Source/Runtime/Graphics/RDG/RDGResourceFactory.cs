@@ -93,10 +93,10 @@ namespace InfinityEngine.Graphics.RDG
             return new FRDGTextureRef(newHandle);
         }
 
-        internal FRDGTextureRef CreateTexture(in FRHITextureDescription textureDescription, int shaderProperty = 0, int temporalPassIndex = -1)
+        internal FRDGTextureRef CreateTexture(in FRHITextureDescriptor textureDescriptor, int shaderProperty = 0, int temporalPassIndex = -1)
         {
             int newHandle = AddNewResource(m_Resources[(int)EResourceType.Texture], out FRDGTexture rdgTexture);
-            rdgTexture.desc = textureDescription;
+            rdgTexture.desc = textureDescriptor;
             rdgTexture.shaderProperty = shaderProperty;
             rdgTexture.temporalPassIndex = temporalPassIndex;
             return new FRDGTextureRef(newHandle);
@@ -112,7 +112,7 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources[(int)EResourceType.Texture][resourceRef] as FRDGTexture;
         }
 
-        internal FRHITextureDescription GetTextureResourceDesc(in FRDGResourceRef resourceRef)
+        internal FRHITextureDescriptor GetTextureResourceDesc(in FRDGResourceRef resourceRef)
         {
             return (m_Resources[(int)EResourceType.Texture][resourceRef] as FRDGTexture).desc;
         }
@@ -126,10 +126,10 @@ namespace InfinityEngine.Graphics.RDG
             return new FRDGBufferRef(newHandle);
         }
 
-        internal FRDGBufferRef CreateBuffer(in FRHIBufferDescription bufferDescription, int temporalPassIndex = -1)
+        internal FRDGBufferRef CreateBuffer(in FRHIBufferDescriptor bufferDescriptor, int temporalPassIndex = -1)
         {
             int newHandle = AddNewResource(m_Resources[(int)EResourceType.Buffer], out FRDGBuffer bufferResource);
-            bufferResource.desc = bufferDescription;
+            bufferResource.desc = bufferDescriptor;
             bufferResource.temporalPassIndex = temporalPassIndex;
 
             return new FRDGBufferRef(newHandle);
@@ -145,7 +145,7 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources[(int)EResourceType.Buffer][resourceRef] as FRDGBuffer;
         }
 
-        internal FRHIBufferDescription GetBufferResourceDesc(in FRDGResourceRef handle)
+        internal FRHIBufferDescriptor GetBufferResourceDesc(in FRDGResourceRef handle)
         {
             return (m_Resources[(int)EResourceType.Buffer][handle] as FRDGBuffer).desc;
         }

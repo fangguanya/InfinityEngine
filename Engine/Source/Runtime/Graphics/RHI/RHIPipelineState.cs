@@ -2,17 +2,17 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public struct FRHIComputePipelineDescription
+    public struct FRHIComputePipelineDescriptor
     {
 
     }
 
-    public struct FRHIRayTracePipelineDescription
+    public struct FRHIRayTracePipelineDescriptor
     {
 
     }
 
-    public struct FRHIGraphicsPipelineDescription
+    public struct FRHIGraphicsPipelineDescriptor
     {
 
     }

@@ -21,12 +21,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_Fence = new FD3DFence(device);
             m_FenceEvent = new AutoResetEvent(false);
 
-            CommandQueueDescription queueDescription = new CommandQueueDescription();
-            queueDescription.Type = (CommandListType)contextType;
-            queueDescription.Flags = CommandQueueFlags.None;
+            CommandQueueDescription queueDescriptor = new CommandQueueDescription();
+            queueDescriptor.Type = (CommandListType)contextType;
+            queueDescriptor.Flags = CommandQueueFlags.None;
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
-            m_NativeCmdQueue = d3dDevice.nativeDevice.CreateCommandQueue<ID3D12CommandQueue>(queueDescription);
+            m_NativeCmdQueue = d3dDevice.nativeDevice.CreateCommandQueue<ID3D12CommandQueue>(queueDescriptor);
         }
 
         public static implicit operator ID3D12CommandQueue(FD3DCommandContext cmdContext) { return cmdContext.m_NativeCmdQueue; }

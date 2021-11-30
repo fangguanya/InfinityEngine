@@ -286,17 +286,17 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        public override FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescription description)
+        public override FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescriptor descriptor)
         {
             return new FRHIComputePipelineState();
         }
 
-        public override FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescription description)
+        public override FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescriptor descriptor)
         {
             return new FRHIRayTracePipelineState();
         }
 
-        public override FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescription description)
+        public override FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescriptor descriptor)
         {
             return new FRHIRenderPipelineState();
         }
@@ -316,14 +316,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override FRHIBuffer CreateBuffer(in FRHIBufferDescription description)
+        public override FRHIBuffer CreateBuffer(in FRHIBufferDescriptor descriptor)
         {
-            return new FD3DBuffer(m_Device, description);
+            return new FD3DBuffer(m_Device, descriptor);
         }
 
-        public override FRHIBufferRef GetBuffer(in FRHIBufferDescription description)
+        public override FRHIBufferRef GetBuffer(in FRHIBufferDescriptor descriptor)
         {
-            return m_ResourcePool.GetBuffer(description);
+            return m_ResourcePool.GetBuffer(descriptor);
         }
 
         public override void ReleaseBuffer(in FRHIBufferRef bufferRef)
@@ -331,14 +331,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ResourcePool.ReleaseBuffer(bufferRef);
         }
 
-        public override FRHITexture CreateTexture(in FRHITextureDescription description)
+        public override FRHITexture CreateTexture(in FRHITextureDescriptor descriptor)
         {
-            return new FD3DTexture(m_Device, description);
+            return new FD3DTexture(m_Device, descriptor);
         }
         
-        public override FRHITextureRef GetTexture(in FRHITextureDescription description)
+        public override FRHITextureRef GetTexture(in FRHITextureDescriptor descriptor)
         {
-            return m_ResourcePool.GetTexture(description);
+            return m_ResourcePool.GetTexture(descriptor);
         }
 
         public override void ReleaseTexture(FRHITextureRef textureRef)
@@ -384,7 +384,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 Format = Format.Unknown,
                 ViewDimension = ShaderResourceViewDimension.Buffer,
                 Shader4ComponentMapping = 256,
-                Buffer = new BufferShaderResourceView { FirstElement = 0, NumElements = (int)d3dBuffer.description.count, StructureByteStride = (int)d3dBuffer.description.stride }
+                Buffer = new BufferShaderResourceView { FirstElement = 0, NumElements = (int)d3dBuffer.descriptor.count, StructureByteStride = (int)d3dBuffer.descriptor.stride }
             };
             int descriptorIndex = m_DescriptorFactory.Allocator(1);
             CpuDescriptorHandle descriptorHandle = m_DescriptorFactory.GetCPUHandleStart() + m_DescriptorFactory.GetDescriptorSize() * descriptorIndex;
@@ -406,7 +406,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             {
                 Format = Format.Unknown,
                 ViewDimension = UnorderedAccessViewDimension.Buffer,
-                Buffer = new BufferUnorderedAccessView { NumElements = (int)d3dBuffer.description.count, StructureByteStride = (int)d3dBuffer.description.stride }
+                Buffer = new BufferUnorderedAccessView { NumElements = (int)d3dBuffer.descriptor.count, StructureByteStride = (int)d3dBuffer.descriptor.stride }
             };
             int descriptorIndex = m_DescriptorFactory.Allocator(1);
             CpuDescriptorHandle descriptorHandle = m_DescriptorFactory.GetCPUHandleStart() + m_DescriptorFactory.GetDescriptorSize() * descriptorIndex;

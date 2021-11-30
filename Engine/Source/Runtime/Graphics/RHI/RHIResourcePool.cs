@@ -56,7 +56,7 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override string GetResourceName(FRHIBuffer buffer)
         {
-            return buffer.description.name;
+            return buffer.descriptor.name;
         }
 
         override protected string GetResourceTypeName()
@@ -74,7 +74,7 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override string GetResourceName(FRHITexture texture)
         {
-            return texture.description.name;
+            return texture.descriptor.name;
         }
 
         override protected string GetResourceTypeName()
@@ -96,14 +96,14 @@ namespace InfinityEngine.Graphics.RHI
             m_TexturePool = new FRHITextureCache();
         }
 
-        public FRHIBufferRef GetBuffer(in FRHIBufferDescription description)
+        public FRHIBufferRef GetBuffer(in FRHIBufferDescriptor descriptor)
         {
             FRHIBuffer buffer;
-            int handle = description.GetHashCode();
+            int handle = descriptor.GetHashCode();
 
             if (!m_BufferPool.Pull(handle, out buffer))
             {
-                buffer = m_GraphicsContext.CreateBuffer(description);
+                buffer = m_GraphicsContext.CreateBuffer(descriptor);
             }
 
             return new FRHIBufferRef(handle, buffer);
@@ -114,14 +114,14 @@ namespace InfinityEngine.Graphics.RHI
             m_BufferPool.Push(bufferRef.handle, bufferRef.buffer);
         }
 
-        public FRHITextureRef GetTexture(in FRHITextureDescription description)
+        public FRHITextureRef GetTexture(in FRHITextureDescriptor descriptor)
         {
             FRHITexture texture;
-            int handle = description.GetHashCode();
+            int handle = descriptor.GetHashCode();
 
             if (!m_TexturePool.Pull(handle, out texture))
             {
-                texture = m_GraphicsContext.CreateTexture(description);
+                texture = m_GraphicsContext.CreateTexture(descriptor);
             }
 
             return new FRHITextureRef(handle, texture);

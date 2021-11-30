@@ -13,11 +13,11 @@ namespace InfinityEngine.Graphics.RHI
         {
             /*this.descriptorSize = device.nativeDevice.GetDescriptorHandleIncrementSize(DescriptorHeapType.DepthStencilView);
 
-            DescriptorHeapDescription descriptionCPU = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.ShaderVisible);
-            this.nativeCPUDescriptorHeap = device.nativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionCPU);
+            DescriptorHeapDescriptor descriptorCPU = new DescriptorHeapDescriptor(descriptorType, descriptorCount, DescriptorHeapFlags.ShaderVisible);
+            this.nativeCPUDescriptorHeap = device.nativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptorCPU);
 
-            DescriptorHeapDescription descriptionGPU = new DescriptorHeapDescription(descriptorType, descriptorCount, DescriptorHeapFlags.None);
-            this.nativeGPUDescriptorHeap = device.nativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptionGPU);*/
+            DescriptorHeapDescriptor descriptorGPU = new DescriptorHeapDescriptor(descriptorType, descriptorCount, DescriptorHeapFlags.None);
+            this.nativeGPUDescriptorHeap = device.nativeDevice.CreateDescriptorHeap<ID3D12DescriptorHeap>(descriptorGPU);*/
         }
 
         protected static DescriptorHeapType GetDescriptorType(in EDescriptorType DescriptorType)

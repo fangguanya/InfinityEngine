@@ -124,7 +124,7 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources.ImportBuffer(buffer);
         }
 
-        public FRDGBufferRef CreateBuffer(in FRHIBufferDescription bufferDesc)
+        public FRDGBufferRef CreateBuffer(in FRHIBufferDescriptor bufferDesc)
         {
             return m_Resources.CreateBuffer(bufferDesc);
         }
@@ -134,7 +134,7 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources.CreateBuffer(m_Resources.GetBufferResourceDesc(bufferRef.handle));
         }
 
-        public FRHIBufferDescription GetBufferDesc(in FRDGBufferRef bufferRef)
+        public FRHIBufferDescriptor GetBufferDesc(in FRDGBufferRef bufferRef)
         {
             return m_Resources.GetBufferResourceDesc(bufferRef.handle);
         }
@@ -149,7 +149,7 @@ namespace InfinityEngine.Graphics.RDG
             m_BufferScope.Set(handle, bufferRef);
         }
 
-        public FRDGBufferRef ScopeBuffer(in int handle, in FRHIBufferDescription bufferDesc)
+        public FRDGBufferRef ScopeBuffer(in int handle, in FRHIBufferDescriptor bufferDesc)
         {
             FRDGBufferRef bufferRef = CreateBuffer(bufferDesc);
             m_BufferScope.Set(handle, bufferRef);
@@ -166,7 +166,7 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources.ImportTexture(texture, shaderProperty);
         }
 
-        public FRDGTextureRef CreateTexture(in FRHITextureDescription textureDesc, int shaderProperty = 0)
+        public FRDGTextureRef CreateTexture(in FRHITextureDescriptor textureDesc, int shaderProperty = 0)
         {
             return m_Resources.CreateTexture(textureDesc, shaderProperty);
         }
@@ -186,14 +186,14 @@ namespace InfinityEngine.Graphics.RDG
             m_TextureScope.Set(handle, textureRef);
         }
 
-        public FRDGTextureRef ScopeTexture(in int handle, in FRHITextureDescription textureDesc)
+        public FRDGTextureRef ScopeTexture(in int handle, in FRHITextureDescriptor textureDesc)
         {
             FRDGTextureRef textureRef = CreateTexture(textureDesc, handle);
             m_TextureScope.Set(handle, textureRef);
             return textureRef;
         }
 
-        public FRHITextureDescription GetTextureDesc(in FRDGTextureRef textureRef)
+        public FRHITextureDescriptor GetTextureDesc(in FRDGTextureRef textureRef)
         {
             return m_Resources.GetTextureResourceDesc(textureRef.handle);
         }
