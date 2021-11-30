@@ -33,7 +33,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void Transitions(FRHIResource resource)
+        public override void Transition(FRHIResource resource)
         {
 
         }
@@ -44,11 +44,6 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
         }
 
         public override void ClearTexture(FRHITexture texture)
-        {
-
-        }
-
-        public override void GenerateMipmaps(FRHITexture texture)
         {
 
         }
@@ -73,6 +68,16 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
+        public override void CopyAccelerationStructure()
+        {
+
+        }
+
+        public override void BuildAccelerationStructure()
+        {
+
+        }
+
         public override void BeginQuery(FRHIQuery query)
         {
 
@@ -88,6 +93,11 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
+        public override void SetComputeShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
+        {
+            //nativeCmdList.SetComputeRootShaderResourceView(slot, shaderResourceView.descriptorHandle.);
+        }
+
         public override void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ)
         {
             vkCmdDispatch(nativeCmdBuffer, sizeX, sizeY, sizeZ);
@@ -99,16 +109,6 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
         }
 
         public override void SetRayTracePipelineState(FRHIRayTracePipelineState rayTracePipelineState)
-        {
-
-        }
-
-        public override void CopyAccelerationStructure()
-        {
-
-        }
-
-        public override void BuildAccelerationStructure()
         {
 
         }
@@ -153,7 +153,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetStencilRef()
+        public override void SetStencilRef(in int stencilRef)
         {
 
         }

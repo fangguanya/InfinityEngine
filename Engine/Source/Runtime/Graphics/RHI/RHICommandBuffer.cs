@@ -66,22 +66,24 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void Clear() { }
         internal virtual void Close() { }
         public virtual void Barriers(FRHIResource resource) { }
-        public virtual void Transitions(FRHIResource resource) { }
+        public virtual void Transition(FRHIResource resource) { }
         public virtual void ClearBuffer(FRHIBuffer buffer) { }
         public virtual void ClearTexture(FRHITexture texture) { }
-        public virtual void GenerateMipmaps(FRHITexture texture) { }
         public virtual void CopyBufferToBuffer(FRHIBuffer srcBuffer, FRHIBuffer dscBuffer) { }
         public virtual void CopyBufferToTexture(FRHIBuffer srcBuffer, FRHITexture dscTexture) { }
         public virtual void CopyTextureToBuffer(FRHITexture srcTexture, FRHIBuffer dscBuffer) { }
         public virtual void CopyTextureToTexture(FRHITexture srcTexture, FRHITexture dscTexture) { }
+        public virtual void CopyAccelerationStructure() { }
+        public virtual void BuildAccelerationStructure() { }
         public virtual void BeginQuery(FRHIQuery query) { }
         public virtual void EndQuery(FRHIQuery query) { }
         public virtual void SetComputePipelineState(FRHIComputePipelineState computePipelineState) { }
+        public virtual void SetComputeConstantBufferView(in int slot, FRHIConstantBufferView shaderResourceView) { }
+        public virtual void SetComputeShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) { }
+        public virtual void SetComputeUnorderedAccessView(in int slot, FRHIUnorderedAccessView shaderResourceView) { }
         public virtual void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ) { }
         public virtual void DispatchComputeIndirect(FRHIBuffer argsBuffer, in uint argsOffset) { }
         public virtual void SetRayTracePipelineState(FRHIRayTracePipelineState rayTracePipelineState) { }
-        public virtual void CopyAccelerationStructure() { }
-        public virtual void BuildAccelerationStructure() { }
         public virtual void DispatchRay(in uint sizeX, in uint sizeY, in uint sizeZ) { }
         public virtual void DispatchRayIndirect(FRHIBuffer argsBuffer, in uint argsOffset) { }
         public virtual void SetScissor() { }
@@ -90,12 +92,15 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void EndEvent() { }
         public virtual void BeginRenderPass(FRHITexture depthBuffer, params FRHITexture[] colorBuffer) { }
         public virtual void EndRenderPass() { }
-        public virtual void SetStencilRef() { }
+        public virtual void SetStencilRef(in int stencilRef) { }
         public virtual void SetBlendFactor() { }
         public virtual void SetDepthBounds(in float min, in float max) { }
         public virtual void SetShadingRate(FRHITexture texture) { }
         public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo) { }
         public virtual void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState) { }
+        public virtual void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView shaderResourceView) { }
+        public virtual void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) { }
+        public virtual void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView shaderResourceView) { }
         public virtual void SetPrimitiveTopology(EPrimitiveTopology topologyType) { }
         public virtual void SetIndexBuffer(FRHIIndexBufferView indexBufferView) { }
         public virtual void SetVertexBuffer(FRHIVertexBufferView vertexBufferView) { }
