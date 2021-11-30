@@ -13,7 +13,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         public virtual ulong copyFrequency => 0;
         public virtual ulong computeFrequency => 0;
-        public virtual ulong graphicsFrequency => 0;
+        public virtual ulong renderFrequency => 0;
 
         public FRHIGraphicsContext() { }
 
@@ -41,7 +41,7 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void CreateResourceInputLayout() { }
         public virtual FRHIBuffer CreateBuffer(in FRHIBufferDescription description) { return null; }
         public virtual FRHIBufferRef GetBuffer(in FRHIBufferDescription description) { return default; }
-        public virtual void ReleaseBuffer(FRHIBufferRef bufferRef) { }
+        public virtual void ReleaseBuffer(in FRHIBufferRef bufferRef) { }
         public virtual FRHITexture CreateTexture(in FRHITextureDescription description) { return null; }
         public virtual FRHITextureRef GetTexture(in FRHITextureDescription description) { return default; }
         public virtual void ReleaseTexture(FRHITextureRef textureRef) { }
