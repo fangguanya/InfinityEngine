@@ -120,10 +120,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 data.AsSpan().CopyTo(uploadResourcePtr);
                 uploadResource.Unmap(0);
 
-                FD3DCommandBuffer d3dCmdList = (FD3DCommandBuffer)cmdBuffer;
-                d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdList.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+                FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
+                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+                d3dCmdBuffer.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 
@@ -131,10 +131,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                FD3DCommandBuffer d3dCmdList = (FD3DCommandBuffer)cmdBuffer;
-                d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdList.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+                FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
+                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
+                d3dCmdBuffer.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
             }
         }
 
@@ -153,10 +153,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                FD3DCommandBuffer d3dCmdList = (FD3DCommandBuffer)cmdBuffer;
-                d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                d3dCmdList.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
+                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
+                d3dCmdBuffer.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
 
                 //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
                 IntPtr readbackResourcePtr = readbackResource.Map(0);
@@ -169,10 +169,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                FD3DCommandBuffer d3dCmdList = (FD3DCommandBuffer)cmdBuffer;
-                d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                d3dCmdList.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
-                //d3dCmdList.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
+                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
+                d3dCmdBuffer.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
             }
         }
 
