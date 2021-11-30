@@ -219,6 +219,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
+        public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView) 
+        {
+            nativeCmdList.IASetIndexBuffer(indexBufferView.nativeView);
+        }
+
+        public override void SetVertexBuffer(in int slot, FRHIVertexBufferView vertexBufferView) 
+        {
+            nativeCmdList.IASetVertexBuffers(slot, vertexBufferView.nativeView);
+        }
+
         public override void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
         {
             nativeCmdList.SetGraphicsRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
@@ -232,16 +242,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
         public override void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
         {
             nativeCmdList.SetGraphicsRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
-        }
-
-        public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView) 
-        {
-            nativeCmdList.IASetIndexBuffer(indexBufferView.nativeView);
-        }
-
-        public override void SetVertexBuffer(FRHIVertexBufferView vertexBufferView) 
-        {
-            nativeCmdList.IASetVertexBuffers(0, vertexBufferView.nativeView);
         }
 
         public override void DrawIndexInstanced(in int indexCount, in int startIndex, in int startVertex, in int instanceCount, in int startInstance)

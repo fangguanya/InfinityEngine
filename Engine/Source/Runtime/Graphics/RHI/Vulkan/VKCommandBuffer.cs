@@ -198,6 +198,16 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
+        public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView)
+        {
+            
+        }
+
+        public override void SetVertexBuffer(in int slot,FRHIVertexBufferView vertexBufferView)
+        {
+            
+        }
+        
         public override void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
         {
             
@@ -209,16 +219,6 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
         }
 
         public override void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
-        {
-            
-        }
-
-        public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView)
-        {
-            
-        }
-
-        public override void SetVertexBuffer(FRHIVertexBufferView vertexBufferView)
         {
             
         }

@@ -99,11 +99,11 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combiners) { }
         public virtual void SetPrimitiveTopology(EPrimitiveTopology topologyType) { }
         public virtual void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState) { }
+        public virtual void SetIndexBuffer(FRHIIndexBufferView indexBufferView) { }
+        public virtual void SetVertexBuffer(in int slot, FRHIVertexBufferView vertexBufferView) { }
         public virtual void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView) { }
         public virtual void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) { }
         public virtual void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView) { }
-        public virtual void SetIndexBuffer(FRHIIndexBufferView indexBufferView) { }
-        public virtual void SetVertexBuffer(FRHIVertexBufferView vertexBufferView) { }
         public virtual void DrawIndexInstanced(in int indexCount, in int startIndex, in int startVertex, in int instanceCount, in int startInstance) { }
         public virtual void DrawMultiIndexInstanced(FRHIBuffer argsBuffer, in uint argsOffset, FRHIBuffer countBuffer, in uint countOffset) { }
         public virtual void DrawIndexInstancedIndirect(FRHIBuffer argsBuffer, in uint argsOffset) { }
