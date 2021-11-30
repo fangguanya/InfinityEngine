@@ -113,9 +113,19 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
+        public override void SetComputeConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
+        {
+            nativeCmdList.SetComputeRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
+        }
+
         public override void SetComputeShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) 
         {
-            //nativeCmdList.SetComputeRootShaderResourceView(slot, shaderResourceView.descriptorHandle.);
+            nativeCmdList.SetComputeRootShaderResourceView(slot, shaderResourceView.virtualAddressGPU);
+        }
+
+        public override void SetComputeUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        {
+            nativeCmdList.SetComputeRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
         }
 
         public override void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ)
@@ -194,9 +204,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList.RSSetShadingRateImage(d3dTexture.defaultResource);
         }
 
-        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo)
+        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combiners)
         {
+            nativeCmdList.RSSetShadingRate((ShadingRate)shadingRate, null);
+        }
 
+        public override void SetPrimitiveTopology(EPrimitiveTopology topologyType)
+        {
+            this.topologyType = topologyType;
         }
 
         public override void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState)
@@ -204,19 +219,29 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetPrimitiveTopology(EPrimitiveTopology topologyType) 
+        public override void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
         {
-            this.topologyType = topologyType;
+            nativeCmdList.SetGraphicsRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
+        }
+
+        public override void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
+        {
+            nativeCmdList.SetGraphicsRootShaderResourceView(slot, shaderResourceView.virtualAddressGPU);
+        }
+
+        public override void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        {
+            nativeCmdList.SetGraphicsRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
         }
 
         public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView) 
         {
-            nativeCmdList.IASetIndexBuffer(indexBufferView.nativeBufferView);
+            nativeCmdList.IASetIndexBuffer(indexBufferView.nativeView);
         }
 
         public override void SetVertexBuffer(FRHIVertexBufferView vertexBufferView) 
         {
-            nativeCmdList.IASetVertexBuffers(0, vertexBufferView.nativeBufferView);
+            nativeCmdList.IASetVertexBuffers(0, vertexBufferView.nativeView);
         }
 
         public override void DrawIndexInstanced(in int indexCount, in int startIndex, in int startVertex, in int instanceCount, in int startInstance)

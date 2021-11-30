@@ -78,9 +78,9 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void BeginQuery(FRHIQuery query) { }
         public virtual void EndQuery(FRHIQuery query) { }
         public virtual void SetComputePipelineState(FRHIComputePipelineState computePipelineState) { }
-        public virtual void SetComputeConstantBufferView(in int slot, FRHIConstantBufferView shaderResourceView) { }
+        public virtual void SetComputeConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView) { }
         public virtual void SetComputeShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) { }
-        public virtual void SetComputeUnorderedAccessView(in int slot, FRHIUnorderedAccessView shaderResourceView) { }
+        public virtual void SetComputeUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView) { }
         public virtual void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ) { }
         public virtual void DispatchComputeIndirect(FRHIBuffer argsBuffer, in uint argsOffset) { }
         public virtual void SetRayTracePipelineState(FRHIRayTracePipelineState rayTracePipelineState) { }
@@ -96,12 +96,12 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void SetBlendFactor() { }
         public virtual void SetDepthBounds(in float min, in float max) { }
         public virtual void SetShadingRate(FRHITexture texture) { }
-        public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo) { }
-        public virtual void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState) { }
-        public virtual void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView shaderResourceView) { }
-        public virtual void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) { }
-        public virtual void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView shaderResourceView) { }
+        public virtual void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combiners) { }
         public virtual void SetPrimitiveTopology(EPrimitiveTopology topologyType) { }
+        public virtual void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState) { }
+        public virtual void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView) { }
+        public virtual void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) { }
+        public virtual void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView) { }
         public virtual void SetIndexBuffer(FRHIIndexBufferView indexBufferView) { }
         public virtual void SetVertexBuffer(FRHIVertexBufferView vertexBufferView) { }
         public virtual void DrawIndexInstanced(in int indexCount, in int startIndex, in int startVertex, in int instanceCount, in int startInstance) { }

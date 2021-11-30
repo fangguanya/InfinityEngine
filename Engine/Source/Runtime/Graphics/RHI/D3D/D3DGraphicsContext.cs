@@ -348,32 +348,27 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer buffer)
         {
-            FRHIIndexBufferView ibv = new FRHIIndexBufferView();
-            return ibv;
+            return null;
         }
 
         public override FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer buffer)
         {
-            FRHIVertexBufferView vbo = new FRHIVertexBufferView();
-            return vbo;
+            return null;
         }
 
         public override FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture)
         {
-            FRHIDeptnStencilView dsv = new FRHIDeptnStencilView();
-            return dsv;
+            return null;
         }
 
         public override FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture)
         {
-            FRHIRenderTargetView rtv = new FRHIRenderTargetView();
-            return rtv;
+            return null;
         }
 
         public override FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer buffer)
         {
-            FRHIConstantBufferView cbv = new FRHIConstantBufferView();
-            return cbv;
+            return null;
         }
 
         public override FRHIShaderResourceView CreateShaderResourceView(FRHIBuffer buffer)
@@ -395,8 +390,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHIShaderResourceView CreateShaderResourceView(FRHITexture texture)
         {
-            FRHIShaderResourceView srv = new FRHIShaderResourceView();
-            return srv;
+            return null;
         }
 
         public override FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer buffer)
@@ -417,8 +411,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture)
         {
-            FRHIUnorderedAccessView uav = new FRHIUnorderedAccessView();
-            return uav;
+            return null;
         }
 
         public override FRHIResourceSet CreateResourceSet(in int count)

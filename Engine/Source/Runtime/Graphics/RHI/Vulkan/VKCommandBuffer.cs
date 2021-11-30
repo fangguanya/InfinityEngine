@@ -93,9 +93,19 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
+        public override void SetComputeConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
+        {
+            
+        }
+
         public override void SetComputeShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
         {
-            //nativeCmdList.SetComputeRootShaderResourceView(slot, shaderResourceView.descriptorHandle.);
+           
+        }
+
+        public override void SetComputeUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        {
+            
         }
 
         public override void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ)
@@ -173,12 +183,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
             
         }
 
-        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combineMathdo)
-        {
-
-        }
-
-        public override void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState)
+        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combiners)
         {
 
         }
@@ -186,6 +191,26 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
         public override void SetPrimitiveTopology(EPrimitiveTopology topologyType)
         {
             this.topologyType = topologyType;
+        }
+
+        public override void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState)
+        {
+
+        }
+
+        public override void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
+        {
+            
+        }
+
+        public override void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
+        {
+            
+        }
+
+        public override void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        {
+            
         }
 
         public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView)
