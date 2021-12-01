@@ -7,8 +7,7 @@ namespace InfinityEngine.Graphics.RHI
 		Occlusion = 0,
 		Timestamp = 1,
 		Statistics = 2,
-		CopyTimestamp = 5,
-		ComputeTimestamp = 6
+		CopyTimestamp = 5
 	}
 
     public class FRHIQuery : FDisposable
@@ -25,7 +24,7 @@ namespace InfinityEngine.Graphics.RHI
 	internal class FRHIQueryContext : FDisposable
 	{
 		internal int queryCount;
-		internal bool IsReadReady;
+		internal bool IsReady;
 		internal ulong[] queryData;
 		internal EQueryType queryType;
 

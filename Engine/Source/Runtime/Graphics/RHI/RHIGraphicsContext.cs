@@ -16,7 +16,6 @@ namespace InfinityEngine.Graphics.RHI
         public virtual ulong renderFrequency => 0;
 
         public FRHIGraphicsContext() { }
-
         internal virtual FRHICommandContext SelectContext(in EContextType contextType) { return null; }
         public virtual FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null) { return null; }
         public virtual FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = true) { return null; }

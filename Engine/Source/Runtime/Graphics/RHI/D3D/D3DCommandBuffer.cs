@@ -99,13 +99,18 @@ namespace InfinityEngine.Graphics.RHI.D3D
         public override void BeginQuery(FRHIQuery query)
         {
             FD3DQuery d3dQuery = (FD3DQuery)query;
-            nativeCmdList.EndQuery(d3dQuery.context.queryHeap, d3dQuery.context.queryType.GetNativeQueryType(), query.indexHead);
+            if (d3dQuery.context.IsReady) {
+                nativeCmdList.EndQuery(d3dQuery.context.queryHeap, d3dQuery.context.queryType.GetNativeQueryType(), query.indexHead);
+            }
+                
         }
 
         public override void EndQuery(FRHIQuery query)
         {
             FD3DQuery d3dQuery = (FD3DQuery)query;
-            nativeCmdList.EndQuery(d3dQuery.context.queryHeap, d3dQuery.context.queryType.GetNativeQueryType(), query.indexLast);
+            if (d3dQuery.context.IsReady) {
+                nativeCmdList.EndQuery(d3dQuery.context.queryHeap, d3dQuery.context.queryType.GetNativeQueryType(), query.indexLast);
+            }
         }
 
         public override void SetComputePipelineState(FRHIComputePipelineState computePipelineState)

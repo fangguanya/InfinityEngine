@@ -92,11 +92,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
 		{
 			FD3DDevice d3dDevice = (FD3DDevice)device;
 
-			this.IsReadReady = true;
+			this.IsReady = true;
 			this.queryType = queryType;
 			this.queryCount= (int)queryCount;
 			this.queryData = new ulong[queryCount];
-			this.queryFence = new FD3DFence(device, null);
+			this.queryFence = new FD3DFence(device);
 			this.m_QueryMap = new TArray<int>(queryCount);
 			this.m_StackPool = new Stack<FD3DQuery>(64);
 			for (int i = 0; i < queryCount; ++i) { this.m_QueryMap.Add(i); }
@@ -135,7 +135,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
 		public override void Submit(FRHICommandContext commandContext)
         {
-			if (IsReadReady) 
+			if (IsReady) 
 			{
 				cmdBuffer.Clear();
 				cmdBuffer.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
@@ -146,7 +146,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
 		public override void GetData()
 		{
-			if (IsReadReady = queryFence.IsCompleted) 
+			if (IsReady = queryFence.IsCompleted) 
 			{
 				IntPtr queryResult_Ptr = queryResult.Map(0);
 				queryResult_Ptr.CopyTo(queryData.AsSpan());
