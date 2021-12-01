@@ -85,8 +85,8 @@ namespace ExampleProject
                 graphicsContext.Submit();
 
                 //Console.WriteLine("||");
-                Console.WriteLine("Draw : " + cpuTime + "ms");
-                Console.WriteLine("GPU  : " + gpuTime + "ms");
+                Console.WriteLine("CPU : " + cpuTime + "ms");
+                Console.WriteLine("GPU : " + gpuTime + "ms");
             });
 
             Console.WriteLine("||");
