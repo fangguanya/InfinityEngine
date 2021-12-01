@@ -171,7 +171,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
             m_QueryContext[1].Submit(m_CopyCmdContext);
             m_QueryContext[0].Submit(m_RenderCmdContext);
-
             m_RenderCmdContext.Flush();
 
             m_QueryContext[0].GetData();

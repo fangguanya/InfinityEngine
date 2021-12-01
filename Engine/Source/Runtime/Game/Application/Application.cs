@@ -2,7 +2,6 @@
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
-using InfinityEngine.Core.Profiler;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using InfinityEngine.Core.Thread.Sync;

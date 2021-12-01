@@ -102,7 +102,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
             if (d3dQuery.context.IsReady) {
                 nativeCmdList.EndQuery(d3dQuery.context.queryHeap, d3dQuery.context.queryType.GetNativeQueryType(), query.indexHead);
             }
-                
         }
 
         public override void EndQuery(FRHIQuery query)

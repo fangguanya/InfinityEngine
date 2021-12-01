@@ -58,7 +58,10 @@ namespace InfinityEngine.Game.System
                 {
                     User32.TranslateMessage(ref msg);
                     User32.DispatchMessage(ref msg);
-                    if (msg.Value == (uint)WindowMessage.Quit) { IsLoopExit = true; break; }
+                    if (msg.Value == (uint)WindowMessage.Quit) { 
+                        IsLoopExit = true; 
+                        break; 
+                    }
                 }
 
                 m_TimeCounter.Restart();
@@ -110,9 +113,7 @@ namespace InfinityEngine.Game.System
                     m_DeltaTime += m_LastDeltaTimes[i];
                 }
                 m_DeltaTime /= m_LastDeltaTimes.Count;
-            }
-            else
-            {
+            } else {
                 m_DeltaTime = m_LastDeltaTimes[m_LastDeltaTimes.Count - 1];
             }
         }
