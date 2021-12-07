@@ -27,17 +27,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TerraFX.Interop.D3D12MemoryAllocator" Version="2.0.0-beta2" />
+    <PackageReference Include="TerraFX.Interop.D3D12MemoryAllocator" Version="2.0.0-beta3" />
     <PackageReference Include="TerraFX.Interop.Vulkan" Version="1.2.189-rc1" />
     <PackageReference Include="Veldrid.MetalBindings" Version="4.8.0" />
     <PackageReference Include="Veldrid.RenderDoc" Version="1.0.1" />
     <PackageReference Include="Veldrid.SPIRV" Version="1.0.14" />
-    <PackageReference Include="Vortice.Direct3D12" Version="2.1.0-beta2" />
-    <PackageReference Include="Vortice.DirectX" Version="2.1.0-beta2" />
-    <PackageReference Include="Vortice.Dxc" Version="2.1.0-beta2" />
-    <PackageReference Include="Vortice.DXGI" Version="2.1.0-beta2" />
+    <PackageReference Include="Vortice.Direct3D12" Version="2.1.0-beta6" />
+    <PackageReference Include="Vortice.DirectX" Version="2.1.0-beta6" />
+    <PackageReference Include="Vortice.Dxc" Version="2.1.0-beta6" />
+    <PackageReference Include="Vortice.DXGI" Version="2.1.0-beta6" />
     <PackageReference Include="Vortice.Mathematics" Version="1.3.21" />
-    <PackageReference Include="Vortice.Vulkan" Version="1.4.4" />
+    <PackageReference Include="Vortice.Vulkan" Version="1.4.6" />
     <PackageReference Include="WaveEngine.HLSLEverywhere" Version="3.3.0.8617-preview" />
   </ItemGroup>
 
