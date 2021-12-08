@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using InfinityEngine.Core.Memory;
-using InfinityEngine.Core.Mathmatics;
 
 namespace InfinityEngine.Core.Container
 {
@@ -150,43 +149,40 @@ namespace InfinityEngine.Core.Container
             length = 0;
         }
 
-        /*public int Add(in T value)
+        public int Add(in T* ptr)
         {
-            if (length >= m_Capacity)
-            {
+            if (length >= m_Capacity) {
                 m_Capacity *= 2;
-                T* newArray = (T*)FMemoryUtil.Malloc(sizeof(T), m_Capacity);
-                ReadOnlySpan<T> span = new ReadOnlySpan<T>(m_Array, length);
-                span.CopyTo(new Span<T>((void*)newArray, length));
+                T** newArray = (T**)FMemoryUtil.Alloc(sizeof(T*), m_Capacity);
+                //ReadOnlySpan<T> span = new ReadOnlySpan<T>(m_Array, length);
+                //span.CopyTo(new Span<T>((void*)newArray, length));
                 FMemoryUtil.Free(m_Array);
                 m_Array = newArray;
             }
 
-            m_Array[length] = value;
+            m_Array[length] = ptr;
             ++length;
             return length;
         }
 
-        public int AddUnique(in T value)
+        public int AddUnique(in T* ptr)
         {
             for (int i = 0; i < length; ++i)
             {
-                if (value.Equals(m_Array[i]))
-                {
+                if (ptr == m_Array[i]) {
                     return -1;
                 }
             }
-            Add(value);
+            Add(ptr);
 
             return 0;
         }
 
-        public void Remove(in T value)
+        public void Remove(in T* ptr)
         {
             for (int i = 0; i < length; ++i)
             {
-                if (value.Equals(m_Array[i]))
-                {
+                if (ptr == m_Array[i]) {
                     RemoveAtIndex(i);
                     break;
                 }
@@ -195,23 +191,20 @@ namespace InfinityEngine.Core.Container
 
         public void RemoveAtIndex(in int index)
         {
-            //int lastIndex = length - 1;
-
-            Span<T> copySpan = new Span<T>(m_Array, length);
+            /*Span<T> copySpan = new Span<T>(m_Array, length);
             Span<T> dscSpan = copySpan.Slice(index, length - index);
             Span<T> srcSpan = copySpan.Slice(index + 1, length - (index + 1));
-            srcSpan.CopyTo(dscSpan);
+            srcSpan.CopyTo(dscSpan);*/
 
-            m_Array[length - 1] = default(T);
+            m_Array[length - 1] = null;
             length--;
         }
 
-        public void RemoveSwap(in T value)
+        public void RemoveSwap(in T* ptr)
         {
             for (int i = 0; i < length; ++i)
             {
-                if (value.Equals(m_Array[i]))
-                {
+                if (ptr == m_Array[i]) {
                     RemoveSwapAtIndex(i);
                     break;
                 }
@@ -220,12 +213,11 @@ namespace InfinityEngine.Core.Container
 
         public void RemoveSwapAtIndex(in int index)
         {
-            if (index != length - 1)
-            {
+            if (index != length - 1) {
                 m_Array[index] = m_Array[length - 1];
             }
 
-            m_Array[length - 1] = default(T);
+            m_Array[length - 1] = null;
             length--;
         }
 
@@ -233,30 +225,28 @@ namespace InfinityEngine.Core.Container
         {
             if (keepData)
             {
-                T* newArray = (T*)FMemoryUtil.Malloc(sizeof(T), newLength);
-                ReadOnlySpan<T> span = new ReadOnlySpan<T>(m_Array, newLength);
-                span.CopyTo(new Span<T>((void*)newArray, newLength));
+                T** newArray = (T**)FMemoryUtil.Alloc(sizeof(T*), newLength);
+                //ReadOnlySpan<T> span = new ReadOnlySpan<T>(m_Array, newLength);
+                //span.CopyTo(new Span<T>((void*)newArray, newLength));
                 FMemoryUtil.Free(m_Array);
                 m_Array = newArray;
-            }
-            else
-            {
+            } else {
                 FMemoryUtil.Free(m_Array);
-                m_Array = (T*)FMemoryUtil.Malloc(sizeof(T), newLength);
+                m_Array = (T**)FMemoryUtil.Alloc(sizeof(T*), newLength);
             }
 
             length = newLength;
-        }*/
+        }
 
         public void Dispose()
         {
-            /*FMemoryUtil.Free(m_Array);
+            FMemoryUtil.Free(m_Array);
             m_Array = null;
-            m_Capacity = 0;*/
+            m_Capacity = 0;
         }
     }
 
-    internal unsafe sealed class TValueArrayDebugger<T> where T : unmanaged
+    internal unsafe class TValueArrayDebugger<T> where T : unmanaged
     {
         TValueArray<T> m_Target;
 

@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
+using TerraFX.Interop;
 using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Core.Memory
@@ -32,7 +31,7 @@ namespace InfinityEngine.Core.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MemCpy<T>(ReadOnlySpan<T> src, IntPtr dsc) where T : struct
+        public static void Copy<T>(ReadOnlySpan<T> src, IntPtr dsc) where T : struct
         {
             unsafe
             {
@@ -41,7 +40,7 @@ namespace InfinityEngine.Core.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MemCpyStride(IntPtr src, IntPtr dsc, int sizeInBytesToCopy)
+        public static void CopyStride(IntPtr src, IntPtr dsc, int sizeInBytesToCopy)
         {
             unsafe
             {
@@ -52,19 +51,19 @@ namespace InfinityEngine.Core.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void* Alloc(in int size, in int count, in int alignment = 64)
         {
-            return TerraFX.Interop.Mimalloc.mi_mallocn_aligned((uint)count, (uint)size, (uint)alignment);
+            return Mimalloc.mi_mallocn_aligned((uint)count, (uint)size, (uint)alignment);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void* Realloc(in void* memory, in int size, in int count, in int alignment = 64)
         {
-            return TerraFX.Interop.Mimalloc.mi_reallocn_aligned(memory, (uint)count, (uint)size, (uint)alignment);
+            return Mimalloc.mi_reallocn_aligned(memory, (uint)count, (uint)size, (uint)alignment);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void Free(in void* memory, in int alignment = 64)
         {
-            TerraFX.Interop.Mimalloc.mi_free_aligned(memory, (uint)alignment);
+            Mimalloc.mi_free_aligned(memory, (uint)alignment);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
