@@ -50,7 +50,7 @@ namespace InfinityEngine.Core.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void* Malloc(in int size, in int count, in int alignment = 64)
+        public static unsafe void* Alloc(in int size, in int count, in int alignment = 64)
         {
             return TerraFX.Interop.Mimalloc.mi_mallocn_aligned((uint)count, (uint)size, (uint)alignment);
         }
