@@ -127,11 +127,11 @@ namespace InfinityEngine.Core.Container
     public unsafe struct TPtrArray<T> : IDisposable where T : unmanaged
     {
         public int length;
-        public ref T this[int index]
+        public ref T* this[int index]
         {
             get
             {
-                return ref *m_Array[index];
+                return ref m_Array[index];
             }
         }
 
