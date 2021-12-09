@@ -159,7 +159,7 @@ namespace ExampleProject
 
 
             //TArray Test
-            /*TNativeArray<float> MyArray = new TNativeArray<float>(3);
+            /*TValueArray<float> MyArray = new TValueArray<float>(3);
             MyArray.Add(0.1f);
             MyArray.Add(0.2f);
             MyArray.Add(0.3f);
@@ -179,7 +179,7 @@ namespace ExampleProject
             ref float value = ref MyArray[4];
             value += 0.5f;
 
-            MyArray.RemoveAtIndex(4);
+            MyArray.RemoveAtIndex(3);
             MyArray.Dispose();
             Console.ReadKey();*/
 

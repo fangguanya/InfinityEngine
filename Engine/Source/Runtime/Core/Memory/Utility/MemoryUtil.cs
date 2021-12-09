@@ -67,7 +67,7 @@ namespace InfinityEngine.Core.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MemSet(void* src, in long size, in byte value)
+        public static void MemSet(void* src, long size, in byte value)
         {
             byte* ptr = (byte*)src;
             while (size-- > 0) {
@@ -88,13 +88,13 @@ namespace InfinityEngine.Core.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void* Realloc(in void* memory, in int size, in int count, in int alignment = 64)
+        public static void* Realloc(void* memory, in int size, in int count, in int alignment = 64)
         {
             return Mimalloc.mi_reallocn_aligned(memory, (uint)count, (uint)size, (uint)alignment);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Free(in void* memory, in int alignment = 64)
+        public static void Free(void* memory, in int alignment = 64)
         {
             Mimalloc.mi_free_aligned(memory, (uint)alignment);
         }
