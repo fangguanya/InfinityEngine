@@ -4,28 +4,34 @@ using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Core.Memory
 {
-    public static class FMemoryUtil
+    public unsafe static class FMemoryUtil
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void CopyTo<T>(this Span<T> src, IntPtr dsc) where T : struct
+        public static int SizeOf<T>()
+        {
+            return Unsafe.SizeOf<T>();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CopyTo<T>(this Span<T> src, IntPtr dsc) where T : struct
         {
             src.CopyTo(new Span<T>(dsc.ToPointer(), src.Length));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void CopyTo<T>(this IntPtr src, Span<T> dsc) where T : struct
+        public static void CopyTo<T>(this IntPtr src, Span<T> dsc) where T : struct
         {
             new Span<T>(src.ToPointer(), dsc.Length).CopyTo(dsc);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void CopyTo(this IntPtr src, IntPtr dsc, int sizeInBytesToCopy)
+        public static void CopyTo(this IntPtr src, IntPtr dsc, in int size)
         {
-            CopyTo(new ReadOnlySpan<byte>(src.ToPointer(), sizeInBytesToCopy), dsc);
+            CopyTo(new ReadOnlySpan<byte>(src.ToPointer(), size), dsc);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void CopyTo<T>(this ReadOnlySpan<T> src, IntPtr dsc) where T : struct
+        public static void CopyTo<T>(this ReadOnlySpan<T> src, IntPtr dsc) where T : struct
         {
             src.CopyTo(new Span<T>(dsc.ToPointer(), src.Length));
         }
@@ -40,36 +46,57 @@ namespace InfinityEngine.Core.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CopyStride(IntPtr src, IntPtr dsc, int sizeInBytesToCopy)
+        public static void CopyBlock(IntPtr src, IntPtr dsc, in int size)
         {
             unsafe
             {
-                Unsafe.CopyBlockUnaligned((void*)dsc, (void*)src, (uint)sizeInBytesToCopy);
+                Unsafe.CopyBlockUnaligned((void*)dsc, (void*)src, (uint)size);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void* Alloc(in int size, in int count, in int alignment = 64)
+        public static void MemCpy(void* src, void* dsc, in long size)
+        {
+            Buffer.MemoryCopy(src, dsc, size, size);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MemMove(void* src, void* dsc, in long size)
+        {
+            Buffer.MemoryCopy(src, dsc, size, size);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MemSet(void* src, in long size, in byte value)
+        {
+            byte* ptr = (byte*)src;
+            while (size-- > 0) {
+                *(ptr + size) = 0;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MemZero(void* dsc, in long size)
+        {
+            MemSet(dsc, size, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void* Malloc(in int size, in int count, in int alignment = 64)
         {
             return Mimalloc.mi_mallocn_aligned((uint)count, (uint)size, (uint)alignment);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void* Realloc(in void* memory, in int size, in int count, in int alignment = 64)
+        public static void* Realloc(in void* memory, in int size, in int count, in int alignment = 64)
         {
             return Mimalloc.mi_reallocn_aligned(memory, (uint)count, (uint)size, (uint)alignment);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void Free(in void* memory, in int alignment = 64)
+        public static void Free(in void* memory, in int alignment = 64)
         {
             Mimalloc.mi_free_aligned(memory, (uint)alignment);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int SizeOf<T>()
-        {
-            return Unsafe.SizeOf<T>();
         }
     }
 }

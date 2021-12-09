@@ -141,7 +141,7 @@ namespace InfinityEngine.Core.Container
         {
             length = 0;
             m_Capacity = capacity;
-            m_Array = (T**)FMemoryUtil.Alloc(sizeof(T), capacity);
+            m_Array = (T**)FMemoryUtil.Malloc(sizeof(T), capacity);
         }
 
         public void Clear()
@@ -153,7 +153,7 @@ namespace InfinityEngine.Core.Container
         {
             if (length >= m_Capacity) {
                 m_Capacity *= 2;
-                T** newArray = (T**)FMemoryUtil.Alloc(sizeof(T*), m_Capacity);
+                T** newArray = (T**)FMemoryUtil.Malloc(sizeof(T*), m_Capacity);
                 //ReadOnlySpan<T> span = new ReadOnlySpan<T>(m_Array, length);
                 //span.CopyTo(new Span<T>((void*)newArray, length));
                 FMemoryUtil.Free(m_Array);
@@ -225,14 +225,14 @@ namespace InfinityEngine.Core.Container
         {
             if (keepData)
             {
-                T** newArray = (T**)FMemoryUtil.Alloc(sizeof(T*), newLength);
+                T** newArray = (T**)FMemoryUtil.Malloc(sizeof(T*), newLength);
                 //ReadOnlySpan<T> span = new ReadOnlySpan<T>(m_Array, newLength);
                 //span.CopyTo(new Span<T>((void*)newArray, newLength));
                 FMemoryUtil.Free(m_Array);
                 m_Array = newArray;
             } else {
                 FMemoryUtil.Free(m_Array);
-                m_Array = (T**)FMemoryUtil.Alloc(sizeof(T*), newLength);
+                m_Array = (T**)FMemoryUtil.Malloc(sizeof(T*), newLength);
             }
 
             length = newLength;
@@ -296,7 +296,7 @@ namespace InfinityEngine.Core.Container
         {
             length = 0;
             m_Capacity = capacity;
-            m_Array = (T*)FMemoryUtil.Alloc(sizeof(T), capacity);
+            m_Array = (T*)FMemoryUtil.Malloc(sizeof(T), capacity);
         }
 
         public void Clear()
@@ -309,7 +309,7 @@ namespace InfinityEngine.Core.Container
             if (length >= m_Capacity)
             {
                 m_Capacity *= 2;
-                T* newArray = (T*)FMemoryUtil.Alloc(sizeof(T), m_Capacity);
+                T* newArray = (T*)FMemoryUtil.Malloc(sizeof(T), m_Capacity);
                 ReadOnlySpan<T> span = new ReadOnlySpan<T>(m_Array, length);
                 span.CopyTo(new Span<T>((void*)newArray, length));
                 FMemoryUtil.Free(m_Array);
@@ -387,14 +387,14 @@ namespace InfinityEngine.Core.Container
         {
             if (keepData)
             {
-                T* newArray = (T*)FMemoryUtil.Alloc(sizeof(T), newLength);
+                T* newArray = (T*)FMemoryUtil.Malloc(sizeof(T), newLength);
                 ReadOnlySpan<T> span = new ReadOnlySpan<T>(m_Array, newLength);
                 span.CopyTo(new Span<T>((void*)newArray, newLength));
                 FMemoryUtil.Free(m_Array);
                 m_Array = newArray;
             } else {
                 FMemoryUtil.Free(m_Array);
-                m_Array = (T*)FMemoryUtil.Alloc(sizeof(T), newLength);
+                m_Array = (T*)FMemoryUtil.Malloc(sizeof(T), newLength);
             }
 
             length = newLength;
