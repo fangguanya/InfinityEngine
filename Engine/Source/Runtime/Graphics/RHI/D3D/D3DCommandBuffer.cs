@@ -255,7 +255,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void DrawMultiIndexInstanced(FRHIBuffer argsBuffer, in uint argsOffset, FRHIBuffer countBuffer, in uint countOffset)
         {
-
+            
         }
 
         public override void DrawIndexInstancedIndirect(FRHIBuffer argsBuffer, in uint argsOffset)

@@ -83,7 +83,7 @@ namespace InfinityEngine.Graphics.RDG
             return result;
         }
 
-        internal FRDGTextureRef ImportTexture(FRHITexture rhiTexture, int shaderProperty = 0)
+        internal FRDGTextureRef ImportTexture(FRHITexture rhiTexture, in int shaderProperty = 0)
         {
             int newHandle = AddNewResource(m_Resources[(int)EResourceType.Texture], out FRDGTexture rdgTexture);
             rdgTexture.resource = rhiTexture;
@@ -93,7 +93,7 @@ namespace InfinityEngine.Graphics.RDG
             return new FRDGTextureRef(newHandle);
         }
 
-        internal FRDGTextureRef CreateTexture(in FRHITextureDescriptor textureDescriptor, int shaderProperty = 0, int temporalPassIndex = -1)
+        internal FRDGTextureRef CreateTexture(in FRHITextureDescriptor textureDescriptor, in int shaderProperty = 0, in int temporalPassIndex = -1)
         {
             int newHandle = AddNewResource(m_Resources[(int)EResourceType.Texture], out FRDGTexture rdgTexture);
             rdgTexture.desc = textureDescriptor;
@@ -126,7 +126,7 @@ namespace InfinityEngine.Graphics.RDG
             return new FRDGBufferRef(newHandle);
         }
 
-        internal FRDGBufferRef CreateBuffer(in FRHIBufferDescriptor bufferDescriptor, int temporalPassIndex = -1)
+        internal FRDGBufferRef CreateBuffer(in FRHIBufferDescriptor bufferDescriptor, in int temporalPassIndex = -1)
         {
             int newHandle = AddNewResource(m_Resources[(int)EResourceType.Buffer], out FRDGBuffer bufferResource);
             bufferResource.desc = bufferDescriptor;
@@ -150,7 +150,7 @@ namespace InfinityEngine.Graphics.RDG
             return (m_Resources[(int)EResourceType.Buffer][handle] as FRDGBuffer).desc;
         }
 
-        internal void CreateRealBuffer(int index)
+        internal void CreateRealBuffer(in int index)
         {
             var resource = m_Resources[(int)EResourceType.Buffer][index] as FRDGBuffer;
             if (!resource.imported)
@@ -170,7 +170,7 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        internal void ReleaseRealBuffer(int index)
+        internal void ReleaseRealBuffer(in int index)
         {
             var resource = m_Resources[(int)EResourceType.Buffer][index] as FRDGBuffer;
 
@@ -186,7 +186,7 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        internal void CreateRealTexture(int index)
+        internal void CreateRealTexture(in int index)
         {
             var resource = m_Resources[(int)EResourceType.Texture][index] as FRDGTexture;
 
@@ -209,7 +209,7 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        internal void ReleaseRealTexture(int index)
+        internal void ReleaseRealTexture(in int index)
         {
             var resource = m_Resources[(int)EResourceType.Texture][index] as FRDGTexture;
 

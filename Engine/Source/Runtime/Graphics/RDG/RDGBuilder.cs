@@ -9,7 +9,6 @@ namespace InfinityEngine.Graphics.RDG
     public struct FRDGContext
     {
         public FRDGObjectPool objectPool;
-        public FRHICommandBuffer cmdBuffer;
         public FRHIGraphicsContext graphicsContext;
     }
 
@@ -209,26 +208,21 @@ namespace InfinityEngine.Graphics.RDG
             return new FRDGPassRef(renderPass, m_Resources);
         }
 
-        internal void Execute(FRHIGraphicsContext graphicsContext, FRDGResourceFactory resourceFactory)
+        internal void Execute(FRHIGraphicsContext graphicsContext)
         {
             m_ExecutionExceptionWasRaised = false;
 
             #region ExecuteRenderPass
-            try
-            {
+            try {
                 m_Resources.BeginRender();
                 CompileRenderPass();
-                ExecuteRenderPass(graphicsContext, resourceFactory);
-            }
-            catch (Exception exception)
-            {
+                ExecuteRenderPass(graphicsContext);
+            } catch (Exception exception) {
                 //Debug.LogError("Execute error");
                 //if (!m_ExecutionExceptionWasRaised)
                     //Debug.LogException(exception);
                 m_ExecutionExceptionWasRaised = true;
-            }
-            finally
-            {
+            } finally {
                 ClearCompiledPass();
                 m_Resources.EndRender();
             }
@@ -475,7 +469,6 @@ namespace InfinityEngine.Graphics.RDG
             return -1;
         }
 
-
         void UpdateResourceAllocationAndSynchronization()
         {
             int lastGraphicsPipeSync = -1;
@@ -570,44 +563,7 @@ namespace InfinityEngine.Graphics.RDG
             UpdateResourceAllocationAndSynchronization();
         }
 
-        void ExecuteRenderPass(FRHIGraphicsContext graphicsContext, FRDGResourceFactory resourceFactory)
-        {
-            FRDGContext graphContext;
-            graphContext.cmdBuffer = null;
-            graphContext.objectPool = m_ObjectPool;
-            graphContext.graphicsContext = graphicsContext;
-
-            for (int passIndex = 0; passIndex < m_CompiledPassInfos.size; ++passIndex)
-            {
-                ref var passInfo = ref m_CompiledPassInfos[passIndex];
-                if (passInfo.culled)
-                    continue;
-
-                /*if (!passInfo.pass.HasRenderFunc())
-                {
-                    throw new InvalidOperationException(string.Format("RenderPass {0} was not provided with an execute function.", passInfo.pass.name));
-                }*/
-
-                try
-                {
-                    //using (new ProfilingScope(m_GraphContext.cmdBuffer, passInfo.pass.customSampler))
-                    {
-                        PreRenderPassExecute(ref graphContext, passInfo);
-                        passInfo.pass.Execute(ref graphContext);
-                        PostRenderPassExecute(ref graphContext, ref passInfo);
-                    }
-                }
-                catch (Exception e)
-                {
-                    m_ExecutionExceptionWasRaised = true;
-                    //Debug.LogError($"RenderGraph Execute error at pass {passInfo.pass.name} ({passIndex})");
-                    //Debug.LogException(e);
-                    throw;
-                }
-            }
-        }
-
-        void PreRenderPassSetRenderTargets(ref FRDGContext graphContext, in FCompiledPassInfo passInfo)
+        void PreRenderPassSetRenderTargets(in FRDGContext graphContext, in FCompiledPassInfo passInfo)
         {
             /*var pass = passInfo.pass;
             if (pass.depthBuffer.IsValid() || pass.colorBufferMaxIndex != -1)
@@ -660,68 +616,92 @@ namespace InfinityEngine.Graphics.RDG
             }*/
         }
 
-        void PreRenderPassExecute(ref FRDGContext graphContext, in FCompiledPassInfo passInfo)
+        void PreRenderPassExecute(in FRDGContext graphContext, FRHICommandBuffer cmdBuffer, ref FCompiledPassInfo passInfo)
         {
             // TODO RENDERGRAPH merge clear and setup here if possible
-            IRDGPass pass = passInfo.pass;
-
-            foreach (var bufferRef in passInfo.resourceCreateList[(int)EResourceType.Buffer])
-            {
+            foreach (var bufferRef in passInfo.resourceCreateList[(int)EResourceType.Buffer]) {
                 m_Resources.CreateRealBuffer(bufferRef);
             }
 
-            foreach (var textureRef in passInfo.resourceCreateList[(int)EResourceType.Texture])
-            {
+            foreach (var textureRef in passInfo.resourceCreateList[(int)EResourceType.Texture]) {
                 m_Resources.CreateRealTexture(textureRef);
             }
 
-            if (!pass.enableAsyncCompute)
-            {
-                graphContext.cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Render);
-            } else {
-                graphContext.cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Compute);
-            }
-
             // Synchronize with graphics or compute pipe if needed.
-            if (passInfo.syncToPassIndex != -1)
-            {
-                graphContext.graphicsContext.WaitForFence(graphContext.cmdBuffer.contextType, m_CompiledPassInfos[passInfo.syncToPassIndex].fence);
+            if (passInfo.syncToPassIndex != -1) {
+                graphContext.graphicsContext.WaitForFence(cmdBuffer.contextType, m_CompiledPassInfos[passInfo.syncToPassIndex].fence);
             }
 
             // Auto bind render target
-            PreRenderPassSetRenderTargets(ref graphContext, passInfo);
+            PreRenderPassSetRenderTargets(graphContext, passInfo);
         }
 
-        void PostRenderPassExecute(ref FRDGContext graphContext, ref FCompiledPassInfo passInfo)
+        void PostRenderPassExecute(in FRDGContext graphContext, FRHICommandBuffer cmdBuffer, ref FCompiledPassInfo passInfo)
         {
             IRDGPass pass = passInfo.pass;
 
             // The command list has been filled. We can kick the async task.
-            if (pass.enableAsyncCompute)
-            {
-                graphContext.graphicsContext.ExecuteCommandBuffer(graphContext.cmdBuffer);
+            if (pass.enableAsyncCompute) {
+                graphContext.graphicsContext.ExecuteCommandBuffer(cmdBuffer);
             } else {
-                graphContext.graphicsContext.ExecuteCommandBuffer(graphContext.cmdBuffer);
+                graphContext.graphicsContext.ExecuteCommandBuffer(cmdBuffer);
             }
 
-            if (passInfo.needGraphicsFence)
-            {
+            if (passInfo.needGraphicsFence) {
                 passInfo.fence = graphContext.graphicsContext.GetFence();
-                graphContext.graphicsContext.WriteToFence(graphContext.cmdBuffer.contextType, passInfo.fence);
+                graphContext.graphicsContext.WriteToFence(cmdBuffer.contextType, passInfo.fence);
             }
 
             m_ObjectPool.ReleaseAllTempAlloc();
 
-            foreach (var bufferRef in passInfo.resourceReleaseList[(int)EResourceType.Buffer])
-            {
+            foreach (var bufferRef in passInfo.resourceReleaseList[(int)EResourceType.Buffer]) {
                 m_Resources.ReleaseRealBuffer(bufferRef);
             }
 
-            foreach (var textureRef in passInfo.resourceReleaseList[(int)EResourceType.Texture])
-            {
+            foreach (var textureRef in passInfo.resourceReleaseList[(int)EResourceType.Texture]) {
                 m_Resources.ReleaseRealTexture(textureRef);
             }
 
+        }
+
+        void ExecuteRenderPass(FRHIGraphicsContext graphicsContext)
+        {
+            FRDGContext graphContext;
+            graphContext.objectPool = m_ObjectPool;
+            graphContext.graphicsContext = graphicsContext;
+
+            for (int passIndex = 0; passIndex < m_CompiledPassInfos.size; ++passIndex)
+            {
+                ref var passInfo = ref m_CompiledPassInfos[passIndex];
+                if (passInfo.culled) {
+                    continue;
+                }
+
+                if (!passInfo.pass.hasExecuteFunc) {
+                    throw new InvalidOperationException(string.Format("RenderPass {0} was not provided with an execute function.", passInfo.pass.name));
+                }
+
+                try {
+                    //using (new ProfilingScope(m_GraphContext.cmdBuffer, passInfo.pass.customSampler))
+                    {
+                        FRHICommandBuffer cmdBuffer = null;
+                        if (!passInfo.pass.enableAsyncCompute) {
+                            cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Render);
+                        } else {
+                            cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Compute);
+                        }
+
+                        PreRenderPassExecute(graphContext, cmdBuffer, ref passInfo);
+                        passInfo.pass.Execute(graphContext, cmdBuffer);
+                        PostRenderPassExecute(graphContext, cmdBuffer, ref passInfo);
+                    }
+                } catch (Exception e) {
+                    m_ExecutionExceptionWasRaised = true;
+                    //Debug.LogError($"RenderGraph Execute error at pass {passInfo.pass.name} ({passIndex})");
+                    //Debug.LogException(e);
+                    throw;
+                }
+            }
         }
 
         void ClearRenderPasses()

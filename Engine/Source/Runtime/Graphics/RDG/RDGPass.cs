@@ -6,13 +6,13 @@ namespace InfinityEngine.Graphics.RDG
 {
     internal abstract class IRDGPass
     {
-        internal int index;
-        internal string name;
-
+        public int index;
+        public string name;
         public int refCount;
         public int colorBufferMaxIndex;
         public bool enablePassCulling;
         public bool enableAsyncCompute;
+        public virtual bool hasExecuteFunc => false;
         public FRDGTextureRef depthBuffer;
         public FRDGTextureRef[] colorBuffers;
 
@@ -33,7 +33,7 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        public abstract void Execute(ref FRDGContext graphContext);
+        public abstract void Execute(in FRDGContext graphContext, FRHICommandBuffer cmdBuffer);
         public abstract void Release(FRDGObjectPool objectPool);
 
         public void AddResourceWrite(in FRDGResourceRef res)
@@ -67,14 +67,14 @@ namespace InfinityEngine.Graphics.RDG
                 AddResourceWrite(resource.handle);
         }
 
+        public void EnablePassCulling(in bool value)
+        {
+            enablePassCulling = value;
+        }
+
         public void EnableAsyncCompute(in bool value)
         {
             enableAsyncCompute = value;
-        }
-
-        public void AllowPassCulling(in bool value)
-        {
-            enablePassCulling = value;
         }
 
         public void Clear()
@@ -103,22 +103,23 @@ namespace InfinityEngine.Graphics.RDG
         }
     }
 
-    public delegate void FRDGExecuteFunc<T>(ref T passData, ref FRDGContext graphContext) where T : struct;
+    public delegate void FRDGExecuteFunc<T>(in T passData, in FRDGContext graphContext, FRHICommandBuffer cmdBuffer) where T : struct;
 
     internal sealed class FRDGPass<T> : IRDGPass where T : struct
     {
-        internal T passData;
-        internal FRDGExecuteFunc<T> ExcuteFunc;
+        public T passData;
+        public FRDGExecuteFunc<T> m_ExcuteFunc;
+        public override bool hasExecuteFunc { get { return m_ExcuteFunc != null; } }
 
-        public override void Execute(ref FRDGContext graphContext)
+        public override void Execute(in FRDGContext graphContext, FRHICommandBuffer cmdBuffer)
         {
-            ExcuteFunc(ref passData, ref graphContext);
+            m_ExcuteFunc(passData, graphContext, cmdBuffer);
         }
 
         public override void Release(FRDGObjectPool graphObjectPool)
         {
             Clear();
-            ExcuteFunc = null;
+            m_ExcuteFunc = null;
             graphObjectPool.Release(this);
         }
     }
@@ -138,14 +139,14 @@ namespace InfinityEngine.Graphics.RDG
 
         public ref T GetPassData<T>() where T : struct => ref ((FRDGPass<T>)m_RenderPass).passData;
 
-        public void EnableAsyncCompute(bool value)
+        public void EnablePassCulling(in bool value)
         {
-            m_RenderPass.EnableAsyncCompute(value);
+            m_RenderPass.EnablePassCulling(value);
         }
 
-        public void AllowPassCulling(bool value)
+        public void EnableAsyncCompute(in bool value)
         {
-            m_RenderPass.AllowPassCulling(value);
+            m_RenderPass.EnableAsyncCompute(value);
         }
 
         public FRDGTextureRef ReadTexture(in FRDGTextureRef input)
@@ -186,7 +187,7 @@ namespace InfinityEngine.Graphics.RDG
             return result;
         }
 
-        public FRDGTextureRef UseDepthBuffer(in FRDGTextureRef input, EDepthAccess accessFlag)
+        public FRDGTextureRef UseDepthBuffer(in FRDGTextureRef input, in EDepthAccess accessFlag)
         {
             m_RenderPass.SetDepthBuffer(input, accessFlag);
             return input;
@@ -198,12 +199,12 @@ namespace InfinityEngine.Graphics.RDG
             return input;
         }
 
-        public void SetRenderFunc<T>(FRDGExecuteFunc<T> ExcuteFunc) where T : struct
+        public void SetRenderFunc<T>(FRDGExecuteFunc<T> excuteFunc) where T : struct
         {
-            ((FRDGPass<T>)m_RenderPass).ExcuteFunc = ExcuteFunc;
+            ((FRDGPass<T>)m_RenderPass).m_ExcuteFunc = excuteFunc;
         }
 
-        void Dispose(bool disposing)
+        void Dispose(in bool disposing)
         {
             if (IsDisposed)
                 return;
