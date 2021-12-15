@@ -23,8 +23,8 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void WriteToFence(in EContextType contextType, FRHIFence fence) { }
         public virtual void WaitForFence(in EContextType contextType, FRHIFence fence) { }
         public virtual void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer) { }
-        public virtual void Flush() { }
-        public virtual void Submit() { }
+        internal virtual void Flush() { }
+        internal virtual void Submit() { }
         public virtual void CreateViewport() { }
         public virtual FRHIFence CreateFence(string name = null) { return null; }
         public virtual FRHIFence GetFence(string name = null) { return null; }
@@ -54,5 +54,11 @@ namespace InfinityEngine.Graphics.RHI
         public virtual FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer buffer) { return default; }
         public virtual FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture) { return default; }
         public virtual FRHIResourceSet CreateResourceSet(in int count) { return null; }
+
+        public static void SubmitAndFlushContext(FRHIGraphicsContext graphicsContext)
+        {
+            graphicsContext.Submit();
+            graphicsContext.Flush();
+        }
     }
 }

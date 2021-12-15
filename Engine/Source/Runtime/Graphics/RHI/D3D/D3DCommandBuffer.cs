@@ -99,16 +99,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
         public override void BeginQuery(FRHIQuery query)
         {
             FD3DQuery d3dQuery = (FD3DQuery)query;
-            if (d3dQuery.context.IsReady) {
-                nativeCmdList.EndQuery(d3dQuery.context.queryHeap, d3dQuery.context.queryType.GetNativeQueryType(), query.indexHead);
+            if (d3dQuery.queryContext.IsReady) {
+                nativeCmdList.EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), query.indexHead);
             }
         }
 
         public override void EndQuery(FRHIQuery query)
         {
             FD3DQuery d3dQuery = (FD3DQuery)query;
-            if (d3dQuery.context.IsReady) {
-                nativeCmdList.EndQuery(d3dQuery.context.queryHeap, d3dQuery.context.queryType.GetNativeQueryType(), query.indexLast);
+            if (d3dQuery.queryContext.IsReady) {
+                nativeCmdList.EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), query.indexLast);
             }
         }
 

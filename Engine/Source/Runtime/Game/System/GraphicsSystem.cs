@@ -69,7 +69,7 @@ namespace InfinityEngine.Game.System
                     renderPipeline.Init(renderContext, graphicsContext); 
                 }
                 renderPipeline.Render(renderContext, graphicsContext);
-                graphicsContext.Flush();
+                FRHIGraphicsContext.SubmitAndFlushContext(graphicsContext);
                 semaphoreR2G.Signal();
             }
         }
@@ -78,8 +78,7 @@ namespace InfinityEngine.Game.System
         {
             if (FGraphics.GraphicsTasks.length == 0) { return; }
 
-            for (int i = 0; i < FGraphics.GraphicsTasks.length; ++i)
-            {
+            for (int i = 0; i < FGraphics.GraphicsTasks.length; ++i) {
                 FGraphics.GraphicsTasks[i](renderContext, graphicsContext);
                 FGraphics.GraphicsTasks[i] = null;
             }

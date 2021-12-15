@@ -34,35 +34,34 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
 	public class FD3DQuery : FRHIQuery
 	{
-		internal FD3DQueryContext context;
+		internal FD3DQueryContext queryContext;
 
-		internal FD3DQuery(FRHIQueryContext context) : base(context)
+		internal FD3DQuery(FRHIQueryContext queryContext) : base(queryContext)
 		{
-			this.context = (FD3DQueryContext)context;
-			this.indexHead = context.AllocateUnuseIndex();
-			this.indexLast = context.IsTimeQuery ? context.AllocateUnuseIndex() : -1;
+			this.queryContext = (FD3DQueryContext)queryContext;
+			this.indexHead = queryContext.AllocateUnuseIndex();
+			this.indexLast = queryContext.IsTimeQuery ? queryContext.AllocateUnuseIndex() : -1;
 		}
 
 		public override int GetResult()
 		{
-			return (int)context.queryData[indexHead];
+			return (int)queryContext.queryData[indexHead];
 		}
 
 		public override float GetResult(in ulong frequency)
 		{
-			if (!context.IsTimeQuery) { return -1; }
+			if (!queryContext.IsTimeQuery) { return -1; }
 
-			double result = (double)(context.queryData[indexLast] - context.queryData[indexHead]);
+			double result = (double)(queryContext.queryData[indexLast] - queryContext.queryData[indexHead]);
 			return (float)math.round(1000 * (result / frequency) * 100) / 100;
 		}
 
 		protected override void Release()
         {
-			context.ReleaseUnuseIndex(indexHead);
+			queryContext.ReleaseUnuseIndex(indexHead);
 
-			if(context.IsTimeQuery)
-            {
-				context.ReleaseUnuseIndex(indexLast);
+			if(queryContext.IsTimeQuery) {
+				queryContext.ReleaseUnuseIndex(indexLast);
 			}
 		}
     }

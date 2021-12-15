@@ -28,21 +28,21 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
       
-        private FD3DDevice m_Device;
-        private FRHIFencePool m_FencePool;
-        private FRHIResourcePool m_ResourcePool;
-        private FD3DQueryContext[] m_QueryContext;
-        private FD3DCommandContext m_CopyCmdContext;
-        private FD3DCommandContext m_ComputeCmdContext;
-        private FD3DCommandContext m_RenderCmdContext;
-        private TArray<FExecuteInfo> m_ExecuteGPUInfos;
-        private FRHICommandBufferPool m_CopyCmdBufferPool;
-        private FRHICommandBufferPool m_ComputeCmdBufferPool;
-        private FRHICommandBufferPool m_RenderCmdBufferPool;
-        private TArray<FRHICommandBuffer> m_ManagedCmdBuffers;
-        private FRHIDescriptorHeapFactory m_DescriptorFactory;
+        internal FD3DDevice m_Device;
+        internal FRHIFencePool m_FencePool;
+        internal FRHIResourcePool m_ResourcePool;
+        internal FD3DQueryContext[] m_QueryContext;
+        internal FD3DCommandContext m_CopyCmdContext;
+        internal FD3DCommandContext m_ComputeCmdContext;
+        internal FD3DCommandContext m_RenderCmdContext;
+        internal TArray<FExecuteInfo> m_ExecuteGPUInfos;
+        internal FRHICommandBufferPool m_CopyCmdBufferPool;
+        internal FRHICommandBufferPool m_ComputeCmdBufferPool;
+        internal FRHICommandBufferPool m_RenderCmdBufferPool;
+        internal TArray<FRHICommandBuffer> m_ManagedCmdBuffers;
+        internal FRHIDescriptorHeapFactory m_DescriptorFactory;
 
-        public FD3DGraphicsContext() : base()
+        public FD3DGraphicsContext()
         {
             m_Device = new FD3DDevice();
             m_FencePool = new FRHIFencePool(this);
@@ -161,7 +161,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ExecuteGPUInfos.Add(executeInfo);
         }
 
-        public override void Flush()
+        internal override void Flush()
         {
             for (int i = 0; i < m_ManagedCmdBuffers.length; ++i) {
                 ReleaseCommandBuffer(m_ManagedCmdBuffers[i]);
@@ -177,7 +177,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_QueryContext[1].GetData();
         }
 
-        public override void Submit()
+        internal override void Submit()
         {
             for (int i = 0; i < m_ExecuteGPUInfos.length; ++i)
             {
@@ -270,7 +270,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             FD3DQuery d3dQuery = (FD3DQuery)query;
 
-            switch (d3dQuery.context.queryType)
+            switch (d3dQuery.queryContext.queryType)
             {
                 case EQueryType.Occlusion:
                     break;

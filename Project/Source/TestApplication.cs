@@ -49,7 +49,6 @@ namespace ExampleProject
                 for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
                 bufferRef.buffer.SetData(cmdBuffer, data);
                 graphicsContext.ExecuteCommandBuffer(cmdBuffer);
-                graphicsContext.Submit();
             });
 
             //m_ManageDatas = new int[32768];
@@ -63,8 +62,7 @@ namespace ExampleProject
             {
                 timeProfiler.Restart();
 
-                if (dataReady)
-                {
+                if (dataReady) {
                     FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2");
                     cmdBuffer.Clear();
                     cmdBuffer.BeginQuery(query);
@@ -75,14 +73,12 @@ namespace ExampleProject
                     //graphicsContext.WaitForFence(EContextType.Render, fence);
                 }
 
-                if (dataReady = fence.IsCompleted)
-                {
+                if (dataReady = fence.IsCompleted) {
                     bufferRef.buffer.GetData(readData);
                     gpuTime = query.GetResult(graphicsContext.copyFrequency);
                 }
 
                 timeProfiler.Stop();
-                graphicsContext.Submit();
 
                 //Console.WriteLine("||");
                 Console.WriteLine("CPU : " + cpuTime + "ms");

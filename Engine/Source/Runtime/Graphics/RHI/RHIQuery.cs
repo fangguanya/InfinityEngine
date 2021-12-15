@@ -15,25 +15,22 @@ namespace InfinityEngine.Graphics.RHI
 		internal int indexHead;
 		internal int indexLast;
 
-		internal FRHIQuery(FRHIQueryContext context) { }
-
+		internal FRHIQuery(FRHIQueryContext queryContext) { }
 		public virtual int GetResult() { return -1; }
 		public virtual float GetResult(in ulong frequency) { return -1; }
 	}
 
 	internal class FRHIQueryContext : FDisposable
 	{
-		internal int queryCount;
-		internal bool IsReady;
-		internal ulong[] queryData;
-		internal EQueryType queryType;
-
+		public int queryCount;
+		public bool IsReady;
+		public ulong[] queryData;
+		public EQueryType queryType;
 		public virtual int countActive => -1;
 		public virtual int countInactive => -1;
 		public virtual bool IsTimeQuery => false;
 
 		public FRHIQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount) { }
-
 		public virtual void Submit(FRHICommandContext commandContext) { }
 		public virtual void GetData() { }
 		internal virtual int AllocateUnuseIndex() { return -1; }
