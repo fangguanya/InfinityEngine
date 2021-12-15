@@ -22,6 +22,10 @@ namespace ExampleProject
 
         FRHIFence fence;
         FRHIQuery query;
+        FRHIBuffer buffer
+        {
+            get { return bufferRef.buffer; }
+        }
         FRHIBufferRef bufferRef;
         FTimeProfiler timeProfiler;
         //private int* m_UnsafeDatas;
@@ -47,7 +51,7 @@ namespace ExampleProject
 
                 int[] data = new int[10000000];
                 for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
-                bufferRef.buffer.SetData(cmdBuffer, data);
+                buffer.SetData(cmdBuffer, data);
                 graphicsContext.ExecuteCommandBuffer(cmdBuffer);
             });
 
@@ -66,7 +70,7 @@ namespace ExampleProject
                     FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2");
                     cmdBuffer.Clear();
                     cmdBuffer.BeginQuery(query);
-                    bufferRef.buffer.RequestReadback<int>(cmdBuffer);
+                    buffer.RequestReadback<int>(cmdBuffer);
                     cmdBuffer.EndQuery(query);
                     graphicsContext.ExecuteCommandBuffer(cmdBuffer);
                     graphicsContext.WriteToFence(EContextType.Copy, fence);
@@ -74,7 +78,7 @@ namespace ExampleProject
                 }
 
                 if (dataReady = fence.IsCompleted) {
-                    bufferRef.buffer.GetData(readData);
+                    buffer.GetData(readData);
                     gpuTime = query.GetResult(graphicsContext.copyFrequency);
                 }
 
