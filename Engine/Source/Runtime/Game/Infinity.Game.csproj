@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Vortice.Mathematics" Version="1.3.21" />
+    <PackageReference Include="Vortice.Mathematics" Version="1.3.22" />
   </ItemGroup>
 
   <ItemGroup>
