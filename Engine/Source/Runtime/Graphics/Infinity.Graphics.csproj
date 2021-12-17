@@ -45,8 +45,4 @@
     <ProjectReference Include="..\Core\Infinity.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RHI\Vulkan\" />
-  </ItemGroup>
-
 </Project>
