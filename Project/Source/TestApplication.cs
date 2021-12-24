@@ -48,10 +48,13 @@ namespace ExampleProject
                 query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
                 bufferRef = graphicsContext.GetBuffer(descriptor);
                 FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1");
-                cmdBuffer.Clear();
 
                 int[] data = new int[10000000];
-                for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
+                for (int i = 0; i < 10000000; ++i) { 
+                    data[i] = 10000000 - i; 
+                }
+
+                cmdBuffer.Clear();
                 buffer.SetData(cmdBuffer, data);
                 graphicsContext.ExecuteCommandBuffer(cmdBuffer);
             });
