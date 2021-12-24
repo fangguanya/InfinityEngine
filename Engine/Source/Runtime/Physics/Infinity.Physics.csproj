@@ -31,4 +31,8 @@
     <None Remove="Mathematics\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PhysX.Net" Version="3.0.0-alpha1" />
+  </ItemGroup>
+
 </Project>
