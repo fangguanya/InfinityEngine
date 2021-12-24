@@ -71,7 +71,7 @@ namespace ExampleProject
                     FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2");
                     cmdBuffer.Clear();
                     cmdBuffer.BeginQuery(query);
-                    buffer.RequestReadback<int>(cmdBuffer);
+                    buffer.Readback<int>(cmdBuffer);
                     cmdBuffer.EndQuery(query);
                     graphicsContext.ExecuteCommandBuffer(cmdBuffer);
                     graphicsContext.WriteToFence(EContextType.Copy, fence);

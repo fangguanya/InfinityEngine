@@ -143,7 +143,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        public override void RequestUpload<T>(FRHICommandBuffer cmdBuffer) where T : struct
+        public override void Upload<T>(FRHICommandBuffer cmdBuffer) where T : struct
         {
             if ((descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
@@ -189,7 +189,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        public override void RequestReadback<T>(FRHICommandBuffer cmdBuffer) where T : struct
+        public override void Readback<T>(FRHICommandBuffer cmdBuffer) where T : struct
         {
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {

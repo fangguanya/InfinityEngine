@@ -208,10 +208,10 @@ namespace InfinityEngine.Graphics.RHI
         internal FRHIBuffer(FRHIDevice device, in FRHIBufferDescriptor descriptor) { }
         public virtual void SetData<T>(params T[] data) where T : struct { }
         public virtual void SetData<T>(FRHICommandBuffer cmdBuffer, params T[] data) where T : struct { }
-        public virtual void RequestUpload<T>(FRHICommandBuffer cmdBuffer) where T : struct { }
+        public virtual void Upload<T>(FRHICommandBuffer cmdBuffer) where T : struct { }
         public virtual void GetData<T>(T[] data) where T : struct { }
         public virtual void GetData<T>(FRHICommandBuffer cmdBuffer, T[] data) where T : struct { }
-        public virtual void RequestReadback<T>(FRHICommandBuffer cmdBuffer) where T : struct { }
+        public virtual void Readback<T>(FRHICommandBuffer cmdBuffer) where T : struct { }
     }
 
     public struct FRHIBufferRef
