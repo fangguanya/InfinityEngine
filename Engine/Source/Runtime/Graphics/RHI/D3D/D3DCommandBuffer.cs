@@ -110,8 +110,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
         public override void BeginQuery(FRHIQuery query)
         {
             FD3DQuery d3dQuery = (FD3DQuery)query;
-            if (d3dQuery.queryContext.IsReady) {
-                nativeCmdList->EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexHead);
+            if (d3dQuery.queryContext.IsReady) 
+            {
+                if (d3dQuery.queryContext.IsTimeQuery) {
+                    nativeCmdList->EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexHead);
+                } else {
+                    nativeCmdList->BeginQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexHead);
+                }
             }
         }
 
