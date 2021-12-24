@@ -93,17 +93,17 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetComputeConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
+        public override void SetComputeConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)
         {
             
         }
 
-        public override void SetComputeShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
+        public override void SetComputeShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView)
         {
            
         }
 
-        public override void SetComputeUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        public override void SetComputeUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView)
         {
             
         }
@@ -208,22 +208,22 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
             
         }
         
-        public override void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
+        public override void SetRenderConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)
         {
             
         }
 
-        public override void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
+        public override void SetRenderShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView)
         {
             
         }
 
-        public override void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        public override void SetRenderUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView)
         {
             
         }
 
-        public override void DrawIndexInstanced(in int indexCount, in int startIndex, in int startVertex, in int instanceCount, in int startInstance)
+        public override void DrawIndexInstanced(in uint indexCount, in uint startIndex, in int startVertex, in uint instanceCount, in uint startInstance)
         {
             
         }

@@ -1,31 +1,39 @@
-﻿using Vortice.DXGI;
-using Vortice.Direct3D;
-using Vortice.Direct3D12;
+﻿using TerraFX.Interop.Windows;
+using TerraFX.Interop.DirectX;
+using System.Runtime.Versioning;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
-    internal class FD3DDevice : FRHIDevice
+    internal unsafe class FD3DDevice : FRHIDevice
     {
-        internal ID3D12Device6 nativeDevice;
-        internal IDXGIAdapter1 nativeAdapter;
-        internal IDXGIFactory7 nativeFactory;
+        internal ID3D12Device6* nativeDevice;
+        internal IDXGIAdapter1* nativeAdapter;
+        internal IDXGIFactory7* nativeFactory;
 
+        [SupportedOSPlatform("windows10.0.19042")]
         public FD3DDevice()
         {
-            DXGI.CreateDXGIFactory2<IDXGIFactory7>(true, out nativeFactory);
-            nativeFactory.EnumAdapters1(0, out nativeAdapter);
+            IDXGIFactory7* factory = null;
+            DirectX.CreateDXGIFactory2(0, Windows.__uuidof<IDXGIFactory7>(), (void**)&factory);
+            nativeFactory = factory;
 
-            D3D12.D3D12CreateDevice<ID3D12Device6>(nativeAdapter, FeatureLevel.Level_12_1, out nativeDevice);
-            nativeDevice.QueryInterface<ID3D12Device6>();
+            IDXGIAdapter1* adapter = null;
+            factory->EnumAdapters1(0, &adapter);
+            nativeAdapter = adapter;
+
+            ID3D12Device6* device = null;
+            DirectX.D3D12CreateDevice((IUnknown*)adapter, D3D_FEATURE_LEVEL.D3D_FEATURE_LEVEL_12_1, Windows.__uuidof<ID3D12Device6>(), (void**)&device);
+            nativeDevice = device;
         }
 
+        [SupportedOSPlatform("windows10.0.19042")]
         protected override void Release()
         {
-            nativeDevice?.Dispose();
-            nativeAdapter?.Dispose();
-            nativeFactory?.Dispose();
+            nativeDevice->Release();
+            nativeAdapter->Release();
+            nativeFactory->Release();
         }
 
-        public static implicit operator ID3D12Device6(FD3DDevice device) { return device.nativeDevice; }
+        public static implicit operator ID3D12Device6*(FD3DDevice device) { return device.nativeDevice; }
     }
 }

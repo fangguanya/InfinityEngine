@@ -10,7 +10,7 @@ using InfinityEngine.Rendering.RenderLoop;
 namespace ExampleProject
 {
     [Serializable]
-    public unsafe class TestComponent : UComponent
+    public class TestComponent : UComponent
     {
         bool dataReady;
         int[] readData;
@@ -34,10 +34,11 @@ namespace ExampleProject
         public override void OnEnable()
         {
             Console.WriteLine("Enable Component");
-            timeProfiler = new FTimeProfiler();
 
             dataReady = true;
             readData = new int[10000000];
+            timeProfiler = new FTimeProfiler();
+
             FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
@@ -150,7 +151,7 @@ namespace ExampleProject
     }
 
     [Serializable]
-    public unsafe class TestActor : AActor
+    public class TestActor : AActor
     {
         //FTaskHandle m_AsynTaskRef;
         private TestComponent m_Component;
@@ -205,7 +206,7 @@ namespace ExampleProject
         }
     }
 
-    public unsafe class TestApplication : FApplication
+    public class TestApplication : FApplication
     {
         private TestActor m_Actor;
 

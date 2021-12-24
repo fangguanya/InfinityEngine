@@ -78,9 +78,9 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void BeginQuery(FRHIQuery query) { }
         public virtual void EndQuery(FRHIQuery query) { }
         public virtual void SetComputePipelineState(FRHIComputePipelineState computePipelineState) { }
-        public virtual void SetComputeConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView) { }
-        public virtual void SetComputeShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) { }
-        public virtual void SetComputeUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView) { }
+        public virtual void SetComputeConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView) { }
+        public virtual void SetComputeShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView) { }
+        public virtual void SetComputeUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView) { }
         public virtual void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ) { }
         public virtual void DispatchComputeIndirect(FRHIBuffer argsBuffer, in uint argsOffset) { }
         public virtual void SetRayTracePipelineState(FRHIRayTracePipelineState rayTracePipelineState) { }
@@ -101,10 +101,10 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState) { }
         public virtual void SetIndexBuffer(FRHIIndexBufferView indexBufferView) { }
         public virtual void SetVertexBuffer(in int slot, FRHIVertexBufferView vertexBufferView) { }
-        public virtual void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView) { }
-        public virtual void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) { }
-        public virtual void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView) { }
-        public virtual void DrawIndexInstanced(in int indexCount, in int startIndex, in int startVertex, in int instanceCount, in int startInstance) { }
+        public virtual void SetRenderConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView) { }
+        public virtual void SetRenderShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView) { }
+        public virtual void SetRenderUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView) { }
+        public virtual void DrawIndexInstanced(in uint indexCount, in uint startIndex, in int startVertex, in uint instanceCount, in uint startInstance) { }
         public virtual void DrawMultiIndexInstanced(FRHIBuffer argsBuffer, in uint argsOffset, FRHIBuffer countBuffer, in uint countOffset) { }
         public virtual void DrawIndexInstancedIndirect(FRHIBuffer argsBuffer, in uint argsOffset) { }
     }

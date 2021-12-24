@@ -1,16 +1,16 @@
 ﻿using System;
-using Vortice.DXGI;
-using Vortice.Direct3D12;
+using TerraFX.Interop.DirectX;
 using InfinityEngine.Core.Memory;
 using System.Runtime.CompilerServices;
+using TerraFX.Interop.Windows;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
-    public class FD3DBuffer : FRHIBuffer
+    public unsafe class FD3DBuffer : FRHIBuffer
     {
-        internal ID3D12Resource uploadResource;
-        internal ID3D12Resource defaultResource;
-        internal ID3D12Resource readbackResource;
+        internal ID3D12Resource* uploadResource;
+        internal ID3D12Resource* defaultResource;
+        internal ID3D12Resource* readbackResource;
 
         internal FD3DBuffer(FRHIDevice device, in FRHIBufferDescriptor descriptor) : base(device, descriptor)
         {
@@ -20,85 +20,94 @@ namespace InfinityEngine.Graphics.RHI.D3D
             // GPUMemory
             if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic || (descriptor.flag & EUsageType.Default) == EUsageType.Default)
             {
-                HeapProperties defaultHeapProperties;
+                D3D12_HEAP_PROPERTIES defaultHeapProperties;
                 {
-                    defaultHeapProperties.Type = HeapType.Default;
-                    defaultHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
-                    defaultHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+                    defaultHeapProperties.Type = D3D12_HEAP_TYPE.D3D12_HEAP_TYPE_DEFAULT;
+                    defaultHeapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY.D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+                    defaultHeapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL.D3D12_MEMORY_POOL_UNKNOWN;
                     defaultHeapProperties.VisibleNodeMask = 1;
                     defaultHeapProperties.CreationNodeMask = 1;
                 }
-                ResourceDescription defaultResourceDesc;
+                D3D12_RESOURCE_DESC defaultResourceDesc;
                 {
-                    defaultResourceDesc.Dimension = ResourceDimension.Buffer;
+                    defaultResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_BUFFER;
                     defaultResourceDesc.Alignment = 0;
                     defaultResourceDesc.Width = descriptor.stride * descriptor.count;
                     defaultResourceDesc.Height = 1;
                     defaultResourceDesc.DepthOrArraySize = 1;
                     defaultResourceDesc.MipLevels = 1;
-                    defaultResourceDesc.Format = Format.Unknown;
-                    defaultResourceDesc.SampleDescription.Count = 1;
-                    defaultResourceDesc.SampleDescription.Quality = 0;
-                    defaultResourceDesc.Flags = ResourceFlags.None;
-                    defaultResourceDesc.Layout = TextureLayout.RowMajor;
+                    defaultResourceDesc.Format = DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
+                    defaultResourceDesc.SampleDesc.Count = 1;
+                    defaultResourceDesc.SampleDesc.Quality = 0;
+                    defaultResourceDesc.Flags = D3D12_RESOURCE_FLAGS.D3D12_RESOURCE_FLAG_NONE;
+                    defaultResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
                 }
-                defaultResource = d3dDevice.nativeDevice.CreateCommittedResource<ID3D12Resource>(defaultHeapProperties, HeapFlags.None, defaultResourceDesc, ResourceStates.Common, null);
+
+                ID3D12Resource* defaultPtr = null;
+                d3dDevice.nativeDevice->CreateCommittedResource(&defaultHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &defaultResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, null, Windows.__uuidof<ID3D12Resource>(), (void**)&defaultPtr);
+                defaultResource = defaultPtr;
             }
 
             // UploadMemory
             if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                HeapProperties uploadHeapProperties;
+                D3D12_HEAP_PROPERTIES uploadHeapProperties;
                 {
-                    uploadHeapProperties.Type = HeapType.Upload;
-                    uploadHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
-                    uploadHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+                    uploadHeapProperties.Type = D3D12_HEAP_TYPE.D3D12_HEAP_TYPE_UPLOAD;
+                    uploadHeapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY.D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+                    uploadHeapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL.D3D12_MEMORY_POOL_UNKNOWN;
                     uploadHeapProperties.VisibleNodeMask = 1;
                     uploadHeapProperties.CreationNodeMask = 1;
                 }
-                ResourceDescription uploadResourceDesc;
+                D3D12_RESOURCE_DESC uploadResourceDesc;
                 {
-                    uploadResourceDesc.Dimension = ResourceDimension.Buffer;
+                    uploadResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_BUFFER;
                     uploadResourceDesc.Alignment = 0;
                     uploadResourceDesc.Width = descriptor.stride * descriptor.count;
                     uploadResourceDesc.Height = 1;
                     uploadResourceDesc.DepthOrArraySize = 1;
                     uploadResourceDesc.MipLevels = 1;
-                    uploadResourceDesc.Format = Format.Unknown;
-                    uploadResourceDesc.SampleDescription.Count = 1;
-                    uploadResourceDesc.SampleDescription.Quality = 0;
-                    uploadResourceDesc.Flags = ResourceFlags.None;
-                    uploadResourceDesc.Layout = TextureLayout.RowMajor;
+                    uploadResourceDesc.Format = DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
+                    uploadResourceDesc.SampleDesc.Count = 1;
+                    uploadResourceDesc.SampleDesc.Quality = 0;
+                    uploadResourceDesc.Flags = D3D12_RESOURCE_FLAGS.D3D12_RESOURCE_FLAG_NONE;
+                    uploadResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
                 }
-                uploadResource = d3dDevice.nativeDevice.CreateCommittedResource<ID3D12Resource>(uploadHeapProperties, HeapFlags.None, uploadResourceDesc, ResourceStates.GenericRead, null);
+
+                ID3D12Resource* uploadPtr = null;
+                d3dDevice.nativeDevice->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &uploadResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ, null, Windows.__uuidof<ID3D12Resource>(), (void**)&uploadPtr);
+                uploadResource = uploadPtr;
             }
 
             // ReadbackMemory
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                HeapProperties readbackHeapProperties;
+                D3D12_HEAP_PROPERTIES readbackHeapProperties;
                 {
-                    readbackHeapProperties.Type = HeapType.Readback;
-                    readbackHeapProperties.CPUPageProperty = CpuPageProperty.Unknown;
-                    readbackHeapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+                    readbackHeapProperties.Type = D3D12_HEAP_TYPE.D3D12_HEAP_TYPE_READBACK;
+                    readbackHeapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY.D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+                    readbackHeapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL.D3D12_MEMORY_POOL_UNKNOWN;
                     readbackHeapProperties.VisibleNodeMask = 1;
                     readbackHeapProperties.CreationNodeMask = 1;
                 }
-                ResourceDescription readbackResourceDesc;
+                D3D12_RESOURCE_DESC readbackResourceDesc;
                 {
-                    readbackResourceDesc.Dimension = ResourceDimension.Buffer;
+                    readbackResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_BUFFER;
                     readbackResourceDesc.Alignment = 0;
                     readbackResourceDesc.Width = descriptor.stride * descriptor.count;
                     readbackResourceDesc.Height = 1;
                     readbackResourceDesc.DepthOrArraySize = 1;
                     readbackResourceDesc.MipLevels = 1;
-                    readbackResourceDesc.Format = Format.Unknown;
-                    readbackResourceDesc.SampleDescription.Count = 1;
-                    readbackResourceDesc.SampleDescription.Quality = 0;
-                    readbackResourceDesc.Flags = ResourceFlags.None;
-                    readbackResourceDesc.Layout = TextureLayout.RowMajor;
+                    readbackResourceDesc.Format = DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
+                    readbackResourceDesc.SampleDesc.Count = 1;
+                    readbackResourceDesc.SampleDesc.Quality = 0;
+                    readbackResourceDesc.Flags = D3D12_RESOURCE_FLAGS.D3D12_RESOURCE_FLAG_NONE;
+                    readbackResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
                 }
-                readbackResource = d3dDevice.nativeDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
+
+                ID3D12Resource* readbackPtr = null;
+                d3dDevice.nativeDevice->CreateCommittedResource(&readbackHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &readbackResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, null, Windows.__uuidof<ID3D12Resource>(), (void**)&readbackPtr);
+                readbackResource = readbackPtr;
             }
         }
 
@@ -106,9 +115,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                IntPtr uploadResourcePtr = uploadResource.Map(0);
-                data.AsSpan().CopyTo(uploadResourcePtr);
-                uploadResource.Unmap(0);
+                void* uploadPtr = null;
+                D3D12_RANGE range = new D3D12_RANGE(0, 0);
+                uploadResource->Map(0, &range, &uploadPtr);
+                data.AsSpan().CopyTo(new IntPtr(uploadPtr));
+                uploadResource->Unmap(0, null);
             }
         }
 
@@ -116,14 +127,19 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                IntPtr uploadResourcePtr = uploadResource.Map(0);
-                data.AsSpan().CopyTo(uploadResourcePtr);
-                uploadResource.Unmap(0);
+                void* uploadPtr = null;
+                D3D12_RANGE range = new D3D12_RANGE(0, 0);
+                uploadResource->Map(0, &range, &uploadPtr);
+                data.AsSpan().CopyTo(new IntPtr(uploadPtr));
+                uploadResource->Unmap(0, null);
 
                 FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
-                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdBuffer.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+                D3D12_RESOURCE_BARRIER beforeBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST);
+                D3D12_RESOURCE_BARRIER afterBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON);
+
+                d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &beforeBarrier);
+                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
             }
         }
 
@@ -132,9 +148,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
             if ((descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
                 FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
-                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopyDestination);
-                d3dCmdBuffer.nativeCmdList.CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopyDestination, ResourceStates.Common);
+                D3D12_RESOURCE_BARRIER beforeBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST);
+                D3D12_RESOURCE_BARRIER afterBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON);
+
+                d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &beforeBarrier);
+                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
             }
         }
 
@@ -142,10 +161,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
-                IntPtr readbackResourcePtr = readbackResource.Map(0);
-                readbackResourcePtr.CopyTo(data.AsSpan());
-                readbackResource.Unmap(0);
+                void* readbackPtr = null;
+                D3D12_RANGE range = new D3D12_RANGE(0, 0);
+                readbackResource->Map(0, &range, &readbackPtr);
+                new IntPtr(readbackPtr).CopyTo(data.AsSpan());
+                readbackResource->Unmap(0, null);
             }
         }
 
@@ -154,14 +174,18 @@ namespace InfinityEngine.Graphics.RHI.D3D
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {
                 FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
-                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                d3dCmdBuffer.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                D3D12_RESOURCE_BARRIER beforeBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_SOURCE);
+                D3D12_RESOURCE_BARRIER afterBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON);
 
-                //Because current frame read-back copy cmd is not execute on GPU, so this will get last frame data
-                IntPtr readbackResourcePtr = readbackResource.Map(0);
-                readbackResourcePtr.CopyTo(data.AsSpan());
-                readbackResource.Unmap(0);
+                d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &beforeBarrier);
+                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
+
+                void* readbackPtr = null;
+                D3D12_RANGE range = new D3D12_RANGE(0, 0);
+                readbackResource->Map(0, &range, &readbackPtr);
+                new IntPtr(readbackPtr).CopyTo(data.AsSpan());
+                readbackResource->Unmap(0, null);
             }
         }
 
@@ -170,21 +194,24 @@ namespace InfinityEngine.Graphics.RHI.D3D
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {
                 FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
-                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.Common, ResourceStates.CopySource);
-                d3dCmdBuffer.nativeCmdList.CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
-                d3dCmdBuffer.nativeCmdList.ResourceBarrierTransition(defaultResource, ResourceStates.CopySource, ResourceStates.Common);
+                D3D12_RESOURCE_BARRIER beforeBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_SOURCE);
+                D3D12_RESOURCE_BARRIER afterBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON);
+
+                d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &beforeBarrier);
+                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
             }
         }
 
         protected override void Release()
         {
-            uploadResource?.Dispose();
-            defaultResource?.Dispose();
-            readbackResource?.Dispose();
+            uploadResource->Release();
+            defaultResource->Release();
+            readbackResource->Release();
         }
     }
 
-    internal static class FD3DTextureUtility
+    /*internal static class FD3DTextureUtility
     {
         internal static Format GetNativeFormat(this EGraphicsFormat format)
         {
@@ -223,7 +250,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
             return ResourceDimension.Texture2D;
         }
-    }
+    }*/
 
     public class FD3DTexture : FRHITexture
     {
@@ -233,7 +260,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         internal FD3DTexture(FRHIDevice device, in FRHITextureDescriptor descriptor) : base(device, descriptor)
         {
-            this.descriptor = descriptor;
+            /*this.descriptor = descriptor;
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
             // GPUMemory
@@ -318,14 +345,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     readbackResourceDesc.Layout = TextureLayout.Unknown;
                 }
                 readbackResource = d3dDevice.nativeDevice.CreateCommittedResource<ID3D12Resource>(readbackHeapProperties, HeapFlags.None, readbackResourceDesc, ResourceStates.CopyDestination, null);
-            }
+            }*/
         }
 
         protected override void Release()
         {
-            uploadResource?.Dispose();
+            /*uploadResource?.Dispose();
             defaultResource?.Dispose();
-            readbackResource?.Dispose();
+            readbackResource?.Dispose();*/
         }
     }
 }

@@ -1,31 +1,33 @@
 ﻿using System;
-using Vortice.DXGI;
-using Vortice.Direct3D12;
+using TerraFX.Interop.Windows;
+using TerraFX.Interop.DirectX;
 using System.Collections.Generic;
 using InfinityEngine.Core.Memory;
 using InfinityEngine.Core.Container;
 using InfinityEngine.Core.Mathmatics;
+using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
 	internal static class FD3DQueryUtility
 	{
-		internal static QueryType GetNativeQueryType(this EQueryType queryType)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static D3D12_QUERY_TYPE GetNativeQueryType(this EQueryType queryType)
 		{
-			QueryType outType = default;
+			D3D12_QUERY_TYPE outType = default;
 			switch (queryType)
 			{
 				case EQueryType.Occlusion:
-					outType = QueryType.Occlusion;
+					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_OCCLUSION;
 					break;
 				case EQueryType.Timestamp:
-					outType = QueryType.Timestamp;
+					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_TIMESTAMP;
 					break;
 				case EQueryType.Statistics:
-					outType = QueryType.PipelineStatistics;
+					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_PIPELINE_STATISTICS;
 					break;
 				case EQueryType.CopyTimestamp:
-					outType = QueryType.Timestamp;
+					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_TIMESTAMP;
 					break;
 			}
 			return outType;
@@ -66,11 +68,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
 		}
     }
 
-	internal class FD3DQueryContext : FRHIQueryContext
+	internal unsafe class FD3DQueryContext : FRHIQueryContext
 	{
 		internal FD3DFence queryFence;
-		internal ID3D12QueryHeap queryHeap;
-		internal ID3D12Resource queryResult;
+		internal ID3D12QueryHeap* queryHeap;
+		internal ID3D12Resource* queryResult;
 		internal FD3DCommandBuffer cmdBuffer;
 
 		private TArray<int> m_QueryMap;
@@ -93,43 +95,47 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
 			this.IsReady = true;
 			this.queryType = queryType;
-			this.queryCount= (int)queryCount;
+			this.queryCount= queryCount;
 			this.queryData = new ulong[queryCount];
 			this.queryFence = new FD3DFence(device);
 			this.m_QueryMap = new TArray<int>(queryCount);
 			this.m_StackPool = new Stack<FD3DQuery>(64);
 			for (int i = 0; i < queryCount; ++i) { this.m_QueryMap.Add(i); }
 
-			QueryHeapDescription queryHeapDesc;
-			queryHeapDesc.Type = (QueryHeapType)queryType;
-			queryHeapDesc.Count = queryCount;
+			ID3D12QueryHeap* heapPtr = null;
+			D3D12_QUERY_HEAP_DESC queryHeapDesc;
+			queryHeapDesc.Type = (D3D12_QUERY_HEAP_TYPE)queryType;
+			queryHeapDesc.Count = (uint)queryCount;
 			queryHeapDesc.NodeMask = 0;
-			this.queryHeap = d3dDevice.nativeDevice.CreateQueryHeap<ID3D12QueryHeap>(queryHeapDesc);
+			d3dDevice.nativeDevice->CreateQueryHeap(&queryHeapDesc, Windows.__uuidof<ID3D12QueryHeap>(), (void**)&heapPtr);
+			this.queryHeap = heapPtr;
 
-            HeapProperties heapProperties;
+			D3D12_HEAP_PROPERTIES heapProperties;
             {
-				heapProperties.Type = HeapType.Readback;
-				heapProperties.CPUPageProperty = CpuPageProperty.Unknown;
-				heapProperties.MemoryPoolPreference = MemoryPool.Unknown;
+				heapProperties.Type = D3D12_HEAP_TYPE.D3D12_HEAP_TYPE_READBACK;
+				heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY.D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+				heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL.D3D12_MEMORY_POOL_UNKNOWN;
 				heapProperties.VisibleNodeMask = 0;
 				heapProperties.CreationNodeMask = 0;
             }
-			ResourceDescription resourceDesc;
+			D3D12_RESOURCE_DESC resourceDesc;
             {
 				resourceDesc.Alignment = 0;
-				resourceDesc.Dimension = ResourceDimension.Buffer;
+				resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_BUFFER;
 				resourceDesc.Width = sizeof(ulong) * (ulong)queryCount;
 				resourceDesc.Height = 1;
 				resourceDesc.DepthOrArraySize = 1;
 				resourceDesc.MipLevels = 1;
-				resourceDesc.Format = Format.Unknown;
-				resourceDesc.Flags = ResourceFlags.None;
-				resourceDesc.Layout = TextureLayout.RowMajor;
-				resourceDesc.SampleDescription.Count = 1;
-				resourceDesc.SampleDescription.Quality = 0;
+				resourceDesc.SampleDesc.Count = 1;
+				resourceDesc.SampleDesc.Quality = 0;
+				resourceDesc.Format = DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
+				resourceDesc.Flags = D3D12_RESOURCE_FLAGS.D3D12_RESOURCE_FLAG_NONE;
+				resourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
             }
+			ID3D12Resource* resultPtr = null;
 			this.cmdBuffer = new FD3DCommandBuffer("QueryCmdBuffer", device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Render);
-			this.queryResult = d3dDevice.nativeDevice.CreateCommittedResource<ID3D12Resource>(heapProperties, HeapFlags.None, resourceDesc, ResourceStates.CopyDestination, null);
+			d3dDevice.nativeDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, null, Windows.__uuidof<ID3D12Resource>(), (void**)&resultPtr);
+			this.queryResult = resultPtr;
 		}
 
 		public override void Submit(FRHICommandContext commandContext)
@@ -137,7 +143,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 			if (IsReady) 
 			{
 				cmdBuffer.Clear();
-				cmdBuffer.nativeCmdList.ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, queryCount, queryResult, 0);
+				cmdBuffer.nativeCmdList->ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, (uint)queryCount, queryResult, 0);
 				commandContext.SignalQueue(queryFence);
 				commandContext.ExecuteQueue(cmdBuffer);
 			}
@@ -147,9 +153,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
 		{
 			if (IsReady = queryFence.IsCompleted) 
 			{
-				IntPtr queryResult_Ptr = queryResult.Map(0);
-				queryResult_Ptr.CopyTo(queryData.AsSpan());
-				queryResult.Unmap(0);
+				void* queryResult_Ptr = null;
+				D3D12_RANGE range = new D3D12_RANGE(0, 0);
+				queryResult->Map(0, &range, &queryResult_Ptr);
+				new IntPtr(queryResult_Ptr).CopyTo(queryData.AsSpan());
+				queryResult->Unmap(0, null);
 			}
 		}
 
@@ -197,9 +205,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
 			queryData = null;
 			m_QueryMap = null;
 			cmdBuffer?.Dispose();
-			queryHeap?.Dispose();
+			queryHeap->Release();
 			queryFence?.Dispose();
-			queryResult?.Dispose();
+			queryResult->Release();
 		}
 	}
 }

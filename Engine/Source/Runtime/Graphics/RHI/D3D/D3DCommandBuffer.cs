@@ -1,11 +1,12 @@
-﻿using Vortice.Direct3D12;
+﻿using TerraFX.Interop.Windows;
+using TerraFX.Interop.DirectX;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
-    public class FD3DCommandBuffer : FRHICommandBuffer
+    public unsafe class FD3DCommandBuffer : FRHICommandBuffer
     {
-        internal ID3D12CommandAllocator nativeCmdPool;
-        internal ID3D12GraphicsCommandList5 nativeCmdList;
+        internal ID3D12CommandAllocator* nativeCmdPool;
+        internal ID3D12GraphicsCommandList5* nativeCmdList;
 
         internal FD3DCommandBuffer(FRHIDevice device, EContextType contextType) : base(device, contextType)
         {
@@ -14,9 +15,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
             this.name = null;
             this.IsClose = false;
             this.contextType = contextType;
-            this.nativeCmdPool = d3dDevice.nativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
-            this.nativeCmdList = d3dDevice.nativeDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, nativeCmdPool, null);
-            this.nativeCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
+
+            ID3D12CommandAllocator* commandAllocator = null;
+            d3dDevice.nativeDevice->CreateCommandAllocator((D3D12_COMMAND_LIST_TYPE)contextType, Windows.__uuidof<ID3D12CommandAllocator>(), (void**)&commandAllocator);
+            nativeCmdPool = commandAllocator;
+
+            ID3D12GraphicsCommandList5* commandList = null;
+            d3dDevice.nativeDevice->CreateCommandList(0, (D3D12_COMMAND_LIST_TYPE)contextType, commandAllocator, null, Windows.__uuidof<ID3D12GraphicsCommandList5>(), (void**)&commandList);
+            nativeCmdList = commandList;
         }
 
         internal FD3DCommandBuffer(string name, FRHIDevice device, EContextType contextType) : base(name, device, contextType)
@@ -26,9 +32,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
             this.name = name;
             this.IsClose = false;
             this.contextType = contextType;
-            this.nativeCmdPool = d3dDevice.nativeDevice.CreateCommandAllocator<ID3D12CommandAllocator>((CommandListType)contextType);
-            this.nativeCmdList = d3dDevice.nativeDevice.CreateCommandList<ID3D12GraphicsCommandList5>(0, (CommandListType)contextType, nativeCmdPool, null);
-            this.nativeCmdList.QueryInterface<ID3D12GraphicsCommandList5>();
+
+            ID3D12CommandAllocator* commandPool = null;
+            d3dDevice.nativeDevice->CreateCommandAllocator((D3D12_COMMAND_LIST_TYPE)contextType, Windows.__uuidof<ID3D12CommandAllocator>(), (void**)&commandPool);
+            nativeCmdPool = commandPool;
+
+            ID3D12GraphicsCommandList5* commandList = null;
+            d3dDevice.nativeDevice->CreateCommandList(0, (D3D12_COMMAND_LIST_TYPE)contextType, commandPool, null, Windows.__uuidof<ID3D12GraphicsCommandList5>(), (void**)&commandList);
+            nativeCmdList = commandList;
         }
 
         public override void Clear()
@@ -36,14 +47,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
             if(!IsClose) { return; }
 
             IsClose = false;
-            nativeCmdPool.Reset();
-            nativeCmdList.Reset(nativeCmdPool, null);
+            nativeCmdPool->Reset();
+            nativeCmdList->Reset(nativeCmdPool, null);
         }
 
         internal override void Close()
         {
             IsClose = true;
-            nativeCmdList.Close();
+            nativeCmdList->Close();
         }
 
         public override void Barriers(FRHIResource resource)
@@ -100,7 +111,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             FD3DQuery d3dQuery = (FD3DQuery)query;
             if (d3dQuery.queryContext.IsReady) {
-                nativeCmdList.EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), query.indexHead);
+                nativeCmdList->EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexHead);
             }
         }
 
@@ -108,7 +119,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             FD3DQuery d3dQuery = (FD3DQuery)query;
             if (d3dQuery.queryContext.IsReady) {
-                nativeCmdList.EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), query.indexLast);
+                nativeCmdList->EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexLast);
             }
         }
 
@@ -117,19 +128,19 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetComputeConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
+        public override void SetComputeConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)
         {
-            nativeCmdList.SetComputeRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
+            nativeCmdList->SetComputeRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
         }
 
-        public override void SetComputeShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView) 
+        public override void SetComputeShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView) 
         {
-            nativeCmdList.SetComputeRootShaderResourceView(slot, shaderResourceView.virtualAddressGPU);
+            nativeCmdList->SetComputeRootShaderResourceView(slot, shaderResourceView.virtualAddressGPU);
         }
 
-        public override void SetComputeUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        public override void SetComputeUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView)
         {
-            nativeCmdList.SetComputeRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
+            nativeCmdList->SetComputeRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
         }
 
         public override void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ)
@@ -184,7 +195,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void EndRenderPass()
         {
-            nativeCmdList.EndRenderPass();
+            nativeCmdList->EndRenderPass();
         }
 
         public override void SetStencilRef(in int stencilRef)
@@ -204,13 +215,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void SetShadingRate(FRHITexture texture)
         {
-            FD3DTexture d3dTexture = (FD3DTexture)texture;
-            nativeCmdList.RSSetShadingRateImage(d3dTexture.defaultResource);
+            //FD3DTexture d3dTexture = (FD3DTexture)texture;
+            //nativeCmdList->RSSetShadingRateImage(d3dTexture.defaultResource);
         }
 
         public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combiners)
         {
-            nativeCmdList.RSSetShadingRate((ShadingRate)shadingRate, null);
+            nativeCmdList->RSSetShadingRate((D3D12_SHADING_RATE)shadingRate, null);
         }
 
         public override void SetPrimitiveTopology(EPrimitiveTopology topologyType)
@@ -225,32 +236,32 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView) 
         {
-            nativeCmdList.IASetIndexBuffer(indexBufferView.nativeView);
+            //nativeCmdList->IASetIndexBuffer(indexBufferView.nativeView);
         }
 
         public override void SetVertexBuffer(in int slot, FRHIVertexBufferView vertexBufferView) 
         {
-            nativeCmdList.IASetVertexBuffers(slot, vertexBufferView.nativeView);
+            //nativeCmdList->IASetVertexBuffers(slot, vertexBufferView.nativeView);
         }
 
-        public override void SetRenderConstantBufferView(in int slot, FRHIConstantBufferView constantBufferView)
+        public override void SetRenderConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)
         {
-            nativeCmdList.SetGraphicsRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
+            nativeCmdList->SetGraphicsRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
         }
 
-        public override void SetRenderShaderResourceView(in int slot, FRHIShaderResourceView shaderResourceView)
+        public override void SetRenderShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView)
         {
-            nativeCmdList.SetGraphicsRootShaderResourceView(slot, shaderResourceView.virtualAddressGPU);
+            nativeCmdList->SetGraphicsRootShaderResourceView(slot, shaderResourceView.virtualAddressGPU);
         }
 
-        public override void SetRenderUnorderedAccessView(in int slot, FRHIUnorderedAccessView unorderedAccessView)
+        public override void SetRenderUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView)
         {
-            nativeCmdList.SetGraphicsRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
+            nativeCmdList->SetGraphicsRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
         }
 
-        public override void DrawIndexInstanced(in int indexCount, in int startIndex, in int startVertex, in int instanceCount, in int startInstance)
+        public override void DrawIndexInstanced(in uint indexCount, in uint startIndex, in int startVertex, in uint instanceCount, in uint startInstance)
         {
-            nativeCmdList.DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
+            nativeCmdList->DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
         }
 
         public override void DrawMultiIndexInstanced(FRHIBuffer argsBuffer, in uint argsOffset, FRHIBuffer countBuffer, in uint countOffset)
@@ -265,10 +276,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         protected override void Release()
         {
-            nativeCmdList?.Dispose();
-            nativeCmdPool?.Dispose();
+            nativeCmdList->Release();
+            nativeCmdPool->Release();
         }
 
-        public static implicit operator ID3D12GraphicsCommandList5(FD3DCommandBuffer cmdBuffer) { return cmdBuffer.nativeCmdList; }
+        public static implicit operator ID3D12GraphicsCommandList5*(FD3DCommandBuffer cmdBuffer) { return cmdBuffer.nativeCmdList; }
     }
 }

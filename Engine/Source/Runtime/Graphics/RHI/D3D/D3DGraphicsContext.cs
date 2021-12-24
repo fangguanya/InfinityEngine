@@ -1,30 +1,37 @@
 ﻿using Vortice.DXGI;
-using Vortice.Direct3D12;
+using TerraFX.Interop.DirectX;
+using System.Runtime.Versioning;
 using InfinityEngine.Core.Container;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
-    public class FD3DGraphicsContext : FRHIGraphicsContext
+    public unsafe class FD3DGraphicsContext : FRHIGraphicsContext
     {
         public override ulong copyFrequency
         {
             get
             {
-                return m_CopyCmdContext.nativeCmdQueue.TimestampFrequency;
+                ulong frequency;
+                m_CopyCmdContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
+                return frequency;
             }
         }
         public override ulong computeFrequency
         {
             get
             {
-                return m_ComputeCmdContext.nativeCmdQueue.TimestampFrequency;
+                ulong frequency;
+                m_ComputeCmdContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
+                return frequency;
             }
         }
         public override ulong renderFrequency
         {
             get
             {
-                return m_RenderCmdContext.nativeCmdQueue.TimestampFrequency;
+                ulong frequency;
+                m_RenderCmdContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
+                return frequency;
             }
         }
       
@@ -42,6 +49,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal TArray<FRHICommandBuffer> m_ManagedCmdBuffers;
         internal FRHIDescriptorHeapFactory m_DescriptorFactory;
 
+        [SupportedOSPlatform("windows10.0.19042")]
         public FD3DGraphicsContext()
         {
             m_Device = new FD3DDevice();
@@ -63,7 +71,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_RenderCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Render);
 
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
-            m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
+            //m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
         // Context
@@ -372,7 +380,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHIShaderResourceView CreateShaderResourceView(FRHIBuffer buffer)
         {
-            FD3DBuffer d3dBuffer = (FD3DBuffer)buffer;
+            return null;
+
+            /*FD3DBuffer d3dBuffer = (FD3DBuffer)buffer;
             ShaderResourceViewDescription srvDescriptor = new ShaderResourceViewDescription
             {
                 Format = Format.Unknown,
@@ -384,7 +394,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             CpuDescriptorHandle descriptorHandle = m_DescriptorFactory.GetCPUHandleStart() + m_DescriptorFactory.GetDescriptorSize() * descriptorIndex;
             m_Device.nativeDevice.CreateShaderResourceView(d3dBuffer.defaultResource, srvDescriptor, descriptorHandle);
 
-            return new FRHIShaderResourceView(m_DescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);
+            return new FRHIShaderResourceView(m_DescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);*/
         }
 
         public override FRHIShaderResourceView CreateShaderResourceView(FRHITexture texture)
@@ -394,7 +404,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer buffer)
         {
-            FD3DBuffer d3dBuffer = (FD3DBuffer)buffer;
+            return null;
+
+            /*FD3DBuffer d3dBuffer = (FD3DBuffer)buffer;
             UnorderedAccessViewDescription uavDescriptor = new UnorderedAccessViewDescription
             {
                 Format = Format.Unknown,
@@ -405,7 +417,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             CpuDescriptorHandle descriptorHandle = m_DescriptorFactory.GetCPUHandleStart() + m_DescriptorFactory.GetDescriptorSize() * descriptorIndex;
             m_Device.nativeDevice.CreateUnorderedAccessView(d3dBuffer.defaultResource, null, uavDescriptor, descriptorHandle);
 
-            return new FRHIUnorderedAccessView(m_DescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);
+            return new FRHIUnorderedAccessView(m_DescriptorFactory.GetDescriptorSize(), descriptorIndex, descriptorHandle);*/
         }
 
         public override FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture)
@@ -415,7 +427,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHIResourceSet CreateResourceSet(in int count)
         {
-            return new FRHIResourceSet(m_Device, m_DescriptorFactory, count);
+            return null;
+            //return new FRHIResourceSet(m_Device, m_DescriptorFactory, count);
         }
 
         protected override void Release()
@@ -428,7 +441,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_RenderCmdContext?.Dispose();
             m_QueryContext[0]?.Dispose();
             m_QueryContext[1]?.Dispose();
-            m_DescriptorFactory?.Dispose();
+            //m_DescriptorFactory?.Dispose();
             m_CopyCmdBufferPool?.Dispose();
             m_ComputeCmdBufferPool?.Dispose();
             m_RenderCmdBufferPool?.Dispose();
