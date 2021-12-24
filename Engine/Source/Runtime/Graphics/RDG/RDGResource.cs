@@ -91,7 +91,7 @@ namespace InfinityEngine.Graphics.RDG
         }
     }
 
-    internal class FRDGBuffer : FRDGResource<FRHIBufferDescriptor, FRHIBuffer>
+    internal class FRDGBuffer : FRDGResource<FBufferDescriptor, FRHIBuffer>
     {
         public override string GetName()
         {
@@ -99,7 +99,7 @@ namespace InfinityEngine.Graphics.RDG
         }
     }
 
-    internal class FRDGTexture : FRDGResource<FRHITextureDescriptor, FRHITexture>
+    internal class FRDGTexture : FRDGResource<FTextureDescriptor, FRHITexture>
     {
         public override string GetName()
         {

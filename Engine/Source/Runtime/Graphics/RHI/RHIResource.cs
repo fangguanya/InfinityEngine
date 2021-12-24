@@ -178,7 +178,7 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIResource() { }
     }
 
-    public struct FRHIBufferDescriptor
+    public struct FBufferDescriptor
     {
         public string name;
 
@@ -187,7 +187,7 @@ namespace InfinityEngine.Graphics.RHI
         public EUsageType flag;
         public EBufferType type;
 
-        public FRHIBufferDescriptor(in ulong count, in ulong stride, in EUsageType usageFlag, in EBufferType type = EBufferType.Structured) : this()
+        public FBufferDescriptor(in ulong count, in ulong stride, in EUsageType usageFlag, in EBufferType type = EBufferType.Structured) : this()
         {
             this.type = type;
             this.flag = usageFlag;
@@ -203,9 +203,9 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIBuffer : FRHIResource
     {
-        internal FRHIBufferDescriptor descriptor;
+        internal FBufferDescriptor descriptor;
 
-        internal FRHIBuffer(FRHIDevice device, in FRHIBufferDescriptor descriptor) { }
+        internal FRHIBuffer(FRHIDevice device, in FBufferDescriptor descriptor) { }
         public virtual void SetData<T>(params T[] data) where T : struct { }
         public virtual void SetData<T>(FRHICommandBuffer cmdBuffer, params T[] data) where T : struct { }
         public virtual void Upload<T>(FRHICommandBuffer cmdBuffer) where T : struct { }
@@ -226,7 +226,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public struct FRHITextureDescriptor
+    public struct FTextureDescriptor
     {
         public string name;
 
@@ -241,7 +241,7 @@ namespace InfinityEngine.Graphics.RHI
         public ETextureType type;
         public EGraphicsFormat format;
 
-        public FRHITextureDescriptor(in int width, in int height, in EUsageType usageFlag, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType type = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample msaaSample = EMSAASample.None, in bool sparse = false) : this()
+        public FTextureDescriptor(in int width, in int height, in EUsageType usageFlag, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType type = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample msaaSample = EMSAASample.None, in bool sparse = false) : this()
         {
             this.type = type;
             this.width = width;
@@ -270,9 +270,9 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHITexture : FRHIResource
     {
-        internal FRHITextureDescriptor descriptor;
+        internal FTextureDescriptor descriptor;
 
-        internal FRHITexture(FRHIDevice device, in FRHITextureDescriptor descriptor) { }
+        internal FRHITexture(FRHIDevice device, in FTextureDescriptor descriptor) { }
     }
 
     public struct FRHITextureRef

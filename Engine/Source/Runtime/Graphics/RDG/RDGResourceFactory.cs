@@ -93,7 +93,7 @@ namespace InfinityEngine.Graphics.RDG
             return new FRDGTextureRef(newHandle);
         }
 
-        internal FRDGTextureRef CreateTexture(in FRHITextureDescriptor textureDescriptor, in int shaderProperty = 0, in int temporalPassIndex = -1)
+        internal FRDGTextureRef CreateTexture(in FTextureDescriptor textureDescriptor, in int shaderProperty = 0, in int temporalPassIndex = -1)
         {
             int newHandle = AddNewResource(m_Resources[(int)EResourceType.Texture], out FRDGTexture rdgTexture);
             rdgTexture.desc = textureDescriptor;
@@ -112,7 +112,7 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources[(int)EResourceType.Texture][resourceRef] as FRDGTexture;
         }
 
-        internal FRHITextureDescriptor GetTextureResourceDesc(in FRDGResourceRef resourceRef)
+        internal FTextureDescriptor GetTextureResourceDesc(in FRDGResourceRef resourceRef)
         {
             return (m_Resources[(int)EResourceType.Texture][resourceRef] as FRDGTexture).desc;
         }
@@ -126,7 +126,7 @@ namespace InfinityEngine.Graphics.RDG
             return new FRDGBufferRef(newHandle);
         }
 
-        internal FRDGBufferRef CreateBuffer(in FRHIBufferDescriptor bufferDescriptor, in int temporalPassIndex = -1)
+        internal FRDGBufferRef CreateBuffer(in FBufferDescriptor bufferDescriptor, in int temporalPassIndex = -1)
         {
             int newHandle = AddNewResource(m_Resources[(int)EResourceType.Buffer], out FRDGBuffer bufferResource);
             bufferResource.desc = bufferDescriptor;
@@ -145,7 +145,7 @@ namespace InfinityEngine.Graphics.RDG
             return m_Resources[(int)EResourceType.Buffer][resourceRef] as FRDGBuffer;
         }
 
-        internal FRHIBufferDescriptor GetBufferResourceDesc(in FRDGResourceRef handle)
+        internal FBufferDescriptor GetBufferResourceDesc(in FRDGResourceRef handle)
         {
             return (m_Resources[(int)EResourceType.Buffer][handle] as FRDGBuffer).desc;
         }

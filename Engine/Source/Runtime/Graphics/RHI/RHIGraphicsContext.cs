@@ -38,11 +38,11 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void CreateSamplerState() { }
         public virtual void CreateVertexInputLayout() { }
         public virtual void CreateResourceInputLayout() { }
-        public virtual FRHIBuffer CreateBuffer(in FRHIBufferDescriptor descriptor) { return null; }
-        public virtual FRHIBufferRef GetBuffer(in FRHIBufferDescriptor descriptor) { return default; }
+        public virtual FRHIBuffer CreateBuffer(in FBufferDescriptor descriptor) { return null; }
+        public virtual FRHIBufferRef GetBuffer(in FBufferDescriptor descriptor) { return default; }
         public virtual void ReleaseBuffer(in FRHIBufferRef bufferRef) { }
-        public virtual FRHITexture CreateTexture(in FRHITextureDescriptor descriptor) { return null; }
-        public virtual FRHITextureRef GetTexture(in FRHITextureDescriptor descriptor) { return default; }
+        public virtual FRHITexture CreateTexture(in FTextureDescriptor descriptor) { return null; }
+        public virtual FRHITextureRef GetTexture(in FTextureDescriptor descriptor) { return default; }
         public virtual void ReleaseTexture(FRHITextureRef textureRef) { }
         public virtual FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer buffer) { return default; }
         public virtual FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer buffer) { return default; }

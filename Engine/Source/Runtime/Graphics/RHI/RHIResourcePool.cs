@@ -96,7 +96,7 @@ namespace InfinityEngine.Graphics.RHI
             m_TexturePool = new FRHITextureCache();
         }
 
-        public FRHIBufferRef GetBuffer(in FRHIBufferDescriptor descriptor)
+        public FRHIBufferRef GetBuffer(in FBufferDescriptor descriptor)
         {
             FRHIBuffer buffer;
             int handle = descriptor.GetHashCode();
@@ -114,7 +114,7 @@ namespace InfinityEngine.Graphics.RHI
             m_BufferPool.Push(bufferRef.handle, bufferRef.buffer);
         }
 
-        public FRHITextureRef GetTexture(in FRHITextureDescriptor descriptor)
+        public FRHITextureRef GetTexture(in FTextureDescriptor descriptor)
         {
             FRHITexture texture;
             int handle = descriptor.GetHashCode();

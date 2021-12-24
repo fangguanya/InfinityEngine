@@ -323,12 +323,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override FRHIBuffer CreateBuffer(in FRHIBufferDescriptor descriptor)
+        public override FRHIBuffer CreateBuffer(in FBufferDescriptor descriptor)
         {
             return new FD3DBuffer(m_Device, descriptor);
         }
 
-        public override FRHIBufferRef GetBuffer(in FRHIBufferDescriptor descriptor)
+        public override FRHIBufferRef GetBuffer(in FBufferDescriptor descriptor)
         {
             return m_ResourcePool.GetBuffer(descriptor);
         }
@@ -338,12 +338,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ResourcePool.ReleaseBuffer(bufferRef);
         }
 
-        public override FRHITexture CreateTexture(in FRHITextureDescriptor descriptor)
+        public override FRHITexture CreateTexture(in FTextureDescriptor descriptor)
         {
             return new FD3DTexture(m_Device, descriptor);
         }
         
-        public override FRHITextureRef GetTexture(in FRHITextureDescriptor descriptor)
+        public override FRHITextureRef GetTexture(in FTextureDescriptor descriptor)
         {
             return m_ResourcePool.GetTexture(descriptor);
         }
