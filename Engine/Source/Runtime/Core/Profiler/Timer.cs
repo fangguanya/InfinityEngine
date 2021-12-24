@@ -38,8 +38,8 @@ namespace InfinityEngine.Core.Profiler
         public long milliseconds {get { return m_Stopwatch.ElapsedMilliseconds; } }
         public float seconds {get { return m_Stopwatch.ElapsedMilliseconds / 1000.0f; } }
         public void Reset() => m_Stopwatch.Reset();
-        public void Start() => m_Stopwatch.Start();
-        public void Restart() => m_Stopwatch.Restart();
+        public void Begin() => m_Stopwatch.Start();
+        public void Start() => m_Stopwatch.Restart();
         public void Stop() => m_Stopwatch.Stop();
 
     }

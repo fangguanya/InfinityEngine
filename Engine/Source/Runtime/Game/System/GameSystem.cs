@@ -42,7 +42,7 @@ namespace InfinityEngine.Game.System
         {
             m_GamePlayFunc();
             m_TimeCounter.Reset();
-            m_TimeCounter.Start();
+            m_TimeCounter.Begin();
         }
 
         public void Exit()
@@ -64,7 +64,7 @@ namespace InfinityEngine.Game.System
                     }
                 }
 
-                m_TimeCounter.Restart();
+                m_TimeCounter.Start();
                 m_SemaphoreR2G.Wait();
                 FGameTime.Tick(m_DeltaTime);
                 m_GameTickFunc();
@@ -98,7 +98,7 @@ namespace InfinityEngine.Game.System
             }
 
             elapsed = m_TimeCounter.microseconds;
-            m_TimeCounter.Restart();
+            m_TimeCounter.Start();
 
             // Perform timestep smoothing
             m_DeltaTime = 0.0f;
