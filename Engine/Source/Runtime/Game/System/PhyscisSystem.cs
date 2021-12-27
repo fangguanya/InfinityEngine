@@ -4,7 +4,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Game.System
 {
-    internal class FPhysicsSystem : FDisposable
+    internal class FPhysicsSystem : FDisposal
     {
         private bool IsLoopExit;
         internal Thread physicsThread;

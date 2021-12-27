@@ -13,7 +13,7 @@ namespace InfinityEngine.Game.System
     internal delegate void FGameTickFunc();
     internal delegate void FGameEndFunc();
 
-    internal class FGameSystem : FDisposable
+    internal class FGameSystem : FDisposal
     {
         private bool IsLoopExit;
         private float m_DeltaTime;

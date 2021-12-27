@@ -38,7 +38,7 @@ namespace InfinityEngine.Graphics.RHI
         public Action<FRHIAsyncReadbackRequest> callbackFunc;
     }
 
-    internal class FRHIMemoryReadbackFactory : FDisposable
+    internal class FRHIMemoryReadbackFactory : FDisposal
     {
         public virtual bool IsReady => false;
         public TArray<FAsyncReadbackRequestInfo> requestInfos;

@@ -10,7 +10,7 @@ namespace InfinityEngine.Graphics.RHI
 		CopyTimestamp = 5
 	}
 
-    public class FRHIQuery : FDisposable
+    public class FRHIQuery : FDisposal
 	{
 		internal int indexHead;
 		internal int indexLast;
@@ -20,7 +20,7 @@ namespace InfinityEngine.Graphics.RHI
 		public virtual float GetResult(in ulong frequency) { return -1; }
 	}
 
-	internal class FRHIQueryContext : FDisposable
+	internal class FRHIQueryContext : FDisposal
 	{
 		public int queryCount;
 		public bool IsReady;

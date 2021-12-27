@@ -78,7 +78,7 @@ namespace InfinityEngine.Graphics.RDG
         }
     }
 
-    public class FRDGBuilder : FDisposable
+    public class FRDGBuilder : FDisposal
     {
         public string name;
         FRDGResourceFactory m_Resources;

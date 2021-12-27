@@ -9,7 +9,7 @@ namespace InfinityEngine.Graphics.RHI
         Render = 0
     }
 
-    public class FRHIGraphicsContext : FDisposable
+    public class FRHIGraphicsContext : FDisposal
     {
         public virtual ulong copyFrequency => 0;
         public virtual ulong computeFrequency => 0;

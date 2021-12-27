@@ -3,7 +3,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Core.Thread.Sync
 {
-    public class FSemaphore : FDisposable
+    public class FSemaphore : FDisposal
     {
         public string name;
         private bool m_Completed;

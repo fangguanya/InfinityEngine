@@ -3,7 +3,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal class FRHIDescriptorHeapFactory : FDisposable
+    internal class FRHIDescriptorHeapFactory : FDisposal
     {
         /*protected int descriptorSize;
         protected ID3D12DescriptorHeap nativeCPUDescriptorHeap;

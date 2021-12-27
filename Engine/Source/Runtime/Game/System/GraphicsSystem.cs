@@ -21,7 +21,7 @@ namespace InfinityEngine.Game.System
         }
     }
 
-    internal class FGraphicsSystem : FDisposable
+    internal class FGraphicsSystem : FDisposal
     {
         private bool IsLoopExit;
         internal Thread renderThread;

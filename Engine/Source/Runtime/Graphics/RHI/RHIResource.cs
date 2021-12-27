@@ -174,7 +174,7 @@ namespace InfinityEngine.Graphics.RHI
         RGBA_BC7_UNorm = 109,
     }
 
-    public class FRHIResource : FDisposable
+    public class FRHIResource : FDisposal
     {
         public FRHIResource() { }
     }

@@ -53,7 +53,7 @@ namespace InfinityEngine.Graphics.RHI
         public FRHICommandContext cmdContext;
     }
 
-    public class FRHICommandBuffer : FDisposable
+    public class FRHICommandBuffer : FDisposal
     {
         public string name;
         internal bool IsClose;
@@ -109,7 +109,7 @@ namespace InfinityEngine.Graphics.RHI
         public virtual void DrawIndexInstancedIndirect(FRHIBuffer argsBuffer, in uint argsOffset) { }
     }
 
-    internal class FRHICommandBufferPool : FDisposable
+    internal class FRHICommandBufferPool : FDisposal
     {
         EContextType m_ContextType;
         Stack<FRHICommandBuffer> m_Pooled;

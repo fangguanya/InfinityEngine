@@ -5,7 +5,7 @@ using InfinityEngine.Rendering.RenderLoop;
 
 namespace InfinityEngine.Rendering.RenderPipeline
 {
-    public abstract class FRenderPipeline : FDisposable
+    public abstract class FRenderPipeline : FDisposal
     {
         public string name;
         protected FRDGBuilder m_GraphBuilder;

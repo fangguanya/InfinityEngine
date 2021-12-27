@@ -102,7 +102,7 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public sealed class FRHIResourceSet : FDisposable
+    public sealed class FRHIResourceSet : FDisposal
     {
         /*internal int length;
         internal int descriptorIndex;

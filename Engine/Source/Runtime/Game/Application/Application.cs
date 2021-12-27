@@ -8,7 +8,7 @@ using InfinityEngine.Core.Thread.Sync;
 
 namespace InfinityEngine.Game.Application
 {
-    public abstract partial class FApplication : FDisposable
+    public abstract partial class FApplication : FDisposal
     {
         public static uint TargetFrameRate = 60;
 

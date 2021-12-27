@@ -3,7 +3,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal class FRHICommandContext : FDisposable
+    internal class FRHICommandContext : FDisposal
     {
         protected AutoResetEvent m_FenceEvent;
 

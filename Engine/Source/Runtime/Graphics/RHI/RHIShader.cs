@@ -2,7 +2,7 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHIShader : FDisposable
+    public class FRHIShader : FDisposal
     {
         public string name;
 

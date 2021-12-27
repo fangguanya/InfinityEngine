@@ -4,7 +4,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHIFence : FDisposable
+    public class FRHIFence : FDisposal
     {
         public string name;
         public virtual bool IsCompleted => false;
@@ -16,7 +16,7 @@ namespace InfinityEngine.Graphics.RHI
         internal virtual void WaitOnGPU(FRHICommandContext cmdContext) { }
     }
 
-    internal class FRHIFencePool : FDisposable
+    internal class FRHIFencePool : FDisposal
     {
         Stack<FRHIFence> m_Pooled;
         FRHIGraphicsContext m_GraphicsContext;

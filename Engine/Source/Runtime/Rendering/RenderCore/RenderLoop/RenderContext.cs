@@ -2,7 +2,7 @@
 
 namespace InfinityEngine.Rendering.RenderLoop
 {
-    public sealed class FRenderContext : FDisposable
+    public sealed class FRenderContext : FDisposal
     {
         public FRenderContext()
         {
