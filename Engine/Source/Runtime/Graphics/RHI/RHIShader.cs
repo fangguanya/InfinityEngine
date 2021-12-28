@@ -10,11 +10,6 @@ namespace InfinityEngine.Graphics.RHI
         {
 
         }
-
-        protected override void Release()
-        {
-
-        }
     }
 
     public class FRHIComputeShader : FRHIShader
@@ -22,11 +17,6 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIComputeShader() : base()
         {
 
-        }
-
-        protected override void Release()
-        {
-            base.Release();
         }
     }
 
@@ -45,11 +35,6 @@ namespace InfinityEngine.Graphics.RHI
         {
 
         }
-
-        protected override void Release()
-        {
-            base.Release();
-        }
     }
 
     public enum ERayTraceShaderType
@@ -65,11 +50,6 @@ namespace InfinityEngine.Graphics.RHI
         public FRHIRayTraceShader() : base()
         {
 
-        }
-
-        protected override void Release()
-        {
-            base.Release();
         }
     }
 }

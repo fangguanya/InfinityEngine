@@ -8,10 +8,5 @@ namespace InfinityEngine.Graphics.RHI
         {
 
         }
-
-        protected override void Release()
-        {
-
-        }
     }
 }
