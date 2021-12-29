@@ -1,11 +1,14 @@
 ﻿using InfinityEngine.Core.Object;
 
-public class FRHISwapChain : FDisposal
+namespace InfinityEngine.Graphics.RHI
 {
-    public string name;
-
-    public FRHISwapChain() : base()
+    public unsafe class FRHISwapChain : FDisposal
     {
+        public string name;
 
+        internal FRHISwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* hwndPtr, in uint width, in uint height)
+        {
+
+        }
     }
 }
