@@ -9,7 +9,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal IDXGISwapChain* nativeSwapChain;
 
         [SupportedOSPlatform("windows10.0.19042")]
-        internal FD3DSwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* hwndPtr, in uint width, in uint height) : base(device, cmdContext, hwndPtr, width, height)
+        internal FD3DSwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* windowPtr, in uint width, in uint height) : base(device, cmdContext, windowPtr, width, height)
         {
             FD3DDevice d3dDevice = (FD3DDevice)device;
             FD3DCommandContext d3dCmdContext = (FD3DCommandContext)cmdContext;
@@ -32,7 +32,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             swapChainDesc.BufferCount = 2;
             swapChainDesc.BufferDesc = bufferDesc;
             swapChainDesc.SampleDesc = sampleDesc;
-            swapChainDesc.OutputWindow = new HWND(hwndPtr);
+            swapChainDesc.OutputWindow = new HWND(windowPtr);
             swapChainDesc.BufferUsage = DXGI.DXGI_USAGE_RENDER_TARGET_OUTPUT;
             swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT.DXGI_SWAP_EFFECT_FLIP_DISCARD;
 

@@ -6,7 +6,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         public string name;
 
-        internal FRHISwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* hwndPtr, in uint width, in uint height)
+        internal FRHISwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* windowPtr, in uint width, in uint height)
         {
 
         }
