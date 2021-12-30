@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Drawing;
-using System.Runtime.Versioning;
 
 namespace InfinityEngine.Game.Window
 {
-    [SupportedOSPlatform("windows10.0.19042")]
     internal class FWindow
     {
         private const int CW_USEDEFAULT = unchecked((int)0x80000000);

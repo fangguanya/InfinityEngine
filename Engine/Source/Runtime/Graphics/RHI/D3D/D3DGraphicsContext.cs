@@ -1,12 +1,8 @@
-﻿using Vortice.DXGI;
-using TerraFX.Interop.DirectX;
-using System.Runtime.Versioning;
+﻿using System;
 using InfinityEngine.Core.Container;
-using System;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
-    [SupportedOSPlatform("windows10.0.19042")]
     public unsafe class FD3DGraphicsContext : FRHIGraphicsContext
     {
         public override ulong copyFrequency
@@ -51,7 +47,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal TArray<FRHICommandBuffer> m_ManagedCmdBuffers;
         //internal FRHIDescriptorHeapFactory m_DescriptorFactory;
 
-        [SupportedOSPlatform("windows10.0.19042")]
         public FD3DGraphicsContext()
         {
             m_Device = new FD3DDevice();

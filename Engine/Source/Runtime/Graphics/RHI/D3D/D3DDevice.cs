@@ -1,6 +1,5 @@
 ﻿using TerraFX.Interop.Windows;
 using TerraFX.Interop.DirectX;
-using System.Runtime.Versioning;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
@@ -10,7 +9,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal IDXGIAdapter1* nativeAdapter;
         internal IDXGIFactory7* nativeFactory;
 
-        [SupportedOSPlatform("windows10.0.19042")]
         public FD3DDevice()
         {
             IDXGIFactory7* factory = null;
@@ -26,7 +24,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeDevice = device;
         }
 
-        [SupportedOSPlatform("windows10.0.19042")]
         protected override void Release()
         {
             nativeDevice->Release();

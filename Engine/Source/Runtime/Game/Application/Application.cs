@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Versioning;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
@@ -9,7 +8,6 @@ using InfinityEngine.Core.Thread.Sync;
 
 namespace InfinityEngine.Game.Application
 {
-    [SupportedOSPlatform("windows10.0.19042")]
     public abstract partial class FApplication : FDisposal
     {
         public static uint TargetFrameRate = 60;

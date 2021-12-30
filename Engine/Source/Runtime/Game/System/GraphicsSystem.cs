@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Runtime.Versioning;
+﻿using System.Threading;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Graphics.RHI;
@@ -24,7 +22,6 @@ namespace InfinityEngine.Game.System
         }
     }
 
-    [SupportedOSPlatform("windows10.0.19042")]
     internal class FGraphicsSystem : FDisposal
     {
         private bool IsLoopExit;

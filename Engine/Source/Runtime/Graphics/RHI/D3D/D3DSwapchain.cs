@@ -1,11 +1,9 @@
 ﻿using TerraFX.Interop.Windows;
 using TerraFX.Interop.DirectX;
-using System.Runtime.Versioning;
 using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
-    [SupportedOSPlatform("windows10.0.19042")]
     public unsafe class FD3DSwapChain : FRHISwapChain
     {
         public override int backBufferIndex => (int)nativeSwapChain->GetCurrentBackBufferIndex();
