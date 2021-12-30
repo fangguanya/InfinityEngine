@@ -2,9 +2,11 @@
 using TerraFX.Interop.DirectX;
 using System.Runtime.Versioning;
 using InfinityEngine.Core.Container;
+using System;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
+    [SupportedOSPlatform("windows10.0.19042")]
     public unsafe class FD3DGraphicsContext : FRHIGraphicsContext
     {
         public override ulong copyFrequency
@@ -47,7 +49,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal FRHICommandBufferPool m_ComputeCmdBufferPool;
         internal FRHICommandBufferPool m_RenderCmdBufferPool;
         internal TArray<FRHICommandBuffer> m_ManagedCmdBuffers;
-        internal FRHIDescriptorHeapFactory m_DescriptorFactory;
+        //internal FRHIDescriptorHeapFactory m_DescriptorFactory;
 
         [SupportedOSPlatform("windows10.0.19042")]
         public FD3DGraphicsContext()
@@ -74,7 +76,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
             //m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
         }
 
-        // Context
         internal override FRHICommandContext SelectContext(in EContextType contextType)
         {
             FRHICommandContext commandContext = m_RenderCmdContext;
@@ -211,10 +212,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ExecuteGPUInfos.Clear();
         }
 
-        // Resource
-        public override void CreateViewport()
+        public override FRHISwapChain CreateSwapChain(in uint width, in uint height, in IntPtr windowPtr)
         {
-
+            return new FD3DSwapChain(this, windowPtr.ToPointer(), width, height);
         }
 
         public override FRHIFence CreateFence(string name = null)

@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Drawing;
-using InfinityEngine.Game.Application;
+using System.Runtime.Versioning;
 
 namespace InfinityEngine.Game.Window
 {
-    public class FWindow
+    [SupportedOSPlatform("windows10.0.19042")]
+    internal class FWindow
     {
         private const int CW_USEDEFAULT = unchecked((int)0x80000000);
 
-        public string Title { get; private set; }
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public object Handle { get; private set; }
+        public string title { get; private set; }
+        public int width { get; private set; }
+        public int height { get; private set; }
+        public IntPtr handle { get; private set; }
 
         public FWindow(string title, int width, int height)
         {
-            Title = title;
-            Width = width;
-            Height = height;
-
+            this.title = title;
+            this.width = width;
+            this.height = height;
             CreateWindowInternal();
         }
 
@@ -28,20 +28,19 @@ namespace InfinityEngine.Game.Window
             var y = 0;
             WindowStyles style = 0;
             WindowExStyles styleEx = 0;
-            const bool resizable = true;
+            bool resizable = true;
             {
-                if (Width > 0 && Height > 0)
+                if (width > 0 && height > 0)
                 {
                     var screenWidth = User32.GetSystemMetrics(SystemMetrics.SM_CXSCREEN);
                     var screenHeight = User32.GetSystemMetrics(SystemMetrics.SM_CYSCREEN);
 
                     // Place the window in the middle of the screen.WS_EX_APPWINDOW
-                    x = (screenWidth - Width) / 2;
-                    y = (screenHeight - Height) / 2;
+                    x = (screenWidth - width) / 2;
+                    y = (screenHeight - height) / 2;
                 }
 
-                if (resizable)
-                {
+                if (resizable) {
                     style = WindowStyles.WS_OVERLAPPEDWINDOW;
                 } else {
                     style = WindowStyles.WS_POPUP | WindowStyles.WS_BORDER | WindowStyles.WS_CAPTION | WindowStyles.WS_SYSMENU;
@@ -54,58 +53,32 @@ namespace InfinityEngine.Game.Window
             int windowWidth;
             int windowHeight;
 
-            if (Width > 0 && Height > 0)
-            {
-                var rect = new Rectangle(0, 0, Width, Height);
-
-                // Adjust according to window styles
-                User32.AdjustWindowRectEx(
-                    ref rect,
-                    style,
-                    false,
-                    styleEx);
-
+            if (width > 0 && height > 0) {
+                var rect = new Rectangle(0, 0, width, height);
                 windowWidth = rect.Right - rect.Left;
                 windowHeight = rect.Bottom - rect.Top;
-            }
-            else
-            {
+                User32.AdjustWindowRectEx(ref rect, style, false, styleEx);
+            } else {
                 x = y = windowWidth = windowHeight = CW_USEDEFAULT;
             }
 
-            var hwnd = User32.CreateWindowEx(
-                (int)styleEx,
-                Application.FApplication.WndClassName,
-                Title,
-                (int)style,
-                x,
-                y,
-                windowWidth,
-                windowHeight,
-                IntPtr.Zero,
-                IntPtr.Zero,
-                IntPtr.Zero,
-                IntPtr.Zero);
-
-            if (hwnd == IntPtr.Zero)
-            {
+            IntPtr hwnd = User32.CreateWindowEx((int)styleEx, Application.FApplication.WndClassName, title, (int)style, x, y, windowWidth, windowHeight, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+            if (hwnd == IntPtr.Zero) {
                 return;
             }
 
             User32.ShowWindow(hwnd, ShowWindowCommand.Normal);
-            Handle = hwnd;
-            Width = windowWidth;
-            Height = windowHeight;
+            handle = hwnd;
+            width = windowWidth;
+            height = windowHeight;
         }
 
         public void Destroy()
         {
-            var hwnd = (IntPtr)Handle;
-            if (hwnd != IntPtr.Zero)
+            if (handle != IntPtr.Zero)
             {
-                var destroyHandle = hwnd;
-                Handle = IntPtr.Zero;
-
+                var destroyHandle = handle;
+                handle = IntPtr.Zero;
                 User32.DestroyWindow(destroyHandle);
             }
         }

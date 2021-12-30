@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Versioning;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Game.Window;
 using InfinityEngine.Game.System;
@@ -8,6 +9,7 @@ using InfinityEngine.Core.Thread.Sync;
 
 namespace InfinityEngine.Game.Application
 {
+    [SupportedOSPlatform("windows10.0.19042")]
     public abstract partial class FApplication : FDisposal
     {
         public static uint TargetFrameRate = 60;
@@ -20,21 +22,18 @@ namespace InfinityEngine.Game.Application
 
         private FSemaphore m_SemaphoreG2R;
         private FSemaphore m_SemaphoreR2G;
-
-        internal FGameSystem gameSystem;
-        internal FPhysicsSystem physicsSystem;
-        internal FGraphicsSystem graphicsSystem;
+        private FGameSystem m_GameSystem;
+        private FPhysicsSystem m_PhysicsSystem;
+        private FGraphicsSystem m_GraphicsSystem;
 
         public FApplication(in int width, in int height, string name = null)
         {
             CreateWindow(width, height, name);
-            
             m_SemaphoreR2G = new FSemaphore(true);
             m_SemaphoreG2R = new FSemaphore(false);
-
-            gameSystem = new FGameSystem(End, Play, Tick, m_SemaphoreG2R, m_SemaphoreR2G);
-            physicsSystem = new FPhysicsSystem();
-            graphicsSystem = new FGraphicsSystem(m_SemaphoreG2R, m_SemaphoreR2G);
+            m_GameSystem = new FGameSystem(End, Play, Tick, m_SemaphoreG2R, m_SemaphoreR2G);
+            m_PhysicsSystem = new FPhysicsSystem();
+            m_GraphicsSystem = new FGraphicsSystem(mainWindow, m_SemaphoreG2R, m_SemaphoreR2G);
         }
 
         protected abstract void Play();
@@ -52,24 +51,24 @@ namespace InfinityEngine.Game.Application
 
         private void PlatformRun()
         {
-            gameSystem.Start();
-            physicsSystem.Start();
-            graphicsSystem.Start();
-            gameSystem.GameLoop();
+            m_GameSystem.Start();
+            m_PhysicsSystem.Start();
+            m_GraphicsSystem.Start();
+            m_GameSystem.GameLoop();
         }
 
         private void PlatformExit()
         {
-            gameSystem.Exit();
-            physicsSystem.Exit();
-            graphicsSystem.Exit();
+            m_GameSystem.Exit();
+            m_PhysicsSystem.Exit();
+            m_GraphicsSystem.Exit();
         }
 
         protected override void Release()
         {
-            gameSystem.Dispose();
-            physicsSystem.Dispose();
-            graphicsSystem.Dispose();
+            m_GameSystem.Dispose();
+            m_PhysicsSystem.Dispose();
+            m_GraphicsSystem.Dispose();
 
             mainWindow.Destroy();
             m_SemaphoreR2G.Dispose();

@@ -2,13 +2,19 @@
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public unsafe class FRHISwapChain : FDisposal
+    public unsafe abstract class FRHISwapChain : FDisposal
     {
         public string name;
+        public virtual int backBufferIndex => 0;
 
-        internal FRHISwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* windowPtr, in uint width, in uint height)
+
+        internal FRHITexture[] backBuffer;
+
+        internal FRHISwapChain(FRHIGraphicsContext graphicsContext, in void* windowPtr, in uint width, in uint height)
         {
-
+            backBuffer = new FRHITexture[2];
         }
+
+        public abstract void Present();
     }
 }

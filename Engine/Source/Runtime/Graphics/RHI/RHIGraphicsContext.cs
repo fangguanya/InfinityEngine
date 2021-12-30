@@ -1,4 +1,5 @@
-﻿using InfinityEngine.Core.Object;
+﻿using System;
+using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -9,51 +10,50 @@ namespace InfinityEngine.Graphics.RHI
         Render = 0
     }
 
-    public class FRHIGraphicsContext : FDisposal
+    public abstract class FRHIGraphicsContext : FDisposal
     {
         public virtual ulong copyFrequency => 0;
         public virtual ulong computeFrequency => 0;
         public virtual ulong renderFrequency => 0;
 
-        public FRHIGraphicsContext() { }
-        internal virtual FRHICommandContext SelectContext(in EContextType contextType) { return null; }
-        public virtual FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null) { return null; }
-        public virtual FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = true) { return null; }
-        public virtual void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer) { }
-        public virtual void WriteToFence(in EContextType contextType, FRHIFence fence) { }
-        public virtual void WaitForFence(in EContextType contextType, FRHIFence fence) { }
-        public virtual void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer) { }
-        internal virtual void Flush() { }
-        internal virtual void Submit() { }
-        public virtual void CreateViewport() { }
-        public virtual FRHIFence CreateFence(string name = null) { return null; }
-        public virtual FRHIFence GetFence(string name = null) { return null; }
-        public virtual void ReleaseFence(FRHIFence fence) { }
-        public virtual FRHIQuery CreateQuery(in EQueryType queryType, string name = null) { return null; }
-        public virtual FRHIQuery GetQuery(in EQueryType queryType, string name = null) { return null; }
-        public virtual void ReleaseQuery(FRHIQuery query) { }
-        public virtual FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescriptor descriptor) { return default; }
-        public virtual FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescriptor descriptor) { return default; }
-        public virtual FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescriptor descriptor) { return default; }
-        public virtual void CreateSamplerState() { }
-        public virtual void CreateVertexInputLayout() { }
-        public virtual void CreateResourceInputLayout() { }
-        public virtual FRHIBuffer CreateBuffer(in FBufferDescriptor descriptor) { return null; }
-        public virtual FRHIBufferRef GetBuffer(in FBufferDescriptor descriptor) { return default; }
-        public virtual void ReleaseBuffer(in FRHIBufferRef bufferRef) { }
-        public virtual FRHITexture CreateTexture(in FTextureDescriptor descriptor) { return null; }
-        public virtual FRHITextureRef GetTexture(in FTextureDescriptor descriptor) { return default; }
-        public virtual void ReleaseTexture(FRHITextureRef textureRef) { }
-        public virtual FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer buffer) { return default; }
-        public virtual FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer buffer) { return default; }
-        public virtual FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture) { return default; }
-        public virtual FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture) { return default; }
-        public virtual FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer buffer) { return default; }
-        public virtual FRHIShaderResourceView CreateShaderResourceView(FRHIBuffer buffer) { return default; }
-        public virtual FRHIShaderResourceView CreateShaderResourceView(FRHITexture texture) { return default; }
-        public virtual FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer buffer) { return default; }
-        public virtual FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture) { return default; }
-        public virtual FRHIResourceSet CreateResourceSet(in int count) { return null; }
+        internal abstract FRHICommandContext SelectContext(in EContextType contextType);
+        public abstract FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null);
+        public abstract FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = true);
+        public abstract void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer);
+        public abstract void WriteToFence(in EContextType contextType, FRHIFence fence);
+        public abstract void WaitForFence(in EContextType contextType, FRHIFence fence);
+        public abstract void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer);
+        internal abstract void Flush();
+        internal abstract void Submit();
+        public abstract FRHISwapChain CreateSwapChain(in uint width, in uint height, in IntPtr windowPtr);
+        public abstract FRHIFence CreateFence(string name = null);
+        public abstract FRHIFence GetFence(string name = null);
+        public abstract void ReleaseFence(FRHIFence fence);
+        public abstract FRHIQuery CreateQuery(in EQueryType queryType, string name = null);
+        public abstract FRHIQuery GetQuery(in EQueryType queryType, string name = null);
+        public abstract void ReleaseQuery(FRHIQuery query);
+        public abstract FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescriptor descriptor);
+        public abstract FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescriptor descriptor);
+        public abstract FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescriptor descriptor);
+        public abstract void CreateSamplerState();
+        public abstract void CreateVertexInputLayout();
+        public abstract void CreateResourceInputLayout();
+        public abstract FRHIBuffer CreateBuffer(in FBufferDescriptor descriptor);
+        public abstract FRHIBufferRef GetBuffer(in FBufferDescriptor descriptor);
+        public abstract void ReleaseBuffer(in FRHIBufferRef bufferRef);
+        public abstract FRHITexture CreateTexture(in FTextureDescriptor descriptor);
+        public abstract FRHITextureRef GetTexture(in FTextureDescriptor descriptor);
+        public abstract void ReleaseTexture(FRHITextureRef textureRef);
+        public abstract FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer buffer);
+        public abstract FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer buffer);
+        public abstract FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture);
+        public abstract FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture);
+        public abstract FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer buffer);
+        public abstract FRHIShaderResourceView CreateShaderResourceView(FRHIBuffer buffer);
+        public abstract FRHIShaderResourceView CreateShaderResourceView(FRHITexture texture);
+        public abstract FRHIUnorderedAccessView CreateUnorderedAccessView(FRHIBuffer buffer);
+        public abstract FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture);
+        public abstract FRHIResourceSet CreateResourceSet(in int count);
 
         public static void SubmitAndFlushContext(FRHIGraphicsContext graphicsContext)
         {

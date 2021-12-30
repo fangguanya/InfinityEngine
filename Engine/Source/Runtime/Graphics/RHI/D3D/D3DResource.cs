@@ -57,6 +57,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal ID3D12Resource* defaultResource;
         internal ID3D12Resource* readbackResource;
 
+        internal FD3DBuffer() : base()
+        {
+
+        }
+
         internal FD3DBuffer(FRHIDevice device, in FBufferDescriptor descriptor) : base(device, descriptor)
         {
             this.descriptor = descriptor;
@@ -261,6 +266,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal ID3D12Resource* uploadResource;
         internal ID3D12Resource* defaultResource;
         internal ID3D12Resource* readbackResource;
+
+        internal FD3DTexture() : base()
+        {
+
+        }
 
         internal FD3DTexture(FRHIDevice device, in FTextureDescriptor descriptor) : base(device, descriptor)
         {

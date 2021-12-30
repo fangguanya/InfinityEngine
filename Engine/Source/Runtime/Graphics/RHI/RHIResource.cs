@@ -206,6 +206,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         internal FBufferDescriptor descriptor;
 
+        internal FRHIBuffer() { }
         internal FRHIBuffer(FRHIDevice device, in FBufferDescriptor descriptor) { }
         public virtual void SetData<T>(params T[] data) where T : struct { }
         public virtual void SetData<T>(FRHICommandBuffer cmdBuffer, params T[] data) where T : struct { }
@@ -272,6 +273,8 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHITexture : FRHIResource
     {
         internal FTextureDescriptor descriptor;
+
+        internal FRHITexture() { }
 
         internal FRHITexture(FRHIDevice device, in FTextureDescriptor descriptor) { }
     }
