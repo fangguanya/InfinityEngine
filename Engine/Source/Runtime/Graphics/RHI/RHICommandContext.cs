@@ -3,15 +3,15 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    internal class FRHICommandContext : FDisposal
+    internal abstract class FRHICommandContext : FDisposal
     {
         protected AutoResetEvent m_FenceEvent;
 
         internal FRHICommandContext(FRHIDevice device, EContextType contextType) : base() { }
 
-        public virtual void SignalQueue(FRHIFence fence) { }
-        public virtual void WaitQueue(FRHIFence fence) { }
-        public virtual void ExecuteQueue(FRHICommandBuffer cmdBuffer) { }
-        public virtual void Flush() { }
+        public abstract void SignalQueue(FRHIFence fence);
+        public abstract void WaitQueue(FRHIFence fence);
+        public abstract void ExecuteQueue(FRHICommandBuffer cmdBuffer);
+        public abstract void Flush();
     }
 }

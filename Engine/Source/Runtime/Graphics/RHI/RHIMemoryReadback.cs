@@ -38,7 +38,7 @@ namespace InfinityEngine.Graphics.RHI
         public Action<FRHIAsyncReadbackRequest> callbackFunc;
     }
 
-    internal class FRHIMemoryReadbackFactory : FDisposal
+    internal abstract class FRHIMemoryReadbackFactory : FDisposal
     {
         public virtual bool IsReady => false;
         public TArray<FAsyncReadbackRequestInfo> requestInfos;
@@ -51,10 +51,10 @@ namespace InfinityEngine.Graphics.RHI
         {
             requestInfos.Clear();
         }
-        protected virtual void RequestAsyncReadback(FRHIBuffer buffer, Action<FRHIAsyncReadbackRequest> callback) { }
-        protected virtual void RequestAsyncReadback(FRHIBuffer buffer, in int size, in int offset, Action<FRHIAsyncReadbackRequest> callback) { }
-        protected virtual void RequestAsyncReadback(FRHITexture texture, Action<FRHIAsyncReadbackRequest> callback) { }
-        protected virtual void RequestAsyncReadback(FRHITexture texture, in int mipIndex, Action<FRHIAsyncReadbackRequest> callback) { }
-        protected virtual void RequestAsyncReadback(FRHITexture texture, in int mipIndex, in int x, in int width, in int y, in int height, in int z, in int depth, Action<FRHIAsyncReadbackRequest> callback) { }
+        protected abstract void RequestAsyncReadback(FRHIBuffer buffer, Action<FRHIAsyncReadbackRequest> callback);
+        protected abstract void RequestAsyncReadback(FRHIBuffer buffer, in int size, in int offset, Action<FRHIAsyncReadbackRequest> callback);
+        protected abstract void RequestAsyncReadback(FRHITexture texture, Action<FRHIAsyncReadbackRequest> callback);
+        protected abstract void RequestAsyncReadback(FRHITexture texture, in int mipIndex, Action<FRHIAsyncReadbackRequest> callback);
+        protected abstract void RequestAsyncReadback(FRHITexture texture, in int mipIndex, in int x, in int width, in int y, in int height, in int z, in int depth, Action<FRHIAsyncReadbackRequest> callback);
     }
 }

@@ -202,18 +202,18 @@ namespace InfinityEngine.Graphics.RHI
         }
     }
 
-    public class FRHIBuffer : FRHIResource
+    public abstract class FRHIBuffer : FRHIResource
     {
         internal FBufferDescriptor descriptor;
 
         internal FRHIBuffer() { }
         internal FRHIBuffer(FRHIDevice device, in FBufferDescriptor descriptor) { }
-        public virtual void SetData<T>(params T[] data) where T : struct { }
-        public virtual void SetData<T>(FRHICommandBuffer cmdBuffer, params T[] data) where T : struct { }
-        public virtual void Upload<T>(FRHICommandBuffer cmdBuffer) where T : struct { }
-        public virtual void GetData<T>(T[] data) where T : struct { }
-        public virtual void GetData<T>(FRHICommandBuffer cmdBuffer, T[] data) where T : struct { }
-        public virtual void Readback<T>(FRHICommandBuffer cmdBuffer) where T : struct { }
+        public abstract void SetData<T>(params T[] data) where T : struct;
+        public abstract void SetData<T>(FRHICommandBuffer cmdBuffer, params T[] data) where T : struct;
+        public abstract void Upload<T>(FRHICommandBuffer cmdBuffer) where T : struct;
+        public abstract void GetData<T>(T[] data) where T : struct;
+        public abstract void GetData<T>(FRHICommandBuffer cmdBuffer, T[] data) where T : struct;
+        public abstract void Readback<T>(FRHICommandBuffer cmdBuffer) where T : struct;
     }
 
     public struct FRHIBufferRef
@@ -275,7 +275,6 @@ namespace InfinityEngine.Graphics.RHI
         internal FTextureDescriptor descriptor;
 
         internal FRHITexture() { }
-
         internal FRHITexture(FRHIDevice device, in FTextureDescriptor descriptor) { }
     }
 

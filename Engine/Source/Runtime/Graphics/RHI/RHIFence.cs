@@ -4,16 +4,16 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHIFence : FDisposal
+    public abstract class FRHIFence : FDisposal
     {
         public string name;
         public virtual bool IsCompleted => false;
 
         internal FRHIFence(FRHIDevice device, string name = null) { }
 
-        internal virtual void Signal(FRHICommandContext cmdContext) { }
-        internal virtual void WaitOnCPU(AutoResetEvent fenceEvent) { }
-        internal virtual void WaitOnGPU(FRHICommandContext cmdContext) { }
+        internal abstract void Signal(FRHICommandContext cmdContext);
+        internal abstract void WaitOnCPU(AutoResetEvent fenceEvent);
+        internal abstract void WaitOnGPU(FRHICommandContext cmdContext);
     }
 
     internal class FRHIFencePool : FDisposal

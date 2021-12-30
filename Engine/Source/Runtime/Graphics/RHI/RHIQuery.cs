@@ -10,17 +10,17 @@ namespace InfinityEngine.Graphics.RHI
 		CopyTimestamp = 5
 	}
 
-    public class FRHIQuery : FDisposal
+    public abstract class FRHIQuery : FDisposal
 	{
 		internal int indexHead;
 		internal int indexLast;
 
 		internal FRHIQuery(FRHIQueryContext queryContext) { }
-		public virtual int GetResult() { return -1; }
-		public virtual float GetResult(in ulong frequency) { return -1; }
+		public abstract int GetResult();
+		public abstract float GetResult(in ulong frequency);
 	}
 
-	internal class FRHIQueryContext : FDisposal
+	internal abstract class FRHIQueryContext : FDisposal
 	{
 		public int queryCount;
 		public bool IsReady;
@@ -31,11 +31,11 @@ namespace InfinityEngine.Graphics.RHI
 		public virtual bool IsTimeQuery => false;
 
 		public FRHIQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount) { }
-		public virtual void Submit(FRHICommandContext commandContext) { }
-		public virtual void GetData() { }
-		internal virtual int AllocateUnuseIndex() { return -1; }
-		internal virtual void ReleaseUnuseIndex(in int index) { }
-		public virtual FRHIQuery GetTemporary(string name = null) { return null; }
-		public virtual void ReleaseTemporary(FRHIQuery query) { }
+		public abstract void Submit(FRHICommandContext commandContext);
+		public abstract void GetData();
+		internal abstract int AllocateUnuseIndex();
+		internal abstract void ReleaseUnuseIndex(in int index);
+		public abstract FRHIQuery GetTemporary(string name = null);
+		public abstract void ReleaseTemporary(FRHIQuery query);
 	}
 }
