@@ -44,8 +44,6 @@ namespace InfinityEngine.Graphics.RHI
         public abstract FRHITexture CreateTexture(in FTextureDescriptor descriptor);
         public abstract FRHITextureRef GetTexture(in FTextureDescriptor descriptor);
         public abstract void ReleaseTexture(FRHITextureRef textureRef);
-        public abstract FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer buffer);
-        public abstract FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer buffer);
         public abstract FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture);
         public abstract FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture);
         public abstract FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer buffer);

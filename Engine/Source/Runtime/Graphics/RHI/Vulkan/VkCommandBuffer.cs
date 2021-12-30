@@ -28,6 +28,26 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
+        public override void BeginEvent()
+        {
+
+        }
+
+        public override void EndEvent()
+        {
+
+        }
+
+        public override void BeginQuery(FRHIQuery query)
+        {
+
+        }
+
+        public override void EndQuery(FRHIQuery query)
+        {
+
+        }
+
         public override void Barriers(FRHIResource resource)
         {
 
@@ -74,16 +94,6 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
         }
 
         public override void BuildAccelerationStructure()
-        {
-
-        }
-
-        public override void BeginQuery(FRHIQuery query)
-        {
-
-        }
-
-        public override void EndQuery(FRHIQuery query)
         {
 
         }
@@ -143,16 +153,6 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void BeginEvent()
-        {
-
-        }
-
-        public override void EndEvent()
-        {
-
-        }
-
         public override void BeginRenderPass(FRHITexture depthBuffer, params FRHITexture[] colorBuffer)
         {
 
@@ -163,12 +163,12 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetStencilRef(in int stencilRef)
+        public override void SetStencilRef(in uint refValue)
         {
 
         }
 
-        public override void SetBlendFactor()
+        public override void SetBlendFactor(in float blendFactor)
         {
 
         }
@@ -188,7 +188,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetPrimitiveTopology(EPrimitiveTopology topologyType)
+        public override void SetPrimitiveTopology(in EPrimitiveTopology topologyType)
         {
             this.topologyType = topologyType;
         }
@@ -198,12 +198,12 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView)
+        public override void SetIndexBuffer(FRHIBuffer indexBuffer)
         {
             
         }
 
-        public override void SetVertexBuffer(in int slot,FRHIVertexBufferView vertexBufferView)
+        public override void SetVertexBuffer(in uint slot,FRHIBuffer vertexBuffer)
         {
             
         }

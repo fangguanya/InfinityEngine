@@ -65,6 +65,10 @@ namespace InfinityEngine.Graphics.RHI
 
         public abstract void Clear();
         internal abstract void Close();
+        public abstract void BeginEvent();
+        public abstract void EndEvent();
+        public abstract void BeginQuery(FRHIQuery query);
+        public abstract void EndQuery(FRHIQuery query);
         public abstract void Barriers(FRHIResource resource);
         public abstract void Transition(FRHIResource resource);
         public abstract void ClearBuffer(FRHIBuffer buffer);
@@ -75,8 +79,6 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void CopyTextureToTexture(FRHITexture srcTexture, FRHITexture dscTexture);
         public abstract void CopyAccelerationStructure();
         public abstract void BuildAccelerationStructure();
-        public abstract void BeginQuery(FRHIQuery query);
-        public abstract void EndQuery(FRHIQuery query);
         public abstract void SetComputePipelineState(FRHIComputePipelineState computePipelineState);
         public abstract void SetComputeConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView);
         public abstract void SetComputeShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView);
@@ -88,19 +90,17 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void DispatchRayIndirect(FRHIBuffer argsBuffer, in uint argsOffset);
         public abstract void SetScissor();
         public abstract void SetViewport();
-        public abstract void BeginEvent();
-        public abstract void EndEvent();
         public abstract void BeginRenderPass(FRHITexture depthBuffer, params FRHITexture[] colorBuffer);
         public abstract void EndRenderPass();
-        public abstract void SetStencilRef(in int stencilRef);
-        public abstract void SetBlendFactor();
+        public abstract void SetStencilRef(in uint refValue);
+        public abstract void SetBlendFactor(in float blendFactor);
         public abstract void SetDepthBounds(in float min, in float max);
         public abstract void SetShadingRate(FRHITexture texture);
         public abstract void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combiners);
-        public abstract void SetPrimitiveTopology(EPrimitiveTopology topologyType);
+        public abstract void SetPrimitiveTopology(in EPrimitiveTopology topologyType);
         public abstract void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState);
-        public abstract void SetIndexBuffer(FRHIIndexBufferView indexBufferView);
-        public abstract void SetVertexBuffer(in int slot, FRHIVertexBufferView vertexBufferView);
+        public abstract void SetIndexBuffer(FRHIBuffer indexBuffer);
+        public abstract void SetVertexBuffer(in uint slot, FRHIBuffer vertexBuffer);
         public abstract void SetRenderConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView);
         public abstract void SetRenderShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView);
         public abstract void SetRenderUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView);
@@ -129,13 +129,10 @@ namespace InfinityEngine.Graphics.RHI
         public FRHICommandBuffer GetTemporary(string name = null)
         {
             FRHICommandBuffer cmdBuffer;
-            if (m_Pooled.Count == 0)
-            {
+            if (m_Pooled.Count == 0) {
                 ++countAll;
                 cmdBuffer = m_GraphicsContext.CreateCommandBuffer(m_ContextType, name);
-            }
-            else
-            {
+            } else {
                 cmdBuffer = m_Pooled.Pop();
             }
             cmdBuffer.name = name;

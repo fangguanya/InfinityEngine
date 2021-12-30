@@ -10,7 +10,7 @@ namespace InfinityEngine.Graphics.RHI
 
         internal FRHITexture[] backBuffer;
 
-        internal FRHISwapChain(FRHIGraphicsContext graphicsContext, in void* windowPtr, in uint width, in uint height)
+        internal FRHISwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* windowPtr, in uint width, in uint height)
         {
             backBuffer = new FRHITexture[2];
         }

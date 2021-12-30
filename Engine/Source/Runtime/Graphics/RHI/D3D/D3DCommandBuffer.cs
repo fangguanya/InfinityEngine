@@ -57,6 +57,38 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList->Close();
         }
 
+        public override void BeginEvent()
+        {
+
+        }
+
+        public override void EndEvent()
+        {
+
+        }
+
+        public override void BeginQuery(FRHIQuery query)
+        {
+            FD3DQuery d3dQuery = (FD3DQuery)query;
+            if (d3dQuery.queryContext.IsReady)
+            {
+                if (d3dQuery.queryContext.IsTimeQuery) {
+                    nativeCmdList->EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexHead);
+                } else {
+                    nativeCmdList->BeginQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexHead);
+                }
+            }
+        }
+
+        public override void EndQuery(FRHIQuery query)
+        {
+            FD3DQuery d3dQuery = (FD3DQuery)query;
+            if (d3dQuery.queryContext.IsReady)
+            {
+                nativeCmdList->EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexLast);
+            }
+        }
+
         public override void Barriers(FRHIResource resource)
         {
 
@@ -105,27 +137,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
         public override void BuildAccelerationStructure()
         {
 
-        }
-
-        public override void BeginQuery(FRHIQuery query)
-        {
-            FD3DQuery d3dQuery = (FD3DQuery)query;
-            if (d3dQuery.queryContext.IsReady) 
-            {
-                if (d3dQuery.queryContext.IsTimeQuery) {
-                    nativeCmdList->EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexHead);
-                } else {
-                    nativeCmdList->BeginQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexHead);
-                }
-            }
-        }
-
-        public override void EndQuery(FRHIQuery query)
-        {
-            FD3DQuery d3dQuery = (FD3DQuery)query;
-            if (d3dQuery.queryContext.IsReady) {
-                nativeCmdList->EndQuery(d3dQuery.queryContext.queryHeap, d3dQuery.queryContext.queryType.GetNativeQueryType(), (uint)query.indexLast);
-            }
         }
 
         public override void SetComputePipelineState(FRHIComputePipelineState computePipelineState)
@@ -183,16 +194,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void BeginEvent()
-        {
-
-        }
-
-        public override void EndEvent()
-        {
-
-        }
-
         public override void BeginRenderPass(FRHITexture depthBuffer, params FRHITexture[] colorBuffer)
         {
 
@@ -203,19 +204,20 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList->EndRenderPass();
         }
 
-        public override void SetStencilRef(in int stencilRef)
+        public override void SetStencilRef(in uint refValue)
         {
-
+            nativeCmdList->OMSetStencilRef(refValue);
         }
 
-        public override void SetBlendFactor()
+        public override void SetBlendFactor(in float blendFactor)
         {
-
+            float factor = blendFactor;
+            nativeCmdList->OMSetBlendFactor(&factor);
         }
 
         public override void SetDepthBounds(in float min, in float max)
         {
-
+            nativeCmdList->OMSetDepthBounds(min, max);
         }
 
         public override void SetShadingRate(FRHITexture texture)
@@ -229,9 +231,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList->RSSetShadingRate((D3D12_SHADING_RATE)shadingRate, null);
         }
 
-        public override void SetPrimitiveTopology(EPrimitiveTopology topologyType)
+        public override void SetPrimitiveTopology(in EPrimitiveTopology topologyType)
         {
             this.topologyType = topologyType;
+            nativeCmdList->IASetPrimitiveTopology((D3D_PRIMITIVE_TOPOLOGY)topologyType);
         }
 
         public override void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState)
@@ -239,14 +242,22 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView) 
+        public override void SetIndexBuffer(FRHIBuffer indexBuffer) 
         {
-            //nativeCmdList->IASetIndexBuffer(indexBufferView.nativeView);
+            D3D12_INDEX_BUFFER_VIEW indexBufferView;
+            indexBufferView.Format = DXGI_FORMAT.DXGI_FORMAT_R32_UINT;
+            indexBufferView.SizeInBytes = (uint)(indexBuffer.descriptor.count * indexBuffer.descriptor.stride);
+            indexBufferView.BufferLocation = ((FD3DBuffer)indexBuffer).defaultResource->GetGPUVirtualAddress();
+            nativeCmdList->IASetIndexBuffer(&indexBufferView);
         }
 
-        public override void SetVertexBuffer(in int slot, FRHIVertexBufferView vertexBufferView) 
+        public override void SetVertexBuffer(in uint slot, FRHIBuffer vertexBuffer) 
         {
-            //nativeCmdList->IASetVertexBuffers(slot, vertexBufferView.nativeView);
+            D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+            vertexBufferView.SizeInBytes = (uint)(vertexBuffer.descriptor.count * vertexBuffer.descriptor.stride);
+            vertexBufferView.StrideInBytes = (uint)(vertexBuffer.descriptor.stride);
+            vertexBufferView.BufferLocation = ((FD3DBuffer)vertexBuffer).defaultResource->GetGPUVirtualAddress();
+            nativeCmdList->IASetVertexBuffers(slot, 1, &vertexBufferView);
         }
 
         public override void SetRenderConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)

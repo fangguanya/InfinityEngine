@@ -10,14 +10,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         internal IDXGISwapChain4* nativeSwapChain;
 
-        internal FD3DSwapChain(FRHIGraphicsContext graphicsContext, in void* windowPtr, in uint width, in uint height) : base(graphicsContext, windowPtr, width, height)
+        internal FD3DSwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* windowPtr, in uint width, in uint height) : base(device, cmdContext, windowPtr, width, height)
         {
             backBuffer[0] = new FD3DTexture();
             backBuffer[1] = new FD3DTexture();
 
-            FD3DGraphicsContext d3dContext = (FD3DGraphicsContext)graphicsContext;
-            FD3DDevice d3dDevice = d3dContext.m_Device;
-            FD3DCommandContext d3dCmdContext = d3dContext.m_RenderCmdContext;
+            FD3DDevice d3dDevice = (FD3DDevice)device;
+            FD3DCommandContext d3dCmdContext = (FD3DCommandContext)cmdContext;
 
             DXGI_MODE_DESC bufferDesc;
             bufferDesc.Width = width;
