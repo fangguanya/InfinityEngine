@@ -207,9 +207,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ExecuteGPUInfos.Clear();
         }
 
-        public override FRHISwapChain CreateSwapChain(in uint width, in uint height, in IntPtr windowPtr)
+        public override FRHISwapChain CreateSwapChain(string name, in uint width, in uint height, in IntPtr windowPtr)
         {
-            return new FD3DSwapChain(m_Device, m_RenderCmdContext, windowPtr.ToPointer(), width, height);
+            return new FD3DSwapChain(m_Device, m_RenderCmdContext, windowPtr.ToPointer(), width, height, name);
         }
 
         public override FRHIFence CreateFence(string name)

@@ -45,7 +45,7 @@ namespace InfinityEngine.Game.System
             m_GraphicsContext = new FD3DGraphicsContext();
             m_RenderPipeline = new FUniversalRenderPipeline("UniversalRP");
 
-            m_SwapChain = m_GraphicsContext.CreateSwapChain((uint)window.width, (uint)window.height, window.handle);
+            m_SwapChain = m_GraphicsContext.CreateSwapChain("SwapChain", (uint)window.width, (uint)window.height, window.handle);
         }
 
         public void Start()

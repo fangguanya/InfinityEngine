@@ -95,7 +95,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
                 ID3D12Resource* defaultPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&defaultHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &defaultResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, null, Windows.__uuidof<ID3D12Resource>(), (void**)&defaultPtr);
-                fixed (char* namePtr = descriptor.name + "_GPUBuffer")
+                fixed (char* namePtr = descriptor.name + "_Default")
                 {
                     defaultPtr->SetName((ushort*)namePtr);
                 }
@@ -130,7 +130,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
                 ID3D12Resource* uploadPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &uploadResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ, null, Windows.__uuidof<ID3D12Resource>(), (void**)&uploadPtr);
-                fixed (char* namePtr = descriptor.name + "_UploadBuffer")
+                fixed (char* namePtr = descriptor.name + "_Upload")
                 {
                     uploadPtr->SetName((ushort*)namePtr);
                 }
@@ -165,7 +165,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
                 ID3D12Resource* readbackPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&readbackHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &readbackResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, null, Windows.__uuidof<ID3D12Resource>(), (void**)&readbackPtr);
-                fixed (char* namePtr = descriptor.name + "_ReadbackBuffer")
+                fixed (char* namePtr = descriptor.name + "_Readback")
                 {
                     readbackPtr->SetName((ushort*)namePtr);
                 }

@@ -44,7 +44,7 @@ namespace ExampleProject
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
                 FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Default | EUsageType.Dynamic | EUsageType.Staging);
-                descriptor.name = "TestData";
+                descriptor.name = "TestBuffer";
 
                 fence = graphicsContext.GetFence("Readback");
                 query = graphicsContext.GetQuery(EQueryType.CopyTimestamp, "Readback");

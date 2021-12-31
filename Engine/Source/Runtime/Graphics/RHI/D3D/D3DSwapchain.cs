@@ -10,7 +10,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         internal IDXGISwapChain4* nativeSwapChain;
 
-        internal FD3DSwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* windowPtr, in uint width, in uint height) : base(device, cmdContext, windowPtr, width, height)
+        internal FD3DSwapChain(FRHIDevice device, FRHICommandContext cmdContext, in void* windowPtr, in uint width, in uint height, string name) : base(device, cmdContext, windowPtr, width, height, name)
         {
             backBuffer[0] = new FD3DTexture();
             backBuffer[1] = new FD3DTexture();
@@ -39,16 +39,24 @@ namespace InfinityEngine.Graphics.RHI.D3D
             swapChainDesc.BufferUsage = DXGI.DXGI_USAGE_RENDER_TARGET_OUTPUT;
             swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT.DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
-            IDXGISwapChain* swapChain;
-            d3dDevice.nativeFactory->CreateSwapChain((IUnknown*)d3dCmdContext.nativeCmdQueue, &swapChainDesc, &swapChain);
-            nativeSwapChain = (IDXGISwapChain4*)swapChain;
+            IDXGISwapChain* swapChainPtr;
+            d3dDevice.nativeFactory->CreateSwapChain((IUnknown*)d3dCmdContext.nativeCmdQueue, &swapChainDesc, &swapChainPtr);
+            nativeSwapChain = (IDXGISwapChain4*)swapChainPtr;
 
             ID3D12Resource* backbufferResourceA;
             nativeSwapChain->GetBuffer(0, Windows.__uuidof<ID3D12Resource>(), (void**)&backbufferResourceA);
+            fixed (char* namePtr = name + "_BackBuffer0")
+            {
+                backbufferResourceA->SetName((ushort*)namePtr);
+            }
             ((FD3DTexture)backBuffer[0]).defaultResource = backbufferResourceA;
 
             ID3D12Resource* backbufferResourceB;
             nativeSwapChain->GetBuffer(1, Windows.__uuidof<ID3D12Resource>(), (void**)&backbufferResourceB);
+            fixed (char* namePtr = name + "_BackBuffer1")
+            {
+                backbufferResourceB->SetName((ushort*)namePtr);
+            }
             ((FD3DTexture)backBuffer[1]).defaultResource = backbufferResourceB;
         }
 

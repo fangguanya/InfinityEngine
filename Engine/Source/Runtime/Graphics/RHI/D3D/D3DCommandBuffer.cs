@@ -1,6 +1,7 @@
 ﻿using System;
 using TerraFX.Interop.Windows;
 using TerraFX.Interop.DirectX;
+using System.Runtime.InteropServices;
 using InfinityEngine.Core.Mathmatics.Geometry;
 
 namespace InfinityEngine.Graphics.RHI.D3D
@@ -54,8 +55,28 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             int byteSize = name.Length * sizeof(char);
             void* ptr = stackalloc byte[byteSize];
-            name.CopyTo(new Span<char>(ptr, byteSize));
-            nativeCmdList->BeginEvent(2, ptr, (uint)byteSize);
+            name.CopyTo(new Span<char>(ptr, name.Length));
+            nativeCmdList->BeginEvent(0, ptr, (uint)byteSize);
+
+            /*if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            IntPtr intPtr = IntPtr.Zero;
+            try
+            {
+                intPtr = Marshal.StringToHGlobalUni(name);
+                nativeCmdList->BeginEvent(1, intPtr.ToPointer(), (uint)name.Length);
+            }
+            finally
+            {
+                if (intPtr != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(intPtr);
+                    intPtr = IntPtr.Zero;
+                }
+            }*/
         }
 
         public override void EndEvent()

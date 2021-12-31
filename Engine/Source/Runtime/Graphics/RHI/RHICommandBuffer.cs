@@ -65,7 +65,6 @@ namespace InfinityEngine.Graphics.RHI
         protected EPrimitiveTopology m_TopologyType;
 
         internal FRHICommandBuffer(string name, FRHIDevice device, EContextType contextType) { }
-
         public abstract void Clear();
         internal abstract void Close();
         public abstract void BeginEvent(string name);

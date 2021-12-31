@@ -25,7 +25,7 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer);
         internal abstract void Flush();
         internal abstract void Submit();
-        public abstract FRHISwapChain CreateSwapChain(in uint width, in uint height, in IntPtr windowPtr);
+        public abstract FRHISwapChain CreateSwapChain(string name, in uint width, in uint height, in IntPtr windowPtr);
         public abstract FRHIFence CreateFence(string name);
         public abstract FRHIFence GetFence(string name);
         public abstract void ReleaseFence(FRHIFence fence);
