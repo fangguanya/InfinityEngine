@@ -10,11 +10,6 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
         internal VkCommandPool nativeCmdPool;
         internal VkCommandBuffer nativeCmdBuffer;
 
-        internal FVkCommandBuffer(FRHIDevice device, EContextType contextType) : base(device, contextType)
-        {
-
-        }
-
         internal FVkCommandBuffer(string name, FRHIDevice device, EContextType contextType) : base(name, device, contextType)
         {
 
