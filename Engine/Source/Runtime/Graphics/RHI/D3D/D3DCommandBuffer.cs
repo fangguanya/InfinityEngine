@@ -18,11 +18,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
             this.IsClose = false;
             this.contextType = contextType;
 
-            ID3D12CommandAllocator* commandAllocator = null;
+            ID3D12CommandAllocator* commandAllocator;
             d3dDevice.nativeDevice->CreateCommandAllocator((D3D12_COMMAND_LIST_TYPE)contextType, Windows.__uuidof<ID3D12CommandAllocator>(), (void**)&commandAllocator);
             nativeCmdPool = commandAllocator;
 
-            ID3D12GraphicsCommandList5* commandList = null;
+            ID3D12GraphicsCommandList5* commandList;
             d3dDevice.nativeDevice->CreateCommandList(0, (D3D12_COMMAND_LIST_TYPE)contextType, commandAllocator, null, Windows.__uuidof<ID3D12GraphicsCommandList5>(), (void**)&commandList);
             nativeCmdList = commandList;
         }
@@ -35,13 +35,21 @@ namespace InfinityEngine.Graphics.RHI.D3D
             this.IsClose = false;
             this.contextType = contextType;
 
-            ID3D12CommandAllocator* commandPool = null;
-            d3dDevice.nativeDevice->CreateCommandAllocator((D3D12_COMMAND_LIST_TYPE)contextType, Windows.__uuidof<ID3D12CommandAllocator>(), (void**)&commandPool);
-            nativeCmdPool = commandPool;
+            ID3D12CommandAllocator* commandPoolPtr;
+            d3dDevice.nativeDevice->CreateCommandAllocator((D3D12_COMMAND_LIST_TYPE)contextType, Windows.__uuidof<ID3D12CommandAllocator>(), (void**)&commandPoolPtr);
+            fixed (char* namePtr = name + "_CmdPool")
+            {
+                commandPoolPtr->SetName((ushort*)namePtr);
+            }
+            nativeCmdPool = commandPoolPtr;
 
-            ID3D12GraphicsCommandList5* commandList = null;
-            d3dDevice.nativeDevice->CreateCommandList(0, (D3D12_COMMAND_LIST_TYPE)contextType, commandPool, null, Windows.__uuidof<ID3D12GraphicsCommandList5>(), (void**)&commandList);
-            nativeCmdList = commandList;
+            ID3D12GraphicsCommandList5* commandListPtr;
+            d3dDevice.nativeDevice->CreateCommandList(0, (D3D12_COMMAND_LIST_TYPE)contextType, commandPoolPtr, null, Windows.__uuidof<ID3D12GraphicsCommandList5>(), (void**)&commandListPtr);
+            fixed (char* namePtr = name + "_CmdList")
+            {
+                commandListPtr->SetName((ushort*)namePtr);
+            }
+            nativeCmdList = commandListPtr;
         }
 
         public override void Clear()
@@ -63,7 +71,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             int byteSize = name.Length * sizeof(char);
             void* ptr = stackalloc byte[byteSize];
-            name.CopyTo(new Span<char>(ptr, name.Length));
+            name.CopyTo(new Span<char>(ptr, byteSize));
             nativeCmdList->BeginEvent(2, ptr, (uint)byteSize);
         }
 

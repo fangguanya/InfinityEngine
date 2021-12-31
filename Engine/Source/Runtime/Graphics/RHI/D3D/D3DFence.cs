@@ -15,14 +15,18 @@ namespace InfinityEngine.Graphics.RHI.D3D
         private ulong m_FenceValue;
         private ID3D12Fence* m_NativeFence;
 
-        internal FD3DFence(FRHIDevice device, string name = null) : base(device, name)
+        internal FD3DFence(FRHIDevice device, string name) : base(device, name)
         {
             this.name = name;
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
-            ID3D12Fence* fence = null;
-            d3dDevice.nativeDevice->CreateFence(0, D3D12_FENCE_FLAGS.D3D12_FENCE_FLAG_NONE, Windows.__uuidof<ID3D12Fence>() , (void**)&fence);
-            m_NativeFence = fence;
+            ID3D12Fence* fencePtr;
+            d3dDevice.nativeDevice->CreateFence(0, D3D12_FENCE_FLAGS.D3D12_FENCE_FLAG_NONE, Windows.__uuidof<ID3D12Fence>() , (void**)&fencePtr);
+            fixed (char* namePtr = name + "_Fence")
+            {
+                fencePtr->SetName((ushort*)namePtr);
+            }
+            m_NativeFence = fencePtr;
         }
 
         internal override void Signal(FRHICommandContext cmdContext)

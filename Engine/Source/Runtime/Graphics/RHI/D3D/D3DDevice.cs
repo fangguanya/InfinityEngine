@@ -11,15 +11,15 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public FD3DDevice()
         {
-            IDXGIFactory7* factory = null;
+            IDXGIFactory7* factory;
             DirectX.CreateDXGIFactory2(0, Windows.__uuidof<IDXGIFactory7>(), (void**)&factory);
             nativeFactory = factory;
 
-            IDXGIAdapter1* adapter = null;
+            IDXGIAdapter1* adapter;
             factory->EnumAdapters1(0, &adapter);
             nativeAdapter = adapter;
 
-            ID3D12Device6* device = null;
+            ID3D12Device6* device;
             DirectX.D3D12CreateDevice((IUnknown*)adapter, D3D_FEATURE_LEVEL.D3D_FEATURE_LEVEL_12_1, Windows.__uuidof<ID3D12Device6>(), (void**)&device);
             nativeDevice = device;
         }

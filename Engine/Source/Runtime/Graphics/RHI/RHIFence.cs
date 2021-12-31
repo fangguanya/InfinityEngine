@@ -9,7 +9,7 @@ namespace InfinityEngine.Graphics.RHI
         public string name;
         public virtual bool IsCompleted => false;
 
-        internal FRHIFence(FRHIDevice device, string name = null) { }
+        internal FRHIFence(FRHIDevice device, string name) { }
 
         internal abstract void Signal(FRHICommandContext cmdContext);
         internal abstract void WaitOnCPU(AutoResetEvent fenceEvent);
@@ -36,7 +36,7 @@ namespace InfinityEngine.Graphics.RHI
             FRHIFence gpuFence;
             if (m_Pooled.Count == 0)
             {
-                gpuFence = m_GraphicsContext.CreateFence();
+                gpuFence = m_GraphicsContext.CreateFence(name);
                 countAll++;
             }
             else

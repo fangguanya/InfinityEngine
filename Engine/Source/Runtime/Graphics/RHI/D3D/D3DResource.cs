@@ -93,8 +93,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     defaultResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
                 }
 
-                ID3D12Resource* defaultPtr = null;
+                ID3D12Resource* defaultPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&defaultHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &defaultResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, null, Windows.__uuidof<ID3D12Resource>(), (void**)&defaultPtr);
+                fixed (char* namePtr = descriptor.name + "_GPUBuffer")
+                {
+                    defaultPtr->SetName((ushort*)namePtr);
+                }
                 defaultResource = defaultPtr;
             }
 
@@ -124,8 +128,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     uploadResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
                 }
 
-                ID3D12Resource* uploadPtr = null;
+                ID3D12Resource* uploadPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &uploadResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ, null, Windows.__uuidof<ID3D12Resource>(), (void**)&uploadPtr);
+                fixed (char* namePtr = descriptor.name + "_UploadBuffer")
+                {
+                    uploadPtr->SetName((ushort*)namePtr);
+                }
                 uploadResource = uploadPtr;
             }
 
@@ -155,8 +163,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     readbackResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
                 }
 
-                ID3D12Resource* readbackPtr = null;
+                ID3D12Resource* readbackPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&readbackHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &readbackResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, null, Windows.__uuidof<ID3D12Resource>(), (void**)&readbackPtr);
+                fixed (char* namePtr = descriptor.name + "_ReadbackBuffer")
+                {
+                    readbackPtr->SetName((ushort*)namePtr);
+                }
                 readbackResource = readbackPtr;
             }
         }
@@ -165,7 +177,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                void* uploadPtr = null;
+                void* uploadPtr;
                 D3D12_RANGE range = new D3D12_RANGE(0, 0);
                 uploadResource->Map(0, &range, &uploadPtr);
                 data.AsSpan().CopyTo(new IntPtr(uploadPtr));
@@ -191,7 +203,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
-                void* uploadPtr = null;
+                void* uploadPtr;
                 D3D12_RANGE range = new D3D12_RANGE(0, 0);
                 uploadResource->Map(0, &range, &uploadPtr);
                 data.AsSpan().CopyTo(new IntPtr(uploadPtr));
@@ -211,7 +223,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {
-                void* readbackPtr = null;
+                void* readbackPtr;
                 D3D12_RANGE range = new D3D12_RANGE(0, 0);
                 readbackResource->Map(0, &range, &readbackPtr);
                 new IntPtr(readbackPtr).CopyTo(data.AsSpan());
@@ -245,7 +257,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 d3dCmdBuffer.nativeCmdList->CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
 
-                void* readbackPtr = null;
+                void* readbackPtr;
                 D3D12_RANGE range = new D3D12_RANGE(0, 0);
                 readbackResource->Map(0, &range, &readbackPtr);
                 new IntPtr(readbackPtr).CopyTo(data.AsSpan());
@@ -303,7 +315,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     defaultResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_UNKNOWN;
                 }
 
-                ID3D12Resource* defaultPtr = null;
+                ID3D12Resource* defaultPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&defaultHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &defaultResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, null, Windows.__uuidof<ID3D12Resource>(), (void**)&defaultPtr);
                 defaultResource = defaultPtr;
             }
@@ -334,7 +346,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     uploadResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_UNKNOWN;
                 }
 
-                ID3D12Resource* uploadPtr = null;
+                ID3D12Resource* uploadPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &uploadResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ, null, Windows.__uuidof<ID3D12Resource>(), (void**)&uploadPtr);
                 uploadResource = uploadPtr;
             }
@@ -365,7 +377,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     readbackResourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_UNKNOWN;
                 }
 
-                ID3D12Resource* readbackPtr = null;
+                ID3D12Resource* readbackPtr;
                 d3dDevice.nativeDevice->CreateCommittedResource(&readbackHeapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &readbackResourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, null, Windows.__uuidof<ID3D12Resource>(), (void**)&readbackPtr);
                 readbackResource = readbackPtr;
             }

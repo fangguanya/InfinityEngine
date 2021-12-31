@@ -56,12 +56,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ManagedCmdBuffers = new TArray<FRHICommandBuffer>(32);
 
             m_QueryContext = new FD3DQueryContext[2];
-            m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.Timestamp, 64);
-            m_QueryContext[1] = new FD3DQueryContext(m_Device, EQueryType.CopyTimestamp, 64);
+            m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.Timestamp, 64, "Timestamp");
+            m_QueryContext[1] = new FD3DQueryContext(m_Device, EQueryType.CopyTimestamp, 64, "CopyTimestamp");
 
-            m_CopyCmdContext = new FD3DCommandContext(m_Device, EContextType.Copy);
-            m_ComputeCmdContext = new FD3DCommandContext(m_Device, EContextType.Compute);
-            m_RenderCmdContext = new FD3DCommandContext(m_Device, EContextType.Render);
+            m_CopyCmdContext = new FD3DCommandContext(m_Device, EContextType.Copy, "Copy");
+            m_RenderCmdContext = new FD3DCommandContext(m_Device, EContextType.Render, "Render");
+            m_ComputeCmdContext = new FD3DCommandContext(m_Device, EContextType.Compute, "Compute");
 
             m_CopyCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Copy);
             m_ComputeCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Compute);
@@ -89,12 +89,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return (FD3DCommandContext)commandContext;
         }
         
-        public override FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null)
+        public override FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name)
         {
             return new FD3DCommandBuffer(name, m_Device, contextType);
         }
 
-        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = false)
+        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, bool bAutoRelease = false)
         {
             FRHICommandBuffer cmdBuffer = null;
             switch (contextType)
@@ -212,12 +212,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return new FD3DSwapChain(m_Device, m_RenderCmdContext, windowPtr.ToPointer(), width, height);
         }
 
-        public override FRHIFence CreateFence(string name = null)
+        public override FRHIFence CreateFence(string name)
         {
             return new FD3DFence(m_Device, name);
         }
         
-        public override FRHIFence GetFence(string name = null)
+        public override FRHIFence GetFence(string name)
         {
             return m_FencePool.GetTemporary(name);
         }
@@ -227,7 +227,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_FencePool.ReleaseTemporary((FD3DFence)fence);
         }
 
-        public override FRHIQuery CreateQuery(in EQueryType queryType, string name = null)
+        public override FRHIQuery CreateQuery(in EQueryType queryType, string name)
         {
             FD3DQuery outQuery = null;
             switch (queryType)
@@ -248,7 +248,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return outQuery;
         }
 
-        public override FRHIQuery GetQuery(in EQueryType queryType, string name = null)
+        public override FRHIQuery GetQuery(in EQueryType queryType, string name)
         {
             FRHIQuery outQuery = null;
             switch (queryType)

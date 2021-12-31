@@ -17,8 +17,8 @@ namespace InfinityEngine.Graphics.RHI
         public virtual ulong renderFrequency => 0;
 
         internal abstract FRHICommandContext SelectContext(in EContextType contextType);
-        public abstract FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name = null);
-        public abstract FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name = null, bool bAutoRelease = true);
+        public abstract FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name);
+        public abstract FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, bool bAutoRelease = true);
         public abstract void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer);
         public abstract void WriteToFence(in EContextType contextType, FRHIFence fence);
         public abstract void WaitForFence(in EContextType contextType, FRHIFence fence);
@@ -26,11 +26,11 @@ namespace InfinityEngine.Graphics.RHI
         internal abstract void Flush();
         internal abstract void Submit();
         public abstract FRHISwapChain CreateSwapChain(in uint width, in uint height, in IntPtr windowPtr);
-        public abstract FRHIFence CreateFence(string name = null);
-        public abstract FRHIFence GetFence(string name = null);
+        public abstract FRHIFence CreateFence(string name);
+        public abstract FRHIFence GetFence(string name);
         public abstract void ReleaseFence(FRHIFence fence);
-        public abstract FRHIQuery CreateQuery(in EQueryType queryType, string name = null);
-        public abstract FRHIQuery GetQuery(in EQueryType queryType, string name = null);
+        public abstract FRHIQuery CreateQuery(in EQueryType queryType, string name);
+        public abstract FRHIQuery GetQuery(in EQueryType queryType, string name);
         public abstract void ReleaseQuery(FRHIQuery query);
         public abstract FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescriptor descriptor);
         public abstract FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescriptor descriptor);

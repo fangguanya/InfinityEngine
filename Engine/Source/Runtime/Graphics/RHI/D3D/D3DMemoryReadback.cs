@@ -10,7 +10,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         internal FD3DMemoryReadbackFactory(FRHIDevice device) : base(device)
         {
-            m_Fence = new FD3DFence(device);
+            m_Fence = new FD3DFence(device, "ReadbackFactory");
         }
 
         protected override void RequestAsyncReadback(FRHIBuffer buffer, Action<FRHIAsyncReadbackRequest> callback) 

@@ -17,11 +17,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        internal FD3DCommandContext(FRHIDevice device, EContextType contextType) : base(device, contextType)
+        internal FD3DCommandContext(FRHIDevice device, EContextType contextType, string name) : base(device, contextType, name)
         {
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
-            m_Fence = new FD3DFence(device);
+            m_Fence = new FD3DFence(device, name);
             m_FenceEvent = new AutoResetEvent(false);
 
             D3D12_COMMAND_QUEUE_DESC queueDescriptor;
@@ -30,9 +30,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
             queueDescriptor.Type = (D3D12_COMMAND_LIST_TYPE)contextType;
             queueDescriptor.Flags = D3D12_COMMAND_QUEUE_FLAGS.D3D12_COMMAND_QUEUE_FLAG_NONE;
 
-            ID3D12CommandQueue* commandQueue = null;
-            d3dDevice.nativeDevice->CreateCommandQueue(&queueDescriptor, Windows.__uuidof<ID3D12CommandQueue>(), (void**)&commandQueue);
-            m_NativeCmdQueue = commandQueue;
+            ID3D12CommandQueue* commandQueuePtr;
+            d3dDevice.nativeDevice->CreateCommandQueue(&queueDescriptor, Windows.__uuidof<ID3D12CommandQueue>(), (void**)&commandQueuePtr);
+            fixed (char* namePtr = name + "_Queue")
+            {
+                commandQueuePtr->SetName((ushort*)namePtr);
+            }
+            m_NativeCmdQueue = commandQueuePtr;
         }
 
         public static implicit operator ID3D12CommandQueue*(FD3DCommandContext cmdContext) { return cmdContext.m_NativeCmdQueue; }

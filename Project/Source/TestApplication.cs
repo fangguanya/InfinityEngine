@@ -12,6 +12,7 @@ namespace ExampleProject
     [Serializable]
     public class TestComponent : UComponent
     {
+        int numData = 100000;
         bool dataReady;
         int[] readData;
         float cpuTime
@@ -36,22 +37,23 @@ namespace ExampleProject
             Console.WriteLine("Enable Component");
 
             dataReady = true;
-            readData = new int[10000000];
+            readData = new int[numData];
             timeProfiler = new FTimeProfiler();
 
             FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                FBufferDescriptor descriptor = new FBufferDescriptor(10000000, 4, EUsageType.Default | EUsageType.Dynamic | EUsageType.Staging);
+                FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Default | EUsageType.Dynamic | EUsageType.Staging);
+                descriptor.name = "TestData";
 
-                fence = graphicsContext.GetFence();
-                query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
+                fence = graphicsContext.GetFence("Readback");
+                query = graphicsContext.GetQuery(EQueryType.CopyTimestamp, "Readback");
                 bufferRef = graphicsContext.GetBuffer(descriptor);
-                FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1");
+                FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "Upload");
 
-                int[] data = new int[10000000];
-                for (int i = 0; i < 10000000; ++i) { 
-                    data[i] = 10000000 - i; 
+                int[] data = new int[numData];
+                for (int i = 0; i < numData; ++i) { 
+                    data[i] = numData - i; 
                 }
 
                 cmdBuffer.Clear();
@@ -71,7 +73,7 @@ namespace ExampleProject
                 timeProfiler.Start();
 
                 if (dataReady) {
-                    FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2");
+                    FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "Readback");
                     cmdBuffer.Clear();
                     cmdBuffer.BeginEvent("Readback");
                     cmdBuffer.BeginQuery(query);

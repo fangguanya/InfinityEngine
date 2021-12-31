@@ -7,7 +7,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         protected AutoResetEvent m_FenceEvent;
 
-        internal FRHICommandContext(FRHIDevice device, EContextType contextType) : base() { }
+        internal FRHICommandContext(FRHIDevice device, EContextType contextType, string name) { }
 
         public abstract void SignalQueue(FRHIFence fence);
         public abstract void WaitQueue(FRHIFence fence);

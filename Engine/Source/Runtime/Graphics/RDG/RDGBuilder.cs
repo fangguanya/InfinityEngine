@@ -648,7 +648,7 @@ namespace InfinityEngine.Graphics.RDG
             }
 
             if (passInfo.needGraphicsFence) {
-                passInfo.fence = graphContext.graphicsContext.GetFence();
+                passInfo.fence = graphContext.graphicsContext.GetFence(pass.name);
                 graphContext.graphicsContext.WriteToFence(cmdBuffer.contextType, passInfo.fence);
             }
 
@@ -686,9 +686,9 @@ namespace InfinityEngine.Graphics.RDG
                     {
                         FRHICommandBuffer cmdBuffer = null;
                         if (!passInfo.pass.enableAsyncCompute) {
-                            cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Render);
+                            cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Render, passInfo.pass.name);
                         } else {
-                            cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Compute);
+                            cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Compute, passInfo.pass.name);
                         }
 
                         PreRenderPassExecute(graphContext, cmdBuffer, ref passInfo);
