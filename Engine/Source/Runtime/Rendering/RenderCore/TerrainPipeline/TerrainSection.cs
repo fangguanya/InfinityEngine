@@ -1,6 +1,6 @@
 ﻿using System;
 using InfinityEngine.Core.Mathmatics;
-using InfinityEngine.Core.Mathematics.Geometry;
+using InfinityEngine.Core.Mathmatics.Geometry;
 
 namespace InfinityEngine.Rendering.TerrainPipeline
 {

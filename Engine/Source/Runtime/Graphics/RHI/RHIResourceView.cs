@@ -16,6 +16,16 @@ namespace InfinityEngine.Graphics.RHI
         internal ulong virtualAddressGPU;
     }
 
+    public class FRHIIndexBufferView : FRHIResourceView
+    {
+
+    }
+
+    public class FRHIVertexBufferView : FRHIResourceView
+    {
+
+    }
+
     public class FRHIDeptnStencilView : FRHIResourceView
     {
 

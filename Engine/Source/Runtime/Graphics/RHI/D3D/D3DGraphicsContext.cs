@@ -348,6 +348,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ResourcePool.ReleaseTexture(textureRef);
         }
 
+        public override FRHIIndexBufferView CreateIndexBufferView(FRHIBuffer buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override FRHIVertexBufferView CreateVertexBufferView(FRHIBuffer buffer)
+        {
+            throw new NotImplementedException();
+        }
+
         public override FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture)
         {
             return null;
@@ -410,7 +420,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return null;
         }
 
-        public override FRHIResourceSet CreateResourceSet(in int count)
+        public override FRHIResourceSet CreateResourceSet(in uint count)
         {
             return null;
             //return new FRHIResourceSet(m_Device, m_DescriptorFactory, count);

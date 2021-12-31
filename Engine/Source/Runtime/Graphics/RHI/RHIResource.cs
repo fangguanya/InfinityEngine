@@ -42,6 +42,28 @@ namespace InfinityEngine.Graphics.RHI
         Texture = 1
     };
 
+    public enum EResourceState
+    {
+        Vertex_And_Constant_Buffer = 0x1,
+        IndexBuffer = 0x2,
+        RenderTarget = 0x4,
+        UnorderedAccess = 0x8,
+        DepthWrite = 0x10,
+        DepthRead = 0x20,
+        NonPixelShaderResource = 0x40,
+        PixelShaderResource = 0x80,
+        ShaderResource = 0x40 | 0x80,
+        StreamOut = 0x100,
+        IndirectArgument = 0x200,
+        CopyDest = 0x400,
+        CopySrc = 0x800,
+        GenericRead = (((((0x1 | 0x2) | 0x40) | 0x80) | 0x200) | 0x800),
+        Present = 0x1000,
+        Common = 0x2000,
+        AcclerationStruct = 0x4000,
+        ShadingRateSource = 0x8000
+    };
+
     public enum EDepthBits
     {
         None = 0,
@@ -172,6 +194,11 @@ namespace InfinityEngine.Graphics.RHI
         RGB_BC6H_SFloat = 107,
         RGBA_BC7_SRGB = 108,
         RGBA_BC7_UNorm = 109,
+    }
+
+    public struct FResourceBarrierBatch
+    {
+
     }
 
     public class FRHIResource : FDisposal

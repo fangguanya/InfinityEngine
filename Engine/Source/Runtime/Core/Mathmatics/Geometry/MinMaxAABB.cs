@@ -14,7 +14,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
     /// are very cheap to construct and perform overlap tests with them.
     /// </remarks>
     [System.Serializable]
-    internal struct MinMaxAABB : IEquatable<MinMaxAABB>
+    internal struct FMinMaxAABB : IEquatable<FMinMaxAABB>
     {
         /// <summary>
         /// The minimum point contained by the AABB.
@@ -44,7 +44,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// <param name="min">Minimum point inside AABB.</param>
         /// <param name="max">Maximum point inside AABB.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MinMaxAABB(float3 min, float3 max)
+        public FMinMaxAABB(float3 min, float3 max)
         {
             Min = min;
             Max = max;
@@ -61,7 +61,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// <param name="extents">Full extents of AABB.</param>
         /// <returns>AABB created from inputs.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static MinMaxAABB CreateFromCenterAndExtents(float3 center, float3 extents)
+        public static FMinMaxAABB CreateFromCenterAndExtents(float3 center, float3 extents)
         {
             return CreateFromCenterAndHalfExtents(center, extents * 0.5f);
         }
@@ -77,9 +77,9 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// <param name="halfExtents">Half extents of AABB.</param>
         /// <returns>AABB created from inputs.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static MinMaxAABB CreateFromCenterAndHalfExtents(float3 center, float3 halfExtents)
+        public static FMinMaxAABB CreateFromCenterAndHalfExtents(float3 center, float3 halfExtents)
         {
-            return new MinMaxAABB(center - halfExtents, center + halfExtents);
+            return new FMinMaxAABB(center - halfExtents, center + halfExtents);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// <param name="aabb">AABB to test.</param>
         /// <returns>True if input AABB is contained entirely by this AABB.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(MinMaxAABB aabb) => math.all((Min <= aabb.Min) & (Max >= aabb.Max));
+        public bool Contains(FMinMaxAABB aabb) => math.all((Min <= aabb.Min) & (Max >= aabb.Max));
 
         /// <summary>
         /// Tests if the input AABB overlaps this AABB.
@@ -147,7 +147,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// <param name="aabb">AABB to test.</param>
         /// <returns>True if input AABB overlaps with this AABB.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Overlaps(MinMaxAABB aabb)
+        public bool Overlaps(FMinMaxAABB aabb)
         {
             return math.all(Max >= aabb.Min & Min <= aabb.Max);
         }
@@ -173,10 +173,10 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// Modifies this AABB so that it contains the given AABB. If the given AABB is already contained by this AABB,
         /// then this AABB doesn't change.
         /// </remarks>
-        /// <seealso cref="Contains(Unity.Mathematics.Geometry.MinMaxAABB)"/>
+        /// <seealso cref="Contains(Unity.Mathematics.Geometry.FMinMaxAABB)"/>
         /// <param name="aabb">AABB to encapsulate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Encapsulate(MinMaxAABB aabb)
+        public void Encapsulate(FMinMaxAABB aabb)
         {
             Min = math.min(Min, aabb.Min);
             Max = math.max(Max, aabb.Max);
@@ -199,7 +199,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(MinMaxAABB other)
+        public bool Equals(FMinMaxAABB other)
         {
             return Min.Equals(other.Min) && Max.Equals(other.Max);
         }
@@ -207,7 +207,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
         {
-            return string.Format("MinMaxAABB({0}, {1})", Min, Max);
+            return string.Format("FMinMaxAABB({0}, {1})", Min, Max);
         }
     }
 
@@ -223,7 +223,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// <param name="aabb">AABB to be transformed.</param>
         /// <returns>Transformed AABB.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static MinMaxAABB Transform(RigidTransform transform, MinMaxAABB aabb)
+        public static FMinMaxAABB Transform(RigidTransform transform, FMinMaxAABB aabb)
         {
             float3 halfExtentsInA = aabb.HalfExtents;
 
@@ -237,7 +237,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
             float3 halfExtentsInB = math.abs(x) + math.abs(y) + math.abs(z);
             float3 centerInB = math.transform(transform, aabb.Center);
 
-            return new MinMaxAABB(centerInB - halfExtentsInB, centerInB + halfExtentsInB);
+            return new FMinMaxAABB(centerInB - halfExtentsInB, centerInB + halfExtentsInB);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// <param name="aabb">AABB to be transformed.</param>
         /// <returns>Transformed AABB.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static MinMaxAABB Transform(float4x4 transform, MinMaxAABB aabb)
+        public static FMinMaxAABB Transform(float4x4 transform, FMinMaxAABB aabb)
         {
             var transformed = Transform(new float3x3(transform), aabb);
             transformed.Min += transform.c3.xyz;
@@ -268,7 +268,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
         /// <param name="aabb">AABB to be transformed.</param>
         /// <returns>Transformed AABB.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static MinMaxAABB Transform(float3x3 transform, MinMaxAABB aabb)
+        public static FMinMaxAABB Transform(float3x3 transform, FMinMaxAABB aabb)
         {
             // From Christer Ericson's Real-Time Collision Detection on page 86 and 87.
             // We want the transformed minimum and maximums of the AABB. Multiplying a 3x3 matrix on the left of a
@@ -303,7 +303,7 @@ namespace InfinityEngine.Core.Mathmatics.Geometry
             var t1 = transform.c0.xyz * aabb.Min.xxx;
             var t2 = transform.c0.xyz * aabb.Max.xxx;
             var minMask = t1 < t2;
-            var transformed = new MinMaxAABB(select(t2, t1, minMask), select(t2, t1, !minMask));
+            var transformed = new FMinMaxAABB(select(t2, t1, minMask), select(t2, t1, !minMask));
             t1 = transform.c1.xyz * aabb.Min.yyy;
             t2 = transform.c1.xyz * aabb.Max.yyy;
             minMask = t1 < t2;

@@ -1,5 +1,7 @@
-﻿using Vortice.Vulkan;
+﻿using System;
+using Vortice.Vulkan;
 using static Vortice.Vulkan.Vulkan;
+using InfinityEngine.Core.Mathmatics.Geometry;
 
 namespace InfinityEngine.Graphics.RHI.Vulkan
 {
@@ -28,7 +30,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void BeginEvent()
+        public override void BeginEvent(string name)
         {
 
         }
@@ -48,12 +50,12 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void Barriers(FRHIResource resource)
+        public override void Barriers(in ReadOnlySpan<FResourceBarrierBatch> barrierBatch)
         {
 
         }
 
-        public override void Transition(FRHIResource resource)
+        public override void Transition(FRHIResource resource, EResourceState stateBefore, EResourceState stateAfter, int subresource = -1)
         {
 
         }
@@ -103,19 +105,9 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetComputeConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)
+        public override void SetComputeResourceBind(in uint slot, FRHIResourceSet resourceSet)
         {
-            
-        }
 
-        public override void SetComputeShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView)
-        {
-           
-        }
-
-        public override void SetComputeUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView)
-        {
-            
         }
 
         public override void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ)
@@ -133,6 +125,11 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
+        public override void SetRayTraceResourceBind(in uint slot, FRHIResourceSet resourceSet)
+        {
+
+        }
+
         public override void DispatchRay(in uint sizeX, in uint sizeY, in uint sizeZ)
         {
             
@@ -143,14 +140,14 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetScissor()
+        public override void SetScissors(in ReadOnlyMemory<FRect> rects)
         {
-            
+           
         }
 
-        public override void SetViewport()
+        public override void SetViewports(in ReadOnlyMemory<FViewport> viewport)
         {
-
+           
         }
 
         public override void BeginRenderPass(FRHITexture depthBuffer, params FRHITexture[] colorBuffer)
@@ -183,14 +180,14 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
             
         }
 
-        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combiners)
+        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner combiner)
         {
 
         }
 
         public override void SetPrimitiveTopology(in EPrimitiveTopology topologyType)
         {
-            this.topologyType = topologyType;
+            m_TopologyType = topologyType;
         }
 
         public override void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState)
@@ -198,29 +195,19 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void SetIndexBuffer(FRHIBuffer indexBuffer)
+        public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView)
         {
-            
+            throw new System.NotImplementedException();
         }
 
-        public override void SetVertexBuffer(in uint slot,FRHIBuffer vertexBuffer)
+        public override void SetVertexBuffer(in uint slot, FRHIVertexBufferView vertexBufferView)
         {
-            
-        }
-        
-        public override void SetRenderConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)
-        {
-            
+            throw new System.NotImplementedException();
         }
 
-        public override void SetRenderShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView)
+        public override void SetRenderResourceBind(in uint slot, FRHIResourceSet resourceSet)
         {
-            
-        }
-
-        public override void SetRenderUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView)
-        {
-            
+            throw new System.NotImplementedException();
         }
 
         public override void DrawIndexInstanced(in uint indexCount, in uint startIndex, in int startVertex, in uint instanceCount, in uint startInstance)

@@ -1,5 +1,7 @@
-﻿using TerraFX.Interop.Windows;
+﻿using System;
+using TerraFX.Interop.Windows;
 using TerraFX.Interop.DirectX;
+using InfinityEngine.Core.Mathmatics.Geometry;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
@@ -57,14 +59,17 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList->Close();
         }
 
-        public override void BeginEvent()
+        public override void BeginEvent(string name)
         {
-
+            int byteSize = name.Length * sizeof(char);
+            void* ptr = stackalloc byte[byteSize];
+            name.CopyTo(new Span<char>(ptr, name.Length));
+            nativeCmdList->BeginEvent(2, ptr, (uint)byteSize);
         }
 
         public override void EndEvent()
         {
-
+            nativeCmdList->EndEvent();
         }
 
         public override void BeginQuery(FRHIQuery query)
@@ -89,12 +94,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        public override void Barriers(FRHIResource resource)
+        public override void Barriers(in ReadOnlySpan<FResourceBarrierBatch> barrierBatch)
         {
-
+            //nativeCmdList->ResourceBarrier
+            //Vortice.Direct3D12.ID3D12GraphicsCommandList
         }
 
-        public override void Transition(FRHIResource resource)
+        public override void Transition(FRHIResource resource, EResourceState stateBefore, EResourceState stateAfter, int subresource = -1)
         {
 
         }
@@ -144,19 +150,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetComputeConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)
+        public override void SetComputeResourceBind(in uint slot, FRHIResourceSet resourceSet)
         {
-            nativeCmdList->SetComputeRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
-        }
 
-        public override void SetComputeShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView) 
-        {
-            nativeCmdList->SetComputeRootShaderResourceView(slot, shaderResourceView.virtualAddressGPU);
-        }
-
-        public override void SetComputeUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView)
-        {
-            nativeCmdList->SetComputeRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
         }
 
         public override void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ)
@@ -174,6 +170,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
+        public override void SetRayTraceResourceBind(in uint slot, FRHIResourceSet resourceSet)
+        {
+
+        }
+
         public override void DispatchRay(in uint sizeX, in uint sizeY, in uint sizeZ)
         {
 
@@ -184,14 +185,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetScissor()
+        public override void SetScissors(in ReadOnlyMemory<FRect> rects)
         {
-
+            nativeCmdList->RSSetScissorRects((uint)rects.Length, null);
         }
 
-        public override void SetViewport()
+        public override void SetViewports(in ReadOnlyMemory<FViewport> viewport)
         {
-
+            nativeCmdList->RSSetViewports((uint)viewport.Length, null);
         }
 
         public override void BeginRenderPass(FRHITexture depthBuffer, params FRHITexture[] colorBuffer)
@@ -226,14 +227,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList->RSSetShadingRateImage(d3dTexture.defaultResource);
         }
 
-        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner[] combiners)
+        public override void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner combiner)
         {
             nativeCmdList->RSSetShadingRate((D3D12_SHADING_RATE)shadingRate, null);
         }
 
         public override void SetPrimitiveTopology(in EPrimitiveTopology topologyType)
         {
-            this.topologyType = topologyType;
+            m_TopologyType = topologyType;
             nativeCmdList->IASetPrimitiveTopology((D3D_PRIMITIVE_TOPOLOGY)topologyType);
         }
 
@@ -242,37 +243,27 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetIndexBuffer(FRHIBuffer indexBuffer) 
+        public override void SetIndexBuffer(FRHIIndexBufferView indexBufferView) 
         {
-            D3D12_INDEX_BUFFER_VIEW indexBufferView;
+            /*D3D12_INDEX_BUFFER_VIEW indexBufferView;
             indexBufferView.Format = DXGI_FORMAT.DXGI_FORMAT_R32_UINT;
             indexBufferView.SizeInBytes = (uint)(indexBuffer.descriptor.count * indexBuffer.descriptor.stride);
             indexBufferView.BufferLocation = ((FD3DBuffer)indexBuffer).defaultResource->GetGPUVirtualAddress();
-            nativeCmdList->IASetIndexBuffer(&indexBufferView);
+            nativeCmdList->IASetIndexBuffer(&indexBufferView);*/
         }
 
-        public override void SetVertexBuffer(in uint slot, FRHIBuffer vertexBuffer) 
+        public override void SetVertexBuffer(in uint slot, FRHIVertexBufferView vertexBufferView) 
         {
-            D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+            /*D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
             vertexBufferView.SizeInBytes = (uint)(vertexBuffer.descriptor.count * vertexBuffer.descriptor.stride);
             vertexBufferView.StrideInBytes = (uint)(vertexBuffer.descriptor.stride);
             vertexBufferView.BufferLocation = ((FD3DBuffer)vertexBuffer).defaultResource->GetGPUVirtualAddress();
-            nativeCmdList->IASetVertexBuffers(slot, 1, &vertexBufferView);
+            nativeCmdList->IASetVertexBuffers(slot, 1, &vertexBufferView);*/
         }
 
-        public override void SetRenderConstantBufferView(in uint slot, FRHIConstantBufferView constantBufferView)
+        public override void SetRenderResourceBind(in uint slot, FRHIResourceSet resourceSet)
         {
-            nativeCmdList->SetGraphicsRootConstantBufferView(slot, constantBufferView.virtualAddressGPU);
-        }
-
-        public override void SetRenderShaderResourceView(in uint slot, FRHIShaderResourceView shaderResourceView)
-        {
-            nativeCmdList->SetGraphicsRootShaderResourceView(slot, shaderResourceView.virtualAddressGPU);
-        }
-
-        public override void SetRenderUnorderedAccessView(in uint slot, FRHIUnorderedAccessView unorderedAccessView)
-        {
-            nativeCmdList->SetGraphicsRootUnorderedAccessView(slot, unorderedAccessView.virtualAddressGPU);
+            nativeCmdList->SetGraphicsRootDescriptorTable(slot, default);
         }
 
         public override void DrawIndexInstanced(in uint indexCount, in uint startIndex, in int startVertex, in uint instanceCount, in uint startInstance)

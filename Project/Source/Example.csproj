@@ -8,6 +8,7 @@
     <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
     <Platforms>x64</Platforms>
     <MinimumPlatformVersion>10.0.18362.0</MinimumPlatformVersion>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

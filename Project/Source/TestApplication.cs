@@ -42,7 +42,7 @@ namespace ExampleProject
             FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                FBufferDescriptor descriptor = new FBufferDescriptor(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
+                FBufferDescriptor descriptor = new FBufferDescriptor(10000000, 4, EUsageType.Default | EUsageType.Dynamic | EUsageType.Staging);
 
                 fence = graphicsContext.GetFence();
                 query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
@@ -73,9 +73,11 @@ namespace ExampleProject
                 if (dataReady) {
                     FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2");
                     cmdBuffer.Clear();
+                    cmdBuffer.BeginEvent("Readback");
                     cmdBuffer.BeginQuery(query);
                     buffer.Readback<int>(cmdBuffer);
                     cmdBuffer.EndQuery(query);
+                    cmdBuffer.EndEvent();
                     graphicsContext.ExecuteCommandBuffer(cmdBuffer);
                     graphicsContext.WriteToFence(EContextType.Copy, fence);
                     //graphicsContext.WaitForFence(EContextType.Render, fence);
