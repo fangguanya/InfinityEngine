@@ -89,13 +89,13 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void SetRayTraceResourceBind(in uint slot, FRHIResourceSet resourceSet);
         public abstract void DispatchRay(in uint sizeX, in uint sizeY, in uint sizeZ);
         public abstract void DispatchRayIndirect(FRHIBuffer argsBuffer, in uint argsOffset);
-        public abstract void SetScissors(in ReadOnlyMemory<FRect> rects);
-        public abstract void SetViewports(in ReadOnlyMemory<FViewport> viewport);
+        public abstract void SetScissor(in FRect rect);
+        public abstract void SetViewport(in FViewport viewport);
         public abstract void BeginRenderPass(FRHITexture depthBuffer, params FRHITexture[] colorBuffer);
         public abstract void EndRenderPass();
         public abstract void SetStencilRef(in uint refValue);
         public abstract void SetBlendFactor(in float blendFactor);
-        public abstract void SetDepthBounds(in float min, in float max);
+        public abstract void SetDepthBound(in float min, in float max);
         public abstract void SetShadingRate(FRHITexture texture);
         public abstract void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner combiner);
         public abstract void SetPrimitiveTopology(in EPrimitiveTopology topologyType);

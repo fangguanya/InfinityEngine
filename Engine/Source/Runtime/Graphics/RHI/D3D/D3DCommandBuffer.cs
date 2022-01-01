@@ -197,14 +197,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         }
 
-        public override void SetScissors(in ReadOnlyMemory<FRect> rects)
+        public override void SetScissor(in FRect rect)
         {
-            nativeCmdList->RSSetScissorRects((uint)rects.Length, null);
+            nativeCmdList->RSSetScissorRects(1, null);
         }
 
-        public override void SetViewports(in ReadOnlyMemory<FViewport> viewport)
+        public override void SetViewport(in FViewport viewport)
         {
-            nativeCmdList->RSSetViewports((uint)viewport.Length, null);
+            nativeCmdList->RSSetViewports(1, null);
         }
 
         public override void BeginRenderPass(FRHITexture depthBuffer, params FRHITexture[] colorBuffer)
@@ -228,7 +228,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList->OMSetBlendFactor(&factor);
         }
 
-        public override void SetDepthBounds(in float min, in float max)
+        public override void SetDepthBound(in float min, in float max)
         {
             nativeCmdList->OMSetDepthBounds(min, max);
         }
