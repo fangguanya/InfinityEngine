@@ -10,16 +10,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             get
             {
                 ulong frequency;
-                m_CopyCmdContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
-                return frequency;
-            }
-        }
-        public override ulong computeFrequency
-        {
-            get
-            {
-                ulong frequency;
-                m_ComputeCmdContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
+                m_CopyContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
                 return frequency;
             }
         }
@@ -28,7 +19,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
             get
             {
                 ulong frequency;
-                m_RenderCmdContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
+                m_RenderContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
+                return frequency;
+            }
+        }
+        public override ulong computeFrequency
+        {
+            get
+            {
+                ulong frequency;
+                m_ComputeContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
                 return frequency;
             }
         }
@@ -37,14 +37,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
         private FRHIFencePool m_FencePool;
         private FRHIResourcePool m_ResourcePool;
         private FD3DQueryContext[] m_QueryContext;
-        private FD3DCommandContext m_CopyCmdContext;
-        private FD3DCommandContext m_ComputeCmdContext;
-        private FD3DCommandContext m_RenderCmdContext;
+        private FD3DCommandContext m_CopyContext;
+        private FD3DCommandContext m_RenderContext;
+        private FD3DCommandContext m_ComputeContext;
         private TArray<FExecuteInfo> m_ExecuteGPUInfos;
-        private FRHICommandBufferPool m_CopyCmdBufferPool;
-        private FRHICommandBufferPool m_ComputeCmdBufferPool;
-        private FRHICommandBufferPool m_RenderCmdBufferPool;
-        private TArray<FRHICommandBuffer> m_ManagedCmdBuffers;
+        private FRHICommandBufferPool m_CopyBufferPool;
+        private FRHICommandBufferPool m_RenderBufferPool;
+        private FRHICommandBufferPool m_ComputeBufferPool;
+        private TArray<FRHICommandBuffer> m_ManagedBuffers;
         //private FRHIDescriptorHeapFactory m_DescriptorFactory;
 
         public FD3DGraphicsContext()
@@ -53,19 +53,19 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_FencePool = new FRHIFencePool(this);
             m_ResourcePool = new FRHIResourcePool(this);
             m_ExecuteGPUInfos = new TArray<FExecuteInfo>(32);
-            m_ManagedCmdBuffers = new TArray<FRHICommandBuffer>(32);
+            m_ManagedBuffers = new TArray<FRHICommandBuffer>(32);
 
             m_QueryContext = new FD3DQueryContext[2];
-            m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.Timestamp, 64, "Timestamp");
-            m_QueryContext[1] = new FD3DQueryContext(m_Device, EQueryType.CopyTimestamp, 64, "CopyTimestamp");
+            m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.Timestamp, 128, "Timestamp");
+            m_QueryContext[1] = new FD3DQueryContext(m_Device, EQueryType.CopyTimestamp, 128, "CopyTimestamp");
 
-            m_CopyCmdContext = new FD3DCommandContext(m_Device, EContextType.Copy, "Copy");
-            m_RenderCmdContext = new FD3DCommandContext(m_Device, EContextType.Render, "Render");
-            m_ComputeCmdContext = new FD3DCommandContext(m_Device, EContextType.Compute, "Compute");
+            m_CopyContext = new FD3DCommandContext(m_Device, EContextType.Copy, "Copy");
+            m_RenderContext = new FD3DCommandContext(m_Device, EContextType.Render, "Render");
+            m_ComputeContext = new FD3DCommandContext(m_Device, EContextType.Compute, "Compute");
 
-            m_CopyCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Copy);
-            m_ComputeCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Compute);
-            m_RenderCmdBufferPool = new FRHICommandBufferPool(this, EContextType.Render);
+            m_CopyBufferPool = new FRHICommandBufferPool(this, EContextType.Copy);
+            m_RenderBufferPool = new FRHICommandBufferPool(this, EContextType.Render);
+            m_ComputeBufferPool = new FRHICommandBufferPool(this, EContextType.Compute);
 
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
             //m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
@@ -73,16 +73,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         internal override FRHICommandContext SelectContext(in EContextType contextType)
         {
-            FRHICommandContext commandContext = m_RenderCmdContext;
+            FRHICommandContext commandContext = m_RenderContext;
 
             switch (contextType)
             {
                 case EContextType.Copy:
-                    commandContext = m_CopyCmdContext;
+                    commandContext = m_CopyContext;
                     break;
 
                 case EContextType.Compute:
-                    commandContext = m_ComputeCmdContext;
+                    commandContext = m_ComputeContext;
                     break;
             }
 
@@ -100,19 +100,19 @@ namespace InfinityEngine.Graphics.RHI.D3D
             switch (contextType)
             {
                 case EContextType.Copy:
-                    cmdBuffer = m_CopyCmdBufferPool.GetTemporary(name);
+                    cmdBuffer = m_CopyBufferPool.GetTemporary(name);
                     break;
 
                 case EContextType.Compute:
-                    cmdBuffer = m_ComputeCmdBufferPool.GetTemporary(name);
+                    cmdBuffer = m_ComputeBufferPool.GetTemporary(name);
                     break;
 
                 case EContextType.Render:
-                    cmdBuffer = m_RenderCmdBufferPool.GetTemporary(name);
+                    cmdBuffer = m_RenderBufferPool.GetTemporary(name);
                     break;
             }
 
-            if (bAutoRelease) { m_ManagedCmdBuffers.Add(cmdBuffer); }
+            if (bAutoRelease) { m_ManagedBuffers.Add(cmdBuffer); }
 
             return cmdBuffer;
         }
@@ -122,15 +122,15 @@ namespace InfinityEngine.Graphics.RHI.D3D
             switch (cmdBuffer.contextType)
             {
                 case EContextType.Copy:
-                    m_CopyCmdBufferPool.ReleaseTemporary(cmdBuffer);
-                    break;
-
-                case EContextType.Compute:
-                    m_ComputeCmdBufferPool.ReleaseTemporary(cmdBuffer);
+                    m_CopyBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
 
                 case EContextType.Render:
-                    m_RenderCmdBufferPool.ReleaseTemporary(cmdBuffer);
+                    m_RenderBufferPool.ReleaseTemporary(cmdBuffer);
+                    break;
+
+                case EContextType.Compute:
+                    m_ComputeBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
             }
         }
@@ -167,15 +167,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         internal override void Flush()
         {
-            for (int i = 0; i < m_ManagedCmdBuffers.length; ++i) {
-                ReleaseCommandBuffer(m_ManagedCmdBuffers[i]);
-                m_ManagedCmdBuffers[i] = null;
+            for (int i = 0; i < m_ManagedBuffers.length; ++i) {
+                ReleaseCommandBuffer(m_ManagedBuffers[i]);
+                m_ManagedBuffers[i] = null;
             }
-            m_ManagedCmdBuffers.Clear();
+            m_ManagedBuffers.Clear();
 
-            m_QueryContext[1].Submit(m_CopyCmdContext);
-            m_QueryContext[0].Submit(m_RenderCmdContext);
-            m_RenderCmdContext.Flush();
+            m_QueryContext[1].Submit(m_CopyContext);
+            m_QueryContext[0].Submit(m_RenderContext);
+
+            m_RenderContext.Flush();
 
             m_QueryContext[0].GetData();
             m_QueryContext[1].GetData();
@@ -209,7 +210,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHISwapChain CreateSwapChain(string name, in uint width, in uint height, in IntPtr windowPtr)
         {
-            return new FD3DSwapChain(m_Device, m_RenderCmdContext, windowPtr.ToPointer(), width, height, name);
+            return new FD3DSwapChain(m_Device, m_RenderContext, windowPtr.ToPointer(), width, height, name);
         }
 
         public override FRHIFence CreateFence(string name)
@@ -431,15 +432,15 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_Device?.Dispose();
             m_FencePool?.Dispose();
             m_ResourcePool?.Dispose();
-            m_CopyCmdContext?.Dispose();
-            m_ComputeCmdContext?.Dispose();
-            m_RenderCmdContext?.Dispose();
+            m_CopyContext?.Dispose();
+            m_RenderContext?.Dispose();
+            m_ComputeContext?.Dispose();
             m_QueryContext[0]?.Dispose();
             m_QueryContext[1]?.Dispose();
+            m_CopyBufferPool?.Dispose();
+            m_RenderBufferPool?.Dispose();
+            m_ComputeBufferPool?.Dispose();
             //m_DescriptorFactory?.Dispose();
-            m_CopyCmdBufferPool?.Dispose();
-            m_ComputeCmdBufferPool?.Dispose();
-            m_RenderCmdBufferPool?.Dispose();
         }
     }
 }

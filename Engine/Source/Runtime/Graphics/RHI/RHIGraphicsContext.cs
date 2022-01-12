@@ -13,8 +13,8 @@ namespace InfinityEngine.Graphics.RHI
     public abstract class FRHIGraphicsContext : FDisposal
     {
         public virtual ulong copyFrequency => 0;
-        public virtual ulong computeFrequency => 0;
         public virtual ulong renderFrequency => 0;
+        public virtual ulong computeFrequency => 0;
 
         internal abstract FRHICommandContext SelectContext(in EContextType contextType);
         public abstract FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name);
