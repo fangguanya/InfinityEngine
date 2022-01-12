@@ -112,16 +112,16 @@ namespace InfinityEngine.Graphics.RHI
     {
         EContextType m_ContextType;
         Stack<FRHICommandBuffer> m_Pooled;
-        FRHIGraphicsContext m_GraphicsContext;
+        FRHIDeviceContext m_DeviceContext;
 
         public int countAll { get; private set; }
         public int countActive { get { return countAll - countInactive; } }
         public int countInactive { get { return m_Pooled.Count; } }
 
-        internal FRHICommandBufferPool(FRHIGraphicsContext graphicsContext, EContextType contextType)
+        internal FRHICommandBufferPool(FRHIDeviceContext deviceContext, EContextType contextType)
         {
             m_ContextType = contextType;
-            m_GraphicsContext = graphicsContext;
+            m_DeviceContext = deviceContext;
             m_Pooled = new Stack<FRHICommandBuffer>(64);
         }
 
@@ -130,7 +130,7 @@ namespace InfinityEngine.Graphics.RHI
             FRHICommandBuffer cmdBuffer;
             if (m_Pooled.Count == 0) {
                 ++countAll;
-                cmdBuffer = m_GraphicsContext.CreateCommandBuffer(m_ContextType, name);
+                cmdBuffer = m_DeviceContext.CreateCommandBuffer(m_ContextType, name);
             } else {
                 cmdBuffer = m_Pooled.Pop();
             }
@@ -145,7 +145,7 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Release()
         {
-            m_GraphicsContext = null;
+            m_DeviceContext = null;
             foreach (FRHICommandBuffer cmdBuffer in m_Pooled)
             {
                 cmdBuffer.Dispose();

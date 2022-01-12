@@ -25,7 +25,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         }
 
-        public override void Init(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
+        public override void Init(FRHIDeviceContext deviceContext, FRenderContext renderContext)
         {
             Console.WriteLine("Init RenderPipeline");
 
@@ -34,54 +34,54 @@ namespace InfinityEngine.Rendering.RenderPipeline
             timeProfiler = new FTimeProfiler();
             FRHIBufferDescriptor descriptor = new FRHIBufferDescriptor(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
 
-            fence = graphicsContext.GetFence();
-            query = graphicsContext.GetQuery(EQueryType.CopyTimestamp);
-            bufferRef = graphicsContext.GetBuffer(descriptor);
-            FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1", true);
+            fence = deviceContext.GetFence();
+            query = deviceContext.GetQuery(EQueryType.CopyTimestamp);
+            bufferRef = deviceContext.GetBuffer(descriptor);
+            FRHICommandBuffer cmdBuffer = deviceContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1", true);
             cmdBuffer.Clear();
 
             int[] data = new int[10000000];
             for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
             bufferRef.buffer.SetData(cmdBuffer, data);
-            graphicsContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
-            graphicsContext.Submit();*/
+            deviceContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
+            deviceContext.Submit();*/
         }
 
-        public override void Render(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
+        public override void Render(FRHIDeviceContext deviceContext, FRenderContext renderContext)
         {
             /*timeProfiler.Restart();
 
             if (dataReady)
             {
-                FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2", true);
+                FRHICommandBuffer cmdBuffer = deviceContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2", true);
                 cmdBuffer.Clear();
                 cmdBuffer.BeginQuery(query);
                 bufferRef.buffer.RequestReadback<int>(cmdBuffer);
                 cmdBuffer.EndQuery(query);
-                graphicsContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
-                graphicsContext.WriteFence(EContextType.Copy, fence);
-                //graphicsContext.WaitFence(EContextType.Graphics, fence);
+                deviceContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
+                deviceContext.WriteFence(EContextType.Copy, fence);
+                //deviceContext.WaitFence(EContextType.Graphics, fence);
             }
 
             if (dataReady = fence.IsCompleted)
             {
                 bufferRef.buffer.GetData(readData);
-                gpuTime = query.GetResult(graphicsContext.copyFrequency);
+                gpuTime = query.GetResult(deviceContext.copyFrequency);
             }
 
             timeProfiler.Stop();
-            graphicsContext.Submit();
+            deviceContext.Submit();
 
             //Console.WriteLine("||");
             Console.WriteLine("Draw : " + cpuTime + "ms");
             Console.WriteLine("GPU  : " + gpuTime + "ms");*/
         }
 
-        public override void Release(FRenderContext renderContext, FRHIGraphicsContext graphicsContext)
+        public override void Release(FRHIDeviceContext deviceContext, FRenderContext renderContext)
         {
-            /*graphicsContext.ReleaseFence(fence);
-            graphicsContext.ReleaseQuery(query);
-            graphicsContext.ReleaseBuffer(bufferRef);*/
+            /*deviceContext.ReleaseFence(fence);
+            deviceContext.ReleaseQuery(query);
+            deviceContext.ReleaseBuffer(bufferRef);*/
             Console.WriteLine("Release RenderPipeline");
         }
     }
@@ -107,45 +107,45 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
 
 /*buffer.GetData<int>(cmdList, readbackData);
-graphicsContext.ExecuteCmdList(EContextType.Copy, cmdList);
-graphicsContext.WritFence(EContextType.Copy, fence);
-graphicsContext.WaitFence(EContextType.Graphics, fence);*/
+deviceContext.ExecuteCmdList(EContextType.Copy, cmdList);
+deviceContext.WritFence(EContextType.Copy, fence);
+deviceContext.WaitFence(EContextType.Graphics, fence);*/
 
 //ResourceBind Example
-/*FRHIBuffer Buffer = graphicsContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+/*FRHIBuffer Buffer = deviceContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
 
-FRHIShaderResourceView SRV = graphicsContext.CreateShaderResourceView(Buffer);
-FRHIUnorderedAccessView UAV = graphicsContext.CreateUnorderedAccessView(Buffer);
+FRHIShaderResourceView SRV = deviceContext.CreateShaderResourceView(Buffer);
+FRHIUnorderedAccessView UAV = deviceContext.CreateUnorderedAccessView(Buffer);
 
-FRHIResourceViewRange ResourceViewRange = graphicsContext.CreateResourceViewRange(2);
+FRHIResourceViewRange ResourceViewRange = deviceContext.CreateResourceViewRange(2);
 ResourceViewRange.SetShaderResourceView(0, SRV);
 ResourceViewRange.SetUnorderedAccessView(1, UAV);*/
 
 
 //ASyncCompute Example
-/*FRHIFence computeFence = graphicsContext.CreateFence();
-FRHIFence graphicsFence = graphicsContext.CreateFence();
+/*FRHIFence computeFence = deviceContext.CreateFence();
+FRHIFence graphicsFence = deviceContext.CreateFence();
 
 //Pass-A in GraphicsQueue
 cmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-graphicsContext.ExecuteCmdList(EContextType.Graphics, cmdList);
-graphicsContext.WritFence(EContextType.Graphics, graphicsFence);
+deviceContext.ExecuteCmdList(EContextType.Graphics, cmdList);
+deviceContext.WritFence(EContextType.Graphics, graphicsFence);
 
 //Pass-B in GraphicsQueue
 cmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-graphicsContext.ExecuteCmdList(EContextType.Graphics, cmdList);
+deviceContext.ExecuteCmdList(EContextType.Graphics, cmdList);
 
 //Pass-C in ComputeQueue and Wait Pass-A
-graphicsContext.WaitFence(EContextType.Compute, graphicsFence);
+deviceContext.WaitFence(EContextType.Compute, graphicsFence);
 cmdList.DispatchCompute(null, 16, 16, 1);
-graphicsContext.ExecuteCmdList(EContextType.Compute, cmdList);
-graphicsContext.WritFence(EContextType.Compute, computeFence);
+deviceContext.ExecuteCmdList(EContextType.Compute, cmdList);
+deviceContext.WritFence(EContextType.Compute, computeFence);
 
 //Pass-D in ComputeQueue
 cmdList.DispatchCompute(null, 16, 16, 1);
-graphicsContext.ExecuteCmdList(EContextType.Compute, cmdList);
+deviceContext.ExecuteCmdList(EContextType.Compute, cmdList);
 
 //Pass-E in GraphicsQueue and Wait Pass-C
-graphicsContext.WaitFence(EContextType.Graphics, computeFence);
+deviceContext.WaitFence(EContextType.Graphics, computeFence);
 cmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
-graphicsContext.ExecuteCmdList(EContextType.Graphics, cmdList);*/
+deviceContext.ExecuteCmdList(EContextType.Graphics, cmdList);*/

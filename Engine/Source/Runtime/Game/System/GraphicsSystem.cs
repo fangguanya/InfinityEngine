@@ -10,7 +10,7 @@ using InfinityEngine.Rendering.RenderPipeline;
 
 namespace InfinityEngine.Game.System
 {
-    public delegate void FGraphicsTask(FRenderContext m_RenderContext, FRHIGraphicsContext m_GraphicsContext);
+    public delegate void FGraphicsTask(FRHIDeviceContext deviceContext, FRenderContext renderContext);
 
     public static class FGraphics
     {
@@ -31,7 +31,7 @@ namespace InfinityEngine.Game.System
         private FRHISwapChain m_SwapChain;
         private FRenderContext m_RenderContext;
         private FRenderPipeline m_RenderPipeline;
-        private FRHIGraphicsContext m_GraphicsContext;
+        private FRHIDeviceContext m_DeviceContext;
 
         public FGraphicsSystem(FWindow window, FSemaphore semaphoreG2R, FSemaphore semaphoreR2G)
         {
@@ -42,10 +42,10 @@ namespace InfinityEngine.Game.System
             m_RenderThread.Name = "m_RenderThread";
 
             m_RenderContext = new FRenderContext();
-            m_GraphicsContext = new FD3DGraphicsContext();
+            m_DeviceContext = new FD3DDeviceContext();
             m_RenderPipeline = new FUniversalRenderPipeline("UniversalRP");
 
-            m_SwapChain = m_GraphicsContext.CreateSwapChain("SwapChain", (uint)window.width, (uint)window.height, window.handle);
+            m_SwapChain = m_DeviceContext.CreateSwapChain("SwapChain", (uint)window.width, (uint)window.height, window.handle);
         }
 
         public void Start()
@@ -70,10 +70,10 @@ namespace InfinityEngine.Game.System
                 ProcessGraphicsTasks();
                 if (isInit) {
                     isInit = false;
-                    m_RenderPipeline.Init(m_RenderContext, m_GraphicsContext); 
+                    m_RenderPipeline.Init(m_DeviceContext, m_RenderContext); 
                 }
-                m_RenderPipeline.Render(m_RenderContext, m_GraphicsContext);
-                FRHIGraphicsContext.SubmitAndFlushContext(m_GraphicsContext);
+                m_RenderPipeline.Render(m_DeviceContext, m_RenderContext);
+                FRHIDeviceContext.SubmitAndFlushContext(m_DeviceContext);
                 m_SwapChain.Present();
                 m_SemaphoreR2G.Signal();
             }
@@ -84,7 +84,7 @@ namespace InfinityEngine.Game.System
             if (FGraphics.GraphicsTasks.length == 0) { return; }
 
             for (int i = 0; i < FGraphics.GraphicsTasks.length; ++i) {
-                FGraphics.GraphicsTasks[i](m_RenderContext, m_GraphicsContext);
+                FGraphics.GraphicsTasks[i](m_DeviceContext, m_RenderContext);
                 //FGraphics.GraphicsTasks[i] = null;
             }
             FGraphics.GraphicsTasks.Clear();
@@ -93,12 +93,12 @@ namespace InfinityEngine.Game.System
         protected override void Release()
         {
             ProcessGraphicsTasks();
-            m_RenderPipeline?.Release(m_RenderContext, m_GraphicsContext);
+            m_RenderPipeline?.Release(m_DeviceContext, m_RenderContext);
 
             m_SwapChain?.Dispose();
             m_RenderContext?.Dispose();
+            m_DeviceContext?.Dispose();
             m_RenderPipeline?.Dispose();
-            m_GraphicsContext?.Dispose();
         }
     }
 }

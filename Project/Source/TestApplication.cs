@@ -41,15 +41,15 @@ namespace ExampleProject
             timeProfiler = new FTimeProfiler();
 
             FGraphics.AddTask(
-            (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
+            (FRHIDeviceContext deviceContext, FRenderContext renderContext) =>
             {
                 FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Dynamic | EUsageType.Staging);
                 descriptor.name = "TestBuffer";
 
-                fence = graphicsContext.GetFence("Readback");
-                query = graphicsContext.GetQuery(EQueryType.CopyTimestamp, "Readback");
-                bufferRef = graphicsContext.GetBuffer(descriptor);
-                FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "Upload");
+                fence = deviceContext.GetFence("Readback");
+                query = deviceContext.GetQuery(EQueryType.CopyTimestamp, "Readback");
+                bufferRef = deviceContext.GetBuffer(descriptor);
+                FRHICommandBuffer cmdBuffer = deviceContext.GetCommandBuffer(EContextType.Copy, "Upload");
 
                 int[] data = new int[numData];
                 for (int i = 0; i < numData; ++i) { 
@@ -60,7 +60,7 @@ namespace ExampleProject
                 cmdBuffer.BeginEvent("Upload");
                 buffer.SetData(cmdBuffer, data);
                 cmdBuffer.EndEvent();
-                graphicsContext.ExecuteCommandBuffer(cmdBuffer);
+                deviceContext.ExecuteCommandBuffer(cmdBuffer);
             });
 
             //m_ManageDatas = new int[32768];
@@ -70,26 +70,26 @@ namespace ExampleProject
         public override void OnUpdate(in float deltaTime)
         {
             FGraphics.AddTask(
-            (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
+            (FRHIDeviceContext deviceContext, FRenderContext renderContext) =>
             {
                 timeProfiler.Start();
 
                 if (dataReady) {
-                    FRHICommandBuffer cmdBuffer = graphicsContext.GetCommandBuffer(EContextType.Copy, "Readback");
+                    FRHICommandBuffer cmdBuffer = deviceContext.GetCommandBuffer(EContextType.Copy, "Readback");
                     cmdBuffer.Clear();
                     cmdBuffer.BeginEvent("Readback");
                     cmdBuffer.BeginQuery(query);
                     buffer.Readback<int>(cmdBuffer);
                     cmdBuffer.EndQuery(query);
                     cmdBuffer.EndEvent();
-                    graphicsContext.ExecuteCommandBuffer(cmdBuffer);
-                    graphicsContext.WriteToFence(EContextType.Copy, fence);
-                    //graphicsContext.WaitForFence(EContextType.Render, fence);
+                    deviceContext.ExecuteCommandBuffer(cmdBuffer);
+                    deviceContext.WriteToFence(EContextType.Copy, fence);
+                    //deviceContext.WaitForFence(EContextType.Render, fence);
                 }
 
                 if (dataReady = fence.IsCompleted) {
                     buffer.GetData(readData);
-                    gpuTime = query.GetResult(graphicsContext.copyFrequency);
+                    gpuTime = query.GetResult(deviceContext.copyFrequency);
                 }
 
                 timeProfiler.Stop();
@@ -114,11 +114,11 @@ namespace ExampleProject
         public override void OnDisable()
         {
             FGraphics.AddTask(
-            (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
+            (FRHIDeviceContext deviceContext, FRenderContext renderContext) =>
             {
-                graphicsContext.ReleaseFence(fence);
-                graphicsContext.ReleaseQuery(query);
-                graphicsContext.ReleaseBuffer(bufferRef);
+                deviceContext.ReleaseFence(fence);
+                deviceContext.ReleaseQuery(query);
+                deviceContext.ReleaseBuffer(bufferRef);
                 Console.WriteLine("Release RenderProxy");
             });
 
