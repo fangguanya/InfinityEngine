@@ -250,7 +250,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeCmdList->IASetPrimitiveTopology((D3D_PRIMITIVE_TOPOLOGY)topologyType);
         }
 
-        public override void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState)
+        public override void SetGraphicsPipelineState(FRHIGraphicsPipelineState graphicsPipelineState)
         {
 
         }

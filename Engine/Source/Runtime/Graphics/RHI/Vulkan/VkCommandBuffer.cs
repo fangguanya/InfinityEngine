@@ -185,7 +185,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
             m_TopologyType = topologyType;
         }
 
-        public override void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState)
+        public override void SetGraphicsPipelineState(FRHIGraphicsPipelineState graphicsPipelineState)
         {
 
         }

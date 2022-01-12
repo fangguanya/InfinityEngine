@@ -337,7 +337,7 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        internal void Release()
+        protected override void Release()
         {
             m_BufferPool.Dispose();
             m_TexturePool.Dispose();

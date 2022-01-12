@@ -129,7 +129,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 				resourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
             }
 			ID3D12Resource* resultPtr;
-			m_CmdBuffer = new FD3DCommandBuffer(name, device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Render);
+			m_CmdBuffer = new FD3DCommandBuffer(name, device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Graphics);
 			d3dDevice.nativeDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, null, Windows.__uuidof<ID3D12Resource>(), (void**)&resultPtr);
 			fixed (char* namePtr = name + "_QueryResult")
 			{

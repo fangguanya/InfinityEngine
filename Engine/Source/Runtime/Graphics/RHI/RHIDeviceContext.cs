@@ -7,14 +7,14 @@ namespace InfinityEngine.Graphics.RHI
     {
         Copy = 3,
         Compute = 2,
-        Render = 0
+        Graphics = 0
     }
 
     public abstract class FRHIDeviceContext : FDisposal
     {
         public virtual ulong copyFrequency => 0;
-        public virtual ulong renderFrequency => 0;
         public virtual ulong computeFrequency => 0;
+        public virtual ulong graphicsFrequency => 0;
 
         internal abstract FRHICommandContext SelectContext(in EContextType contextType);
         public abstract FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name);
@@ -34,7 +34,7 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void ReleaseQuery(FRHIQuery query);
         public abstract FRHIComputePipelineState CreateComputePipelineState(in FRHIComputePipelineDescriptor descriptor);
         public abstract FRHIRayTracePipelineState CreateRayTracePipelineState(in FRHIRayTracePipelineDescriptor descriptor);
-        public abstract FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescriptor descriptor);
+        public abstract FRHIGraphicsPipelineState CreateGraphicsPipelineState(in FRHIGraphicsPipelineDescriptor descriptor);
         public abstract void CreateSamplerState();
         public abstract void CreateVertexInputLayout();
         public abstract void CreateResourceInputLayout();

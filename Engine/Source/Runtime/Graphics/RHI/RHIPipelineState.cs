@@ -27,7 +27,7 @@ namespace InfinityEngine.Graphics.RHI
 
     }
 
-    public class FRHIRenderPipelineState
+    public class FRHIGraphicsPipelineState
     {
 
     }

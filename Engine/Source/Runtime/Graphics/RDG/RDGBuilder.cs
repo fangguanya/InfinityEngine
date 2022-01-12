@@ -622,10 +622,10 @@ namespace InfinityEngine.Graphics.RDG
                     //using (new ProfilingScope(m_GraphContext.cmdBuffer, passInfo.pass.customSampler))
                     {
                         FRHICommandBuffer cmdBuffer = null;
-                        if (!passInfo.pass.enableAsyncCompute) {
-                            cmdBuffer = graphContext.deviceContext.GetCommandBuffer(EContextType.Render, passInfo.pass.name);
-                        } else {
+                        if (passInfo.pass.enableAsyncCompute) {
                             cmdBuffer = graphContext.deviceContext.GetCommandBuffer(EContextType.Compute, passInfo.pass.name);
+                        } else {
+                            cmdBuffer = graphContext.deviceContext.GetCommandBuffer(EContextType.Graphics, passInfo.pass.name);
                         }
 
                         PrePassExecute(graphContext, cmdBuffer, ref passInfo);
@@ -643,7 +643,7 @@ namespace InfinityEngine.Graphics.RDG
 
         protected override void Release()
         {
-            m_ResourceFactory.Release();
+            m_ResourceFactory.Dispose();
         }
     }
 }

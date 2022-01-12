@@ -99,7 +99,7 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void SetShadingRate(FRHITexture texture);
         public abstract void SetShadingRate(in EShadingRate shadingRate, in EShadingRateCombiner combiner);
         public abstract void SetPrimitiveTopology(in EPrimitiveTopology topologyType);
-        public abstract void SetRenderPipelineState(FRHIRenderPipelineState renderPipelineState);
+        public abstract void SetGraphicsPipelineState(FRHIGraphicsPipelineState graphicsPipelineState);
         public abstract void SetIndexBuffer(FRHIIndexBufferView indexBufferView);
         public abstract void SetVertexBuffer(in uint slot, FRHIVertexBufferView vertexBufferView);
         public abstract void SetRenderResourceBind(in uint slot, FRHIResourceSet resourceSet);

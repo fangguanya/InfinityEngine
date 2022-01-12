@@ -14,15 +14,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 return frequency;
             }
         }
-        public override ulong renderFrequency
-        {
-            get
-            {
-                ulong frequency;
-                m_RenderContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
-                return frequency;
-            }
-        }
         public override ulong computeFrequency
         {
             get
@@ -32,18 +23,27 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 return frequency;
             }
         }
-      
+        public override ulong graphicsFrequency
+        {
+            get
+            {
+                ulong frequency;
+                m_GraphicsContext.nativeCmdQueue->GetTimestampFrequency(&frequency);
+                return frequency;
+            }
+        }
+
         private FD3DDevice m_Device;
         private FRHIFencePool m_FencePool;
         private FRHIResourcePool m_ResourcePool;
         private FD3DQueryContext[] m_QueryContext;
         private FD3DCommandContext m_CopyContext;
-        private FD3DCommandContext m_RenderContext;
         private FD3DCommandContext m_ComputeContext;
+        private FD3DCommandContext m_GraphicsContext;
         private TArray<FExecuteInfo> m_ExecuteGPUInfos;
         private FRHICommandBufferPool m_CopyBufferPool;
-        private FRHICommandBufferPool m_RenderBufferPool;
         private FRHICommandBufferPool m_ComputeBufferPool;
+        private FRHICommandBufferPool m_GraphicsBufferPool;
         private TArray<FRHICommandBuffer> m_ManagedBuffers;
         //private FRHIDescriptorHeapFactory m_DescriptorFactory;
 
@@ -60,12 +60,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_QueryContext[1] = new FD3DQueryContext(m_Device, EQueryType.CopyTimestamp, 128, "CopyTimestamp");
 
             m_CopyContext = new FD3DCommandContext(m_Device, EContextType.Copy, "Copy");
-            m_RenderContext = new FD3DCommandContext(m_Device, EContextType.Render, "Render");
             m_ComputeContext = new FD3DCommandContext(m_Device, EContextType.Compute, "Compute");
+            m_GraphicsContext = new FD3DCommandContext(m_Device, EContextType.Graphics, "Graphics");
 
             m_CopyBufferPool = new FRHICommandBufferPool(this, EContextType.Copy);
-            m_RenderBufferPool = new FRHICommandBufferPool(this, EContextType.Render);
             m_ComputeBufferPool = new FRHICommandBufferPool(this, EContextType.Compute);
+            m_GraphicsBufferPool = new FRHICommandBufferPool(this, EContextType.Graphics);
 
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
             //m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
@@ -73,7 +73,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         internal override FRHICommandContext SelectContext(in EContextType contextType)
         {
-            FRHICommandContext commandContext = m_RenderContext;
+            FRHICommandContext commandContext = m_GraphicsContext;
 
             switch (contextType)
             {
@@ -107,8 +107,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     cmdBuffer = m_ComputeBufferPool.GetTemporary(name);
                     break;
 
-                case EContextType.Render:
-                    cmdBuffer = m_RenderBufferPool.GetTemporary(name);
+                case EContextType.Graphics:
+                    cmdBuffer = m_GraphicsBufferPool.GetTemporary(name);
                     break;
             }
 
@@ -125,12 +125,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     m_CopyBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
 
-                case EContextType.Render:
-                    m_RenderBufferPool.ReleaseTemporary(cmdBuffer);
-                    break;
-
                 case EContextType.Compute:
                     m_ComputeBufferPool.ReleaseTemporary(cmdBuffer);
+                    break;
+
+                case EContextType.Graphics:
+                    m_GraphicsBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
             }
         }
@@ -174,9 +174,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ManagedBuffers.Clear();
 
             m_QueryContext[1].Submit(m_CopyContext);
-            m_QueryContext[0].Submit(m_RenderContext);
+            m_QueryContext[0].Submit(m_GraphicsContext);
 
-            m_RenderContext.Flush();
+            m_GraphicsContext.Flush();
 
             m_QueryContext[0].GetData();
             m_QueryContext[1].GetData();
@@ -210,7 +210,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHISwapChain CreateSwapChain(string name, in uint width, in uint height, in IntPtr windowPtr)
         {
-            return new FD3DSwapChain(m_Device, m_RenderContext, windowPtr.ToPointer(), width, height, name);
+            return new FD3DSwapChain(m_Device, m_GraphicsContext, windowPtr.ToPointer(), width, height, name);
         }
 
         public override FRHIFence CreateFence(string name)
@@ -299,9 +299,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return new FRHIRayTracePipelineState();
         }
 
-        public override FRHIRenderPipelineState CreateRenderPipelineState(in FRHIGraphicsPipelineDescriptor descriptor)
+        public override FRHIGraphicsPipelineState CreateGraphicsPipelineState(in FRHIGraphicsPipelineDescriptor descriptor)
         {
-            return new FRHIRenderPipelineState();
+            return null;
         }
 
         public override void CreateSamplerState()
@@ -433,13 +433,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_FencePool?.Dispose();
             m_ResourcePool?.Dispose();
             m_CopyContext?.Dispose();
-            m_RenderContext?.Dispose();
             m_ComputeContext?.Dispose();
+            m_GraphicsContext?.Dispose();
             m_QueryContext[0]?.Dispose();
             m_QueryContext[1]?.Dispose();
             m_CopyBufferPool?.Dispose();
-            m_RenderBufferPool?.Dispose();
             m_ComputeBufferPool?.Dispose();
+            m_GraphicsBufferPool?.Dispose();
             //m_DescriptorFactory?.Dispose();
         }
     }
