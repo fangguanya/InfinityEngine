@@ -78,22 +78,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
 		private TArray<int> m_QueryMap;
 		private Stack<FD3DQuery> m_StackPool;
 
-		public override bool IsTimeQuery
-		{
-			get
-			{
-				return queryType == EQueryType.Timestamp || queryType == EQueryType.CopyTimestamp;
-			}
-		}
 		public int countAll { get; private set; }
-		public override int countActive { get { return countAll - countInactive; } }
-		public override int countInactive { get { return m_StackPool.Count; } }
+		public override int countActive => (countAll - countInactive);
+		public override int countInactive => m_StackPool.Count;
+		public override bool IsReady => queryFence.IsCompleted;
+		public override bool IsTimeQuery => (queryType == EQueryType.Timestamp || queryType == EQueryType.CopyTimestamp);
 
 		public FD3DQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount, string name) : base(device, queryType, queryCount, name)
 		{
 			FD3DDevice d3dDevice = (FD3DDevice)device;
 
-			this.IsReady = true;
 			this.queryType = queryType;
 			this.queryCount= queryCount;
 			this.queryData = new ulong[queryCount];
@@ -159,7 +153,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
 		public override void GetData()
 		{
-			if (IsReady = queryFence.IsCompleted) 
+			if (IsReady) 
 			{
 				void* queryResult_Ptr;
 				D3D12_RANGE range = new D3D12_RANGE(0, 0);

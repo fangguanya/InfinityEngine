@@ -23,11 +23,11 @@ namespace InfinityEngine.Graphics.RHI
 	internal abstract class FRHIQueryContext : FDisposal
 	{
 		public int queryCount;
-		public bool IsReady;
 		public ulong[] queryData;
 		public EQueryType queryType;
 		public virtual int countActive => -1;
 		public virtual int countInactive => -1;
+		public virtual bool IsReady => true;
 		public virtual bool IsTimeQuery => false;
 
 		public FRHIQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount, string name) { }
