@@ -45,7 +45,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         }
 
-        public override void Barriers(in ReadOnlySpan<FResourceBarrierBatch> barrierBatch)
+        public override void Barriers(in ReadOnlySpan<FResourceBarrierInfo> barrierBatch)
         {
 
         }

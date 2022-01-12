@@ -196,7 +196,7 @@ namespace InfinityEngine.Graphics.RHI
         RGBA_BC7_UNorm = 109,
     }
 
-    public struct FResourceBarrierBatch
+    public struct FResourceBarrierInfo
     {
 
     }

@@ -12,7 +12,7 @@ namespace InfinityEngine.Graphics.RDG
         public FRHIGraphicsContext graphicsContext;
     }
 
-    internal struct FCompiledPassInfo
+    internal struct FRDGCompiledPassInfo
     {
         public IRDGPass pass;
         public int refCount;
@@ -24,7 +24,7 @@ namespace InfinityEngine.Graphics.RDG
         public FRHIFence fence;
         public List<int>[] resourceCreateList;
         public List<int>[] resourceReleaseList;
-        public bool allowPassCulling { get { return pass.enablePassCulling; } }
+        public bool enablePassCulling { get { return pass.enablePassCulling; } }
         public bool enableAsyncCompute { get { return pass.enableAsyncCompute; } }
 
         public void Reset(IRDGPass pass)
@@ -57,7 +57,7 @@ namespace InfinityEngine.Graphics.RDG
         }
     }
 
-    internal struct FCompiledResourceInfo
+    internal struct FRDGCompiledResourceInfo
     {
         public int refCount;
         public bool resourceCreated;
@@ -81,36 +81,32 @@ namespace InfinityEngine.Graphics.RDG
     public class FRDGBuilder : FDisposal
     {
         public string name;
-        FRDGResourceFactory m_Resources;
-        FRDGResourceScope<FRDGBufferRef> m_BufferScope;
-        FRDGResourceScope<FRDGTextureRef> m_TextureScope;
-        List<IRDGPass> m_RenderPasses = new List<IRDGPass>(64);
+        FRDGResourceFactory m_ResourceFactory;
+        List<IRDGPass> m_RenderPass = new List<IRDGPass>(64);
 
         bool m_ExecutionExceptionWasRaised;
         FRDGObjectPool m_ObjectPool = new FRDGObjectPool();
 
         Stack<int> m_CullingStack = new Stack<int>();
-        TDynamicArray<FCompiledPassInfo> m_CompiledPassInfos = new TDynamicArray<FCompiledPassInfo>();
-        TDynamicArray<FCompiledResourceInfo>[] m_CompiledResourcesInfos = new TDynamicArray<FCompiledResourceInfo>[2];
+        TDynamicArray<FRDGCompiledPassInfo> m_PassCompileInfos;
+        TDynamicArray<FRDGCompiledResourceInfo>[] m_ResourcesCompileInfos;
 
         public FRDGBuilder(string name)
         {
             this.name = name;
-            this.m_Resources = new FRDGResourceFactory();
-            this.m_BufferScope = new FRDGResourceScope<FRDGBufferRef>();
-            this.m_TextureScope = new FRDGResourceScope<FRDGTextureRef>();
+            this.m_ResourceFactory = new FRDGResourceFactory();
+            this.m_PassCompileInfos = new TDynamicArray<FRDGCompiledPassInfo>();
+            this.m_ResourcesCompileInfos = new TDynamicArray<FRDGCompiledResourceInfo>[2];
 
             for (int i = 0; i < 2; ++i)
             {
-                this.m_CompiledResourcesInfos[i] = new TDynamicArray<FCompiledResourceInfo>();
+                this.m_ResourcesCompileInfos[i] = new TDynamicArray<FRDGCompiledResourceInfo>();
             }
         }
 
-        protected override void Release()
+        public FRDGBufferRef ImportBuffer(FRHIBuffer buffer)
         {
-            m_Resources.Dispose();
-            m_BufferScope.Clear();
-            m_TextureScope.Clear();
+            return m_ResourceFactory.ImportBuffer(buffer);
         }
 
         public void MoveBuffer(in FRDGBufferRef srcBuffer, in FRDGBufferRef dscBuffer)
@@ -118,83 +114,44 @@ namespace InfinityEngine.Graphics.RDG
 
         }
 
-        public FRDGBufferRef ImportBuffer(FRHIBuffer buffer)
+        public FRDGBufferRef CreateBuffer(in FBufferDescriptor descriptor)
         {
-            return m_Resources.ImportBuffer(buffer);
-        }
-
-        public FRDGBufferRef CreateBuffer(in FBufferDescriptor bufferDesc)
-        {
-            return m_Resources.CreateBuffer(bufferDesc);
+            return m_ResourceFactory.CreateBuffer(descriptor);
         }
 
         public FRDGBufferRef CreateBuffer(in FRDGBufferRef bufferRef)
         {
-            return m_Resources.CreateBuffer(m_Resources.GetBufferResourceDesc(bufferRef.handle));
+            return m_ResourceFactory.CreateBuffer(m_ResourceFactory.GetBufferDescriptor(bufferRef.handle));
         }
 
-        public FBufferDescriptor GetBufferDesc(in FRDGBufferRef bufferRef)
+        public FBufferDescriptor GetBufferDescriptor(in FRDGBufferRef bufferRef)
         {
-            return m_Resources.GetBufferResourceDesc(bufferRef.handle);
-        }
-
-        public FRDGBufferRef ScopeBuffer(in int handle)
-        {
-            return m_BufferScope.Get(handle);
-        }
-
-        public void ScopeBuffer(int handle, in FRDGBufferRef bufferRef)
-        {
-            m_BufferScope.Set(handle, bufferRef);
-        }
-
-        public FRDGBufferRef ScopeBuffer(in int handle, in FBufferDescriptor bufferDesc)
-        {
-            FRDGBufferRef bufferRef = CreateBuffer(bufferDesc);
-            m_BufferScope.Set(handle, bufferRef);
-            return bufferRef;
-        }
-
-        public void MoveTexture(in FRDGTextureRef srcTexture, in FRDGTextureRef dscTexture)
-        {
-   
+            return m_ResourceFactory.GetBufferDescriptor(bufferRef.handle);
         }
 
         public FRDGTextureRef ImportTexture(FRHITexture texture, int shaderProperty = 0)
         {
-            return m_Resources.ImportTexture(texture, shaderProperty);
+            return m_ResourceFactory.ImportTexture(texture, shaderProperty);
         }
 
-        public FRDGTextureRef CreateTexture(in FTextureDescriptor textureDesc, int shaderProperty = 0)
+        public void MoveTexture(in FRDGTextureRef srcTexture, in FRDGTextureRef dscTexture)
         {
-            return m_Resources.CreateTexture(textureDesc, shaderProperty);
+
+        }
+
+        public FRDGTextureRef CreateTexture(in FTextureDescriptor descriptor, int shaderProperty = 0)
+        {
+            return m_ResourceFactory.CreateTexture(descriptor, shaderProperty);
         }
 
         public FRDGTextureRef CreateTexture(in FRDGTextureRef textureRef, int shaderProperty = 0)
         {
-            return m_Resources.CreateTexture(m_Resources.GetTextureResourceDesc(textureRef.handle), shaderProperty);
+            return m_ResourceFactory.CreateTexture(m_ResourceFactory.GetTextureDescriptor(textureRef.handle), shaderProperty);
         }
 
-        public FRDGTextureRef ScopeTexture(in int handle)
+        public FTextureDescriptor GetTextureDescriptor(in FRDGTextureRef textureRef)
         {
-            return m_TextureScope.Get(handle);
-        }
-
-        public void ScopeTexture(int handle, in FRDGTextureRef textureRef)
-        {
-            m_TextureScope.Set(handle, textureRef);
-        }
-
-        public FRDGTextureRef ScopeTexture(in int handle, in FTextureDescriptor textureDesc)
-        {
-            FRDGTextureRef textureRef = CreateTexture(textureDesc, handle);
-            m_TextureScope.Set(handle, textureRef);
-            return textureRef;
-        }
-
-        public FTextureDescriptor GetTextureDesc(in FRDGTextureRef textureRef)
-        {
-            return m_Resources.GetTextureResourceDesc(textureRef.handle);
+            return m_ResourceFactory.GetTextureDescriptor(textureRef.handle);
         }
 
         public FRDGPassRef AddPass<T>(string passName/*, ProfilingSampler profilerSampler*/) where T : struct
@@ -202,10 +159,10 @@ namespace InfinityEngine.Graphics.RDG
             var renderPass = m_ObjectPool.Get<FRDGPass<T>>();
             renderPass.Clear();
             renderPass.name = passName;
-            renderPass.index = m_RenderPasses.Count;
+            renderPass.index = m_RenderPass.Count;
             //renderPass.customSampler = profilerSampler;
-            m_RenderPasses.Add(renderPass);
-            return new FRDGPassRef(renderPass, m_Resources);
+            m_RenderPass.Add(renderPass);
+            return new FRDGPassRef(renderPass, m_ResourceFactory);
         }
 
         internal void Execute(FRHIGraphicsContext graphicsContext)
@@ -214,9 +171,9 @@ namespace InfinityEngine.Graphics.RDG
 
             #region ExecuteRenderPass
             try {
-                m_Resources.BeginRender();
-                CompileRenderPass();
-                ExecuteRenderPass(graphicsContext);
+                m_ResourceFactory.BeginRender();
+                CompilePass();
+                ExecutePass(graphicsContext);
             } catch (Exception exception) {
                 //Debug.LogError("Execute error");
                 //if (!m_ExecutionExceptionWasRaised)
@@ -224,56 +181,58 @@ namespace InfinityEngine.Graphics.RDG
                 m_ExecutionExceptionWasRaised = true;
             } finally {
                 ClearCompiledPass();
-                m_Resources.EndRender();
+                m_ResourceFactory.EndRender();
             }
             #endregion //ExecuteRenderPass
         }
 
-        internal TDynamicArray<FCompiledPassInfo> GetCompiledPassInfos() 
-        { 
-            return m_CompiledPassInfos; 
-        }
-
         internal void ClearCompiledPass()
         {
-            ClearRenderPasses();
-            m_Resources.Clear();
+            foreach (var pass in m_RenderPass)
+            {
+                pass.Release(m_ObjectPool);
+            }
+
+            m_RenderPass.Clear();
+            m_ResourceFactory.Clear();
 
             for (int i = 0; i < 2; ++i)
-                m_CompiledResourcesInfos[i].Clear();
+            {
+                m_ResourcesCompileInfos[i].Clear();
+            }
 
-            m_CompiledPassInfos.Clear();
+            m_PassCompileInfos.Clear();
         }
 
-        void InitResourceInfosData(TDynamicArray<FCompiledResourceInfo> resourceInfos, int count)
+        void InitResourceInfosData(TDynamicArray<FRDGCompiledResourceInfo> resourceInfos, in int count)
         {
             resourceInfos.Resize(count);
             for (int i = 0; i < resourceInfos.size; ++i)
                 resourceInfos[i].Reset();
         }
 
-        void InitializeCompilationData()
+        void InitializeCompileData()
         {
-            InitResourceInfosData(m_CompiledResourcesInfos[(int)EResourceType.Buffer], m_Resources.GetBufferResourceCount());
-            InitResourceInfosData(m_CompiledResourcesInfos[(int)EResourceType.Texture], m_Resources.GetTextureResourceCount());
+            InitResourceInfosData(m_ResourcesCompileInfos[(int)EResourceType.Buffer], m_ResourceFactory.GetBufferResourceCount());
+            InitResourceInfosData(m_ResourcesCompileInfos[(int)EResourceType.Texture], m_ResourceFactory.GetTextureResourceCount());
 
-            m_CompiledPassInfos.Resize(m_RenderPasses.Count);
-            for (int i = 0; i < m_CompiledPassInfos.size; ++i)
-                m_CompiledPassInfos[i].Reset(m_RenderPasses[i]);
+            m_PassCompileInfos.Resize(m_RenderPass.Count);
+            for (int i = 0; i < m_PassCompileInfos.size; ++i)
+                m_PassCompileInfos[i].Reset(m_RenderPass[i]);
         }
 
-        void CountReferences()
+        void CountPassReference()
         {
-            for (int passIndex = 0; passIndex < m_CompiledPassInfos.size; ++passIndex)
+            for (int passIndex = 0; passIndex < m_PassCompileInfos.size; ++passIndex)
             {
-                ref FCompiledPassInfo passInfo = ref m_CompiledPassInfos[passIndex];
+                ref FRDGCompiledPassInfo passInfo = ref m_PassCompileInfos[passIndex];
 
                 for (int type = 0; type < 2; ++type)
                 {
                     var resourceRead = passInfo.pass.resourceReadLists[type];
                     foreach (var resource in resourceRead)
                     {
-                        ref FCompiledResourceInfo info = ref m_CompiledResourcesInfos[type][resource];
+                        ref FRDGCompiledResourceInfo info = ref m_ResourcesCompileInfos[type][resource];
                         info.consumers.Add(passIndex);
                         info.refCount++;
                     }
@@ -281,18 +240,18 @@ namespace InfinityEngine.Graphics.RDG
                     var resourceWrite = passInfo.pass.resourceWriteLists[type];
                     foreach (var resource in resourceWrite)
                     {
-                        ref FCompiledResourceInfo info = ref m_CompiledResourcesInfos[type][resource];
+                        ref FRDGCompiledResourceInfo info = ref m_ResourcesCompileInfos[type][resource];
                         info.producers.Add(passIndex);
                         passInfo.refCount++;
 
                         // Writing to an imported texture is considered as a side effect because we don't know what users will do with it outside of render graph.
-                        if (m_Resources.IsResourceImported(resource))
+                        if (m_ResourceFactory.IsResourceImported(resource))
                             passInfo.hasSideEffect = true;
                     }
 
                     foreach (int resourceIndex in passInfo.pass.temporalResourceList[type])
                     {
-                        ref FCompiledResourceInfo info = ref m_CompiledResourcesInfos[type][resourceIndex];
+                        ref FRDGCompiledResourceInfo info = ref m_ResourcesCompileInfos[type][resourceIndex];
                         info.refCount++;
                         info.consumers.Add(passIndex);
                         info.producers.Add(passIndex);
@@ -301,33 +260,11 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        void CulledOutputlessPasses()
-        {
-            m_CullingStack.Clear();
-            for (int pass = 0; pass < m_CompiledPassInfos.size; ++pass)
-            {
-                ref FCompiledPassInfo passInfo = ref m_CompiledPassInfos[pass];
-
-                if (passInfo.refCount == 0 && !passInfo.hasSideEffect && passInfo.allowPassCulling)
-                {
-                    passInfo.culled = true;
-                    for (int type = 0; type < 2; ++type)
-                    {
-                        foreach (var index in passInfo.pass.resourceReadLists[type])
-                        {
-                            m_CompiledResourcesInfos[type][index].refCount--;
-
-                        }
-                    }
-                }
-            }
-        }
-
-        void CulledUnusedPasses()
+        void CullingUnusedPass()
         {
             for (int type = 0; type < 2; ++type)
             {
-                TDynamicArray<FCompiledResourceInfo> resourceUsageList = m_CompiledResourcesInfos[type];
+                TDynamicArray<FRDGCompiledResourceInfo> resourceUsageList = m_ResourcesCompileInfos[type];
 
                 // Gather resources that are never read.
                 m_CullingStack.Clear();
@@ -344,15 +281,15 @@ namespace InfinityEngine.Graphics.RDG
                     var unusedResource = resourceUsageList[m_CullingStack.Pop()];
                     foreach (var producerIndex in unusedResource.producers)
                     {
-                        ref var producerInfo = ref m_CompiledPassInfos[producerIndex];
+                        ref var producerInfo = ref m_PassCompileInfos[producerIndex];
                         producerInfo.refCount--;
-                        if (producerInfo.refCount == 0 && !producerInfo.hasSideEffect && producerInfo.allowPassCulling)
+                        if (producerInfo.refCount == 0 && !producerInfo.hasSideEffect && producerInfo.enablePassCulling)
                         {
                             producerInfo.culled = true;
 
                             foreach (var resourceIndex in producerInfo.pass.resourceReadLists[type])
                             {
-                                ref FCompiledResourceInfo resourceInfo = ref resourceUsageList[resourceIndex];
+                                ref FRDGCompiledResourceInfo resourceInfo = ref resourceUsageList[resourceIndex];
                                 resourceInfo.refCount--;
                                 // If a resource is not used anymore, add it to the stack to be processed in subsequent iteration.
                                 if (resourceInfo.refCount == 0)
@@ -364,55 +301,55 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        void UpdatePassSynchronization(ref FCompiledPassInfo currentPassInfo, ref FCompiledPassInfo producerPassInfo, int currentPassIndex, int lastProducer, ref int intLastSyncIndex)
+        void UpdatePassSynchronization(ref FRDGCompiledPassInfo currentPassCompileInfo, ref FRDGCompiledPassInfo producerPassCompileInfo, in int currentPassIndex, in int lastProducer, ref int intLastSyncIndex)
         {
             // Current pass needs to wait for pass index lastProducer
-            currentPassInfo.syncToPassIndex = lastProducer;
+            currentPassCompileInfo.syncToPassIndex = lastProducer;
             // Update latest pass waiting for the other pipe.
             intLastSyncIndex = lastProducer;
 
             // Producer will need a graphics fence that this pass will wait on.
-            producerPassInfo.needGraphicsFence = true;
+            producerPassCompileInfo.needGraphicsFence = true;
             // We update the producer pass with the index of the smallest pass waiting for it.
             // This will be used to "lock" resource from being reused until the pipe has been synchronized.
-            if (producerPassInfo.syncFromPassIndex == -1)
-                producerPassInfo.syncFromPassIndex = currentPassIndex;
+            if (producerPassCompileInfo.syncFromPassIndex == -1)
+                producerPassCompileInfo.syncFromPassIndex = currentPassIndex;
         }
 
-        void UpdateResourceSynchronization(ref int lastGraphicsPipeSync, ref int lastComputePipeSync, int currentPassIndex, in FCompiledResourceInfo resource)
+        void UpdateResourceSynchronization(ref int lastGraphicsPipeSync, ref int lastComputePipeSync, in int currentPassIndex, in FRDGCompiledResourceInfo resourceCompileInfo)
         {
-            int lastProducer = GetLatestProducerIndex(currentPassIndex, resource);
+            int lastProducer = GetLatestProducerIndex(currentPassIndex, resourceCompileInfo);
             if (lastProducer != -1)
             {
-                ref FCompiledPassInfo currentPassInfo = ref m_CompiledPassInfos[currentPassIndex];
+                ref FRDGCompiledPassInfo currentPassInfo = ref m_PassCompileInfos[currentPassIndex];
 
                 //If the passes are on different pipes, we need synchronization.
-                if (m_CompiledPassInfos[lastProducer].enableAsyncCompute != currentPassInfo.enableAsyncCompute)
+                if (m_PassCompileInfos[lastProducer].enableAsyncCompute != currentPassInfo.enableAsyncCompute)
                 {
                     // Pass is on compute pipe, need sync with graphics pipe.
                     if (currentPassInfo.enableAsyncCompute)
                     {
                         if (lastProducer > lastGraphicsPipeSync)
                         {
-                            UpdatePassSynchronization(ref currentPassInfo, ref m_CompiledPassInfos[lastProducer], currentPassIndex, lastProducer, ref lastGraphicsPipeSync);
+                            UpdatePassSynchronization(ref currentPassInfo, ref m_PassCompileInfos[lastProducer], currentPassIndex, lastProducer, ref lastGraphicsPipeSync);
                         }
                     }
                     else
                     {
                         if (lastProducer > lastComputePipeSync)
                         {
-                            UpdatePassSynchronization(ref currentPassInfo, ref m_CompiledPassInfos[lastProducer], currentPassIndex, lastProducer, ref lastComputePipeSync);
+                            UpdatePassSynchronization(ref currentPassInfo, ref m_PassCompileInfos[lastProducer], currentPassIndex, lastProducer, ref lastComputePipeSync);
                         }
                     }
                 }
             }
         }
 
-        int GetLatestProducerIndex(int passIndex, in FCompiledResourceInfo info)
+        int GetLatestProducerIndex(int passIndex, in FRDGCompiledResourceInfo resourceCompileInfo)
         {
             // We want to know the highest pass index below the current pass that writes to the resource.
             int result = -1;
-            foreach (var producer in info.producers)
+            foreach (var producer in resourceCompileInfo.producers)
             {
                 // producers are by construction in increasing order.
                 if (producer < passIndex)
@@ -424,52 +361,52 @@ namespace InfinityEngine.Graphics.RDG
             return result;
         }
 
-        int GetLatestValidReadIndex(in FCompiledResourceInfo info)
+        int GetLatestValidReadIndex(in FRDGCompiledResourceInfo resourceCompileInfo)
         {
-            if (info.consumers.Count == 0)
+            if (resourceCompileInfo.consumers.Count == 0)
                 return -1;
 
-            var consumers = info.consumers;
+            var consumers = resourceCompileInfo.consumers;
             for (int i = consumers.Count - 1; i >= 0; --i)
             {
-                if (!m_CompiledPassInfos[consumers[i]].culled)
+                if (!m_PassCompileInfos[consumers[i]].culled)
                     return consumers[i];
             }
 
             return -1;
         }
 
-        int GetFirstValidWriteIndex(in FCompiledResourceInfo info)
+        int GetFirstValidWriteIndex(in FRDGCompiledResourceInfo resourceCompileInfo)
         {
-            if (info.producers.Count == 0)
+            if (resourceCompileInfo.producers.Count == 0)
                 return -1;
 
-            var producers = info.producers;
+            var producers = resourceCompileInfo.producers;
             for (int i = 0; i < producers.Count; ++i)
             {
-                if (!m_CompiledPassInfos[producers[i]].culled)
+                if (!m_PassCompileInfos[producers[i]].culled)
                     return producers[i];
             }
 
             return -1;
         }
 
-        int GetLatestValidWriteIndex(in FCompiledResourceInfo info)
+        int GetLatestValidWriteIndex(in FRDGCompiledResourceInfo resourceCompileInfo)
         {
-            if (info.producers.Count == 0)
+            if (resourceCompileInfo.producers.Count == 0)
                 return -1;
 
-            var producers = info.producers;
+            var producers = resourceCompileInfo.producers;
             for (int i = producers.Count - 1; i >= 0; --i)
             {
-                if (!m_CompiledPassInfos[producers[i]].culled)
+                if (!m_PassCompileInfos[producers[i]].culled)
                     return producers[i];
             }
 
             return -1;
         }
 
-        void UpdateResourceAllocationAndSynchronization()
+        void UpdateResource()
         {
             int lastGraphicsPipeSync = -1;
             int lastComputePipeSync = -1;
@@ -478,16 +415,16 @@ namespace InfinityEngine.Graphics.RDG
             // - Update the last pass read index for each resource.
             // - Add texture to creation list for passes that first write to a texture.
             // - Update synchronization points for all resources between compute and graphics pipes.
-            for (int passIndex = 0; passIndex < m_CompiledPassInfos.size; ++passIndex)
+            for (int passIndex = 0; passIndex < m_PassCompileInfos.size; ++passIndex)
             {
-                ref FCompiledPassInfo passInfo = ref m_CompiledPassInfos[passIndex];
+                ref FRDGCompiledPassInfo passInfo = ref m_PassCompileInfos[passIndex];
 
                 if (passInfo.culled)
                     continue;
 
                 for (int type = 0; type < 2; ++type)
                 {
-                    var resourcesInfo = m_CompiledResourcesInfos[type];
+                    var resourcesInfo = m_ResourcesCompileInfos[type];
                     foreach (int resource in passInfo.pass.resourceReadLists[type])
                     {
                         UpdateResourceSynchronization(ref lastGraphicsPipeSync, ref lastComputePipeSync, passIndex, resourcesInfo[resource]);
@@ -503,17 +440,17 @@ namespace InfinityEngine.Graphics.RDG
 
             for (int type = 0; type < 2; ++type)
             {
-                var resourceInfos = m_CompiledResourcesInfos[type];
+                var resourceInfos = m_ResourcesCompileInfos[type];
                 // Now push resources to the release list of the pass that reads it last.
                 for (int i = 0; i < resourceInfos.size; ++i)
                 {
-                    FCompiledResourceInfo resourceInfo = resourceInfos[i];
+                    FRDGCompiledResourceInfo resourceInfo = resourceInfos[i];
 
                     // Resource creation
                     int firstWriteIndex = GetFirstValidWriteIndex(resourceInfo);
                     // Index -1 can happen for imported resources (for example an imported dummy black texture will never be written to but does not need creation anyway)
                     if (firstWriteIndex != -1)
-                        m_CompiledPassInfos[firstWriteIndex].resourceCreateList[type].Add(i);
+                        m_PassCompileInfos[firstWriteIndex].resourceCreateList[type].Add(i);
 
                     // Texture release
                     // Sometimes, a texture can be written by a pass after the last pass that reads it.
@@ -524,30 +461,30 @@ namespace InfinityEngine.Graphics.RDG
                     {
                         // In case of async passes, we need to extend lifetime of resource to the first pass on the graphics pipeline that wait for async passes to be over.
                         // Otherwise, if we freed the resource right away during an async pass, another non async pass could reuse the resource even though the async pipe is not done.
-                        if (m_CompiledPassInfos[lastReadPassIndex].enableAsyncCompute)
+                        if (m_PassCompileInfos[lastReadPassIndex].enableAsyncCompute)
                         {
                             int currentPassIndex = lastReadPassIndex;
-                            int firstWaitingPassIndex = m_CompiledPassInfos[currentPassIndex].syncFromPassIndex;
+                            int firstWaitingPassIndex = m_PassCompileInfos[currentPassIndex].syncFromPassIndex;
                             // Find the first async pass that is synchronized by the graphics pipeline (ie: passInfo.syncFromPassIndex != -1)
-                            while (firstWaitingPassIndex == -1 && currentPassIndex < m_CompiledPassInfos.size)
+                            while (firstWaitingPassIndex == -1 && currentPassIndex < m_PassCompileInfos.size)
                             {
                                 currentPassIndex++;
-                                if (m_CompiledPassInfos[currentPassIndex].enableAsyncCompute)
-                                    firstWaitingPassIndex = m_CompiledPassInfos[currentPassIndex].syncFromPassIndex;
+                                if (m_PassCompileInfos[currentPassIndex].enableAsyncCompute)
+                                    firstWaitingPassIndex = m_PassCompileInfos[currentPassIndex].syncFromPassIndex;
                             }
 
                             // Finally add the release command to the pass before the first pass that waits for the compute pipe.
-                            ref FCompiledPassInfo passInfo = ref m_CompiledPassInfos[Math.Max(0, firstWaitingPassIndex - 1)];
+                            ref FRDGCompiledPassInfo passInfo = ref m_PassCompileInfos[Math.Max(0, firstWaitingPassIndex - 1)];
                             passInfo.resourceReleaseList[type].Add(i);
 
                             // Fail safe in case render graph is badly formed.
-                            if (currentPassIndex == m_CompiledPassInfos.size)
+                            if (currentPassIndex == m_PassCompileInfos.size)
                             {
-                                IRDGPass invalidPass = m_RenderPasses[lastReadPassIndex];
+                                IRDGPass invalidPass = m_RenderPass[lastReadPassIndex];
                                 throw new InvalidOperationException($"Asynchronous pass {invalidPass.name} was never synchronized on the graphics pipeline.");
                             }
                         } else {
-                            ref FCompiledPassInfo passInfo = ref m_CompiledPassInfos[lastReadPassIndex];
+                            ref FRDGCompiledPassInfo passInfo = ref m_PassCompileInfos[lastReadPassIndex];
                             passInfo.resourceReleaseList[type].Add(i);
                         }
                     }
@@ -555,17 +492,17 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        internal void CompileRenderPass()
+        internal void CompilePass()
         {
-            InitializeCompilationData();
-            CountReferences();
-            CulledUnusedPasses();
-            UpdateResourceAllocationAndSynchronization();
+            InitializeCompileData();
+            CountPassReference();
+            CullingUnusedPass();
+            UpdateResource();
         }
 
-        void PreRenderPassSetRenderTargets(in FRDGContext graphContext, in FCompiledPassInfo passInfo)
+        void SetRenderTarget(in FRDGContext graphContext, in FRDGCompiledPassInfo passCompileInfo)
         {
-            /*var pass = passInfo.pass;
+            /*var pass = passCompileInfo.pass;
             if (pass.depthBuffer.IsValid() || pass.colorBufferMaxIndex != -1)
             {
                 var mrtArray = graphContext.objectPool.GetTempArray<RenderTargetIdentifier>(pass.colorBufferMaxIndex + 1);
@@ -578,14 +515,14 @@ namespace InfinityEngine.Graphics.RDG
                         if (!colorBuffers[i].IsValid())
                             throw new InvalidOperationException("MRT setup is invalid. Some indices are not used.");
 
-                        mrtArray[i] = m_Resources.GetTexture(colorBuffers[i]);
+                        mrtArray[i] = m_ResourceFactory.GetTexture(colorBuffers[i]);
                     }
 
                     if (pass.depthBuffer.IsValid())
                     {
                         using (new ProfilingScope(graphContext.cmdBuffer, ProfilingSampler.Get(ERGProfileId.BindRenderTarget)))
                         {
-                            CoreUtils.SetRenderTarget(graphContext.cmdBuffer, mrtArray, m_Resources.GetTexture(pass.depthBuffer));
+                            CoreUtils.SetRenderTarget(graphContext.cmdBuffer, mrtArray, m_ResourceFactory.GetTexture(pass.depthBuffer));
                         }
                     } else {
                         throw new InvalidOperationException("Setting MRTs without a depth buffer is not supported.");
@@ -597,18 +534,18 @@ namespace InfinityEngine.Graphics.RDG
                         {
                             using (new ProfilingScope(graphContext.cmdBuffer, ProfilingSampler.Get(ERGProfileId.BindRenderTarget)))
                             {
-                                CoreUtils.SetRenderTarget(graphContext.cmdBuffer, m_Resources.GetTexture(pass.colorBuffers[0]), m_Resources.GetTexture(pass.depthBuffer));
+                                CoreUtils.SetRenderTarget(graphContext.cmdBuffer, m_ResourceFactory.GetTexture(pass.colorBuffers[0]), m_ResourceFactory.GetTexture(pass.depthBuffer));
                             }
                         } else {
                             using (new ProfilingScope(graphContext.cmdBuffer, ProfilingSampler.Get(ERGProfileId.BindRenderTarget)))
                             {
-                                CoreUtils.SetRenderTarget(graphContext.cmdBuffer, m_Resources.GetTexture(pass.depthBuffer));
+                                CoreUtils.SetRenderTarget(graphContext.cmdBuffer, m_ResourceFactory.GetTexture(pass.depthBuffer));
                             }
                         }
                     } else {
                         using (new ProfilingScope(graphContext.cmdBuffer, ProfilingSampler.Get(ERGProfileId.BindRenderTarget)))
                         {
-                            CoreUtils.SetRenderTarget(graphContext.cmdBuffer, m_Resources.GetTexture(pass.colorBuffers[0]));
+                            CoreUtils.SetRenderTarget(graphContext.cmdBuffer, m_ResourceFactory.GetTexture(pass.colorBuffers[0]));
                         }
                     }
 
@@ -616,29 +553,29 @@ namespace InfinityEngine.Graphics.RDG
             }*/
         }
 
-        void PreRenderPassExecute(in FRDGContext graphContext, FRHICommandBuffer cmdBuffer, ref FCompiledPassInfo passInfo)
+        void PrePassExecute(in FRDGContext graphContext, FRHICommandBuffer cmdBuffer, ref FRDGCompiledPassInfo passCompileInfo)
         {
             // TODO RENDERGRAPH merge clear and setup here if possible
-            foreach (var bufferRef in passInfo.resourceCreateList[(int)EResourceType.Buffer]) {
-                m_Resources.CreateRealBuffer(bufferRef);
+            foreach (var bufferRef in passCompileInfo.resourceCreateList[(int)EResourceType.Buffer]) {
+                m_ResourceFactory.CreateRealBuffer(bufferRef);
             }
 
-            foreach (var textureRef in passInfo.resourceCreateList[(int)EResourceType.Texture]) {
-                m_Resources.CreateRealTexture(textureRef);
+            foreach (var textureRef in passCompileInfo.resourceCreateList[(int)EResourceType.Texture]) {
+                m_ResourceFactory.CreateRealTexture(textureRef);
             }
 
             // Synchronize with graphics or compute pipe if needed.
-            if (passInfo.syncToPassIndex != -1) {
-                graphContext.graphicsContext.WaitForFence(cmdBuffer.contextType, m_CompiledPassInfos[passInfo.syncToPassIndex].fence);
+            if (passCompileInfo.syncToPassIndex != -1) {
+                graphContext.graphicsContext.WaitForFence(cmdBuffer.contextType, m_PassCompileInfos[passCompileInfo.syncToPassIndex].fence);
             }
 
             // Auto bind render target
-            PreRenderPassSetRenderTargets(graphContext, passInfo);
+            SetRenderTarget(graphContext, passCompileInfo);
         }
 
-        void PostRenderPassExecute(in FRDGContext graphContext, FRHICommandBuffer cmdBuffer, ref FCompiledPassInfo passInfo)
+        void PostPassExecute(in FRDGContext graphContext, FRHICommandBuffer cmdBuffer, ref FRDGCompiledPassInfo passCompileInfo)
         {
-            IRDGPass pass = passInfo.pass;
+            IRDGPass pass = passCompileInfo.pass;
 
             // The command list has been filled. We can kick the async task.
             if (pass.enableAsyncCompute) {
@@ -647,32 +584,32 @@ namespace InfinityEngine.Graphics.RDG
                 graphContext.graphicsContext.ExecuteCommandBuffer(cmdBuffer);
             }
 
-            if (passInfo.needGraphicsFence) {
-                passInfo.fence = graphContext.graphicsContext.GetFence(pass.name);
-                graphContext.graphicsContext.WriteToFence(cmdBuffer.contextType, passInfo.fence);
+            if (passCompileInfo.needGraphicsFence) {
+                passCompileInfo.fence = graphContext.graphicsContext.GetFence(pass.name);
+                graphContext.graphicsContext.WriteToFence(cmdBuffer.contextType, passCompileInfo.fence);
             }
 
             m_ObjectPool.ReleaseAllTempAlloc();
 
-            foreach (var bufferRef in passInfo.resourceReleaseList[(int)EResourceType.Buffer]) {
-                m_Resources.ReleaseRealBuffer(bufferRef);
+            foreach (var bufferRef in passCompileInfo.resourceReleaseList[(int)EResourceType.Buffer]) {
+                m_ResourceFactory.ReleaseRealBuffer(bufferRef);
             }
 
-            foreach (var textureRef in passInfo.resourceReleaseList[(int)EResourceType.Texture]) {
-                m_Resources.ReleaseRealTexture(textureRef);
+            foreach (var textureRef in passCompileInfo.resourceReleaseList[(int)EResourceType.Texture]) {
+                m_ResourceFactory.ReleaseRealTexture(textureRef);
             }
 
         }
 
-        void ExecuteRenderPass(FRHIGraphicsContext graphicsContext)
+        void ExecutePass(FRHIGraphicsContext graphicsContext)
         {
             FRDGContext graphContext;
             graphContext.objectPool = m_ObjectPool;
             graphContext.graphicsContext = graphicsContext;
 
-            for (int passIndex = 0; passIndex < m_CompiledPassInfos.size; ++passIndex)
+            for (int passIndex = 0; passIndex < m_PassCompileInfos.size; ++passIndex)
             {
-                ref var passInfo = ref m_CompiledPassInfos[passIndex];
+                ref var passInfo = ref m_PassCompileInfos[passIndex];
                 if (passInfo.culled) {
                     continue;
                 }
@@ -691,9 +628,9 @@ namespace InfinityEngine.Graphics.RDG
                             cmdBuffer = graphContext.graphicsContext.GetCommandBuffer(EContextType.Compute, passInfo.pass.name);
                         }
 
-                        PreRenderPassExecute(graphContext, cmdBuffer, ref passInfo);
+                        PrePassExecute(graphContext, cmdBuffer, ref passInfo);
                         passInfo.pass.Execute(graphContext, cmdBuffer);
-                        PostRenderPassExecute(graphContext, cmdBuffer, ref passInfo);
+                        PostPassExecute(graphContext, cmdBuffer, ref passInfo);
                     }
                 } catch (Exception e) {
                     m_ExecutionExceptionWasRaised = true;
@@ -704,15 +641,9 @@ namespace InfinityEngine.Graphics.RDG
             }
         }
 
-        void ClearRenderPasses()
+        protected override void Release()
         {
-            foreach (var pass in m_RenderPasses)
-            {
-                pass.Release(m_ObjectPool);
-            }
-            m_BufferScope.Clear();
-            m_TextureScope.Clear();
-            m_RenderPasses.Clear();
+            m_ResourceFactory.Release();
         }
     }
 }

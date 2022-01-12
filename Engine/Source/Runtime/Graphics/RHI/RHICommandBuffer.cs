@@ -71,7 +71,7 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void EndEvent();
         public abstract void BeginQuery(FRHIQuery query);
         public abstract void EndQuery(FRHIQuery query);
-        public abstract void Barriers(in ReadOnlySpan<FResourceBarrierBatch> barrierBatch);
+        public abstract void Barriers(in ReadOnlySpan<FResourceBarrierInfo> barrierBatch);
         public abstract void Transition(FRHIResource resource, EResourceState stateBefore, EResourceState stateAfter, int subresource = -1);
         public abstract void ClearBuffer(FRHIBuffer buffer);
         public abstract void ClearTexture(FRHITexture texture);

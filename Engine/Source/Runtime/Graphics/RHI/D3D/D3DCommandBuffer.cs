@@ -106,7 +106,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        public override void Barriers(in ReadOnlySpan<FResourceBarrierBatch> barrierBatch)
+        public override void Barriers(in ReadOnlySpan<FResourceBarrierInfo> barrierBatch)
         {
             //nativeCmdList->ResourceBarrier
             //Vortice.Direct3D12.ID3D12GraphicsCommandList
