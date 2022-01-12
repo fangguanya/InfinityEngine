@@ -6,10 +6,11 @@ namespace InfinityEngine.Graphics.RHI
 {
     public enum EUsageType
     {
-        Static = 0x1,
-        Dynamic = 0x2,
-        Staging = 0x4,
-        Default = 0x8
+        UMA = 0x1,
+        Static = 0x2,
+        Dynamic = 0x4,
+        Staging = 0x8,
+        Default = 0x16
     };
 
     public enum EBufferType

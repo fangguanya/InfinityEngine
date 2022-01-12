@@ -43,7 +43,7 @@ namespace ExampleProject
             FGraphics.AddTask(
             (FRenderContext renderContext, FRHIGraphicsContext graphicsContext) =>
             {
-                FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Default | EUsageType.Dynamic | EUsageType.Staging);
+                FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Dynamic | EUsageType.Staging);
                 descriptor.name = "TestBuffer";
 
                 fence = graphicsContext.GetFence("Readback");
