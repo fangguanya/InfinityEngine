@@ -57,7 +57,9 @@ namespace ExampleProject
                 }
 
                 cmdBuffer.Clear();
+                cmdBuffer.BeginEvent("Upload");
                 buffer.SetData(cmdBuffer, data);
+                cmdBuffer.EndEvent();
                 graphicsContext.ExecuteCommandBuffer(cmdBuffer);
             });
 
