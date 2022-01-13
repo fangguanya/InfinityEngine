@@ -16,11 +16,11 @@ namespace InfinityEngine.Rendering.RenderPipeline
             this.m_GraphBuilder = new FRDGBuilder("GraphBuilder");
         }
 
-        public abstract void Init(FRHIDeviceContext deviceContext, FRenderContext renderContext);
+        public abstract void Init(FRenderContext renderContext);
 
-        public abstract void Render(FRHIDeviceContext deviceContext, FRenderContext renderContext);
+        public abstract void Render(FRenderContext renderContext);
 
-        public abstract void Release(FRHIDeviceContext deviceContext, FRenderContext renderContext);
+        public abstract void Release(FRenderContext renderContext);
 
         protected override void Release()
         {

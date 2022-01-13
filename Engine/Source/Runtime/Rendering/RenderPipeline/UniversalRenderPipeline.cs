@@ -7,7 +7,8 @@ namespace InfinityEngine.Rendering.RenderPipeline
 {
     public class FUniversalRenderPipeline : FRenderPipeline
     {
-        /*bool dataReady;
+        /*int numData = 100000;
+        bool dataReady;
         int[] readData;
         float cpuTime
         {
@@ -17,71 +18,80 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         FRHIFence fence;
         FRHIQuery query;
+        FRHIBuffer buffer
+        {
+            get { return bufferRef.buffer; }
+        }
         FRHIBufferRef bufferRef;
         FTimeProfiler timeProfiler;*/
 
         public FUniversalRenderPipeline(string pipelineName) : base(pipelineName) 
-        { 
-
+        {
+            /*dataReady = true;
+            readData = new int[numData];
+            timeProfiler = new FTimeProfiler();*/
         }
 
-        public override void Init(FRHIDeviceContext deviceContext, FRenderContext renderContext)
+        public override void Init(FRenderContext renderContext)
         {
             Console.WriteLine("Init RenderPipeline");
 
-            /*dataReady = true;
-            readData = new int[10000000];
-            timeProfiler = new FTimeProfiler();
-            FRHIBufferDescriptor descriptor = new FRHIBufferDescriptor(10000000, 4, EUsageType.Dynamic | EUsageType.Staging);
+            /*int[] data = new int[numData];
+            for (int i = 0; i < numData; ++i)
+            {
+                data[i] = numData - i;
+            }
 
-            fence = deviceContext.GetFence();
-            query = deviceContext.GetQuery(EQueryType.CopyTimestamp);
-            bufferRef = deviceContext.GetBuffer(descriptor);
-            FRHICommandBuffer cmdBuffer = deviceContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer1", true);
+            FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Dynamic | EUsageType.Staging);
+            descriptor.name = "TestBuffer";
+            fence = renderContext.GetFence("Readback");
+            query = renderContext.GetQuery(EQueryType.CopyTimestamp, "Readback");
+            bufferRef = renderContext.GetBuffer(descriptor);
+            FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Upload");
+
             cmdBuffer.Clear();
-
-            int[] data = new int[10000000];
-            for (int i = 0; i < 10000000; ++i) { data[i] = 10000000 - i; }
-            bufferRef.buffer.SetData(cmdBuffer, data);
-            deviceContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
-            deviceContext.Submit();*/
+            cmdBuffer.BeginEvent("Upload");
+            buffer.SetData(cmdBuffer, data);
+            cmdBuffer.EndEvent();
+            renderContext.ExecuteCommandBuffer(cmdBuffer);*/
         }
 
-        public override void Render(FRHIDeviceContext deviceContext, FRenderContext renderContext)
+        public override void Render(FRenderContext renderContext)
         {
-            /*timeProfiler.Restart();
+            /*timeProfiler.Start();
 
             if (dataReady)
             {
-                FRHICommandBuffer cmdBuffer = deviceContext.GetCommandBuffer(EContextType.Copy, "CmdBuffer2", true);
+                FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Readback");
                 cmdBuffer.Clear();
+                cmdBuffer.BeginEvent("Readback");
                 cmdBuffer.BeginQuery(query);
-                bufferRef.buffer.RequestReadback<int>(cmdBuffer);
+                buffer.Readback<int>(cmdBuffer);
                 cmdBuffer.EndQuery(query);
-                deviceContext.ExecuteCommandBuffer(EContextType.Copy, cmdBuffer);
-                deviceContext.WriteFence(EContextType.Copy, fence);
-                //deviceContext.WaitFence(EContextType.Graphics, fence);
+                cmdBuffer.EndEvent();
+                renderContext.ExecuteCommandBuffer(cmdBuffer);
+                renderContext.WriteToFence(EContextType.Copy, fence);
+                //deviceContext.WaitForFence(EContextType.Render, fence);
             }
 
             if (dataReady = fence.IsCompleted)
             {
-                bufferRef.buffer.GetData(readData);
-                gpuTime = query.GetResult(deviceContext.copyFrequency);
+                buffer.GetData(readData);
+                gpuTime = query.GetResult(renderContext.copyFrequency);
             }
 
             timeProfiler.Stop();
-            deviceContext.Submit();
 
-            //Console.WriteLine("||");
-            Console.WriteLine("Draw : " + cpuTime + "ms");
-            Console.WriteLine("GPU  : " + gpuTime + "ms");*/
+            Console.WriteLine("||");
+            Console.WriteLine("CPU : " + cpuTime + "ms");
+            Console.WriteLine("GPU : " + gpuTime + "ms");*/
         }
 
-        public override void Release(FRHIDeviceContext deviceContext, FRenderContext renderContext)
+        public override void Release(FRenderContext renderContext)
         {
-            /*deviceContext.ReleaseFence(fence);
-            deviceContext.ReleaseQuery(query);
-            deviceContext.ReleaseBuffer(bufferRef);*/
+            /*renderContext.ReleaseFence(fence);
+            renderContext.ReleaseQuery(query);
+            renderContext.ReleaseBuffer(bufferRef);*/
             Console.WriteLine("Release RenderPipeline");
         }
     }

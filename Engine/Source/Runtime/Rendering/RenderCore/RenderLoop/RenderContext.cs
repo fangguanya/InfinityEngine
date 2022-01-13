@@ -7,6 +7,10 @@ namespace InfinityEngine.Rendering.RenderLoop
 {
     public sealed class FRenderContext : FDisposal
     {
+        public ulong copyFrequency => m_DeviceContext.copyFrequency;
+        public ulong computeFrequency => m_DeviceContext.computeFrequency;
+        public ulong graphicsFrequency => m_DeviceContext.graphicsFrequency;
+
         private FRHIDeviceContext m_DeviceContext;
 
         public FRenderContext(FRHIDeviceContext deviceContext)

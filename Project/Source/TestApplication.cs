@@ -41,7 +41,7 @@ namespace ExampleProject
             timeProfiler = new FTimeProfiler();
 
             FGraphics.AddTask(
-            (FRHIDeviceContext deviceContext, FRenderContext renderContext) =>
+            (FRenderContext renderContext) =>
             {
                 FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Dynamic | EUsageType.Staging);
                 descriptor.name = "TestBuffer";
@@ -70,7 +70,7 @@ namespace ExampleProject
         public override void OnUpdate(in float deltaTime)
         {
             FGraphics.AddTask(
-            (FRHIDeviceContext deviceContext, FRenderContext renderContext) =>
+            (FRenderContext renderContext) =>
             {
                 timeProfiler.Start();
 
@@ -89,7 +89,7 @@ namespace ExampleProject
 
                 if (dataReady = fence.IsCompleted) {
                     buffer.GetData(readData);
-                    gpuTime = query.GetResult(deviceContext.copyFrequency);
+                    gpuTime = query.GetResult(renderContext.copyFrequency);
                 }
 
                 timeProfiler.Stop();
@@ -114,7 +114,7 @@ namespace ExampleProject
         public override void OnDisable()
         {
             FGraphics.AddTask(
-            (FRHIDeviceContext deviceContext, FRenderContext renderContext) =>
+            (FRenderContext renderContext) =>
             {
                 renderContext.ReleaseFence(fence);
                 renderContext.ReleaseQuery(query);
