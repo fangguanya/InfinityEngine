@@ -299,6 +299,13 @@ namespace InfinityEngine.Core.Container
             m_Array = (T*)FMemoryUtil.Malloc(sizeof(T), capacity);
         }
 
+        internal void Init(in int capacity = 64)
+        {
+            length = 0;
+            m_Capacity = capacity;
+            m_Array = (T*)FMemoryUtil.Malloc(sizeof(T), capacity);
+        }
+
         public void Clear()
         {
             length = 0;

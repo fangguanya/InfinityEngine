@@ -184,7 +184,7 @@ namespace ExampleProject
             Console.ReadKey();*/
 
             //TSparseArray Test
-            /*TSparseArray<float> MyArray = new TSparseArray<float>(3);
+            /*TValueSparseArray<float> MyArray = new TValueSparseArray<float>(3);
             MyArray.Add(0.1f);
             MyArray.Add(0.2f);
             MyArray.Add(0.3f);
@@ -199,6 +199,7 @@ namespace ExampleProject
             value += 0.5f;
 
             MyArray.Remove(5);
+            MyArray.Dispose();
             Console.ReadKey();*/
 
             /*string shaderSource = @"
