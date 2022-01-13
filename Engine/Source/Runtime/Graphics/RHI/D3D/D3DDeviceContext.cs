@@ -56,8 +56,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ManagedBuffers = new TArray<FRHICommandBuffer>(32);
 
             m_QueryContext = new FD3DQueryContext[2];
-            m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.Timestamp, 128, "Timestamp");
-            m_QueryContext[1] = new FD3DQueryContext(m_Device, EQueryType.CopyTimestamp, 128, "CopyTimestamp");
+            m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.CopyTimestamp, 128, "CopyTimestamp");
+            m_QueryContext[1] = new FD3DQueryContext(m_Device, EQueryType.GenericTimestamp, 128, "GenericTimestamp");
 
             m_CopyContext = new FD3DCommandContext(m_Device, EContextType.Copy, "Copy");
             m_ComputeContext = new FD3DCommandContext(m_Device, EContextType.Compute, "Compute");
@@ -173,8 +173,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
             m_ManagedBuffers.Clear();
 
-            m_QueryContext[1].Submit(m_CopyContext);
-            m_QueryContext[0].Submit(m_GraphicsContext);
+            m_QueryContext[0].Submit(m_CopyContext);
+            m_QueryContext[1].Submit(m_GraphicsContext);
 
             m_GraphicsContext.Flush();
 
@@ -236,13 +236,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 case EQueryType.Occlusion:
                     outQuery = null;
                     break;
-                case EQueryType.Timestamp:
-                    outQuery = new FD3DQuery(m_QueryContext[0]);
-                    break;
-                case EQueryType.Statistics:
+
+                case EQueryType.Statistic:
                     outQuery = null;
                     break;
+
                 case EQueryType.CopyTimestamp:
+                    outQuery = new FD3DQuery(m_QueryContext[0]);
+                    break;
+
+                case EQueryType.GenericTimestamp:
                     outQuery = new FD3DQuery(m_QueryContext[1]);
                     break;
             }
@@ -257,13 +260,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 case EQueryType.Occlusion:
                     outQuery = null;
                     break;
-                case EQueryType.Timestamp:
-                    outQuery = m_QueryContext[0].GetTemporary(name);
-                    break;
-                case EQueryType.Statistics:
+
+                case EQueryType.Statistic:
                     outQuery = null;
                     break;
+
                 case EQueryType.CopyTimestamp:
+                    outQuery = m_QueryContext[0].GetTemporary(name);
+                    break;
+
+                case EQueryType.GenericTimestamp:
                     outQuery = m_QueryContext[1].GetTemporary(name);
                     break;
             }
@@ -278,12 +284,15 @@ namespace InfinityEngine.Graphics.RHI.D3D
             {
                 case EQueryType.Occlusion:
                     break;
-                case EQueryType.Timestamp:
+
+                case EQueryType.Statistic:
+                    break;
+
+                case EQueryType.CopyTimestamp:
                     m_QueryContext[0].ReleaseTemporary(query);
                     break;
-                case EQueryType.Statistics:
-                    break;
-                case EQueryType.CopyTimestamp:
+
+                case EQueryType.GenericTimestamp:
                     m_QueryContext[1].ReleaseTemporary(query);
                     break;
             }

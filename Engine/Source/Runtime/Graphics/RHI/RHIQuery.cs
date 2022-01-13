@@ -5,9 +5,9 @@ namespace InfinityEngine.Graphics.RHI
 	public enum EQueryType
     {
 		Occlusion = 0,
-		Timestamp = 1,
-		Statistics = 2,
-		CopyTimestamp = 5
+		Statistic = 2,
+		CopyTimestamp = 5,
+		GenericTimestamp = 1
 	}
 
     public abstract class FRHIQuery : FDisposal

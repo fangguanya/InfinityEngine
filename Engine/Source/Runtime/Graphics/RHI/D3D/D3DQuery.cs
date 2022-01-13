@@ -20,13 +20,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
 				case EQueryType.Occlusion:
 					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_OCCLUSION;
 					break;
-				case EQueryType.Timestamp:
-					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_TIMESTAMP;
-					break;
-				case EQueryType.Statistics:
+
+				case EQueryType.Statistic:
 					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_PIPELINE_STATISTICS;
 					break;
+
 				case EQueryType.CopyTimestamp:
+					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_TIMESTAMP;
+					break;
+
+				case EQueryType.GenericTimestamp:
 					outType = D3D12_QUERY_TYPE.D3D12_QUERY_TYPE_TIMESTAMP;
 					break;
 			}
@@ -80,7 +83,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 		public override int countActive => (countAll - countInactive);
 		public override int countInactive => m_StackPool.Count;
 		public override bool IsReady => m_QueryFence.IsCompleted;
-		public override bool IsTimeQuery => (queryType == EQueryType.Timestamp || queryType == EQueryType.CopyTimestamp);
+		public override bool IsTimeQuery => (queryType == EQueryType.CopyTimestamp || queryType == EQueryType.GenericTimestamp);
 
 		public FD3DQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount, string name) : base(device, queryType, queryCount, name)
 		{
