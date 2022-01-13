@@ -18,7 +18,7 @@ namespace InfinityEngine.Graphics.RHI
 
         internal abstract FRHICommandContext SelectContext(in EContextType contextType);
         public abstract FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name);
-        public abstract FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease = true);
+        public abstract FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease);
         public abstract void ReleaseCommandBuffer(FRHICommandBuffer cmdBuffer);
         public abstract void WriteToFence(in EContextType contextType, FRHIFence fence);
         public abstract void WaitForFence(in EContextType contextType, FRHIFence fence);

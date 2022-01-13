@@ -623,9 +623,9 @@ namespace InfinityEngine.Graphics.RDG
                     {
                         FRHICommandBuffer cmdBuffer = null;
                         if (passInfo.pass.enableAsyncCompute) {
-                            cmdBuffer = graphContext.context.GetCommandBuffer(EContextType.Compute, passInfo.pass.name);
+                            cmdBuffer = graphContext.context.GetCommandBuffer(EContextType.Compute, passInfo.pass.name, true);
                         } else {
-                            cmdBuffer = graphContext.context.GetCommandBuffer(EContextType.Graphics, passInfo.pass.name);
+                            cmdBuffer = graphContext.context.GetCommandBuffer(EContextType.Graphics, passInfo.pass.name, true);
                         }
 
                         PrePassExecute(graphContext, cmdBuffer, ref passInfo);

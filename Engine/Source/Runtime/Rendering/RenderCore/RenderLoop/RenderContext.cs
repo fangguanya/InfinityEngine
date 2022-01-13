@@ -59,7 +59,7 @@ namespace InfinityEngine.Rendering.RenderLoop
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease = false)
+        public FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease = true)
         {
             return m_Context.GetCommandBuffer(contextType, name, bAutoRelease);
         }

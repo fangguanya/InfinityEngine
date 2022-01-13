@@ -5,6 +5,7 @@ namespace InfinityEngine.Graphics.RHI
 {
     public class FRHIResourceView
     {
+        internal int descriptorIndex;
         internal ulong virtualAddressGPU;
     }
 
@@ -20,18 +21,24 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIDeptnStencilView : FRHIResourceView
     {
+        internal FRHIDeptnStencilView(FRHIDevice device, FRHITexture texture)
+        {
 
+        }
     }
 
     public class FRHIRenderTargetView : FRHIResourceView
     {
+        internal FRHIRenderTargetView(FRHIDevice device, FRHITexture texture)
+        {
 
+        }
     }
 
     public class FRHIConstantBufferView : FRHIResourceView
     {
         internal int descriptorSize;
-        internal int descriptorIndex;
+        
         internal CpuDescriptorHandle descriptorHandle
         {
             get
@@ -53,7 +60,7 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHIShaderResourceView : FRHIResourceView
     {
         internal int descriptorSize;
-        internal int descriptorIndex;
+
         internal CpuDescriptorHandle descriptorHandle
         {
             get
@@ -75,7 +82,7 @@ namespace InfinityEngine.Graphics.RHI
     public class FRHIUnorderedAccessView : FRHIResourceView
     {
         internal int descriptorSize;
-        internal int descriptorIndex;
+
         internal CpuDescriptorHandle descriptorHandle
         {
             get
@@ -101,7 +108,7 @@ namespace InfinityEngine.Graphics.RHI
         internal ID3D12Device6 nativeDevice;
         internal CpuDescriptorHandle descriptorHandle;*/
 
-        internal FRHIResourceSet(FRHIDevice device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length) : base()
+        internal FRHIResourceSet(FRHIDevice device, FRHIDescriptorHeapFactory descriptorHeapFactory, in int length)
         {
             /*this.length = length;
             this.nativeDevice = device.nativeDevice;

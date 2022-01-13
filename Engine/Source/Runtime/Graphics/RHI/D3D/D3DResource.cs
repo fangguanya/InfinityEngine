@@ -15,19 +15,89 @@ namespace InfinityEngine.Graphics.RHI.D3D
             {
                 case EGraphicsFormat.R8_SRGB:
                     return DXGI_FORMAT.DXGI_FORMAT_R8_TYPELESS;
+
                 case EGraphicsFormat.R8G8_SRGB:
                     return DXGI_FORMAT.DXGI_FORMAT_R8G8_TYPELESS;
+
                 case EGraphicsFormat.R8G8B8A8_SRGB:
-                    return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_TYPELESS;
+                    return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
                 case EGraphicsFormat.R8_UNorm:
                     return DXGI_FORMAT.DXGI_FORMAT_R8_TYPELESS;
+
                 case EGraphicsFormat.R8G8_UNorm:
                     return DXGI_FORMAT.DXGI_FORMAT_R8G8_TYPELESS;
+
                 case EGraphicsFormat.R8G8B8A8_UNorm:
                     return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_TYPELESS;
+
             }
 
             return DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static DXGI_FORMAT GetNativeViewFormat(this EGraphicsFormat format)
+        {
+            switch (format)
+            {
+                case EGraphicsFormat.R8_SRGB:
+                    return DXGI_FORMAT.DXGI_FORMAT_R8_UNORM;
+
+                case EGraphicsFormat.R8G8_SRGB:
+                    return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM;
+
+                case EGraphicsFormat.R8G8B8A8_SRGB:
+                    return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
+                case EGraphicsFormat.R8_UNorm:
+                    return DXGI_FORMAT.DXGI_FORMAT_R8_UNORM;
+
+                case EGraphicsFormat.R8G8_UNorm:
+                    return DXGI_FORMAT.DXGI_FORMAT_R8G8_UNORM;
+
+                case EGraphicsFormat.R8G8B8A8_UNorm:
+                    return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM;
+            }
+
+            return DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
+        }
+
+        /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static EGraphicsFormat GetAbstractFormat(this DXGI_FORMAT format)
+        {
+            switch (format)
+            {
+                case DXGI_FORMAT.DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
+                    return EGraphicsFormat.R8_SRGB;
+                case DXGI_FORMAT.DXGI_FORMAT_R8G8_TYPELESS:
+                    return EGraphicsFormat.R8G8_SRGB;
+                case DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_TYPELESS:
+                    return EGraphicsFormat.R8G8B8A8_SRGB;
+                case DXGI_FORMAT.DXGI_FORMAT_R8_UNORM:
+                    return EGraphicsFormat.R8_UNorm;
+                case DXGI_FORMAT.DXGI_FORMAT_R8G8_TYPELESS:
+                    return EGraphicsFormat.R8G8_UNorm;
+                case DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_TYPELESS:
+                    return EGraphicsFormat.R8G8B8A8_UNorm;
+            }
+
+            return DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
+        }*/
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static D3D12_RTV_DIMENSION GetRTVDimension(this ETextureType type)
+        {
+            switch (type)
+            {
+                case ETextureType.Tex2D:
+                    return D3D12_RTV_DIMENSION.D3D12_RTV_DIMENSION_TEXTURE2D;
+
+                case ETextureType.Tex2DArray:
+                    return D3D12_RTV_DIMENSION.D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+            }
+
+            return D3D12_RTV_DIMENSION.D3D12_RTV_DIMENSION_TEXTURE3D;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37,12 +107,16 @@ namespace InfinityEngine.Graphics.RHI.D3D
             {
                 case ETextureType.Tex2D:
                     return D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+
                 case ETextureType.Tex2DArray:
                     return D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+
                 case ETextureType.Tex3D:
                     return D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+
                 case ETextureType.TexCube:
                     return D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+
                 case ETextureType.TexCubeArray:
                     return D3D12_RESOURCE_DIMENSION.D3D12_RESOURCE_DIMENSION_TEXTURE2D;
             }

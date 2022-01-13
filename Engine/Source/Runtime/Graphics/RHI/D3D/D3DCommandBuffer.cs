@@ -2,6 +2,7 @@
 using TerraFX.Interop.Windows;
 using TerraFX.Interop.DirectX;
 using System.Runtime.InteropServices;
+using InfinityEngine.Core.Mathmatics;
 using InfinityEngine.Core.Mathmatics.Geometry;
 
 namespace InfinityEngine.Graphics.RHI.D3D
@@ -215,6 +216,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
         public override void EndRenderPass()
         {
             nativeCmdList->EndRenderPass();
+        }
+
+        public override void ClearRenderTarget(FRHIRenderTargetView renderTargetView, float4 color)
+        {
+            FD3DRenderTargetView d3dRTV = (FD3DRenderTargetView)renderTargetView;
+            nativeCmdList->ClearRenderTargetView(d3dRTV.descriptorHandle, (float*)&color, 0, null);
+            //Vortice.Direct3D12.ID3D12GraphicsCommandList
         }
 
         public override void SetStencilRef(in uint refValue)

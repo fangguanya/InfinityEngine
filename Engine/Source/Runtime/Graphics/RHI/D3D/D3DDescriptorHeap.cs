@@ -31,6 +31,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
     internal unsafe class FD3DDescriptorHeapFactory : FRHIDescriptorHeapFactory
     {
         public uint descriptorSize => m_DescriptorSize;
+        public D3D12_CPU_DESCRIPTOR_HANDLE cpuStartHandle => m_CPUDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+        public D3D12_GPU_DESCRIPTOR_HANDLE gpuStartHandle => m_GPUDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
 
         private uint m_DescriptorSize;
         private TValueArray<int> m_CacheMap;

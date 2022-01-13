@@ -18,7 +18,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
         public abstract void Init(FRenderContext renderContext);
 
-        public abstract void Render(FRenderContext renderContext);
+        public abstract void Render(FRenderContext renderContext, FRHIRenderTargetView rtv);
 
         public abstract void Release(FRenderContext renderContext);
 

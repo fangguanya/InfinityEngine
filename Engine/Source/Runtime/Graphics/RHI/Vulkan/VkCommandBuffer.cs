@@ -1,6 +1,7 @@
 ﻿using System;
 using Vortice.Vulkan;
 using static Vortice.Vulkan.Vulkan;
+using InfinityEngine.Core.Mathmatics;
 using InfinityEngine.Core.Mathmatics.Geometry;
 
 namespace InfinityEngine.Graphics.RHI.Vulkan
@@ -151,6 +152,11 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
         }
 
         public override void EndRenderPass()
+        {
+
+        }
+
+        public override void ClearRenderTarget(FRHIRenderTargetView renderTargetView, float4 color)
         {
 
         }

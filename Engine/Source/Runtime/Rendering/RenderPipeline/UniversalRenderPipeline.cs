@@ -1,6 +1,7 @@
 ﻿using System;
 using InfinityEngine.Graphics.RHI;
 using InfinityEngine.Core.Profiler;
+using InfinityEngine.Core.Mathmatics;
 using InfinityEngine.Rendering.RenderLoop;
 
 namespace InfinityEngine.Rendering.RenderPipeline
@@ -56,8 +57,17 @@ namespace InfinityEngine.Rendering.RenderPipeline
             renderContext.ExecuteCommandBuffer(cmdBuffer);*/
         }
 
-        public override void Render(FRenderContext renderContext)
+        public override void Render(FRenderContext renderContext, FRHIRenderTargetView rtv)
         {
+            FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Graphics, "ClearRenderTarget");
+            cmdBuffer.Clear();
+
+            cmdBuffer.BeginEvent("ClearBackBuffer");
+            cmdBuffer.ClearRenderTarget(rtv, new float4(1, 0.25f, 0.125f, 1));
+            cmdBuffer.EndEvent();
+
+            renderContext.ExecuteCommandBuffer(cmdBuffer);
+
             /*timeProfiler.Start();
 
             if (dataReady)

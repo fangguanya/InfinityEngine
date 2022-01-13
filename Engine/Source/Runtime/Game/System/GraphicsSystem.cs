@@ -44,6 +44,7 @@ namespace InfinityEngine.Game.System
             m_RenderContext = new FRenderContext(m_Context);
             m_RenderPipeline = new FUniversalRenderPipeline("UniversalRP");
             m_SwapChain = m_Context.CreateSwapChain("SwapChain", (uint)window.width, (uint)window.height, window.handle);
+            m_SwapChain.InitResourceView(m_Context);
         }
 
         public void Start()
@@ -70,7 +71,7 @@ namespace InfinityEngine.Game.System
                     isInit = false;
                     m_RenderPipeline.Init(m_RenderContext); 
                 }
-                m_RenderPipeline.Render(m_RenderContext);
+                m_RenderPipeline.Render(m_RenderContext, m_SwapChain.backBufferView);
                 FRHIContext.SubmitAndFlushContext(m_Context);
                 m_SwapChain.Present();
                 m_SemaphoreR2G.Signal();

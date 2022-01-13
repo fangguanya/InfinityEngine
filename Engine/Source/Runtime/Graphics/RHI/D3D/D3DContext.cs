@@ -33,19 +33,22 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        private FD3DDevice m_Device;
-        private FRHIFencePool m_FencePool;
-        private FRHIResourcePool m_ResourcePool;
-        private FD3DQueryContext[] m_QueryContext;
-        private FD3DCommandContext m_CopyContext;
-        private FD3DCommandContext m_ComputeContext;
-        private FD3DCommandContext m_GraphicsContext;
-        private TArray<FExecuteInfo> m_ExecuteGPUInfos;
-        private FRHICommandBufferPool m_CopyBufferPool;
-        private FRHICommandBufferPool m_ComputeBufferPool;
-        private FRHICommandBufferPool m_GraphicsBufferPool;
-        private TArray<FRHICommandBuffer> m_ManagedBuffers;
-        private FD3DDescriptorHeapFactory m_RTVDescriptorFactory;
+        internal FD3DDevice m_Device;
+        internal FRHIFencePool m_FencePool;
+        internal FRHIResourcePool m_ResourcePool;
+        internal FD3DQueryContext[] m_QueryContext;
+        internal FD3DCommandContext m_CopyContext;
+        internal FD3DCommandContext m_ComputeContext;
+        internal FD3DCommandContext m_GraphicsContext;
+        internal TArray<FExecuteInfo> m_ExecuteGPUInfos;
+        internal FRHICommandBufferPool m_CopyBufferPool;
+        internal FRHICommandBufferPool m_ComputeBufferPool;
+        internal FRHICommandBufferPool m_GraphicsBufferPool;
+        internal TArray<FRHICommandBuffer> m_ManagedBuffers;
+        internal FD3DDescriptorHeapFactory m_DSVDescriptorFactory;
+        internal FD3DDescriptorHeapFactory m_RTVDescriptorFactory;
+        internal FD3DDescriptorHeapFactory m_SamplerDescriptorFactory;
+        internal FD3DDescriptorHeapFactory m_CbvSrvUavDescriptorFactory;
 
         public FD3DContext()
         {
@@ -68,7 +71,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_GraphicsBufferPool = new FRHICommandBufferPool(this, EContextType.Graphics);
 
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
-            m_RTVDescriptorFactory = new FD3DDescriptorHeapFactory(m_Device, EDescriptorType.RTV, 16, "RTVDescriptorHeap");
+            m_DSVDescriptorFactory = new FD3DDescriptorHeapFactory(m_Device, EDescriptorType.DSV, 256, "DSVDescriptorHeap");
+            m_RTVDescriptorFactory = new FD3DDescriptorHeapFactory(m_Device, EDescriptorType.RTV, 256, "RTVDescriptorHeap");
+            m_SamplerDescriptorFactory = new FD3DDescriptorHeapFactory(m_Device, EDescriptorType.Sampler, 32768, "SamplerDescriptorHeap");
+            m_CbvSrvUavDescriptorFactory = new FD3DDescriptorHeapFactory(m_Device, EDescriptorType.CbvSrvUav, 32768, "CbvSrvUavDescriptorHeap");
         }
 
         internal override FRHICommandContext SelectContext(in EContextType contextType)
@@ -94,7 +100,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return new FD3DCommandBuffer(name, m_Device, contextType);
         }
 
-        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease = false)
+        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease)
         {
             FRHICommandBuffer cmdBuffer = null;
             switch (contextType)
@@ -370,12 +376,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture)
         {
-            return null;
+            return new FD3DDeptnStencilView(m_Device, texture, m_DSVDescriptorFactory.descriptorSize, m_DSVDescriptorFactory.Allocate(), m_DSVDescriptorFactory.cpuStartHandle);
         }
 
         public override FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture)
         {
-            return null;
+            return new FD3DRenderTargetView(m_Device, texture, m_DSVDescriptorFactory.descriptorSize, m_DSVDescriptorFactory.Allocate(), m_DSVDescriptorFactory.cpuStartHandle);
         }
 
         public override FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer buffer)
@@ -449,7 +455,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_CopyBufferPool?.Dispose();
             m_ComputeBufferPool?.Dispose();
             m_GraphicsBufferPool?.Dispose();
+            m_DSVDescriptorFactory?.Dispose();
             m_RTVDescriptorFactory?.Dispose();
+            m_SamplerDescriptorFactory?.Dispose();
+            m_CbvSrvUavDescriptorFactory?.Dispose();
         }
     }
 }
