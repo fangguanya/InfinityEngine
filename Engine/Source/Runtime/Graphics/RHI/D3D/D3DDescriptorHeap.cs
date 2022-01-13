@@ -76,17 +76,17 @@ namespace InfinityEngine.Graphics.RHI.D3D
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int Allocate(in int count)
-        {
-            return -1;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int Allocate()
         {
             int index = m_CacheMap[m_CacheMap.length - 1];
             m_CacheMap.RemoveSwapAtIndex(m_CacheMap.length - 1);
             return index;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int Allocate(in int count)
+        {
+            return -1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
