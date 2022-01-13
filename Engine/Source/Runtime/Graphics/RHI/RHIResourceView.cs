@@ -3,14 +3,6 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public enum EDescriptorType
-    {
-        DSV = 0,
-        RTV = 1,
-        CbvSrvUav = 2,
-        Sample = 3
-    };
-
     public class FRHIResourceView
     {
         internal ulong virtualAddressGPU;

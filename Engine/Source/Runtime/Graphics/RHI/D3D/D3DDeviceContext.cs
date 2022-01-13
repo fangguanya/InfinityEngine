@@ -45,7 +45,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         private FRHICommandBufferPool m_ComputeBufferPool;
         private FRHICommandBufferPool m_GraphicsBufferPool;
         private TArray<FRHICommandBuffer> m_ManagedBuffers;
-        //private FRHIDescriptorHeapFactory m_DescriptorFactory;
+        private FD3DDescriptorHeapFactory m_RTVDescriptorFactory;
 
         public FD3DDeviceContext()
         {
@@ -68,7 +68,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_GraphicsBufferPool = new FRHICommandBufferPool(this, EContextType.Graphics);
 
             //TerraFX.Interop.D3D12MemAlloc.D3D12MA_CreateAllocator
-            //m_DescriptorFactory = new FRHIDescriptorHeapFactory(m_Device, DescriptorHeapType.ConstantBufferViewShaderResourceViewUnorderedAccessView, 32768);
+            m_RTVDescriptorFactory = new FD3DDescriptorHeapFactory(m_Device, EDescriptorType.RTV, 16, "RTVDescriptorHeap");
         }
 
         internal override FRHICommandContext SelectContext(in EContextType contextType)
@@ -449,7 +449,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_CopyBufferPool?.Dispose();
             m_ComputeBufferPool?.Dispose();
             m_GraphicsBufferPool?.Dispose();
-            //m_DescriptorFactory?.Dispose();
+            m_RTVDescriptorFactory?.Dispose();
         }
     }
 }
