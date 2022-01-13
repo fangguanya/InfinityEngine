@@ -58,10 +58,8 @@ namespace InfinityEngine.Graphics.RHI
     public abstract class FRHICommandBuffer : FDisposal
     {
         public string name;
-
         internal bool IsClose;
         internal EContextType contextType;
-
         protected EPrimitiveTopology m_TopologyType;
 
         internal FRHICommandBuffer(string name, FRHIDevice device, EContextType contextType) { }
@@ -112,16 +110,16 @@ namespace InfinityEngine.Graphics.RHI
     {
         EContextType m_ContextType;
         Stack<FRHICommandBuffer> m_Pooled;
-        FRHIDeviceContext m_DeviceContext;
+        FRHIContext m_Context;
 
         public int countAll { get; private set; }
         public int countActive { get { return countAll - countInactive; } }
         public int countInactive { get { return m_Pooled.Count; } }
 
-        internal FRHICommandBufferPool(FRHIDeviceContext deviceContext, EContextType contextType)
+        internal FRHICommandBufferPool(FRHIContext context, EContextType contextType)
         {
             m_ContextType = contextType;
-            m_DeviceContext = deviceContext;
+            m_Context = context;
             m_Pooled = new Stack<FRHICommandBuffer>(64);
         }
 
@@ -130,7 +128,7 @@ namespace InfinityEngine.Graphics.RHI
             FRHICommandBuffer cmdBuffer;
             if (m_Pooled.Count == 0) {
                 ++countAll;
-                cmdBuffer = m_DeviceContext.CreateCommandBuffer(m_ContextType, name);
+                cmdBuffer = m_Context.CreateCommandBuffer(m_ContextType, name);
             } else {
                 cmdBuffer = m_Pooled.Pop();
             }
@@ -145,7 +143,7 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Release()
         {
-            m_DeviceContext = null;
+            m_Context = null;
             foreach (FRHICommandBuffer cmdBuffer in m_Pooled)
             {
                 cmdBuffer.Dispose();

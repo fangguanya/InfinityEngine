@@ -403,11 +403,11 @@ namespace InfinityEngine.Graphics.RHI
     {
         FRHIBufferCache m_BufferPool;
         FRHITextureCache m_TexturePool;
-        FRHIDeviceContext m_DeviceContext;
+        FRHIContext m_Context;
 
-        internal FRHIResourcePool(FRHIDeviceContext deviceContext)
+        internal FRHIResourcePool(FRHIContext context)
         {
-            m_DeviceContext = deviceContext;
+            m_Context = context;
             m_BufferPool = new FRHIBufferCache();
             m_TexturePool = new FRHITextureCache();
         }
@@ -419,7 +419,7 @@ namespace InfinityEngine.Graphics.RHI
 
             if (!m_BufferPool.Pull(handle, out buffer))
             {
-                buffer = m_DeviceContext.CreateBuffer(descriptor);
+                buffer = m_Context.CreateBuffer(descriptor);
             }
 
             return new FRHIBufferRef(handle, buffer);
@@ -437,7 +437,7 @@ namespace InfinityEngine.Graphics.RHI
 
             if (!m_TexturePool.Pull(handle, out texture))
             {
-                texture = m_DeviceContext.CreateTexture(descriptor);
+                texture = m_Context.CreateTexture(descriptor);
             }
 
             return new FRHITextureRef(handle, texture);
@@ -452,7 +452,7 @@ namespace InfinityEngine.Graphics.RHI
         {
             m_BufferPool.Dispose();
             m_TexturePool.Dispose();
-            m_DeviceContext = null;
+            m_Context = null;
         }
     }
 }

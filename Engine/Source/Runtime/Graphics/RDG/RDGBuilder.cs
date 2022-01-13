@@ -9,7 +9,7 @@ namespace InfinityEngine.Graphics.RDG
     public struct FRDGContext
     {
         public FRDGObjectPool objectPool;
-        public FRHIDeviceContext deviceContext;
+        public FRHIContext context;
     }
 
     internal struct FRDGCompiledPassInfo
@@ -165,7 +165,7 @@ namespace InfinityEngine.Graphics.RDG
             return new FRDGPassRef(renderPass, m_ResourceFactory);
         }
 
-        internal void Execute(FRHIDeviceContext deviceContext)
+        internal void Execute(FRHIContext context)
         {
             m_ExecutionExceptionWasRaised = false;
 
@@ -173,7 +173,7 @@ namespace InfinityEngine.Graphics.RDG
             try {
                 m_ResourceFactory.BeginRender();
                 CompilePass();
-                ExecutePass(deviceContext);
+                ExecutePass(context);
             } catch (Exception exception) {
                 //Debug.LogError("Execute error");
                 //if (!m_ExecutionExceptionWasRaised)
@@ -566,7 +566,7 @@ namespace InfinityEngine.Graphics.RDG
 
             // Synchronize with graphics or compute pipe if needed.
             if (passCompileInfo.syncToPassIndex != -1) {
-                graphContext.deviceContext.WaitForFence(cmdBuffer.contextType, m_PassCompileInfos[passCompileInfo.syncToPassIndex].fence);
+                graphContext.context.WaitForFence(cmdBuffer.contextType, m_PassCompileInfos[passCompileInfo.syncToPassIndex].fence);
             }
 
             // Auto bind render target
@@ -579,14 +579,14 @@ namespace InfinityEngine.Graphics.RDG
 
             // The command list has been filled. We can kick the async task.
             if (pass.enableAsyncCompute) {
-                graphContext.deviceContext.ExecuteCommandBuffer(cmdBuffer);
+                graphContext.context.ExecuteCommandBuffer(cmdBuffer);
             } else {
-                graphContext.deviceContext.ExecuteCommandBuffer(cmdBuffer);
+                graphContext.context.ExecuteCommandBuffer(cmdBuffer);
             }
 
             if (passCompileInfo.needGraphicsFence) {
-                passCompileInfo.fence = graphContext.deviceContext.GetFence(pass.name);
-                graphContext.deviceContext.WriteToFence(cmdBuffer.contextType, passCompileInfo.fence);
+                passCompileInfo.fence = graphContext.context.GetFence(pass.name);
+                graphContext.context.WriteToFence(cmdBuffer.contextType, passCompileInfo.fence);
             }
 
             m_ObjectPool.ReleaseAllTempAlloc();
@@ -601,11 +601,11 @@ namespace InfinityEngine.Graphics.RDG
 
         }
 
-        void ExecutePass(FRHIDeviceContext deviceContext)
+        void ExecutePass(FRHIContext context)
         {
             FRDGContext graphContext;
             graphContext.objectPool = m_ObjectPool;
-            graphContext.deviceContext = deviceContext;
+            graphContext.context = context;
 
             for (int passIndex = 0; passIndex < m_PassCompileInfos.size; ++passIndex)
             {
@@ -623,9 +623,9 @@ namespace InfinityEngine.Graphics.RDG
                     {
                         FRHICommandBuffer cmdBuffer = null;
                         if (passInfo.pass.enableAsyncCompute) {
-                            cmdBuffer = graphContext.deviceContext.GetCommandBuffer(EContextType.Compute, passInfo.pass.name);
+                            cmdBuffer = graphContext.context.GetCommandBuffer(EContextType.Compute, passInfo.pass.name);
                         } else {
-                            cmdBuffer = graphContext.deviceContext.GetCommandBuffer(EContextType.Graphics, passInfo.pass.name);
+                            cmdBuffer = graphContext.context.GetCommandBuffer(EContextType.Graphics, passInfo.pass.name);
                         }
 
                         PrePassExecute(graphContext, cmdBuffer, ref passInfo);

@@ -10,7 +10,7 @@ namespace InfinityEngine.Graphics.RHI
         Graphics = 0
     }
 
-    public abstract class FRHIDeviceContext : FDisposal
+    public abstract class FRHIContext : FDisposal
     {
         public virtual ulong copyFrequency => 0;
         public virtual ulong computeFrequency => 0;
@@ -55,10 +55,10 @@ namespace InfinityEngine.Graphics.RHI
         public abstract FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture);
         public abstract FRHIResourceSet CreateResourceSet(in uint count);
 
-        public static void SubmitAndFlushContext(FRHIDeviceContext deviceContext)
+        public static void SubmitAndFlushContext(FRHIContext context)
         {
-            deviceContext.Submit();
-            deviceContext.Flush();
+            context.Submit();
+            context.Flush();
         }
     }
 }

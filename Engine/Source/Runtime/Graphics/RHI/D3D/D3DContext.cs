@@ -3,7 +3,7 @@ using InfinityEngine.Core.Container;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {
-    public unsafe class FD3DDeviceContext : FRHIDeviceContext
+    public unsafe class FD3DContext : FRHIContext
     {
         public override ulong copyFrequency
         {
@@ -47,7 +47,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         private TArray<FRHICommandBuffer> m_ManagedBuffers;
         private FD3DDescriptorHeapFactory m_RTVDescriptorFactory;
 
-        public FD3DDeviceContext()
+        public FD3DContext()
         {
             m_Device = new FD3DDevice();
             m_FencePool = new FRHIFencePool(this);

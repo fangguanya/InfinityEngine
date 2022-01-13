@@ -71,7 +71,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
                 cmdBuffer.EndEvent();
                 renderContext.ExecuteCommandBuffer(cmdBuffer);
                 renderContext.WriteToFence(EContextType.Copy, fence);
-                //deviceContext.WaitForFence(EContextType.Render, fence);
+                //context.WaitForFence(EContextType.Render, fence);
             }
 
             if (dataReady = fence.IsCompleted)
@@ -117,45 +117,45 @@ namespace InfinityEngine.Rendering.RenderPipeline
 
 
 /*buffer.GetData<int>(cmdList, readbackData);
-deviceContext.ExecuteCmdList(EContextType.Copy, cmdList);
-deviceContext.WritFence(EContextType.Copy, fence);
-deviceContext.WaitFence(EContextType.Graphics, fence);*/
+context.ExecuteCmdList(EContextType.Copy, cmdList);
+context.WritFence(EContextType.Copy, fence);
+context.WaitFence(EContextType.Graphics, fence);*/
 
 //ResourceBind Example
-/*FRHIBuffer Buffer = deviceContext.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
+/*FRHIBuffer Buffer = context.CreateBuffer(16, 4, EUseFlag.CPUWrite, EBufferType.Structured);
 
-FRHIShaderResourceView SRV = deviceContext.CreateShaderResourceView(Buffer);
-FRHIUnorderedAccessView UAV = deviceContext.CreateUnorderedAccessView(Buffer);
+FRHIShaderResourceView SRV = context.CreateShaderResourceView(Buffer);
+FRHIUnorderedAccessView UAV = context.CreateUnorderedAccessView(Buffer);
 
-FRHIResourceViewRange ResourceViewRange = deviceContext.CreateResourceViewRange(2);
+FRHIResourceViewRange ResourceViewRange = context.CreateResourceViewRange(2);
 ResourceViewRange.SetShaderResourceView(0, SRV);
 ResourceViewRange.SetUnorderedAccessView(1, UAV);*/
 
 
 //ASyncCompute Example
-/*FRHIFence computeFence = deviceContext.CreateFence();
-FRHIFence graphicsFence = deviceContext.CreateFence();
+/*FRHIFence computeFence = context.CreateFence();
+FRHIFence graphicsFence = context.CreateFence();
 
 //Pass-A in GraphicsQueue
 cmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-deviceContext.ExecuteCmdList(EContextType.Graphics, cmdList);
-deviceContext.WritFence(EContextType.Graphics, graphicsFence);
+context.ExecuteCmdList(EContextType.Graphics, cmdList);
+context.WritFence(EContextType.Graphics, graphicsFence);
 
 //Pass-B in GraphicsQueue
 cmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 0, 0);
-deviceContext.ExecuteCmdList(EContextType.Graphics, cmdList);
+context.ExecuteCmdList(EContextType.Graphics, cmdList);
 
 //Pass-C in ComputeQueue and Wait Pass-A
-deviceContext.WaitFence(EContextType.Compute, graphicsFence);
+context.WaitFence(EContextType.Compute, graphicsFence);
 cmdList.DispatchCompute(null, 16, 16, 1);
-deviceContext.ExecuteCmdList(EContextType.Compute, cmdList);
-deviceContext.WritFence(EContextType.Compute, computeFence);
+context.ExecuteCmdList(EContextType.Compute, cmdList);
+context.WritFence(EContextType.Compute, computeFence);
 
 //Pass-D in ComputeQueue
 cmdList.DispatchCompute(null, 16, 16, 1);
-deviceContext.ExecuteCmdList(EContextType.Compute, cmdList);
+context.ExecuteCmdList(EContextType.Compute, cmdList);
 
 //Pass-E in GraphicsQueue and Wait Pass-C
-deviceContext.WaitFence(EContextType.Graphics, computeFence);
+context.WaitFence(EContextType.Graphics, computeFence);
 cmdList.DrawPrimitiveInstance(null, null, PrimitiveTopology.TriangleList, 128, 16);
-deviceContext.ExecuteCmdList(EContextType.Graphics, cmdList);*/
+context.ExecuteCmdList(EContextType.Graphics, cmdList);*/

@@ -28,10 +28,10 @@ namespace InfinityEngine.Game.System
         private Thread m_RenderThread;
         private FSemaphore m_SemaphoreG2R;
         private FSemaphore m_SemaphoreR2G;
+        private FRHIContext m_Context;
         private FRHISwapChain m_SwapChain;
         private FRenderContext m_RenderContext;
         private FRenderPipeline m_RenderPipeline;
-        private FRHIDeviceContext m_DeviceContext;
 
         public FGraphicsSystem(FWindow window, FSemaphore semaphoreG2R, FSemaphore semaphoreR2G)
         {
@@ -40,10 +40,10 @@ namespace InfinityEngine.Game.System
             m_SemaphoreR2G = semaphoreR2G;
             m_RenderThread = new Thread(GraphicsFunc);
             m_RenderThread.Name = "m_RenderThread";
-            m_DeviceContext = new FD3DDeviceContext();
-            m_RenderContext = new FRenderContext(m_DeviceContext);
+            m_Context = new FD3DContext();
+            m_RenderContext = new FRenderContext(m_Context);
             m_RenderPipeline = new FUniversalRenderPipeline("UniversalRP");
-            m_SwapChain = m_DeviceContext.CreateSwapChain("SwapChain", (uint)window.width, (uint)window.height, window.handle);
+            m_SwapChain = m_Context.CreateSwapChain("SwapChain", (uint)window.width, (uint)window.height, window.handle);
         }
 
         public void Start()
@@ -71,7 +71,7 @@ namespace InfinityEngine.Game.System
                     m_RenderPipeline.Init(m_RenderContext); 
                 }
                 m_RenderPipeline.Render(m_RenderContext);
-                FRHIDeviceContext.SubmitAndFlushContext(m_DeviceContext);
+                FRHIContext.SubmitAndFlushContext(m_Context);
                 m_SwapChain.Present();
                 m_SemaphoreR2G.Signal();
             }
@@ -95,7 +95,7 @@ namespace InfinityEngine.Game.System
 
             m_SwapChain?.Dispose();
             m_RenderContext?.Dispose();
-            m_DeviceContext?.Dispose();
+            m_Context?.Dispose();
             m_RenderPipeline?.Dispose();
         }
     }

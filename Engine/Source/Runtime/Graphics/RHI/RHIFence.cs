@@ -19,16 +19,16 @@ namespace InfinityEngine.Graphics.RHI
     internal class FRHIFencePool : FDisposal
     {
         Stack<FRHIFence> m_Pooled;
-        FRHIDeviceContext m_DeviceContext;
+        FRHIContext m_Context;
 
         public int countAll { get; private set; }
         public int countActive { get { return countAll - countInactive; } }
         public int countInactive { get { return m_Pooled.Count; } }
 
-        public FRHIFencePool(FRHIDeviceContext deviceContext)
+        public FRHIFencePool(FRHIContext context)
         {
             m_Pooled = new Stack<FRHIFence>();
-            m_DeviceContext = deviceContext;
+            m_Context = context;
         }
 
         public FRHIFence GetTemporary(string name)
@@ -36,7 +36,7 @@ namespace InfinityEngine.Graphics.RHI
             FRHIFence gpuFence;
             if (m_Pooled.Count == 0)
             {
-                gpuFence = m_DeviceContext.CreateFence(name);
+                gpuFence = m_Context.CreateFence(name);
                 countAll++;
             }
             else
@@ -54,7 +54,7 @@ namespace InfinityEngine.Graphics.RHI
 
         protected override void Release()
         {
-            m_DeviceContext = null;
+            m_Context = null;
             foreach (FRHIFence gpuFence in m_Pooled)
             {
                 gpuFence.Dispose();
