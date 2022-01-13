@@ -46,10 +46,10 @@ namespace ExampleProject
                 FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Dynamic | EUsageType.Staging);
                 descriptor.name = "TestBuffer";
 
-                fence = deviceContext.GetFence("Readback");
-                query = deviceContext.GetQuery(EQueryType.CopyTimestamp, "Readback");
-                bufferRef = deviceContext.GetBuffer(descriptor);
-                FRHICommandBuffer cmdBuffer = deviceContext.GetCommandBuffer(EContextType.Copy, "Upload");
+                fence = renderContext.GetFence("Readback");
+                query = renderContext.GetQuery(EQueryType.CopyTimestamp, "Readback");
+                bufferRef = renderContext.GetBuffer(descriptor);
+                FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Upload");
 
                 int[] data = new int[numData];
                 for (int i = 0; i < numData; ++i) { 
@@ -60,7 +60,7 @@ namespace ExampleProject
                 cmdBuffer.BeginEvent("Upload");
                 buffer.SetData(cmdBuffer, data);
                 cmdBuffer.EndEvent();
-                deviceContext.ExecuteCommandBuffer(cmdBuffer);
+                renderContext.ExecuteCommandBuffer(cmdBuffer);
             });
 
             //m_ManageDatas = new int[32768];
@@ -75,15 +75,15 @@ namespace ExampleProject
                 timeProfiler.Start();
 
                 if (dataReady) {
-                    FRHICommandBuffer cmdBuffer = deviceContext.GetCommandBuffer(EContextType.Copy, "Readback");
+                    FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Readback");
                     cmdBuffer.Clear();
                     cmdBuffer.BeginEvent("Readback");
                     cmdBuffer.BeginQuery(query);
                     buffer.Readback<int>(cmdBuffer);
                     cmdBuffer.EndQuery(query);
                     cmdBuffer.EndEvent();
-                    deviceContext.ExecuteCommandBuffer(cmdBuffer);
-                    deviceContext.WriteToFence(EContextType.Copy, fence);
+                    renderContext.ExecuteCommandBuffer(cmdBuffer);
+                    renderContext.WriteToFence(EContextType.Copy, fence);
                     //deviceContext.WaitForFence(EContextType.Render, fence);
                 }
 
@@ -116,9 +116,9 @@ namespace ExampleProject
             FGraphics.AddTask(
             (FRHIDeviceContext deviceContext, FRenderContext renderContext) =>
             {
-                deviceContext.ReleaseFence(fence);
-                deviceContext.ReleaseQuery(query);
-                deviceContext.ReleaseBuffer(bufferRef);
+                renderContext.ReleaseFence(fence);
+                renderContext.ReleaseQuery(query);
+                renderContext.ReleaseBuffer(bufferRef);
                 Console.WriteLine("Release RenderProxy");
             });
 

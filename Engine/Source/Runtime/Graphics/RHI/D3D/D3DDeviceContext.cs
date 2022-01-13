@@ -94,7 +94,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return new FD3DCommandBuffer(name, m_Device, contextType);
         }
 
-        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, bool bAutoRelease = false)
+        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease = false)
         {
             FRHICommandBuffer cmdBuffer = null;
             switch (contextType)

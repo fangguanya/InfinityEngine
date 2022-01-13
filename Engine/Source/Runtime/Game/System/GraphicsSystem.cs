@@ -40,11 +40,9 @@ namespace InfinityEngine.Game.System
             m_SemaphoreR2G = semaphoreR2G;
             m_RenderThread = new Thread(GraphicsFunc);
             m_RenderThread.Name = "m_RenderThread";
-
-            m_RenderContext = new FRenderContext();
             m_DeviceContext = new FD3DDeviceContext();
+            m_RenderContext = new FRenderContext(m_DeviceContext);
             m_RenderPipeline = new FUniversalRenderPipeline("UniversalRP");
-
             m_SwapChain = m_DeviceContext.CreateSwapChain("SwapChain", (uint)window.width, (uint)window.height, window.handle);
         }
 
