@@ -146,7 +146,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
 			if (IsReady) 
 			{
 				m_CmdBuffer.Clear();
+				m_CmdBuffer.BeginEvent("ResolveQueryData");
 				m_CmdBuffer.nativeCmdList->ResolveQueryData(queryHeap, queryType.GetNativeQueryType(), 0, (uint)m_QueryCount, m_QueryResult, 0);
+				m_CmdBuffer.EndEvent();
 				commandContext.ExecuteQueue(m_CmdBuffer);
 				commandContext.SignalQueue(m_QueryFence);
 			}

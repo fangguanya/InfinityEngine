@@ -39,7 +39,6 @@
     <PackageReference Include="Vortice.Mathematics" Version="1.3.24" />
     <PackageReference Include="Vortice.Vulkan" Version="1.4.7" />
     <PackageReference Include="WaveEngine.HLSLEverywhere" Version="3.3.0.8617-preview" />
-    <PackageReference Include="WinPixEventRuntime" Version="1.0.210818001" />
   </ItemGroup>
 
   <ItemGroup>
