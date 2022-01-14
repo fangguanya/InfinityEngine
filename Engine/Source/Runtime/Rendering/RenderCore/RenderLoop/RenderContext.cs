@@ -10,8 +10,8 @@ namespace InfinityEngine.Rendering.RenderLoop
         public ulong copyFrequency => m_Context.copyFrequency;
         public ulong computeFrequency => m_Context.computeFrequency;
         public ulong graphicsFrequency => m_Context.graphicsFrequency;
-        public FRHITexture backBuffer => m_SwapChain.backBuffer;
-        public FRHIRenderTargetView backBufferView => m_SwapChain.backBufferView;
+        internal FRHITexture backBuffer => m_SwapChain.backBuffer;
+        internal FRHIRenderTargetView backBufferView => m_SwapChain.backBufferView;
 
         private FRHIContext m_Context;
         private FRHISwapChain m_SwapChain;
