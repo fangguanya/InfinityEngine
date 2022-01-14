@@ -17,13 +17,13 @@ namespace InfinityEngine.Rendering.RenderPipeline
             Console.WriteLine("Init RenderPipeline");
         }
 
-        public override void Render(FRenderContext renderContext, FRHIRenderTargetView rtv)
+        public override void Render(FRenderContext renderContext)
         {
             FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Graphics, "ClearRenderTarget");
             cmdBuffer.Clear();
 
             cmdBuffer.BeginEvent("ClearBackBuffer");
-            cmdBuffer.ClearRenderTarget(rtv, new float4(1, 0.25f, 0.125f, 1));
+            cmdBuffer.ClearRenderTarget(renderContext.backBufferView, new float4(1, 0.25f, 0.125f, 1));
             cmdBuffer.EndEvent();
 
             renderContext.ExecuteCommandBuffer(cmdBuffer);
