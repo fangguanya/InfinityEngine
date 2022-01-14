@@ -376,12 +376,12 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override FRHIDeptnStencilView CreateDepthStencilView(FRHITexture texture)
         {
-            return new FD3DDeptnStencilView(m_Device, texture, m_DSVDescriptorFactory.descriptorSize, m_DSVDescriptorFactory.Allocate(), m_DSVDescriptorFactory.cpuStartHandle);
+            return new FD3DDeptnStencilView(m_Device, m_DSVDescriptorFactory, texture);
         }
 
         public override FRHIRenderTargetView CreateRenderTargetView(FRHITexture texture)
         {
-            return new FD3DRenderTargetView(m_Device, texture, m_DSVDescriptorFactory.descriptorSize, m_DSVDescriptorFactory.Allocate(), m_DSVDescriptorFactory.cpuStartHandle);
+            return new FD3DRenderTargetView(m_Device, m_RTVDescriptorFactory, texture);
         }
 
         public override FRHIConstantBufferView CreateConstantBufferView(FRHIBuffer buffer)

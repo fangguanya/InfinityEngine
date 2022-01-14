@@ -3,8 +3,8 @@ using TerraFX.Interop.Windows;
 using TerraFX.Interop.DirectX;
 using InfinityEngine.Core.Object;
 using InfinityEngine.Core.Memory;
-using System.Runtime.CompilerServices;
 using InfinityEngine.Core.Container;
+using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Graphics.RHI.D3D
 {

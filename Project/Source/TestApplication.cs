@@ -84,7 +84,7 @@ namespace ExampleProject
                     cmdBuffer.EndEvent();
                     renderContext.ExecuteCommandBuffer(cmdBuffer);
                     renderContext.WriteToFence(EContextType.Copy, fence);
-                    //context.WaitForFence(EContextType.Render, fence);
+                    //renderContext.WaitForFence(EContextType.Graphics, fence);
                 }
 
                 if (dataReady = fence.IsCompleted) {

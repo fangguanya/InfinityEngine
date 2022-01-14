@@ -44,8 +44,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
 		internal FD3DQuery(FRHIQueryContext queryContext) : base(queryContext)
 		{
 			this.queryContext = (FD3DQueryContext)queryContext;
-			this.indexHead = queryContext.AllocateUnuseIndex();
-			this.indexLast = queryContext.IsTimeQuery ? queryContext.AllocateUnuseIndex() : -1;
+			this.indexHead = queryContext.Allocate();
+			this.indexLast = queryContext.IsTimeQuery ? queryContext.Allocate() : -1;
 		}
 
 		public override int GetResult()
@@ -63,10 +63,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
 		protected override void Release()
         {
-			queryContext.ReleaseUnuseIndex(indexHead);
+			queryContext.Free(indexHead);
 
 			if(queryContext.IsTimeQuery) {
-				queryContext.ReleaseUnuseIndex(indexLast);
+				queryContext.Free(indexLast);
 			}
 		}
     }
@@ -164,7 +164,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 			}
 		}
 
-		internal override int AllocateUnuseIndex()
+		internal override int Allocate()
         {
 			if (m_QueryMap.length != 0)
 			{
@@ -175,7 +175,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 			return -1;
 		}
 
-		internal override void ReleaseUnuseIndex(in int index)
+		internal override void Free(in int index)
 		{
 			m_QueryMap.Add(index);
 		}

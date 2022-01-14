@@ -95,9 +95,9 @@ namespace InfinityEngine.Game.System
             m_RenderPipeline?.Release(m_RenderContext);
 
             m_SwapChain?.Dispose();
-            m_RenderContext?.Dispose();
             m_Context?.Dispose();
             m_RenderPipeline?.Dispose();
+            m_RenderContext?.Dispose();
         }
     }
 }

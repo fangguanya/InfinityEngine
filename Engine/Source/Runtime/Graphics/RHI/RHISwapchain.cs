@@ -1,4 +1,5 @@
 ﻿using InfinityEngine.Core.Object;
+using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -19,7 +20,9 @@ namespace InfinityEngine.Graphics.RHI
             this.backBufferViews = new FRHIRenderTargetView[2];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public abstract void Present();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public abstract void InitResourceView(FRHIContext context);
     }
 }

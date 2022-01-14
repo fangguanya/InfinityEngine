@@ -3,7 +3,7 @@ using InfinityEngine.Core.Object;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public class FRHIResourceView
+    public class FRHIResourceView : FDisposal
     {
         internal int descriptorIndex;
         internal ulong virtualAddressGPU;
@@ -21,18 +21,12 @@ namespace InfinityEngine.Graphics.RHI
 
     public class FRHIDeptnStencilView : FRHIResourceView
     {
-        internal FRHIDeptnStencilView(FRHIDevice device, FRHITexture texture)
-        {
 
-        }
     }
 
     public class FRHIRenderTargetView : FRHIResourceView
     {
-        internal FRHIRenderTargetView(FRHIDevice device, FRHITexture texture)
-        {
 
-        }
     }
 
     public class FRHIConstantBufferView : FRHIResourceView

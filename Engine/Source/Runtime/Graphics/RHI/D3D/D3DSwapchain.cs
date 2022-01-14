@@ -91,20 +91,25 @@ namespace InfinityEngine.Graphics.RHI.D3D
             nativeSwapChain->Present(1, 0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void InitResourceView(FRHIContext context)
         {
             FD3DContext d3dContext = (FD3DContext)context;
-            FD3DDescriptorHeapFactory d3dDescriptorHeapFactory = d3dContext.m_RTVDescriptorFactory;
 
             for (int i = 0; i < 2; ++i)
             {
-                backBufferViews[i] = new FD3DRenderTargetView(d3dContext.m_Device, backBuffers[i], d3dDescriptorHeapFactory.descriptorSize, d3dDescriptorHeapFactory.Allocate(), d3dDescriptorHeapFactory.cpuStartHandle);
+                backBufferViews[i] = d3dContext.CreateRenderTargetView(backBuffers[i]);
             }
         }
 
         protected override void Release()
         {
             nativeSwapChain->Release();
+
+            for (int i = 0; i < 2; ++i)
+            {
+                backBufferViews[i].Dispose();
+            }
         }
     }
 }

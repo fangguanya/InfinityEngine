@@ -1,4 +1,5 @@
 ﻿using InfinityEngine.Core.Object;
+using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -19,8 +20,11 @@ namespace InfinityEngine.Graphics.RHI
             m_Type = type;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public abstract int Allocate();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public abstract int Allocate(in int count);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public abstract void Free(in int index);
     }
 }

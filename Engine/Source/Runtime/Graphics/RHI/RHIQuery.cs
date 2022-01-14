@@ -35,8 +35,8 @@ namespace InfinityEngine.Graphics.RHI
 		public FRHIQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount, string name) { }
 		public abstract void Submit(FRHICommandContext commandContext);
 		public abstract void GetData();
-		internal abstract int AllocateUnuseIndex();
-		internal abstract void ReleaseUnuseIndex(in int index);
+		internal abstract int Allocate();
+		internal abstract void Free(in int index);
 		public abstract FRHIQuery GetTemporary(string name = null);
 		public abstract void ReleaseTemporary(FRHIQuery query);
 	}
