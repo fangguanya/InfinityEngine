@@ -38,8 +38,7 @@ namespace ExampleProject
             readData = new int[numData];
             timeProfiler = new FTimeProfiler();
 
-            FGraphics.AddTask(
-            (FRenderContext renderContext) =>
+            FGraphics.AddTask((FRenderContext renderContext) =>
             {
                 FBufferDescriptor descriptor = new FBufferDescriptor((ulong)numData, 4, EUsageType.Dynamic | EUsageType.Staging);
                 descriptor.name = "TestBuffer";
@@ -64,8 +63,7 @@ namespace ExampleProject
 
         public override void OnUpdate(in float deltaTime)
         {
-            FGraphics.AddTask(
-            (FRenderContext renderContext) =>
+            FGraphics.AddTask((FRenderContext renderContext) =>
             {
                 timeProfiler.Start();
 
@@ -98,8 +96,7 @@ namespace ExampleProject
 
         public override void OnDisable()
         {
-            FGraphics.AddTask(
-            (FRenderContext renderContext) =>
+            FGraphics.AddTask((FRenderContext renderContext) =>
             {
                 renderContext.ReleaseFence(fence);
                 renderContext.ReleaseQuery(query);
