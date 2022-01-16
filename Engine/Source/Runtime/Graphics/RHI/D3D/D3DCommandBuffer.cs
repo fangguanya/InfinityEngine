@@ -15,34 +15,28 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal FD3DCommandBuffer(string name, FRHIDevice device, FRHICommandContext cmdContext, EContextType contextType) : base(name, device, contextType)
         {
             FD3DDevice d3dDevice = (FD3DDevice)device;
+            FD3DCommandContext d3dCmdContext = (FD3DCommandContext)cmdContext;
 
             this.name = name;
             this.IsClose = false;
             this.contextType = contextType;
-
-            ID3D12CommandAllocator* commandPoolPtr;
-            d3dDevice.nativeDevice->CreateCommandAllocator((D3D12_COMMAND_LIST_TYPE)contextType, Windows.__uuidof<ID3D12CommandAllocator>(), (void**)&commandPoolPtr);
-            fixed (char* namePtr = name + "_CmdPool")
-            {
-                commandPoolPtr->SetName((ushort*)namePtr);
-            }
-            nativeCmdPool = commandPoolPtr;
+            this.nativeCmdPool = d3dCmdContext.nativeCmdAllocator;
 
             ID3D12GraphicsCommandList5* commandListPtr;
-            d3dDevice.nativeDevice->CreateCommandList(0, (D3D12_COMMAND_LIST_TYPE)contextType, commandPoolPtr, null, Windows.__uuidof<ID3D12GraphicsCommandList5>(), (void**)&commandListPtr);
+            d3dDevice.nativeDevice->CreateCommandList(0, (D3D12_COMMAND_LIST_TYPE)contextType, nativeCmdPool, null, Windows.__uuidof<ID3D12GraphicsCommandList5>(), (void**)&commandListPtr);
             fixed (char* namePtr = name + "_CmdList")
             {
                 commandListPtr->SetName((ushort*)namePtr);
             }
             nativeCmdList = commandListPtr;
+            Close();
         }
 
         public override void Clear()
         {
-            if(!IsClose) { return; }
+            //if(!IsClose) { return; }
 
             IsClose = false;
-            nativeCmdPool->Reset();
             nativeCmdList->Reset(nativeCmdPool, null);
         }
 

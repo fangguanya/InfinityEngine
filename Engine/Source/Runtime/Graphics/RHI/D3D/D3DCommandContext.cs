@@ -79,6 +79,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         {
             m_Fence.Signal(this);
             m_Fence.WaitOnCPU(m_FenceEvent);
+            m_NativeCmdAllocator->Reset();
         }
 
         protected override void Release()
