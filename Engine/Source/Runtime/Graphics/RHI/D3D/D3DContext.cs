@@ -40,7 +40,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal FD3DCommandContext m_CopyContext;
         internal FD3DCommandContext m_ComputeContext;
         internal FD3DCommandContext m_GraphicsContext;
-        internal TArray<FExecuteInfo> m_ExecuteGPUInfos;
         internal FRHICommandBufferPool m_CopyBufferPool;
         internal FRHICommandBufferPool m_ComputeBufferPool;
         internal FRHICommandBufferPool m_GraphicsBufferPool;
@@ -55,7 +54,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_Device = new FD3DDevice();
             m_FencePool = new FRHIFencePool(this);
             m_ResourcePool = new FRHIResourcePool(this);
-            m_ExecuteGPUInfos = new TArray<FExecuteInfo>(32);
             m_ManagedBuffers = new TArray<FRHICommandBuffer>(32);
 
             m_QueryContext = new FD3DQueryContext[2];
@@ -143,35 +141,20 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void WriteToFence(in EContextType contextType, FRHIFence fence)
         {
-            FExecuteInfo executeInfo;
-            executeInfo.fence = fence;
-            executeInfo.cmdBuffer = null;
-            executeInfo.executeType = EExecuteType.Signal;
-            executeInfo.cmdContext = SelectContext(contextType);
-            m_ExecuteGPUInfos.Add(executeInfo);
+            SelectContext(contextType).SignalQueue(fence);
         }
 
         public override void WaitForFence(in EContextType contextType, FRHIFence fence)
         {
-            FExecuteInfo executeInfo;
-            executeInfo.fence = fence;
-            executeInfo.cmdBuffer = null;
-            executeInfo.executeType = EExecuteType.Wait;
-            executeInfo.cmdContext = SelectContext(contextType);
-            m_ExecuteGPUInfos.Add(executeInfo);
+            SelectContext(contextType).WaitQueue(fence);
         }
 
         public override void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer)
         {
-            FExecuteInfo executeInfo;
-            executeInfo.fence = null;
-            executeInfo.cmdBuffer = cmdBuffer;
-            executeInfo.executeType = EExecuteType.Execute;
-            executeInfo.cmdContext = SelectContext(cmdBuffer.contextType);
-            m_ExecuteGPUInfos.Add(executeInfo);
+            SelectContext(cmdBuffer.contextType).ExecuteQueue(cmdBuffer);
         }
 
-        internal override void Flush()
+        internal override void Submit()
         {
             for (int i = 0; i < m_ManagedBuffers.length; ++i) {
                 ReleaseCommandBuffer(m_ManagedBuffers[i]);
@@ -186,32 +169,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
             m_QueryContext[0].GetData();
             m_QueryContext[1].GetData();
-        }
-
-        internal override void Submit()
-        {
-            for (int i = 0; i < m_ExecuteGPUInfos.length; ++i)
-            {
-                ref FExecuteInfo executeInfo = ref m_ExecuteGPUInfos[i];
-                FD3DCommandContext cmdContext = (FD3DCommandContext)executeInfo.cmdContext;
-
-                switch (executeInfo.executeType)
-                {
-                    case EExecuteType.Signal:
-                        cmdContext.SignalQueue(executeInfo.fence);
-                        break;
-
-                    case EExecuteType.Wait:
-                        cmdContext.WaitQueue(executeInfo.fence);
-                        break;
-
-                    case EExecuteType.Execute:
-                        cmdContext.ExecuteQueue(executeInfo.cmdBuffer);
-                        break;
-                }
-            }
-
-            m_ExecuteGPUInfos.Clear();
         }
 
         public override FRHISwapChain CreateSwapChain(string name, in uint width, in uint height, in IntPtr windowPtr)

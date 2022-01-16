@@ -48,14 +48,6 @@ namespace InfinityEngine.Graphics.RHI
         Passthrough = 4
     }
 
-    internal struct FExecuteInfo
-    {
-        public FRHIFence fence;
-        public EExecuteType executeType;
-        public FRHICommandBuffer cmdBuffer;
-        public FRHICommandContext cmdContext;
-    }
-
     public abstract class FRHICommandBuffer : FDisposal
     {
         public string name;

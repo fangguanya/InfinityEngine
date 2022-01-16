@@ -1,5 +1,6 @@
 ﻿using System;
 using InfinityEngine.Core.Object;
+using System.Runtime.CompilerServices;
 
 namespace InfinityEngine.Graphics.RHI
 {
@@ -23,7 +24,6 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void WriteToFence(in EContextType contextType, FRHIFence fence);
         public abstract void WaitForFence(in EContextType contextType, FRHIFence fence);
         public abstract void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer);
-        internal abstract void Flush();
         internal abstract void Submit();
         public abstract FRHISwapChain CreateSwapChain(string name, in uint width, in uint height, in IntPtr windowPtr);
         public abstract FRHIFence CreateFence(string name);
@@ -55,10 +55,10 @@ namespace InfinityEngine.Graphics.RHI
         public abstract FRHIUnorderedAccessView CreateUnorderedAccessView(FRHITexture texture);
         public abstract FRHIResourceSet CreateResourceSet(in uint count);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SubmitAndFlushContext(FRHIContext context)
         {
             context.Submit();
-            context.Flush();
         }
     }
 }
