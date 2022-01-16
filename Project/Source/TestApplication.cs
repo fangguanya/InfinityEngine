@@ -46,7 +46,7 @@ namespace ExampleProject
                 fence = renderContext.GetFence("Readback");
                 query = renderContext.GetQuery(EQueryType.CopyTimestamp, "Readback");
                 bufferRef = renderContext.GetBuffer(descriptor);
-                FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Upload");
+                FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Upload", false);
 
                 int[] data = new int[numData];
                 for (int i = 0; i < numData; ++i) { 
@@ -58,6 +58,7 @@ namespace ExampleProject
                 buffer.SetData(cmdBuffer, data);
                 cmdBuffer.EndEvent();
                 renderContext.ExecuteCommandBuffer(cmdBuffer);
+                renderContext.ReleaseCommandBuffer(cmdBuffer);
             });
         }
 
@@ -68,7 +69,7 @@ namespace ExampleProject
                 timeProfiler.Start();
 
                 if (dataReady) {
-                    FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Readback");
+                    FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Readback", false);
                     cmdBuffer.Clear();
                     cmdBuffer.BeginEvent("Readback");
                     cmdBuffer.BeginQuery(query);
@@ -76,6 +77,7 @@ namespace ExampleProject
                     cmdBuffer.EndQuery(query);
                     cmdBuffer.EndEvent();
                     renderContext.ExecuteCommandBuffer(cmdBuffer);
+                    renderContext.ReleaseCommandBuffer(cmdBuffer);
                     renderContext.WriteToFence(EContextType.Copy, fence);
                     //renderContext.WaitForFence(EContextType.Graphics, fence);
                 }

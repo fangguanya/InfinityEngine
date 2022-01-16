@@ -117,7 +117,7 @@ namespace InfinityEngine.Graphics.RHI
             m_Pooled = new Stack<FRHICommandBuffer>(64);
         }
 
-        public FRHICommandBuffer GetTemporary(string name = null)
+        public FRHICommandBuffer GetTemporary(string name)
         {
             FRHICommandBuffer cmdBuffer;
             if (m_Pooled.Count == 0) {
