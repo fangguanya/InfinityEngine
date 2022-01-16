@@ -154,7 +154,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 			}
 		}
 
-		public override void GetData()
+		public override void ResolveData()
 		{
 			if (IsReady) 
 			{

@@ -169,8 +169,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
             m_GraphicsContext.Flush();
 
-            m_QueryContext[0].GetData();
-            m_QueryContext[1].GetData();
+            m_QueryContext[0].ResolveData();
+            m_QueryContext[1].ResolveData();
         }
 
         public override FRHISwapChain CreateSwapChain(string name, in uint width, in uint height, in IntPtr windowPtr)
