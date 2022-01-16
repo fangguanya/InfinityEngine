@@ -27,6 +27,7 @@ namespace InfinityEngine.Rendering.RenderPipeline
             cmdBuffer.EndEvent();
 
             renderContext.ExecuteCommandBuffer(cmdBuffer);
+            renderContext.ReleaseCommandBuffer(cmdBuffer);
         }
 
         public override void Release(FRenderContext renderContext)

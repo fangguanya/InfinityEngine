@@ -45,9 +45,10 @@ namespace InfinityEngine.Core.Container
             }
 
             m_Array[length] = value;
+            int cacheIndex = length;
             ++length;
 
-            return length;
+            return cacheIndex;
         }
 
         public int AddUnique(in T value)
@@ -161,8 +162,10 @@ namespace InfinityEngine.Core.Container
             }
 
             m_Array[length] = ptr;
+            int cacheIndex = length;
             ++length;
-            return length;
+
+            return cacheIndex;
         }
 
         public int AddUnique(in T* ptr)
@@ -324,8 +327,10 @@ namespace InfinityEngine.Core.Container
             }
 
             m_Array[length] = value;
+            int cacheIndex = length;
             ++length;
-            return length;
+
+            return cacheIndex;
         }
 
         public int AddUnique(in T value)
