@@ -85,7 +85,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 		public override bool IsReady => m_QueryFence.IsCompleted;
 		public override bool IsTimeQuery => (queryType == EQueryType.CopyTimestamp || queryType == EQueryType.GenericTimestamp);
 
-		public FD3DQueryContext(FRHIDevice device, in EQueryType queryType, in int queryCount, string name) : base(device, queryType, queryCount, name)
+		public FD3DQueryContext(FRHIDevice device, FRHICommandContext cmdContext, in EQueryType queryType, in int queryCount, string name) : base(device, queryType, queryCount, name)
 		{
 			FD3DDevice d3dDevice = (FD3DDevice)device;
 
@@ -132,7 +132,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 				resourceDesc.Layout = D3D12_TEXTURE_LAYOUT.D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
             }
 			ID3D12Resource* resultPtr;
-			m_CmdBuffer = new FD3DCommandBuffer(name, device, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Graphics);
+			m_CmdBuffer = new FD3DCommandBuffer(name, device, cmdContext, queryType == EQueryType.CopyTimestamp ? EContextType.Copy : EContextType.Graphics);
 			d3dDevice.nativeDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAGS.D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, null, Windows.__uuidof<ID3D12Resource>(), (void**)&resultPtr);
 			fixed (char* namePtr = name + "_QueryResult")
 			{

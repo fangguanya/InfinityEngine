@@ -8,12 +8,20 @@ namespace InfinityEngine.Graphics.RHI.D3D
     {
         private FD3DFence m_Fence;
         private ID3D12CommandQueue* m_NativeCmdQueue;
+        private ID3D12CommandAllocator* m_NativeCmdAllocator;
 
         internal ID3D12CommandQueue* nativeCmdQueue
         {
             get
             {
                 return m_NativeCmdQueue;
+            }
+        }
+        internal ID3D12CommandAllocator* nativeCmdAllocator
+        {
+            get
+            {
+                return m_NativeCmdAllocator;
             }
         }
 
@@ -37,6 +45,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 commandQueuePtr->SetName((ushort*)namePtr);
             }
             m_NativeCmdQueue = commandQueuePtr;
+
+            ID3D12CommandAllocator* cmdAllocatorPtr;
+            d3dDevice.nativeDevice->CreateCommandAllocator((D3D12_COMMAND_LIST_TYPE)contextType, Windows.__uuidof<ID3D12CommandAllocator>(), (void**)&cmdAllocatorPtr);
+            fixed (char* namePtr = name + "_CmdAllocator")
+            {
+                cmdAllocatorPtr->SetName((ushort*)namePtr);
+            }
+            m_NativeCmdAllocator = cmdAllocatorPtr;
         }
 
         public static implicit operator ID3D12CommandQueue*(FD3DCommandContext cmdContext) { return cmdContext.m_NativeCmdQueue; }
@@ -70,6 +86,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_Fence?.Dispose();
             m_FenceEvent?.Dispose();
             m_NativeCmdQueue->Release();
+            m_NativeCmdAllocator->Release();
         }
     }
 }

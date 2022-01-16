@@ -57,8 +57,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_ManagedBuffers = new TArray<FRHICommandBuffer>(32);
 
             m_QueryContext = new FD3DQueryContext[2];
-            m_QueryContext[0] = new FD3DQueryContext(m_Device, EQueryType.CopyTimestamp, 128, "CopyTimestamp");
-            m_QueryContext[1] = new FD3DQueryContext(m_Device, EQueryType.GenericTimestamp, 128, "GenericTimestamp");
+            m_QueryContext[0] = new FD3DQueryContext(m_Device, SelectContext(EContextType.Copy), EQueryType.CopyTimestamp, 128, "CopyTimestamp");
+            m_QueryContext[1] = new FD3DQueryContext(m_Device, SelectContext(EContextType.Graphics), EQueryType.GenericTimestamp, 128, "GenericTimestamp");
 
             m_CopyContext = new FD3DCommandContext(m_Device, EContextType.Copy, "Copy");
             m_ComputeContext = new FD3DCommandContext(m_Device, EContextType.Compute, "Compute");
@@ -95,7 +95,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         
         public override FRHICommandBuffer CreateCommandBuffer(in EContextType contextType, string name)
         {
-            return new FD3DCommandBuffer(name, m_Device, contextType);
+            return new FD3DCommandBuffer(name, m_Device, SelectContext(contextType), contextType);
         }
 
         public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease)
