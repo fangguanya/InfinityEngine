@@ -51,6 +51,7 @@ namespace InfinityEngine.Graphics.RHI
     public abstract class FRHICommandBuffer : FDisposal
     {
         public string name;
+        internal int poolIndex;
         internal bool IsClose;
         internal EContextType contextType;
         protected EPrimitiveTopology m_TopologyType;

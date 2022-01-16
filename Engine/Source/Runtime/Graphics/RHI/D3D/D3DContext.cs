@@ -98,7 +98,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             return new FD3DCommandBuffer(name, m_Device, SelectContext(contextType), contextType);
         }
 
-        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name, in bool bAutoRelease)
+        public override FRHICommandBuffer GetCommandBuffer(in EContextType contextType, string name)
         {
             FRHICommandBuffer cmdBuffer = null;
             switch (contextType)
@@ -116,7 +116,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     break;
             }
 
-            if (bAutoRelease) { m_ManagedBuffers.Add(cmdBuffer); }
+            cmdBuffer.poolIndex = m_ManagedBuffers.Add(cmdBuffer);
 
             return cmdBuffer;
         }
@@ -137,6 +137,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
                     m_GraphicsBufferPool.ReleaseTemporary(cmdBuffer);
                     break;
             }
+
+            m_ManagedBuffers.RemoveSwapAtIndex(cmdBuffer.poolIndex);
         }
 
         public override void WriteToFence(in EContextType contextType, FRHIFence fence)
