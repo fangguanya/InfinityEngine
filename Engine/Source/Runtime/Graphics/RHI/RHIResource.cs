@@ -4,6 +4,17 @@ using InfinityEngine.Core.Mathmatics;
 
 namespace InfinityEngine.Graphics.RHI
 {
+    public enum EBindFlag
+    {
+        IndexBuffer = 0x1,
+        VertexBuffer = 0x2,
+        ConstantBuffer = 0x4,
+        DeptnStencil = 0x8,
+        RenderTarget = 0x16,
+        ShaderResource = 0x32,
+        UnorderedAccess = 0x64
+    };
+
     public enum EUsageType
     {
         UMA = 0x1,
