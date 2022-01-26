@@ -259,7 +259,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        public override void Upload<T>(FRHICommandBuffer cmdBuffer) where T : struct
+        public override void Upload(FRHICommandBuffer cmdBuffer)
         {
             if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
             {
@@ -268,7 +268,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 D3D12_RESOURCE_BARRIER afterBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON);
 
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &beforeBarrier);
-                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.stride * descriptor.count);
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
             }
         }
@@ -288,7 +288,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 D3D12_RESOURCE_BARRIER afterBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON);
 
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &beforeBarrier);
-                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(defaultResource, 0, uploadResource, 0, descriptor.stride * descriptor.count);
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
             }
         }
@@ -305,7 +305,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
         }
 
-        public override void Readback<T>(FRHICommandBuffer cmdBuffer) where T : struct
+        public override void Readback(FRHICommandBuffer cmdBuffer)
         {
             if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
             {
@@ -314,7 +314,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 D3D12_RESOURCE_BARRIER afterBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON);
 
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &beforeBarrier);
-                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.stride * descriptor.count);
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
             }
         }
@@ -328,7 +328,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 D3D12_RESOURCE_BARRIER afterBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON);
 
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &beforeBarrier);
-                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.count * (ulong)Unsafe.SizeOf<T>());
+                d3dCmdBuffer.nativeCmdList->CopyBufferRegion(readbackResource, 0, defaultResource, 0, descriptor.stride * descriptor.count);
                 d3dCmdBuffer.nativeCmdList->ResourceBarrier(0, &afterBarrier);
 
                 void* readbackPtr;

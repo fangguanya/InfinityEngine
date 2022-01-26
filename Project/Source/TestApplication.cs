@@ -73,7 +73,7 @@ namespace ExampleProject
                     cmdBuffer.Clear();
                     cmdBuffer.BeginEvent("Readback");
                     cmdBuffer.BeginQuery(query);
-                    buffer.Readback<int>(cmdBuffer);
+                    buffer.Readback(cmdBuffer);
                     cmdBuffer.EndQuery(query);
                     cmdBuffer.EndEvent();
                     renderContext.ExecuteCommandBuffer(cmdBuffer);

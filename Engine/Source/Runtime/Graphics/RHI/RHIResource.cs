@@ -237,11 +237,11 @@ namespace InfinityEngine.Graphics.RHI
         internal FRHIBuffer() { }
         internal FRHIBuffer(FRHIDevice device, in FBufferDescriptor descriptor) { }
         public abstract void SetData<T>(params T[] data) where T : struct;
+        public abstract void Upload(FRHICommandBuffer cmdBuffer);
         public abstract void SetData<T>(FRHICommandBuffer cmdBuffer, params T[] data) where T : struct;
-        public abstract void Upload<T>(FRHICommandBuffer cmdBuffer) where T : struct;
         public abstract void GetData<T>(T[] data) where T : struct;
+        public abstract void Readback(FRHICommandBuffer cmdBuffer);
         public abstract void GetData<T>(FRHICommandBuffer cmdBuffer, T[] data) where T : struct;
-        public abstract void Readback<T>(FRHICommandBuffer cmdBuffer) where T : struct;
     }
 
     public struct FRHIBufferRef
