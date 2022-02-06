@@ -142,7 +142,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
             // GPU Memory
-            if ((descriptor.flag & EUsageType.Default) == EUsageType.Default || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic || (descriptor.flag & EUsageType.Static) == EUsageType.Static)
+            if ((descriptor.flag & EStorageType.Default) == EStorageType.Default || (descriptor.flag & EStorageType.Dynamic) == EStorageType.Dynamic || (descriptor.flag & EStorageType.Static) == EStorageType.Static)
             {
                 D3D12_HEAP_PROPERTIES defaultHeapProperties;
                 {
@@ -177,7 +177,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
 
             // Upload Memory
-            if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((descriptor.flag & EStorageType.Static) == EStorageType.Static || (descriptor.flag & EStorageType.Dynamic) == EStorageType.Dynamic)
             {
                 D3D12_HEAP_PROPERTIES uploadHeapProperties;
                 {
@@ -212,7 +212,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
 
             // Readback Memory
-            if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
+            if ((descriptor.flag & EStorageType.Staging) == EStorageType.Staging)
             {
                 D3D12_HEAP_PROPERTIES readbackHeapProperties;
                 {
@@ -249,7 +249,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void SetData<T>(params T[] data) where T : struct
         {
-            if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((descriptor.flag & EStorageType.Static) == EStorageType.Static || (descriptor.flag & EStorageType.Dynamic) == EStorageType.Dynamic)
             {
                 void* uploadPtr;
                 D3D12_RANGE range = new D3D12_RANGE(0, 0);
@@ -261,7 +261,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void Upload(FRHICommandBuffer cmdBuffer)
         {
-            if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((descriptor.flag & EStorageType.Static) == EStorageType.Static || (descriptor.flag & EStorageType.Dynamic) == EStorageType.Dynamic)
             {
                 FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
                 D3D12_RESOURCE_BARRIER beforeBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST);
@@ -275,7 +275,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void SetData<T>(FRHICommandBuffer cmdBuffer, params T[] data) where T : struct
         {
-            if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((descriptor.flag & EStorageType.Static) == EStorageType.Static || (descriptor.flag & EStorageType.Dynamic) == EStorageType.Dynamic)
             {
                 void* uploadPtr;
                 D3D12_RANGE range = new D3D12_RANGE(0, 0);
@@ -295,7 +295,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void GetData<T>(T[] data) where T : struct
         {
-            if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
+            if ((descriptor.flag & EStorageType.Staging) == EStorageType.Staging)
             {
                 void* readbackPtr;
                 D3D12_RANGE range = new D3D12_RANGE(0, 0);
@@ -307,7 +307,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void Readback(FRHICommandBuffer cmdBuffer)
         {
-            if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
+            if ((descriptor.flag & EStorageType.Staging) == EStorageType.Staging)
             {
                 FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
                 D3D12_RESOURCE_BARRIER beforeBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_SOURCE);
@@ -321,7 +321,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         
         public override void GetData<T>(FRHICommandBuffer cmdBuffer, T[] data) where T : struct
         {
-            if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
+            if ((descriptor.flag & EStorageType.Staging) == EStorageType.Staging)
             {
                 FD3DCommandBuffer d3dCmdBuffer = (FD3DCommandBuffer)cmdBuffer;
                 D3D12_RESOURCE_BARRIER beforeBarrier = D3D12_RESOURCE_BARRIER.InitTransition(defaultResource, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_SOURCE);
@@ -364,7 +364,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
             // GPU Memory
-            if ((descriptor.flag & EUsageType.Default) == EUsageType.Default)
+            if ((descriptor.flag & EStorageType.Default) == EStorageType.Default)
             {
                 D3D12_HEAP_PROPERTIES defaultHeapProperties;
                 {
@@ -395,7 +395,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
 
             // Upload Memory
-            if ((descriptor.flag & EUsageType.Static) == EUsageType.Static || (descriptor.flag & EUsageType.Dynamic) == EUsageType.Dynamic)
+            if ((descriptor.flag & EStorageType.Static) == EStorageType.Static || (descriptor.flag & EStorageType.Dynamic) == EStorageType.Dynamic)
             {
                 D3D12_HEAP_PROPERTIES uploadHeapProperties;
                 {
@@ -426,7 +426,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             }
 
             // Readback Memory
-            if ((descriptor.flag & EUsageType.Staging) == EUsageType.Staging)
+            if ((descriptor.flag & EStorageType.Staging) == EStorageType.Staging)
             {
                 D3D12_HEAP_PROPERTIES readbackHeapProperties;
                 {

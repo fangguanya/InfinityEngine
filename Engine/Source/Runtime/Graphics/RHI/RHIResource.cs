@@ -4,7 +4,7 @@ using InfinityEngine.Core.Mathmatics;
 
 namespace InfinityEngine.Graphics.RHI
 {
-    public enum EBindFlag
+    public enum EUsageType
     {
         IndexBuffer = 0x1,
         VertexBuffer = 0x2,
@@ -15,7 +15,7 @@ namespace InfinityEngine.Graphics.RHI
         UnorderedAccess = 0x64
     };
 
-    public enum EUsageType
+    public enum EStorageType
     {
         UMA = 0x1,
         Static = 0x2,
@@ -224,10 +224,10 @@ namespace InfinityEngine.Graphics.RHI
 
         public ulong count;
         public ulong stride;
-        public EUsageType flag;
+        public EStorageType flag;
         public EBufferType type;
 
-        public FBufferDescriptor(in ulong count, in ulong stride, in EUsageType usageFlag, in EBufferType type = EBufferType.Structured) : this()
+        public FBufferDescriptor(in ulong count, in ulong stride, in EStorageType usageFlag, in EBufferType type = EBufferType.Structured) : this()
         {
             this.type = type;
             this.flag = usageFlag;
@@ -277,12 +277,12 @@ namespace InfinityEngine.Graphics.RHI
         public bool sparse;
         public ushort mipLevel;
         public ushort anisoLevel;
-        public EUsageType flag;
+        public EStorageType flag;
         public EMSAASample sample;
         public ETextureType type;
         public EGraphicsFormat format;
 
-        public FTextureDescriptor(in int width, in int height, in EUsageType usageFlag, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType type = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample msaaSample = EMSAASample.None, in bool sparse = false) : this()
+        public FTextureDescriptor(in int width, in int height, in EStorageType usageFlag, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType type = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample msaaSample = EMSAASample.None, in bool sparse = false) : this()
         {
             this.type = type;
             this.width = width;
