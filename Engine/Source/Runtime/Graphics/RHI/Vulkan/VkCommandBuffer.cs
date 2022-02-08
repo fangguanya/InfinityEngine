@@ -6,10 +6,10 @@ using InfinityEngine.Core.Mathmatics.Geometry;
 
 namespace InfinityEngine.Graphics.RHI.Vulkan
 {
-    public class FVkCommandBuffer : FRHICommandBuffer
+    public unsafe class FVkCommandBuffer : FRHICommandBuffer
     {
-        internal VkCommandPool nativeCmdPool;
-        internal VkCommandBuffer nativeCmdBuffer;
+        internal VkCommandPool* nativeCmdPool;
+        internal VkCommandBuffer* nativeCmdBuffer;
 
         internal FVkCommandBuffer(string name, FRHIDevice device, EContextType contextType) : base(name, device, contextType)
         {
@@ -108,7 +108,7 @@ namespace InfinityEngine.Graphics.RHI.Vulkan
 
         public override void DispatchCompute(in uint sizeX, in uint sizeY, in uint sizeZ)
         {
-            vkCmdDispatch(nativeCmdBuffer, sizeX, sizeY, sizeZ);
+            vkCmdDispatch(*nativeCmdBuffer, sizeX, sizeY, sizeZ);
         }
 
         public override void DispatchComputeIndirect(FRHIBuffer argsBuffer, in uint argsOffset)
