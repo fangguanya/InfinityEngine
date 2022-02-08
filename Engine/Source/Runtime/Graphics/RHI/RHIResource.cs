@@ -6,13 +6,10 @@ namespace InfinityEngine.Graphics.RHI
 {
     public enum EUsageType
     {
-        IndexBuffer = 0x1,
-        VertexBuffer = 0x2,
-        ConstantBuffer = 0x4,
-        DeptnStencil = 0x8,
-        RenderTarget = 0x16,
-        ShaderResource = 0x32,
-        UnorderedAccess = 0x64
+        Default = 0x1,
+        DeptnStencil = 0x2,
+        RenderTarget = 0x4,
+        UnorderedAccess = 0x8
     };
 
     public enum EStorageType
@@ -224,20 +221,22 @@ namespace InfinityEngine.Graphics.RHI
 
         public ulong count;
         public ulong stride;
-        public EStorageType flag;
-        public EBufferType type;
+        public EUsageType usageType;
+        public EBufferType bufferType;
+        public EStorageType storageType;
 
-        public FBufferDescriptor(in ulong count, in ulong stride, in EStorageType usageFlag, in EBufferType type = EBufferType.Structured) : this()
+        public FBufferDescriptor(in int count, in int stride, in EUsageType usageType, in EStorageType storageType, in EBufferType bufferType = EBufferType.Structured) : this()
         {
-            this.type = type;
-            this.flag = usageFlag;
-            this.count = count;
-            this.stride = stride;
+            this.count = (ulong)count;
+            this.stride = (ulong)stride;
+            this.usageType = usageType;
+            this.bufferType = bufferType;
+            this.storageType = storageType;
         }
 
         public override int GetHashCode()
         {
-            return new int3((int)type, count.GetHashCode(), stride.GetHashCode()).GetHashCode();
+            return new int3((int)bufferType, count.GetHashCode(), stride.GetHashCode()).GetHashCode();
         }
     }
 
@@ -277,23 +276,25 @@ namespace InfinityEngine.Graphics.RHI
         public bool sparse;
         public ushort mipLevel;
         public ushort anisoLevel;
-        public EStorageType flag;
         public EMSAASample sample;
-        public ETextureType type;
+        public EUsageType usageType;
+        public ETextureType textureType;
+        public EStorageType storageType;
         public EGraphicsFormat format;
 
-        public FTextureDescriptor(in int width, in int height, in EStorageType usageFlag, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType type = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample msaaSample = EMSAASample.None, in bool sparse = false) : this()
+        public FTextureDescriptor(in int width, in int height, in EUsageType usageType, in EStorageType storageType, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType textureType = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample sample = EMSAASample.None, in bool sparse = false) : this()
         {
-            this.type = type;
             this.width = width;
             this.height = height;
             this.slices = slices;
             this.sparse = sparse;
             this.format = format;
-            this.sample = msaaSample;
-            this.flag = usageFlag;
+            this.sample = sample;
             this.mipLevel = mipLevel;
+            this.usageType = usageType;
             this.anisoLevel = anisoLevel;
+            this.textureType = textureType;
+            this.storageType = storageType;
         }
 
         public override int GetHashCode()
@@ -302,7 +303,7 @@ namespace InfinityEngine.Graphics.RHI
             hashCode += width;
             hashCode += height;
             hashCode += slices;
-            hashCode += (int)type;
+            hashCode += (int)textureType;
             hashCode += mipLevel;
             hashCode += anisoLevel;
             return hashCode;

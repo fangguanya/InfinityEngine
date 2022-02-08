@@ -29,9 +29,10 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 descriptor.sparse = false;
                 descriptor.mipLevel = 1;
                 descriptor.anisoLevel = 1;
-                descriptor.flag = EStorageType.Default;
                 descriptor.sample = EMSAASample.None;
-                descriptor.type = ETextureType.Tex2D;
+                descriptor.usageType = EUsageType.RenderTarget;
+                descriptor.textureType = ETextureType.Tex2D;
+                descriptor.storageType = EStorageType.Default;
                 descriptor.format = EGraphicsFormat.R8G8B8A8_UNorm;
             }
 
