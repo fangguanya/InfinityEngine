@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Silk.NET.Maths" Version="2.11.0" />
+    <PackageReference Include="Silk.NET.Maths" Version="2.13.0" />
     <PackageReference Include="TerraFX.Interop.Mimalloc" Version="1.6.0-beta2" />
   </ItemGroup>
 
