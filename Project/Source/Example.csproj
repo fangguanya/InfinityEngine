@@ -1,33 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <UseWindowsForms>true</UseWindowsForms>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
-    <Platforms>x64</Platforms>
-    <MinimumPlatformVersion>10.0.18362.0</MinimumPlatformVersion>
-    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<UseWindowsForms>true</UseWindowsForms>
+		<TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<DisableWinExeOutputInference>true</DisableWinExeOutputInference>
+		<Platforms>x64;ARM64</Platforms>
+		<MinimumPlatformVersion>10.0.18362.0</MinimumPlatformVersion>
+		<SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutputPath>../Binaries/Win64/Debug/</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<OutputPath>../Binaries/Win64/Debug/</OutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutputPath>../Binaries/Win64/Release/</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<OutputPath>../Binaries/Win64/Release/</OutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Source\Runtime\Core\Infinity.Core.csproj" />
-    <ProjectReference Include="..\..\Engine\Source\Runtime\Game\Infinity.Game.csproj" />
-    <ProjectReference Include="..\..\Engine\Source\Runtime\Graphics\Infinity.Graphics.csproj" />
-    <ProjectReference Include="..\..\Engine\Source\Runtime\Physics\Infinity.Physics.csproj" />
-    <ProjectReference Include="..\..\Engine\Source\Runtime\Rendering\Infinity.Rendering.csproj" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+		<OutputPath>../Binaries/ARM64/Debug/</OutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+		<OutputPath>../Binaries/ARM64/Release/</OutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Engine\Source\Runtime\Core\Infinity.Core.csproj" />
+		<ProjectReference Include="..\..\Engine\Source\Runtime\Game\Infinity.Game.csproj" />
+		<ProjectReference Include="..\..\Engine\Source\Runtime\Graphics\Infinity.Graphics.csproj" />
+		<ProjectReference Include="..\..\Engine\Source\Runtime\Physics\Infinity.Physics.csproj" />
+		<ProjectReference Include="..\..\Engine\Source\Runtime\Rendering\Infinity.Rendering.csproj" />
+	</ItemGroup>
 
 </Project>

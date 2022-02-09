@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <MSBuildProjectExtensionsPath>$(ProjectDir)../../../Intermediate/Antlr4/</MSBuildProjectExtensionsPath>
+    <BaseIntermediateOutputPath>$(ProjectDir)../../../Intermediate/Antlr4/</BaseIntermediateOutputPath>
+    <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
+  </PropertyGroup>
+</Project>

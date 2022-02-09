@@ -1,49 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Platforms>x64</Platforms>
-    <AssemblyName>InfinityEngine.Graphics</AssemblyName>
-    <RootNamespace>InfinityEngine.Graphics</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Platforms>x64;ARM64</Platforms>
+		<AssemblyName>InfinityEngine.Graphics</AssemblyName>
+		<RootNamespace>InfinityEngine.Graphics</RootNamespace>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <WarningLevel>3</WarningLevel>
-    <OutputPath>../../../Binaries/Graphics/Win64/Debug/</OutputPath>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<PlatformTarget>x64</PlatformTarget>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<WarningLevel>3</WarningLevel>
+		<OutputPath>../../../Binaries/Graphics/Win64/Debug/</OutputPath>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors></WarningsAsErrors>
-    <OutputPath>../../../Binaries/Graphics/Win64/Release/</OutputPath>
-    <WarningLevel>3</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<WarningsAsErrors></WarningsAsErrors>
+		<OutputPath>../../../Binaries/Graphics/Win64/Release/</OutputPath>
+		<WarningLevel>3</WarningLevel>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>true</Optimize>
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="TerraFX.Interop.D3D12MemoryAllocator" Version="2.0.0-beta3" />
-    <PackageReference Include="TerraFX.Interop.Vulkan" Version="1.2.198-rc2" />
-    <PackageReference Include="Veldrid.MetalBindings" Version="4.9.0-beta1" />
-    <PackageReference Include="Veldrid.RenderDoc" Version="1.0.1" />
-    <PackageReference Include="Veldrid.SPIRV" Version="1.0.14" />
-    <PackageReference Include="Vortice.Direct3D12" Version="2.1.1-beta9" />
-    <PackageReference Include="Vortice.DirectX" Version="2.1.1-beta9" />
-    <PackageReference Include="Vortice.Dxc" Version="2.1.1-beta9" />
-    <PackageReference Include="Vortice.DXGI" Version="2.1.1-beta9" />
-    <PackageReference Include="Vortice.Mathematics" Version="1.4.4" />
-    <PackageReference Include="Vortice.Vulkan" Version="1.5.1" />
-    <PackageReference Include="WaveEngine.HLSLEverywhere" Version="3.3.0.8617-preview" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+		<PlatformTarget>ARM64</PlatformTarget>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<WarningLevel>3</WarningLevel>
+		<OutputPath>../../../Binaries/Graphics/ARM64/Debug/</OutputPath>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\ThirdParty\Antlr4\Antlr4.csproj" />
-    <ProjectReference Include="..\Core\Infinity.Core.csproj" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<WarningsAsErrors></WarningsAsErrors>
+		<OutputPath>../../../Binaries/Graphics/ARM64/Release/</OutputPath>
+		<WarningLevel>3</WarningLevel>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Optimize>true</Optimize>
+		<PlatformTarget>ARM64</PlatformTarget>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="TerraFX.Interop.D3D12MemoryAllocator" Version="2.0.0-beta3" />
+		<PackageReference Include="TerraFX.Interop.Vulkan" Version="1.2.198-rc2" />
+		<PackageReference Include="Veldrid.MetalBindings" Version="4.9.0-beta1" />
+		<PackageReference Include="Veldrid.RenderDoc" Version="1.0.1" />
+		<PackageReference Include="Veldrid.SPIRV" Version="1.0.14" />
+		<PackageReference Include="Vortice.Direct3D12" Version="2.1.1-beta9" />
+		<PackageReference Include="Vortice.DirectX" Version="2.1.1-beta9" />
+		<PackageReference Include="Vortice.Dxc" Version="2.1.1-beta9" />
+		<PackageReference Include="Vortice.DXGI" Version="2.1.1-beta9" />
+		<PackageReference Include="Vortice.Mathematics" Version="1.4.4" />
+		<PackageReference Include="Vortice.Vulkan" Version="1.5.1" />
+		<PackageReference Include="WaveEngine.HLSLEverywhere" Version="3.3.0.8617-preview" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\ThirdParty\Antlr4\Antlr4.csproj" />
+		<ProjectReference Include="..\Core\Infinity.Core.csproj" />
+	</ItemGroup>
 
 </Project>

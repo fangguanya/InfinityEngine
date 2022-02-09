@@ -1,30 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <Platforms>x64</Platforms>
-    <Nullable>warnings</Nullable>
-    <AssemblyName>InfinityEngine.Core</AssemblyName>
-    <RootNamespace>InfinityEngine.Core</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<Platforms>x64;ARM64</Platforms>
+		<Nullable>warnings</Nullable>
+		<AssemblyName>InfinityEngine.Core</AssemblyName>
+		<RootNamespace>InfinityEngine.Core</RootNamespace>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <WarningLevel>3</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>../../../Binaries/Core/Win64/Debug/</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<PlatformTarget>x64</PlatformTarget>
+		<WarningLevel>3</WarningLevel>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<OutputPath>../../../Binaries/Core/Win64/Debug/</OutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutputPath>../../../Binaries/Core/Win64/Release/</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<OutputPath>../../../Binaries/Core/Win64/Release/</OutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Silk.NET.Maths" Version="2.13.0" />
-    <PackageReference Include="TerraFX.Interop.Mimalloc" Version="1.6.0-beta2" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+		<PlatformTarget>ARM64</PlatformTarget>
+		<WarningLevel>3</WarningLevel>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<OutputPath>../../../Binaries/Core/ARM64/Debug/</OutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+		<OutputPath>../../../Binaries/Core/ARM64/Release/</OutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.Maths" Version="2.13.0" />
+		<PackageReference Include="TerraFX.Interop.Mimalloc" Version="1.6.0-beta2" />
+	</ItemGroup>
 
 </Project>
