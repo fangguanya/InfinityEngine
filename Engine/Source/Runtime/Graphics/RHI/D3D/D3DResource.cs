@@ -142,7 +142,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             FD3DDevice d3dDevice = (FD3DDevice)device;
 
             // GPU Memory
-            if ((descriptor.storageType & EStorageType.Default) == EStorageType.Default || (descriptor.storageType & EStorageType.Dynamic) == EStorageType.Dynamic || (descriptor.storageType & EStorageType.Static) == EStorageType.Static)
+            if ((descriptor.storageType & EStorageType.Default) == EStorageType.Default)
             {
                 D3D12_HEAP_PROPERTIES defaultHeapProperties;
                 {
