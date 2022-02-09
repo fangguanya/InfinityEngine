@@ -36,12 +36,13 @@
     <PackageReference Include="Vortice.DirectX" Version="2.1.1-beta9" />
     <PackageReference Include="Vortice.Dxc" Version="2.1.1-beta9" />
     <PackageReference Include="Vortice.DXGI" Version="2.1.1-beta9" />
-    <PackageReference Include="Vortice.Mathematics" Version="1.4.3" />
-    <PackageReference Include="Vortice.Vulkan" Version="1.5.0" />
+    <PackageReference Include="Vortice.Mathematics" Version="1.4.4" />
+    <PackageReference Include="Vortice.Vulkan" Version="1.5.1" />
     <PackageReference Include="WaveEngine.HLSLEverywhere" Version="3.3.0.8617-preview" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ThirdParty\Antlr4\Antlr4.csproj" />
     <ProjectReference Include="..\Core\Infinity.Core.csproj" />
   </ItemGroup>
 

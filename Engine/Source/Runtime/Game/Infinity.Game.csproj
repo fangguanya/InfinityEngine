@@ -29,10 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Vortice.Mathematics" Version="1.4.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Asset\Infinity.Asset.csproj" />
     <ProjectReference Include="..\Core\Infinity.Core.csproj" />
     <ProjectReference Include="..\Graphics\Infinity.Graphics.csproj" />

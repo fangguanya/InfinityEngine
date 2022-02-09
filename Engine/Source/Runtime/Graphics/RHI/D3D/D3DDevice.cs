@@ -6,7 +6,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
     internal unsafe class FD3DDevice : FRHIDevice
     {
         internal ID3D12Device6* nativeDevice;
-        internal IDXGIAdapter1* nativeAdapter;
+        //internal IDXGIAdapter1* nativeAdapter;
         internal IDXGIFactory7* nativeFactory;
 
         public FD3DDevice()
@@ -15,19 +15,19 @@ namespace InfinityEngine.Graphics.RHI.D3D
             DirectX.CreateDXGIFactory2(0, Windows.__uuidof<IDXGIFactory7>(), (void**)&factory);
             nativeFactory = factory;
 
-            IDXGIAdapter1* adapter;
-            factory->EnumAdapters1(0, &adapter);
-            nativeAdapter = adapter;
+            //IDXGIAdapter1* adapter;
+            //factory->EnumAdapters1(0, &adapter);
+            //nativeAdapter = adapter;
 
             ID3D12Device6* device;
-            DirectX.D3D12CreateDevice((IUnknown*)adapter, D3D_FEATURE_LEVEL.D3D_FEATURE_LEVEL_12_1, Windows.__uuidof<ID3D12Device6>(), (void**)&device);
+            DirectX.D3D12CreateDevice(null/*(IUnknown*)adapter*/, D3D_FEATURE_LEVEL.D3D_FEATURE_LEVEL_12_1, Windows.__uuidof<ID3D12Device6>(), (void**)&device);
             nativeDevice = device;
         }
 
         protected override void Release()
         {
             nativeDevice->Release();
-            nativeAdapter->Release();
+            //nativeAdapter->Release();
             nativeFactory->Release();
         }
 

@@ -74,7 +74,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             {
                 gpuHeapPtr->SetName((ushort*)namePtr);
             }
-            m_GPUDescriptorHeap = cpuHeapPtr;
+            m_GPUDescriptorHeap = gpuHeapPtr;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
