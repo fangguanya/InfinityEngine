@@ -241,22 +241,26 @@
 
 			#include "../Private/Common.hlsl"
 
+			[shader("raygeneration")]
 			void RayGeneration()
 			{
 				uint2 dispatchIdx = DispatchRaysIndex().xy;
 				UAV_Output[dispatchIdx] = float4(dispatchIdx.x & dispatchIdx.y, (dispatchIdx.x & 15) / 15, (dispatchIdx.y & 15) / 15, 0);
 			}
 
+			[shader("miss")]
 			void Miss(inout AORayPayload rayPayload : SV_RayPayload)
 			{
 				rayPayload.HitDistance = -1;
 			}
 
+			[shader("anyhit")]
 			void AnyHit(inout AORayPayload rayPayload : SV_RayPayload, AOAttributeData attributeData : SV_IntersectionAttributes)
 			{
 				IgnoreHit();
 			}
 
+			[shader("closesthit")]
 			void ClosestHit(inout AORayPayload rayPayload : SV_RayPayload, AOAttributeData attributeData : SV_IntersectionAttributes)
 			{
 				rayPayload.HitDistance = RayTCurrent();

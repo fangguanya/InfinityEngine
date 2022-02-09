@@ -35,6 +35,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Antlr4", "Engine\Source\ThirdParty\Antlr4\Antlr4.csproj", "{06994188-1C74-434D-B7E2-5FCBDEA9574B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{8AFD4933-9D61-4994-8BAD-A7C7484D5ED8}"
+	ProjectSection(SolutionItems) = preProject
+		Engine\Shaders\InfinityLit.shader = Engine\Shaders\InfinityLit.shader
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -122,6 +127,7 @@ Global
 		{983AB644-0AFF-4A1A-8511-95A406635887} = {074295D5-556B-4F58-A0FE-28143A790BED}
 		{6424241A-886C-423F-B143-186FE7AEA81C} = {074295D5-556B-4F58-A0FE-28143A790BED}
 		{06994188-1C74-434D-B7E2-5FCBDEA9574B} = {6424241A-886C-423F-B143-186FE7AEA81C}
+		{8AFD4933-9D61-4994-8BAD-A7C7484D5ED8} = {074295D5-556B-4F58-A0FE-28143A790BED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27220D00-A0A0-4FA3-8075-AEA7FB523FAF}
