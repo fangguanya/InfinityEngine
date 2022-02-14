@@ -65,9 +65,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
             if(type != EDescriptorType.CbvSrvUav) { return; }
             D3D12_DESCRIPTOR_HEAP_DESC descriptorGPU;
-            descriptorCPU.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS.D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-            descriptorCPU.Type = heapType;
-            descriptorCPU.NumDescriptors = count;
+            descriptorGPU.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS.D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+            descriptorGPU.Type = heapType;
+            descriptorGPU.NumDescriptors = count;
             ID3D12DescriptorHeap* gpuHeapPtr;
             d3dDevice.nativeDevice->CreateDescriptorHeap(&descriptorGPU, Windows.__uuidof<ID3D12DescriptorHeap>(), (void**)&gpuHeapPtr);
             fixed (char* namePtr = name + "_GPU")
