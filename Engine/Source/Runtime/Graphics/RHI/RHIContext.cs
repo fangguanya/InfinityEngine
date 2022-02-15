@@ -56,7 +56,7 @@ namespace InfinityEngine.Graphics.RHI
         public abstract FRHIResourceSet CreateResourceSet(in uint count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SubmitAndFlushContext(FRHIContext context)
+        public static void SubmitContext(FRHIContext context)
         {
             context.Submit();
         }

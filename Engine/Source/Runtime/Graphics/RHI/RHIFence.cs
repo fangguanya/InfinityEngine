@@ -8,6 +8,7 @@ namespace InfinityEngine.Graphics.RHI
     {
         public string name;
         public virtual bool IsCompleted => false;
+        public virtual ulong CompletedValue => 0;
 
         internal FRHIFence(FRHIDevice device, string name) { }
 

@@ -167,6 +167,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_QueryContext[0].Submit(m_CopyContext);
             m_QueryContext[1].Submit(m_GraphicsContext);
 
+            m_CopyContext.AsyncFlush();
+            m_ComputeContext.AsyncFlush();
             m_GraphicsContext.Flush();
 
             m_QueryContext[0].ResolveData();

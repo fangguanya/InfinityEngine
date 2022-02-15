@@ -68,7 +68,8 @@ namespace ExampleProject
             {
                 timeProfiler.Start();
 
-                if (dataReady) {
+                if (dataReady) 
+                {
                     FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Readback");
                     cmdBuffer.Clear();
                     cmdBuffer.BeginEvent("Readback");
@@ -82,7 +83,8 @@ namespace ExampleProject
                     //renderContext.WaitForFence(EContextType.Graphics, fence);
                 }
 
-                if (dataReady = fence.IsCompleted) {
+                if (dataReady = fence.IsCompleted) 
+                {
                     buffer.GetData(readData);
                     gpuTime = query.GetResult(renderContext.copyFrequency);
                 }

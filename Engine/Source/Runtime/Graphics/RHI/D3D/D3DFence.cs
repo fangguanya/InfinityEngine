@@ -7,11 +7,9 @@ namespace InfinityEngine.Graphics.RHI.D3D
 {
     public unsafe class FD3DFence : FRHIFence
     {
-        public override bool IsCompleted
-        {
-            get { return m_NativeFence->GetCompletedValue() >= m_FenceValue ? true : false; }
-        }
-        
+        public override ulong CompletedValue => m_NativeFence->GetCompletedValue();
+        public override bool IsCompleted => CompletedValue < m_FenceValue ? false : true;
+
         private ulong m_FenceValue;
         private ID3D12Fence* m_NativeFence;
 
@@ -31,15 +29,14 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         internal override void Signal(FRHICommandContext cmdContext)
         {
-            FD3DCommandContext d3dCmdContext = (FD3DCommandContext)cmdContext;
-
             ++m_FenceValue;
+            FD3DCommandContext d3dCmdContext = (FD3DCommandContext)cmdContext;
             d3dCmdContext.nativeCmdQueue->Signal(m_NativeFence, m_FenceValue);
         }
 
         internal override void WaitOnCPU(AutoResetEvent fenceEvent)
         {
-            if (!IsCompleted)
+            if (CompletedValue < m_FenceValue)
             {
                 IntPtr eventPtr = fenceEvent.SafeWaitHandle.DangerousGetHandle();
                 HANDLE eventHandle = new HANDLE(eventPtr.ToPointer());
@@ -47,7 +44,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 Windows.WaitForSingleObject(eventHandle, uint.MaxValue);
             }
         }
-
+        
         internal override void WaitOnGPU(FRHICommandContext cmdContext)
         {
             FD3DCommandContext d3dCmdContext = (FD3DCommandContext)cmdContext;

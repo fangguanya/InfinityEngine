@@ -72,7 +72,7 @@ namespace InfinityEngine.Game.System
                     m_RenderPipeline.Init(m_RenderContext); 
                 }
                 m_RenderPipeline.Render(m_RenderContext);
-                FRHIContext.SubmitAndFlushContext(m_Context);
+                FRHIContext.SubmitContext(m_Context);
                 m_SwapChain.Present();
                 m_SemaphoreR2G.Signal();
             }

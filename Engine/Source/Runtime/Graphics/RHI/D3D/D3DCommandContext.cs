@@ -6,6 +6,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 {
     internal unsafe class FD3DCommandContext : FRHICommandContext
     {
+        bool IsReady = true;
         private FD3DFence m_Fence;
         private ID3D12CommandQueue* m_NativeCmdQueue;
         private ID3D12CommandAllocator* m_NativeCmdAllocator;
@@ -80,6 +81,19 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_Fence.Signal(this);
             m_Fence.WaitOnCPU(m_FenceEvent);
             m_NativeCmdAllocator->Reset();
+        }
+
+        public override void AsyncFlush()
+        {
+            if (IsReady)
+            {
+                m_Fence.Signal(this);
+            }
+
+            if (IsReady = m_Fence.IsCompleted)
+            {
+                m_NativeCmdAllocator->Reset();
+            }
         }
 
         protected override void Release()

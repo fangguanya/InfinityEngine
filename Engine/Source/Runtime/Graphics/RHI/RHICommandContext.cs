@@ -17,5 +17,6 @@ namespace InfinityEngine.Graphics.RHI
         public abstract void WaitQueue(FRHIFence fence);
         public abstract void ExecuteQueue(FRHICommandBuffer cmdBuffer);
         public abstract void Flush();
+        public abstract void AsyncFlush();
     }
 }
