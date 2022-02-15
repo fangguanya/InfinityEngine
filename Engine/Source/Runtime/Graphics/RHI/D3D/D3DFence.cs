@@ -41,7 +41,8 @@ namespace InfinityEngine.Graphics.RHI.D3D
                 IntPtr eventPtr = fenceEvent.SafeWaitHandle.DangerousGetHandle();
                 HANDLE eventHandle = new HANDLE(eventPtr.ToPointer());
                 m_NativeFence->SetEventOnCompletion(m_FenceValue, eventHandle);
-                Windows.WaitForSingleObject(eventHandle, uint.MaxValue);
+                //Windows.WaitForSingleObject(eventHandle, uint.MaxValue);
+                fenceEvent.WaitOne();
             }
         }
         

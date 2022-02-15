@@ -12,7 +12,7 @@ namespace ExampleProject
     [Serializable]
     public class TestComponent : UComponent
     {
-        int numData = 100000;
+        int numData = 50000000;
         bool dataReady;
         int[] readData;
         float cpuTime
@@ -66,8 +66,6 @@ namespace ExampleProject
         {
             FGraphics.AddTask((FRenderContext renderContext) =>
             {
-                timeProfiler.Start();
-
                 if (dataReady) 
                 {
                     FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Readback");
@@ -83,19 +81,18 @@ namespace ExampleProject
                     //renderContext.WaitForFence(EContextType.Graphics, fence);
                 }
 
-                if (dataReady = fence.IsCompleted) 
+                timeProfiler.Start();
+                if (fence.IsCompleted) 
                 {
                     buffer.GetData(readData);
+                    dataReady = fence.IsCompleted;
                     gpuTime = query.GetResult(renderContext.copyFrequency);
                 }
-
                 timeProfiler.Stop();
-                Console.WriteLine("CPU : " + cpuTime + "ms");
-                Console.WriteLine("GPU : " + gpuTime + "ms");
-            });
 
-            Console.WriteLine("||");
-            Console.WriteLine("Game");
+                Console.WriteLine("CPUCopy : " + cpuTime + "ms");
+                Console.WriteLine("GPUCopy : " + gpuTime + "ms");
+            });
         }
 
         public override void OnDisable()

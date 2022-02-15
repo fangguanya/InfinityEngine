@@ -5,14 +5,14 @@ using InfinityEngine.Core.Mathmatics.Geometry;
 
 namespace InfinityEngine.Graphics.RHI.Metal
 {
-    public unsafe class FD3DCommandBuffer : FRHICommandBuffer
+    public unsafe class FMTLCommandBuffer : FRHICommandBuffer
     {
         private MTLCommandBuffer m_CmdBuffer;
         private MTLBlitCommandEncoder m_BlitCmdEncoder;
         private MTLRenderCommandEncoder m_RenderCmdEncoder;
         private MTLComputeCommandEncoder m_ComputeCmdEncoder;
 
-        internal FD3DCommandBuffer(string name, FRHIDevice device, FRHICommandContext cmdContext, EContextType contextType) : base(name, device, contextType)
+        internal FMTLCommandBuffer(string name, FRHIDevice device, FRHICommandContext cmdContext, EContextType contextType) : base(name, device, contextType)
         {
             m_BlitCmdEncoder = m_CmdBuffer.blitCommandEncoder();
             //m_RenderCmdEncoder = m_CmdBuffer.renderCommandEncoderWithDescriptor();

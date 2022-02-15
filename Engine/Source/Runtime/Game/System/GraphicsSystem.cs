@@ -84,7 +84,7 @@ namespace InfinityEngine.Game.System
 
             for (int i = 0; i < FGraphics.GraphicsTasks.length; ++i) {
                 FGraphics.GraphicsTasks[i](m_RenderContext);
-                //FGraphics.GraphicsTasks[i] = null;
+                FGraphics.GraphicsTasks[i] = null;
             }
             FGraphics.GraphicsTasks.Clear();
         }

@@ -18,7 +18,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
             FD3DCommandContext d3dCmdContext = (FD3DCommandContext)cmdContext;
 
             this.name = name;
-            this.IsClose = false;
             this.contextType = contextType;
             this.nativeCmdPool = d3dCmdContext.nativeCmdAllocator;
 
@@ -34,15 +33,11 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void Clear()
         {
-            //if(!IsClose) { return; }
-
-            IsClose = false;
             nativeCmdList->Reset(nativeCmdPool, null);
         }
 
         internal override void Close()
         {
-            IsClose = true;
             nativeCmdList->Close();
         }
 
