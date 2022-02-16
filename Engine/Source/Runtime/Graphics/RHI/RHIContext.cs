@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DeferredExecute
+
+using System;
 using InfinityEngine.Core.Object;
 using System.Runtime.CompilerServices;
 
@@ -10,6 +12,16 @@ namespace InfinityEngine.Graphics.RHI
         Compute = 2,
         Graphics = 0
     }
+
+    #if DeferredExecute
+        internal struct FExecuteInfo
+        {
+            public FRHIFence fence;
+            public EExecuteType executeType;
+            public FRHICommandBuffer cmdBuffer;
+            public FRHICommandContext cmdContext;
+        }
+    #endif
 
     public abstract class FRHIContext : FDisposal
     {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DeferredExecute
+
+using System;
 using InfinityEngine.Core.Container;
 
 namespace InfinityEngine.Graphics.RHI.D3D
@@ -40,6 +42,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
         internal FD3DCommandContext m_CopyContext;
         internal FD3DCommandContext m_ComputeContext;
         internal FD3DCommandContext m_GraphicsContext;
+        internal TArray<FExecuteInfo> m_ExecuteInfos;
         internal FRHICommandBufferPool m_CopyBufferPool;
         internal FRHICommandBufferPool m_ComputeBufferPool;
         internal FRHICommandBufferPool m_GraphicsBufferPool;
@@ -54,6 +57,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_Device = new FD3DDevice();
             m_FencePool = new FRHIFencePool(this);
             m_ResourcePool = new FRHIResourcePool(this);
+            m_ExecuteInfos = new TArray<FExecuteInfo>(32);
             m_ManagedBuffers = new TArray<FRHICommandBuffer>(32);
 
             m_CopyContext = new FD3DCommandContext(m_Device, EContextType.Copy, "Copy");
@@ -143,32 +147,88 @@ namespace InfinityEngine.Graphics.RHI.D3D
 
         public override void WriteToFence(in EContextType contextType, FRHIFence fence)
         {
-            SelectContext(contextType).SignalQueue(fence);
+            #if DeferredExecute
+                FExecuteInfo executeInfo;
+                executeInfo.fence = fence;
+                executeInfo.cmdBuffer = null;
+                executeInfo.executeType = EExecuteType.Signal;
+                executeInfo.cmdContext = SelectContext(contextType);
+                m_ExecuteInfos.Add(executeInfo);
+            #else
+                SelectContext(contextType).SignalQueue(fence);
+            #endif
         }
 
         public override void WaitForFence(in EContextType contextType, FRHIFence fence)
         {
-            SelectContext(contextType).WaitQueue(fence);
+            #if DeferredExecute
+                FExecuteInfo executeInfo;
+                executeInfo.fence = fence;
+                executeInfo.cmdBuffer = null;
+                executeInfo.executeType = EExecuteType.Wait;
+                executeInfo.cmdContext = SelectContext(contextType);
+                m_ExecuteInfos.Add(executeInfo);
+            #else
+                SelectContext(contextType).WaitQueue(fence);
+            #endif
         }
 
         public override void ExecuteCommandBuffer(FRHICommandBuffer cmdBuffer)
         {
-            SelectContext(cmdBuffer.contextType).ExecuteQueue(cmdBuffer);
+            #if DeferredExecute
+                FExecuteInfo executeInfo;
+                executeInfo.fence = null;
+                executeInfo.cmdBuffer = cmdBuffer;
+                executeInfo.executeType = EExecuteType.Execute;
+                executeInfo.cmdContext = SelectContext(cmdBuffer.contextType);
+                m_ExecuteInfos.Add(executeInfo);
+            #else
+                SelectContext(cmdBuffer.contextType).ExecuteQueue(cmdBuffer);
+            #endif
         }
 
         internal override void Submit()
         {
-            for (int i = 0; i < m_ManagedBuffers.length; ++i) {
+            #region submit cmdBuffer
+            #if DeferredExecute
+                for (int i = 0; i < m_ExecuteInfos.length; ++i)
+                {
+                    ref FExecuteInfo executeInfo = ref m_ExecuteInfos[i];
+                    FD3DCommandContext cmdContext = (FD3DCommandContext)executeInfo.cmdContext;
+
+                    switch (executeInfo.executeType)
+                    {
+                        case EExecuteType.Signal:
+                            cmdContext.SignalQueue(executeInfo.fence);
+                            break;
+
+                        case EExecuteType.Wait:
+                            cmdContext.WaitQueue(executeInfo.fence);
+                            break;
+
+                        case EExecuteType.Execute:
+                            cmdContext.ExecuteQueue(executeInfo.cmdBuffer);
+                            break;
+                    }
+                }
+                m_ExecuteInfos.Clear();
+            #endif
+            #endregion submit cmdBuffer
+
+            #region release temporal resource
+            for (int i = 0; i < m_ManagedBuffers.length; ++i) 
+            {
                 ReleaseCommandBuffer(m_ManagedBuffers[i]);
                 m_ManagedBuffers[i] = null;
             }
             m_ManagedBuffers.Clear();
+            #endregion release temporal resource
 
             m_QueryContext[0].Submit(m_CopyContext);
             m_QueryContext[1].Submit(m_GraphicsContext);
 
-            m_CopyContext.AsyncFlush();
-            m_ComputeContext.AsyncFlush();
+            //m_CopyContext.AsyncFlush();
+            //m_ComputeContext.AsyncFlush();
             m_GraphicsContext.Flush();
 
             m_QueryContext[0].ResolveData();
