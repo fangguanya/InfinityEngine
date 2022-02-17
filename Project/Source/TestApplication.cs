@@ -12,7 +12,7 @@ namespace ExampleProject
     [Serializable]
     public class TestComponent : UComponent
     {
-        int numData = 10000000;
+        int numData = 100000;
         bool dataReady;
         int[] readData;
         float cpuTime
@@ -89,9 +89,9 @@ namespace ExampleProject
                 }
                 timeProfiler.Stop();
 
-                //Console.WriteLine("||");
+                Console.WriteLine("||");
                 Console.WriteLine("CPUCopy : " + cpuTime + "ms");
-                //Console.WriteLine("GPUCopy : " + gpuTime + "ms");
+                Console.WriteLine("GPUCopy : " + gpuTime + "ms");
             });
         }
 
