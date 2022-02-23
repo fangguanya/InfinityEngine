@@ -78,9 +78,9 @@ namespace InfinityEngine.Game.System
             long elapsed = 0;
             int deltaTimeSmoothing = 2;
 
-            if (FApplication.TargetFrameRate > 0)
+            if (FApplication.GTargetFrameRate > 0)
             {
-                long targetMax = 1000000L / FApplication.TargetFrameRate;
+                long targetMax = 1000000L / FApplication.GTargetFrameRate;
 
                 while(true)
                 {

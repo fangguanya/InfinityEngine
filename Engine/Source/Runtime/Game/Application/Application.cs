@@ -10,7 +10,7 @@ namespace InfinityEngine.Game.Application
 {
     public abstract partial class FApplication : FDisposal
     {
-        public static uint TargetFrameRate = 60;
+        public static uint GTargetFrameRate = 60;
 
         internal static readonly string WndClassName = "InfinityApp";
 
