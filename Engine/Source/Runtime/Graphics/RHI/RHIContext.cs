@@ -21,6 +21,7 @@ namespace InfinityEngine.Graphics.RHI
 
     public abstract class FRHIContext : FDisposal
     {
+        public virtual bool copyQueueState => false;
         public virtual ulong copyFrequency => 0;
         public virtual ulong computeFrequency => 0;
         public virtual ulong graphicsFrequency => 0;

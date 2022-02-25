@@ -6,7 +6,7 @@ namespace InfinityEngine.Graphics.RHI.D3D
 {
     internal unsafe class FD3DCommandContext : FRHICommandContext
     {
-        bool IsReady = true;
+        internal bool IsReady = true;
         private FD3DFence m_Fence;
         private ID3D12CommandQueue* m_NativeCmdQueue;
         private ID3D12CommandAllocator* m_NativeCmdAllocator;

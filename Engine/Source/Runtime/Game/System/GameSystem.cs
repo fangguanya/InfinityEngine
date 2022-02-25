@@ -69,7 +69,7 @@ namespace InfinityEngine.Game.System
                 FGameTime.Tick(m_DeltaTime);
                 m_GameTickFunc();
                 m_SemaphoreG2R.Signal();
-                //WaitForTargetFPS();
+                WaitForTargetFPS();
             }
         }
         

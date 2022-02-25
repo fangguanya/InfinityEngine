@@ -1,4 +1,4 @@
-﻿#define DeferredExecute
+﻿//#define DeferredExecute
 
 using System;
 using InfinityEngine.Core.Container;
@@ -7,6 +7,13 @@ namespace InfinityEngine.Graphics.RHI.D3D
 {
     public unsafe class FD3DContext : FRHIContext
     {
+        public override bool copyQueueState
+        {
+            get
+            {
+                return m_CopyContext.IsReady;
+            }
+        }
         public override ulong copyFrequency
         {
             get
@@ -231,7 +238,6 @@ namespace InfinityEngine.Graphics.RHI.D3D
             m_GraphicsContext.Flush();
 
             m_CopyContext.AsyncFlush();
-            //m_ComputeContext.AsyncFlush();
 
             m_QueryContext[0].ResolveData();
             m_QueryContext[1].ResolveData();

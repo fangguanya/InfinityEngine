@@ -7,6 +7,7 @@ namespace InfinityEngine.Rendering.RenderLoop
 {
     public sealed class FRenderContext : FDisposal
     {
+        public bool copyQueueState => m_Context.copyQueueState;
         public ulong copyFrequency => m_Context.copyFrequency;
         public ulong computeFrequency => m_Context.computeFrequency;
         public ulong graphicsFrequency => m_Context.graphicsFrequency;

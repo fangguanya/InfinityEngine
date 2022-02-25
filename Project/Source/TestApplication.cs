@@ -12,7 +12,7 @@ namespace ExampleProject
     [Serializable]
     public class TestComponent : UComponent
     {
-        int numData = 100000;
+        int numData = 100000000;
         bool dataReady;
         int[] readData;
         float cpuTime
@@ -66,7 +66,7 @@ namespace ExampleProject
         {
             FGraphics.AddTask((FRenderContext renderContext) =>
             {
-                if (dataReady) 
+                if (dataReady && renderContext.copyQueueState) 
                 {
                     FRHICommandBuffer cmdBuffer = renderContext.GetCommandBuffer(EContextType.Copy, "Readback");
                     cmdBuffer.Clear();
