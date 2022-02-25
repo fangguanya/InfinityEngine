@@ -12,7 +12,7 @@ namespace ExampleProject
     [Serializable]
     public class TestComponent : UComponent
     {
-        int numData = 100000000;
+        int numData = 100000;
         bool dataReady;
         int[] readData;
         float cpuTime
