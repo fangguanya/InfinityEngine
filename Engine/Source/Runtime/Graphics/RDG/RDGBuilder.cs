@@ -175,9 +175,9 @@ namespace InfinityEngine.Graphics.RDG
                 CompilePass();
                 ExecutePass(context);
             } catch (Exception exception) {
-                //Debug.LogError("Execute error");
-                //if (!m_ExecutionExceptionWasRaised)
-                    //Debug.LogException(exception);
+                System.Console.WriteLine("Execute error");
+                if (!m_ExecutionExceptionWasRaised)
+                    System.Console.WriteLine(exception);
                 m_ExecutionExceptionWasRaised = true;
             } finally {
                 ClearCompiledPass();
@@ -632,10 +632,10 @@ namespace InfinityEngine.Graphics.RDG
                         passInfo.pass.Execute(graphContext, cmdBuffer);
                         PostPassExecute(graphContext, cmdBuffer, ref passInfo);
                     }
-                } catch (Exception e) {
+                } catch (Exception exception) {
                     m_ExecutionExceptionWasRaised = true;
-                    //Debug.LogError($"RenderGraph Execute error at pass {passInfo.pass.name} ({passIndex})");
-                    //Debug.LogException(e);
+                    System.Console.WriteLine(exception);
+                    System.Console.WriteLine($"RenderGraph Execute error at pass {passInfo.pass.name} ({passIndex})");
                     throw;
                 }
             }

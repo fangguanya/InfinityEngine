@@ -225,8 +225,9 @@ namespace InfinityEngine.Graphics.RHI
         public EBufferType bufferType;
         public EStorageType storageType;
 
-        public FBufferDescriptor(in int count, in int stride, in EUsageType usageType, in EStorageType storageType, in EBufferType bufferType = EBufferType.Structured) : this()
+        public FBufferDescriptor(in int count, in int stride, in EUsageType usageType, in EStorageType storageType, in EBufferType bufferType = EBufferType.Structured)
         {
+            this.name = null;
             this.count = (ulong)count;
             this.stride = (ulong)stride;
             this.usageType = usageType;
@@ -282,8 +283,9 @@ namespace InfinityEngine.Graphics.RHI
         public EStorageType storageType;
         public EGraphicsFormat format;
 
-        public FTextureDescriptor(in int width, in int height, in EUsageType usageType, in EStorageType storageType, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType textureType = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample sample = EMSAASample.None, in bool sparse = false) : this()
+        public FTextureDescriptor(in int width, in int height, in EUsageType usageType, in EStorageType storageType, in int slices = 1, in ushort mipLevel = 1, in ushort anisoLevel = 4, in ETextureType textureType = ETextureType.Tex2D, in EGraphicsFormat format = EGraphicsFormat.R8G8B8A8_UNorm, in EMSAASample sample = EMSAASample.None, in bool sparse = false)
         {
+            this.name = null;
             this.width = width;
             this.height = height;
             this.slices = slices;
